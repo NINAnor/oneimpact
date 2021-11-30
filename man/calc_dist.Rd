@@ -27,7 +27,7 @@ log-transformed. If "sqrt", the output is \code{sqrt(distance)}. Other options s
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
 range of values of distance.}
 
-\item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectosr representing the minimum and
+\item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectors representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max). The default is to
 keep the same extent of the input raster.}
 

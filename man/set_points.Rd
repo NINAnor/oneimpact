@@ -6,20 +6,40 @@
 \usage{
 set_points(
   n_features = 1000,
+  method = c("mobsim", "raster", "NLMR")[1],
   centers = 1,
   width = 0.05,
+  base_raster = NULL,
+  nlmr_function = "nlm_mpd",
   res = 0.1,
   extent_x = c(0, 1),
   extent_y = c(0, 1),
-  buffer_around = 0
+  buffer_around = 0,
+  return_base_raster = TRUE,
+  ...
 )
 }
 \arguments{
 \item{n_features}{\verb{[integer(1)=1000]} \cr Total number of features to spread in space.}
 
-\item{centers}{\verb{[integer(1)=1]} \cr Number of centers around which the features will be placed.}
+\item{method}{\verb{[character(1)]\{"mobsim", "raster", "NLMR"\}} \cr Method used to simulate points in space.
+\code{mobsim} uses the function \code{\link[mobsim:sim_thomas_community]{mobsim::sim_thomas_community()}} from the \link{mobsim} package to simulate
+points. \code{raster} uses a base raster map as input to define weights and simulate the random points.
+\code{NLMR} creates a neutral landscape model using \link{NLMR} package and uses it as an input base raster.
+See \code{Details} for more information.}
 
-\item{width}{\verb{[numeric(1)=0.05]} \cr Radius of the "patches" of features, around the "patch" centers}
+\item{centers}{\verb{[integer(1)=1]} \cr Number of centers around which the features will be placed.
+Used only if \code{method = "mobsim"}.}
+
+\item{width}{\verb{[numeric(1)=0.05]} \cr Radius of the "patches" of features, around the "patch" centers.
+Used only if \code{method = "mobsim"}.}
+
+\item{base_raster}{\verb{[RasterLayer=NULL]} \cr Base raster to define weights for creating the random points.
+Used only if \code{method = "raster"}.}
+
+\item{nlmr_function}{\verb{[character(1)="nlm_mpd"]} \cr Name of the function from NLMR package used to create
+the base raster, to be used to define weights for creating the random points.
+Used only if \code{method = "NLMR"}.}
 
 \item{res}{\verb{[numeric(1)=0.1]} \cr Resolution of the output raster.}
 
@@ -28,29 +48,53 @@ maximum extent in x and y within which the points should be placed, in the forma
 
 \item{buffer_around}{\verb{[numeric(1)=0.1]} \cr Size of the buffer around the extent of the landscape,
 to avoid edge effects when calculating densities using neighborhood analysis.}
+
+\item{return_base_raster}{\verb{[logical(1)=TRUE]} \cr Whether the base_raster should be returned in
+the output list. This is \code{NULL} for \code{method = "mobsim"}.}
+
+\item{...}{Other arguments passed as input to the NLMR functions, defined by the \code{nlmr_function}
+argument.}
 }
 \value{
-A list with two elements: (1) \code{pts}, the coordinates (x,y) of the simulated points;
-(2) \code{rast}, a binary raster containing the landscape, with 1 where there points and NA elsewhere.
+A list with three elements: (1) \code{pts}, the coordinates (x,y) of the simulated points;
+(2) \code{rast}, a binary raster containing the landscape, with 1 where there points and NA elsewhere;
+(3) \code{base_rast}, the base raster used to weigh the simulation of points. If \code{method = "mobsim"},
+\code{base_rast} is \code{NULL}.
 }
 \description{
-This function simulate points patterns in space and rasterize them.
+This function simulate point patterns in space and rasterize them.
 The idea is to mimic the spatial distribution of point-type infrastructure,
 such as houses, cabins, or turbines, for instance.
 The function returns a list with the position of the points and a binary raster
-with 1 where there are points and NA elsewhere.
+with 1 where there are points and NA elsewhere. If created with a raster to define
+the weights, this base raster is also returned in the output.
 }
 \details{
-The function builds upon the function \code{\link[mobsim:sim_thomas_community]{mobsim::sim_thomas_community()}} from the \link{mobsim}
+If \code{method = "mobsim"}, the function builds upon the function
+\code{\link[mobsim:sim_thomas_community]{mobsim::sim_thomas_community()}} from the \link{mobsim}
 package. Originally the function is intended to simulate positions of multiple
 species in the context of species abundance distribution studies, but it fits
 well in case of a single species (or point patterns for a single type of feature).
+In this case, the points are simulated based on the number of centers/patches of points
+and their width.
+
+If \code{method = "raster"}, the function uses an input raster (defined by the argument
+\code{base_raster}) to define the probabilities of setting a given point in a certain pixel
+in space.
+
+If \code{method = "NLMR"}, the function also uses a raster to define the probabilities of
+setting a given point in a certain pixel in space, but this raster is created with
+a function from the \link{NLMR} package. The function name is defined by the argument
+\code{nlmr_function} and its arguments must be defined as additional parameters to
+\code{set_points()}.
 
 TO IMPROVE: implement rasterization with terra package
 }
 \examples{
-library(mobsim)
+#-----
+# using mobsim
 library(raster)
+library(mobsim)
 
 set.seed(1234)
 
@@ -61,7 +105,7 @@ pts <- set_points(n_features = 1000, centers = 1,
                   width = wd, res = 100,
                   extent_x = c(0, ext), extent_y = c(0, ext))
 plot(pts$pts)
-plot(pts$rast)
+plot(pts$rast, col = "black")
 
 # one focus of features, with buffer around
 wd <- ext/20
@@ -70,5 +114,52 @@ pts <- set_points(n_features = 1000, centers = 1,
                   extent_x = c(0, ext), extent_y = c(0, ext),
                   buffer_around = 10000)
 plot(pts$pts)
-plot(pts$rast)
+plot(pts$rast, col = "black")
+
+#-----
+# using base raster
+library(dplyr)
+
+# raster
+set.seed(12)
+r <- raster::raster(matrix(runif(12),3,4)) \%>\% 
+  raster::disaggregate(fact = 10)
+
+# points from raster
+pts <- set_points(n_features = 100, method = "raster",
+                  base_raster = r)
+plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+#-----
+# using NLMR
+library(NLMR)
+
+# example NLM
+set.seed(123)
+ext <- 300
+nlm1 <- NLMR::nlm_mpd(ext, ext, 100, roughness = .5)
+
+# points
+pts <- set_points(n_features = 1000, method = "raster",
+                  base_raster = nlm1)
+
+plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+# OR we can do it directly
+
+# points
+ext <- 30000
+pts <- set_points(n_features = 10000, method = "NLMR",
+                  nlmr_function = "nlm_mpd",
+                  roughness = .2,
+                  res = 100,
+                  extent_x = c(0, ext), extent_y = c(0, ext))
+
+plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
 }

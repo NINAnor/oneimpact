@@ -24,9 +24,11 @@ simulate_dist_dens(
 \arguments{
 \item{n_features}{\verb{[integer(1)=1000]} \cr Total number of features to spread in space.}
 
-\item{centers}{\verb{[integer(1)=1]} \cr Number of centers around which the features will be placed.}
+\item{centers}{\verb{[integer(1)=1]} \cr Number of centers around which the features will be placed.
+Used only if \code{method = "mobsim"}.}
 
-\item{width}{\verb{[numeric(1)=0.05]} \cr Radius of the "patches" of features, around the "patch" centers}
+\item{width}{\verb{[numeric(1)=0.05]} \cr Radius of the "patches" of features, around the "patch" centers.
+Used only if \code{method = "mobsim"}.}
 
 \item{res}{\verb{[numeric(1)=0.1]} \cr Resolution of the output raster.}
 
@@ -52,7 +54,7 @@ Type of filter used to calculate density. See description for details.}
 It can be a single value of a vector of values, in which case several density maps (for each scale)
 are created.}
 
-\item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectosr representing the minimum and
+\item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectors representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max). The default is to
 keep the same extent of the input raster.}
 }

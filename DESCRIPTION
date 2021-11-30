@@ -8,9 +8,9 @@ Description: Describe the package later
 Depends:
     R
 Imports: 
-    mobsim, raster
+    mobsim, raster, NLMR
 Suggests:
-    rasterVis
+    rasterVis, landscapetools
 License: Not defined yet
 Encoding: UTF-8
 LazyData: true

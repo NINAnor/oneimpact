@@ -18,7 +18,7 @@
 #' @param dist_offset `[numeric(1)=1]` \cr Number to add to distance before transforming it,
 #' to avoid `-Inf`/`Inf` values (e.g. in the case of log). It should be a very small value compared to the
 #' range of values of distance.
-#' @param extent_x_cut,entent_y_cut `[numeric vector(2)=c(0,1)]` \cr Vectosr representing the minimum and
+#' @param extent_x_cut,entent_y_cut `[numeric vector(2)=c(0,1)]` \cr Vectors representing the minimum and
 #' maximum extent in x and y for the final output, in the format c(min,max). The default is to
 #' keep the same extent of the input raster.
 #' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along the calculation?

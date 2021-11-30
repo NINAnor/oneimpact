@@ -36,7 +36,7 @@ Type of filter used to calculate density. See description for details.}
 It can be a single value of a vector of values, in which case several density maps (for each scale)
 are created.}
 
-\item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectosr representing the minimum and
+\item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectors representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max). The default is to
 keep the same extent of the input raster.}
 

@@ -1,5 +1,7 @@
-library(mobsim)
+#-----
+# using mobsim
 library(raster)
+library(mobsim)
 
 set.seed(1234)
 
@@ -10,7 +12,7 @@ pts <- set_points(n_features = 1000, centers = 1,
                   width = wd, res = 100,
                   extent_x = c(0, ext), extent_y = c(0, ext))
 plot(pts$pts)
-plot(pts$rast)
+plot(pts$rast, col = "black")
 
 # one focus of features, with buffer around
 wd <- ext/20
@@ -19,4 +21,51 @@ pts <- set_points(n_features = 1000, centers = 1,
                   extent_x = c(0, ext), extent_y = c(0, ext),
                   buffer_around = 10000)
 plot(pts$pts)
-plot(pts$rast)
+plot(pts$rast, col = "black")
+
+#-----
+# using base raster
+library(dplyr)
+
+# raster
+set.seed(12)
+r <- raster::raster(matrix(runif(12),3,4)) %>% 
+  raster::disaggregate(fact = 10)
+
+# points from raster
+pts <- set_points(n_features = 100, method = "raster",
+                  base_raster = r)
+plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+#-----
+# using NLMR
+library(NLMR)
+
+# example NLM
+set.seed(123)
+ext <- 300
+nlm1 <- NLMR::nlm_mpd(ext, ext, 100, roughness = .5)
+
+# points
+pts <- set_points(n_features = 1000, method = "raster",
+                  base_raster = nlm1)
+
+plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+# OR we can do it directly
+
+# points
+ext <- 30000
+pts <- set_points(n_features = 10000, method = "NLMR",
+                  nlmr_function = "nlm_mpd",
+                  roughness = .2,
+                  res = 100,
+                  extent_x = c(0, ext), extent_y = c(0, ext))
+
+plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
