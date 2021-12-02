@@ -8,6 +8,8 @@ calc_dist(
   points,
   transform_dist = NULL,
   log_base = exp(1),
+  exp_hl = NULL,
+  exp_decay_parms = c(1, 0.01),
   dist_offset = 1,
   extent_x_cut = bbox(points)[1, ],
   extent_y_cut = bbox(points)[2, ],
@@ -74,8 +76,29 @@ log_d <- calc_dist(pts$rast,
                    transform_dist = "log", log_base = 10)
 plot(log_d)
 
-# calculate sqrt_dist (the rest is equal)
+# calculate sqrt_dist
 sqrt_d <- calc_dist(pts$rast, transform_dist = "sqrt")
 plot(sqrt_d)
+
+# calculate exponential decay distance
+exp_d1 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_decay_parms = c(1, 0.001))
+plot(exp_d1)
+# using half life
+half_life <- 1000 # intensity gets down to 1/16 = 0.06 for 4*half_life
+exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_hl = 1000)
+plot(exp_d2)
+# buffer
+pts_shp <- pts$pts \%>\% 
+  sf::st_as_sf(coords = c(1,2))
+# 1000m
+pts_shp \%>\% 
+  sf::st_buffer(dist = 1000) \%>\% 
+  sf::st_union() \%>\% 
+  plot(add = T)
+# 4000m
+pts_shp \%>\% 
+  sf::st_buffer(dist = 2000) \%>\% 
+  sf::st_union() \%>\% 
+  plot(add = T)
 
 }

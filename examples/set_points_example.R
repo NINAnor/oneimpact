@@ -47,6 +47,9 @@ library(NLMR)
 set.seed(123)
 ext <- 300
 nlm1 <- NLMR::nlm_mpd(ext, ext, 100, roughness = .5)
+nlm1[] <- scales::rescale(exp(nlm1[]))
+
+landscapetools::show_landscape(nlm1)
 
 # points
 pts <- set_points(n_features = 1000, method = "raster",

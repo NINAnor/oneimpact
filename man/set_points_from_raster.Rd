@@ -15,7 +15,7 @@ set_points_from_raster(base_raster, n_features = 1000)
 The coordinates (x,y) of the simulated points.
 }
 \description{
-This function simulate point patterns in space using the values of
+This function simulates point patterns in space using the values of
 an input raster as weights or probabilities for selecting a point in a
 given location. It was designed to simulate points based on  neutral landscape
 models but it works with other input rasters as well.
@@ -24,7 +24,7 @@ models but it works with other input rasters as well.
 The function works by first selecting random pixels in the landscape and
 finding their centers, then adding random variation within each pixel to
 define the final point locations.
-It was based on this StackExchange super useful answer from "Spacedman":
+It was based on this StackExchange very useful answer from "Spacedman":
 https://gis.stackexchange.com/questions/224321/randomly-generate-points-using-weights-from-raster
 
 TO IMPROVE: implement with terra package
@@ -44,8 +44,15 @@ r <- raster::raster(matrix(runif(12),3,4))
 # points
 pts <- set_points_from_raster(r, n_features = 300)
 
+# plot
 raster::plot(r)
 points(pts)
+
+# or
+# library(landscapetools)
+# library(ggplot2)
+# landscapetools::show_landscape(r) +
+#   geom_point(aes(x, y), data = pts)
 
 #-----
 # using NLMR
@@ -62,4 +69,7 @@ pts <- set_points_from_raster(nlm1, n_features = 1000)
 raster::plot(nlm1)
 points(pts)
 
+# or
+landscapetools::show_landscape(nlm1) +
+  geom_point(aes(x, y), data = pts)
 }

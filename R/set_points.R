@@ -1,6 +1,6 @@
 #' Simulate points in a landscape
 #'
-#' This function simulate point patterns in space and rasterize them.
+#' This function simulates point patterns in space and rasterize them.
 #' The idea is to mimic the spatial distribution of point-type infrastructure,
 #' such as houses, cabins, or turbines, for instance.
 #' The function returns a list with the position of the points and a binary raster

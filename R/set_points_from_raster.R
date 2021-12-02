@@ -1,6 +1,6 @@
 #' Simulate points using input raster as weights 
 #'
-#' This function simulate point patterns in space using the values of
+#' This function simulates point patterns in space using the values of
 #' an input raster as weights or probabilities for selecting a point in a 
 #' given location. It was designed to simulate points based on  neutral landscape 
 #' models but it works with other input rasters as well.
@@ -8,7 +8,7 @@
 #' The function works by first selecting random pixels in the landscape and 
 #' finding their centers, then adding random variation within each pixel to
 #' define the final point locations. 
-#' It was based on this StackExchange super useful answer from "Spacedman":
+#' It was based on this StackExchange very useful answer from "Spacedman":
 #' https://gis.stackexchange.com/questions/224321/randomly-generate-points-using-weights-from-raster
 #'
 #' TO IMPROVE: implement with terra package
@@ -37,5 +37,5 @@ set_points_from_raster <- function(base_raster, n_features = 1000) {
                         runif(nrow(center), - res[2]/2, res[2]/2))
   
   # return the points
-  pts
+  data.frame(pts)
 }

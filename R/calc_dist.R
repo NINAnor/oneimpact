@@ -32,8 +32,10 @@
 #' @export
 
 calc_dist <- function(points,
-                      transform_dist = NULL,#c(NA, "log", "sqrt")[1],
+                      transform_dist = NULL, #c(NA, "log", "sqrt", "exp_decay")[1],
                       log_base = exp(1),
+                      exp_hl = NULL, #log(2)/0.01,
+                      exp_decay_parms = c(1, 0.01),
                       dist_offset = 1,
                       extent_x_cut = bbox(points)[1,],
                       extent_y_cut = bbox(points)[2,],
@@ -44,7 +46,12 @@ calc_dist <- function(points,
   if(!is.null(transform_dist))
     if(transform_dist == "log") dist_r <- log(dist_r+dist_offset, base = log_base) else
       if(transform_dist == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
-        stop("You should select an appropriate transformation method for distance.")
+        if(transform_dist == "exp_decay") {
+          if(is.null(exp_hl)) alfa <- exp_decay_parms[2] else alfa <- log(2)/exp_hl
+          print(alfa)
+          dist_r <- exp_decay_parms[1] * exp(-alfa * dist_r) 
+        } else
+            stop("You should select an appropriate transformation method for distance.")
 
   names(dist_r) <- "distance"
   if(plotit) plot(dist_r)
