@@ -58,7 +58,7 @@ set_points_sample <- function(n_features = 1000,
   }
   
   # sample points
-  pts <- sf::st_sample(pol, size = 100, type = type)
+  pts <- sf::st_sample(pol, size = n_features, type = type)
   
   # return coordinates
   data.frame(st_coordinates(pts))

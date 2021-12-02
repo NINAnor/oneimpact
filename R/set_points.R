@@ -28,7 +28,8 @@
 #' TO IMPROVE: implement rasterization with terra package
 #'
 #' @param n_features `[integer(1)=1000]` \cr Total number of features to spread in space.
-#' @param method `[character(1)]{"mobsim", "raster", "NLMR"}` \cr Method used to simulate points in space.
+#' @param method `[character(1)]{"mobsim", "regular", "random", "raster", "NLMR"}` \cr Method used 
+#' to simulate points in space.
 #' `mobsim` uses the function [mobsim::sim_thomas_community()] from the [mobsim] package to simulate
 #' points. `raster` uses a base raster map as input to define weights and simulate the random points.
 #' `NLMR` creates a neutral landscape model using [NLMR] package and uses it as an input base raster. 
@@ -63,7 +64,7 @@
 
 # function to simulate points in the landscape
 set_points <- function(n_features = 1000, 
-                       method = c("mobsim", "raster", "NLMR")[1],
+                       method = c("mobsim", "regular", "random", "raster", "NLMR")[1],
                        centers = 1, width = 0.05,
                        base_raster = NULL,
                        nlmr_function = "nlm_mpd",
@@ -79,7 +80,6 @@ set_points <- function(n_features = 1000,
     pts <- mobsim::sim_thomas_community(s_pool = 1, n_sim = n_features,
                                         sigma = width, mother_points = centers,
                                         xrange = extent_x, yrange = extent_y)$census[,1:2]
-    base_raster <- NULL
   } else {
     if(method %in% c("NLMR", "raster")) {
       
@@ -100,7 +100,9 @@ set_points <- function(n_features = 1000,
       pts <- set_points_from_raster(base_raster = base_raster, 
                                     n_features = n_features)
     } else {
-      stop("Method should be either 'mobsim', 'raster', or 'NLMR'.")
+      # use set_points_sample
+      pts <- set_points_sample(n_features = n_features, type = method,
+                               extent_x = extent_x, extent_y = extent_y)
     }
   }
 

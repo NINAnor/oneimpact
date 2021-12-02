@@ -6,7 +6,7 @@
 \usage{
 set_points(
   n_features = 1000,
-  method = c("mobsim", "raster", "NLMR")[1],
+  method = c("mobsim", "regular", "random", "raster", "NLMR")[1],
   centers = 1,
   width = 0.05,
   base_raster = NULL,
@@ -22,7 +22,8 @@ set_points(
 \arguments{
 \item{n_features}{\verb{[integer(1)=1000]} \cr Total number of features to spread in space.}
 
-\item{method}{\verb{[character(1)]\{"mobsim", "raster", "NLMR"\}} \cr Method used to simulate points in space.
+\item{method}{\verb{[character(1)]\{"mobsim", "regular", "random", "raster", "NLMR"\}} \cr Method used
+to simulate points in space.
 \code{mobsim} uses the function \code{\link[mobsim:sim_thomas_community]{mobsim::sim_thomas_community()}} from the \link{mobsim} package to simulate
 points. \code{raster} uses a base raster map as input to define weights and simulate the random points.
 \code{NLMR} creates a neutral landscape model using \link{NLMR} package and uses it as an input base raster.
@@ -142,7 +143,7 @@ ext <- 300
 nlm1 <- NLMR::nlm_mpd(ext, ext, 100, roughness = .5)
 nlm1[] <- scales::rescale(exp(nlm1[]))
 
-landscapetools::show_landscape(nlm1)
+plot(nlm1)
 
 # points
 pts <- set_points(n_features = 1000, method = "raster",
@@ -163,6 +164,23 @@ pts <- set_points(n_features = 10000, method = "NLMR",
                   extent_x = c(0, ext), extent_y = c(0, ext))
 
 plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+#-----
+# using random or regular
+
+set.seed(123)
+ext <- 30000
+pts <- set_points(n_features = 1000, method = "random",
+                  res = 100,
+                  extent_x = c(0, ext), extent_y = c(0, ext))
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+pts <- set_points(n_features = 1000, method = "regular",
+                  res = 100,
+                  extent_x = c(0, ext), extent_y = c(0, ext))
 plot(pts$pts)
 plot(pts$rast, col = "black")
 }

@@ -49,7 +49,7 @@ ext <- 300
 nlm1 <- NLMR::nlm_mpd(ext, ext, 100, roughness = .5)
 nlm1[] <- scales::rescale(exp(nlm1[]))
 
-landscapetools::show_landscape(nlm1)
+plot(nlm1)
 
 # points
 pts <- set_points(n_features = 1000, method = "raster",
@@ -70,5 +70,22 @@ pts <- set_points(n_features = 10000, method = "NLMR",
                   extent_x = c(0, ext), extent_y = c(0, ext))
 
 plot(pts$base_rast)
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+#-----
+# using random or regular
+
+set.seed(123)
+ext <- 30000
+pts <- set_points(n_features = 1000, method = "random",
+                  res = 100,
+                  extent_x = c(0, ext), extent_y = c(0, ext))
+plot(pts$pts)
+plot(pts$rast, col = "black")
+
+pts <- set_points(n_features = 1000, method = "regular",
+                  res = 100,
+                  extent_x = c(0, ext), extent_y = c(0, ext))
 plot(pts$pts)
 plot(pts$rast, col = "black")
