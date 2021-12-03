@@ -31,20 +31,27 @@
 calc_dist_dens <- function(points,
                            transform_dist = NULL,
                            log_base = exp(1), dist_offset = 1,
+                           exp_hl = NULL,
+                           exp_decay_parms = c(1, 0.01),
                            type_density = c("Gauss", "circle", "rectangle")[1],
                            scale = 100,
                            extent_x_cut = bbox(points)[1,],
                            extent_y_cut = bbox(points)[2,],
-                           plotit = FALSE) {
+                           plotit = FALSE, ...) {
 
   # distance
-  dist_r <- calc_dist(points, transform_dist, log_base, dist_offset,
-                      extent_x_cut, extent_y_cut, plotit)
+  dist_r <- calc_dist(points = points, transform_dist = transform_dist, 
+                      log_base = log_base, exp_hl = exp_hl, 
+                      exp_decay_parms = exp_decay_parms, 
+                      dist_offset = dist_offset,
+                      extent_x_cut = extent_x_cut, 
+                      extent_y_cut = extent_y_cut, 
+                      plotit = plotit)
 
   # density
   density_r <- calc_dens(points, type_density, scale,
                          extent_x_cut, extent_y_cut,
-                         plotit)
+                         plotit, ...)
 
   r_stk <- raster::stack(dist_r, density_r)
   r_stk

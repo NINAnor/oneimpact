@@ -38,7 +38,7 @@ calc_dens <- function(points,
                       scale = 100,
                       extent_x_cut = bbox(points)[1,],
                       extent_y_cut = bbox(points)[2,],
-                      plotit = FALSE) {
+                      plotit = FALSE, ...) {
 
   # density
   r0 <- points
@@ -48,11 +48,11 @@ calc_dens <- function(points,
   # Gaussian weight
   if(length(scale) == 1) {
     gf <- raster::focalWeight(r0, d = scale, type = type_density)
-    density_r <- raster::focal(r0, w = gf)
+    density_r <- raster::focal(r0, w = gf, ...)
   } else {
     dens <- sapply(scale, function(x) {
       gf <- raster::focalWeight(r0, d = x, type = type_density)
-      raster::focal(r0, w = gf)
+      raster::focal(r0, w = gf, ...)
     })
     density_r <- raster::stack(dens)
   }

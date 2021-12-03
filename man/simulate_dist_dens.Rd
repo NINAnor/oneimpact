@@ -67,7 +67,7 @@ a point pattern representing the distribution of point-type infrastructure in
 space, rasterize it, and calculate the distance to and density of infrastructure.
 }
 \details{
-The function builds upon the function \code{\link[thomas:sim_thomas_community]{thomas::sim_thomas_community()}} from the \link{mobsim}
+The function builds upon the function \code{\link[mobsim:sim_thomas_community]{mobsim::sim_thomas_community()}} from the \link{mobsim}
 package. Originally the function is intended to simulate positions of multiple
 species in the context of species abundance distribution studies, but it fits
 well in case of a single species (or point patterns for a single type of feature).

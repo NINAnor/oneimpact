@@ -48,7 +48,6 @@ calc_dist <- function(points,
       if(transform_dist == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
         if(transform_dist == "exp_decay") {
           if(is.null(exp_hl)) alfa <- exp_decay_parms[2] else alfa <- log(2)/exp_hl
-          print(alfa)
           dist_r <- exp_decay_parms[1] * exp(-alfa * dist_r) 
         } else
             stop("You should select an appropriate transformation method for distance.")

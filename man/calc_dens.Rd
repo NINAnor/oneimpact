@@ -10,7 +10,8 @@ calc_dens(
   scale = 100,
   extent_x_cut = bbox(points)[1, ],
   extent_y_cut = bbox(points)[2, ],
-  plotit = FALSE
+  plotit = FALSE,
+  ...
 )
 }
 \arguments{
