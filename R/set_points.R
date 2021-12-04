@@ -43,6 +43,10 @@
 #' @param nlmr_function `[character(1)="nlm_mpd"]` \cr Name of the function from NLMR package used to create
 #' the base raster, to be used to define weights for creating the random points.
 #' Used only if `method = "NLMR"`.
+#' @param point_coordinates `[data.frame=NULL]` \cr `data.frame` with (x,y) columns with coordinates
+#' already taken from elsewhere. This option is intended for when the points' coordinates were already 
+#' generated or taken from a real landscape. In this case, no points are simulated and they are 
+#' just rasterized (so that distances or other derived variables might be calculated).
 #' @param res `[numeric(1)=0.1]` \cr Resolution of the output raster.
 #' @param extent_x,entent_y `[numeric vector(2)=c(0,1)]` \cr Vector representing the minimum and
 #' maximum extent in x and y within which the points should be placed, in the format c(min,max).
@@ -68,41 +72,47 @@ set_points <- function(n_features = 1000,
                        centers = 1, width = 0.05,
                        base_raster = NULL,
                        nlmr_function = "nlm_mpd",
+                       point_coordinates = NULL,
                        res = 0.1,
                        extent_x = c(0,1), extent_y = c(0,1),
                        buffer_around = 0,
                        return_base_raster = TRUE,
                        ...) {
 
-  # simulate points according to the method
-  if(method == "mobsim") {
-    # simulate points with mobsim
-    pts <- mobsim::sim_thomas_community(s_pool = 1, n_sim = n_features,
-                                        sigma = width, mother_points = centers,
-                                        xrange = extent_x, yrange = extent_y)$census[,1:2]
+  # get point coordinates if they were taken from elsewhere
+  if(!is.null(point_coordinates)) {
+    pts <- point_coordinates
   } else {
-    if(method %in% c("NLMR", "raster")) {
-      
-      # NLMR
-      if(method == "NLMR") {
-        # simulate points with NLMR
-        # get function
-        nlm_func <- get(nlmr_function)
-        # get nrow and ncol
-        ncol = round(abs(diff(extent_x))/res)
-        nrow = round(abs(diff(extent_y))/res)
-        # simulate landscape
-        base_raster <- nlm_func(nrow = nrow, ncol = ncol, resolution = res,
-                                ...)
-      } 
-      
-      # simulate points
-      pts <- set_points_from_raster(base_raster = base_raster, 
-                                    n_features = n_features)
+    # simulate points according to the method
+    if(method == "mobsim") {
+      # simulate points with mobsim
+      pts <- mobsim::sim_thomas_community(s_pool = 1, n_sim = n_features,
+                                          sigma = width, mother_points = centers,
+                                          xrange = extent_x, yrange = extent_y)$census[,1:2]
     } else {
-      # use set_points_sample
-      pts <- set_points_sample(n_features = n_features, type = method,
-                               extent_x = extent_x, extent_y = extent_y)
+      if(method %in% c("NLMR", "raster")) {
+        
+        # NLMR
+        if(method == "NLMR") {
+          # simulate points with NLMR
+          # get function
+          nlm_func <- get(nlmr_function)
+          # get nrow and ncol
+          ncol = round(abs(diff(extent_x))/res)
+          nrow = round(abs(diff(extent_y))/res)
+          # simulate landscape
+          base_raster <- nlm_func(nrow = nrow, ncol = ncol, resolution = res,
+                                  ...)
+        } 
+        
+        # simulate points
+        pts <- set_points_from_raster(base_raster = base_raster, 
+                                      n_features = n_features)
+      } else {
+        # use set_points_sample
+        pts <- set_points_sample(n_features = n_features, type = method,
+                                 extent_x = extent_x, extent_y = extent_y)
+      }
     }
   }
 

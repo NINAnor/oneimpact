@@ -11,6 +11,7 @@ set_points(
   width = 0.05,
   base_raster = NULL,
   nlmr_function = "nlm_mpd",
+  point_coordinates = NULL,
   res = 0.1,
   extent_x = c(0, 1),
   extent_y = c(0, 1),
@@ -41,6 +42,11 @@ Used only if \code{method = "raster"}.}
 \item{nlmr_function}{\verb{[character(1)="nlm_mpd"]} \cr Name of the function from NLMR package used to create
 the base raster, to be used to define weights for creating the random points.
 Used only if \code{method = "NLMR"}.}
+
+\item{point_coordinates}{\verb{[data.frame=NULL]} \cr \code{data.frame} with (x,y) columns with coordinates
+already taken from elsewhere. This option is intended for when the points' coordinates were already
+generated or taken from a real landscape. In this case, no points are simulated and they are
+just rasterized (so that distances or other derived variables might be calculated).}
 
 \item{res}{\verb{[numeric(1)=0.1]} \cr Resolution of the output raster.}
 
