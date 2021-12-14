@@ -189,4 +189,11 @@ pts <- set_points(n_features = 1000, method = "regular",
                   extent_x = c(0, ext), extent_y = c(0, ext))
 plot(pts$pts)
 plot(pts$rast, col = "black")
+
+#-----
+# using point coordinates as input
+pt_input <- data.frame(x = c(0.5, 0.7), y = c(0.5, 0.3))
+pts <- set_points(point_coordinates = pt_input)
+plot(pts$pts)
+plot(pts$rast, col = "black")
 }

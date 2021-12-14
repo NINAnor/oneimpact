@@ -33,8 +33,8 @@ nearest neighbor distance from all random positions to the points in
 Measures of isolation and mean isolation to a set of points in
 space. \code{isolation} creates random points in a landscape and calculates
 the nearest neighbor distance from each of them to another set
-of points passed as input (\code{x}). \code{mean_isolation} calculates the
-average isolation for a set of random points created.
+of points passed as input, \code{x}. \code{mean_isolation} calculates the
+average isolation calculated through \code{isolation}.
 }
 \details{
 So far the function only works for a square landscape. In the future
