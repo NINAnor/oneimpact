@@ -26,7 +26,7 @@
 #' maximum extent in x and y for the final output, in the format c(min,max). It is intended to keep only
 #' a region of interest but consider the surroundings when calculating densities. The default is to
 #' keep the same extent of the input raster.
-#' @param `plotit [logical(1)=FALSE]` \cr Should the outputs be plotted along the calculation?
+#' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along the calculation?
 #'
 #' @returns A RasterBrick with the density of features for all scales selected.
 #'

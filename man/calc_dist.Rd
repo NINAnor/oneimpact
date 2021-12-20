@@ -8,11 +8,13 @@ calc_dist(
   points,
   transform_dist = NULL,
   log_base = exp(1),
-  exp_hl = NULL,
+  half_life = NULL,
   exp_decay_parms = c(1, 0.01),
+  bartlett_zoi = NULL,
   dist_offset = 1,
   extent_x_cut = bbox(points)[1, ],
   extent_y_cut = bbox(points)[2, ],
+  use_terra = TRUE,
   plotit = FALSE
 )
 }
@@ -20,10 +22,26 @@ calc_dist(
 \item{points}{\verb{[RasterLayer]} \cr Raster representing locations of features, with 1 where the features
 are located and NA elsewhere.}
 
-\item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt"\}} \cr By default, NULL. If "log", the distances are
-log-transformed. If "sqrt", the output is \code{sqrt(distance)}. Other options still to be implemented.}
+\item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "bartlett\}} \cr
+By default, NULL - distances are no transformed. If \code{log}, the distances are
+log-transformed. If \code{sqrt}, the output is \code{sqrt(distance)}. If \code{exp_decay}, the exponential
+decay distance is calculated. If \code{bartlett}, a triangular tent-shaped decay distance is returned.
+See details below.
+Other options still to be implemented.}
 
-\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{log_base} is TRUE.}
+\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{transform_dist = log}.}
+
+\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life of the exponential decay function, in case
+\code{transform_dist = exp_decay}. The lambda exponent from the exponential funcion is defined as
+\code{lambda = log(2)/half_life}. By definition, t each distance interval equals to \code{half_life} from the
+source features, the magnitude of the exponential decay distance decreases by 1/2. This means that,
+for instance, at a distance of \code{4*half_life} to the nearest feature, the exponential decay distance
+has a magnitude of 1/16 ~ 0.06. This can be useful to define the Zone of Influence for exponential
+decay distances.}
+
+\item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr Parameters (\code{N_0}, \code{lambda}) for the exponential decay
+distance, if \code{transform_dist = exp_decay}. The value of \code{lambda} define here is used only if \code{half_life = NULL},
+otherwise the value of \code{half_life} is used to determine \code{lambda}.}
 
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to distance before transforming it,
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
@@ -34,16 +52,21 @@ maximum extent in x and y for the final output, in the format c(min,max). The de
 keep the same extent of the input raster.}
 
 \item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
+
+\item{bartlett}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) of the Bartlett distance, if
+\code{transform_dist = bartlett}. It corresponds to the distance beyonf which the distance is zero.}
 }
 \value{
 A RasterLayer with the distance to the nearest feature. Depending on the choice of
-\code{transform_dist}, the output distance can be log- or sqrt-transformed. Other types of transformation
-to be implemented.
+\code{transform_dist}, the output distance can be log- or sqrt-transformed, or one can choose to calculate
+the exponential decay or Bartlett decay distance. Other types of transformation
+to be implemented in the future.
 }
 \description{
 This function takes in a raster with locations of infrastructure and calculates
 a raster representing the distance from each pixel to the neareast feature.
-The output distance can be transformed (log, sqrt).
+The output distance can be transformed (so far, with the options log-distance, sqrt-distance,
+exponential decay distance, Bartlett distance).
 }
 \details{
 TO IMPROVE1: implement with \code{terra}.
@@ -55,6 +78,8 @@ TO IMPROVE3: Add other possible transformations to distance.
 \examples{
 library(mobsim)
 library(raster)
+library(dplyr)
+library(sf)
 
 set.seed(1234)
 
@@ -63,7 +88,7 @@ ext <- 30000
 wd <- ext/20
 pts <- set_points(n_features = 1000, centers = 1,
                   width = wd, res = 100,
-                  extent_x = c(0, ext), extent_y = c(0, ext))
+                  extent_x = c(0, ext), extent_y = c(0, ext), use_terra = F)
 plot(pts$pts)
 plot(pts$rast)
 
@@ -85,7 +110,7 @@ exp_d1 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_decay_parms = c(
 plot(exp_d1)
 # using half life
 half_life <- 1000 # intensity gets down to 1/16 = 0.06 for 4*half_life
-exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_hl = 1000)
+exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", half_life = 1000)
 plot(exp_d2)
 # buffer
 pts_shp <- pts$pts \%>\% 
@@ -97,8 +122,17 @@ pts_shp \%>\%
   plot(add = T)
 # 4000m
 pts_shp \%>\% 
-  sf::st_buffer(dist = 2000) \%>\% 
+  sf::st_buffer(dist = 4000) \%>\% 
   sf::st_union() \%>\% 
   plot(add = T)
 
+# bartlett distance, ZOI = 2000m
+bart_d <- calc_dist(pts$rast,
+                    transform_dist = "bartlett", bartlett_zoi = 2000)
+plot(bart_d)
+# buffer 2000m
+pts_shp \%>\% 
+  sf::st_buffer(dist = 2000) \%>\% 
+  sf::st_union() \%>\% 
+  plot(add = T)
 }

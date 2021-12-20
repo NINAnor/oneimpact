@@ -77,6 +77,8 @@ set_points <- function(n_features = 1000,
                        extent_x = c(0,1), extent_y = c(0,1),
                        buffer_around = 0,
                        return_base_raster = TRUE,
+                       use_terra = TRUE,
+                       crs = "",
                        ...) {
 
   # get point coordinates if they were taken from elsewhere
@@ -118,18 +120,29 @@ set_points <- function(n_features = 1000,
 
   # extent and res for method "raster"
   if(method == "raster") {
-    res = raster::res(base_raster)[1]
+    res = terra::res(base_raster)[1]
     extent_x <- bbox(base_raster)[1,]
     extent_y <- bbox(base_raster)[2,]
   }
   
   # raster
   buff <- buffer_around
-  r <- raster::raster(xmn = extent_x[1]-buff, xmx = extent_x[2]+buff,
-                      ymn = extent_y[1]-buff, ymx = extent_y[2]+buff,
-                      resolution = res)
-  # resterize points
-  r_pts <- raster::rasterize(pts, r, field = 1)
+  if(use_terra) {
+    if(crs == "") crs <- "+proj=utm +zone=1 +datum=WGS84" # example of planar crs
+    r <- terra::rast(xmin = extent_x[1]-buff, xmax = extent_x[2]+buff,
+                     ymin = extent_y[1]-buff, ymax = extent_y[2]+buff,
+                     resolution = res, crs = crs)
+    # resterize points
+    r_pts <- as.matrix(pts) %>% 
+      terra::vect() %>% 
+      terra::rasterize(r, field = 1)
+  } else {
+    r <- raster::raster(xmn = extent_x[1]-buff, xmx = extent_x[2]+buff,
+                        ymn = extent_y[1]-buff, ymx = extent_y[2]+buff,
+                        resolution = res)
+    # resterize points
+    r_pts <- raster::rasterize(pts, r, field = 1)
+  }
   
   # return base raster
   if(!return_base_raster) base_raster <- NULL

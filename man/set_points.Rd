@@ -17,6 +17,8 @@ set_points(
   extent_y = c(0, 1),
   buffer_around = 0,
   return_base_raster = TRUE,
+  use_terra = TRUE,
+  crs = "",
   ...
 )
 }
@@ -100,8 +102,9 @@ TO IMPROVE: implement rasterization with terra package
 \examples{
 #-----
 # using mobsim
-library(raster)
+library(terra)
 library(mobsim)
+library(dplyr)
 
 set.seed(1234)
 
@@ -125,7 +128,6 @@ plot(pts$rast, col = "black")
 
 #-----
 # using base raster
-library(dplyr)
 
 # raster
 set.seed(12)

@@ -21,7 +21,7 @@ plot(dist_dens)
 
 # calculate exp_decay (the rest is equal)
 log_dist_dens <- calc_dist_dens(pts$rast, type_density = "Gauss", scale = scales,
-                                transform_dist = "exp_decay", exp_hl = 200,
+                                transform_dist = "exp_decay", half_life = 200,
                                 extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(log_dist_dens)
 

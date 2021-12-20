@@ -39,13 +39,16 @@ The size of the landscape is defined by the \code{extent_x} and \code{extent_y} 
 It assumes the landscape is square or rectangularly shaped.
 }
 \examples{
+library(sf)
+
 pts <- set_points_sample(100)
 plot(pts)
-pts2 <- set_points_sample(100, method = "random")
+pts2 <- set_points_sample(100, type = "random")
 plot(pts2)
 
-library(raster)
-x <- raster(system.file("external/test.grd", package="raster"))
+library(terra)
+library(stars)
+x <- rast(system.file("external/test.grd", package="raster"))
 pts3 <- set_points_sample(100, base_polygon = x)
 plot(pts3)
 

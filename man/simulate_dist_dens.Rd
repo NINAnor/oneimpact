@@ -38,10 +38,14 @@ maximum extent in x and y within which the points should be placed, in the forma
 \item{buffer_around}{\verb{[numeric(1)=0.1]} \cr Size of the buffer around the extent of the landscape,
 to avoid edge effects when calculating densities using neighborhood analysis.}
 
-\item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt"\}} \cr By default, NULL. If "log", the distances are
-log-transformed. If "sqrt", the output is \code{sqrt(distance)}. Other options still to be implemented.}
+\item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "bartlett\}} \cr
+By default, NULL - distances are no transformed. If \code{log}, the distances are
+log-transformed. If \code{sqrt}, the output is \code{sqrt(distance)}. If \code{exp_decay}, the exponential
+decay distance is calculated. If \code{bartlett}, a triangular tent-shaped decay distance is returned.
+See details below.
+Other options still to be implemented.}
 
-\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{log_base} is TRUE.}
+\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{transform_dist = log}.}
 
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to distance before transforming it,
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the

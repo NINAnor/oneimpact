@@ -1,7 +1,8 @@
 #-----
 # using mobsim
-library(raster)
+library(terra)
 library(mobsim)
+library(dplyr)
 
 set.seed(1234)
 
@@ -25,7 +26,6 @@ plot(pts$rast, col = "black")
 
 #-----
 # using base raster
-library(dplyr)
 
 # raster
 set.seed(12)

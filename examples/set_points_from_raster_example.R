@@ -22,6 +22,11 @@ points(pts)
 # landscapetools::show_landscape(r) +
 #   geom_point(aes(x, y), data = pts)
 
+# with terra
+r <- terra::rast(r)
+# points
+pts <- set_points_from_raster(r, n_features = 300)
+
 #-----
 # using NLMR
 library(NLMR)
@@ -38,5 +43,5 @@ raster::plot(nlm1)
 points(pts)
 
 # or
-landscapetools::show_landscape(nlm1) +
-  geom_point(aes(x, y), data = pts)
+# landscapetools::show_landscape(nlm1) +
+#   geom_point(aes(x, y), data = pts)

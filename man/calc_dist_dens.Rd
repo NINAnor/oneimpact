@@ -9,8 +9,9 @@ calc_dist_dens(
   transform_dist = NULL,
   log_base = exp(1),
   dist_offset = 1,
-  exp_hl = NULL,
+  half_life = NULL,
   exp_decay_parms = c(1, 0.01),
+  bartlett_zoi = NULL,
   type_density = c("Gauss", "circle", "rectangle")[1],
   scale = 100,
   extent_x_cut = bbox(points)[1, ],
@@ -23,14 +24,30 @@ calc_dist_dens(
 \item{points}{\verb{[RasterLayer]} \cr Raster representing locations of features, with 1 where the features
 are located and NA elsewhere.}
 
-\item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt"\}} \cr By default, NULL. If "log", the distances are
-log-transformed. If "sqrt", the output is \code{sqrt(distance)}. Other options still to be implemented.}
+\item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "bartlett\}} \cr
+By default, NULL - distances are no transformed. If \code{log}, the distances are
+log-transformed. If \code{sqrt}, the output is \code{sqrt(distance)}. If \code{exp_decay}, the exponential
+decay distance is calculated. If \code{bartlett}, a triangular tent-shaped decay distance is returned.
+See details below.
+Other options still to be implemented.}
 
-\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{log_base} is TRUE.}
+\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{transform_dist = log}.}
 
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to distance before transforming it,
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
 range of values of distance.}
+
+\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life of the exponential decay function, in case
+\code{transform_dist = exp_decay}. The lambda exponent from the exponential funcion is defined as
+\code{lambda = log(2)/half_life}. By definition, t each distance interval equals to \code{half_life} from the
+source features, the magnitude of the exponential decay distance decreases by 1/2. This means that,
+for instance, at a distance of \code{4*half_life} to the nearest feature, the exponential decay distance
+has a magnitude of 1/16 ~ 0.06. This can be useful to define the Zone of Influence for exponential
+decay distances.}
+
+\item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr Parameters (\code{N_0}, \code{lambda}) for the exponential decay
+distance, if \code{transform_dist = exp_decay}. The value of \code{lambda} define here is used only if \code{half_life = NULL},
+otherwise the value of \code{half_life} is used to determine \code{lambda}.}
 
 \item{type_density}{\verb{[character(1)="Gauss"]\{"Gauss", "circle", "rectangle"\}} \cr
 Type of filter used to calculate density. See description for details.}
@@ -92,7 +109,7 @@ plot(dist_dens)
 
 # calculate exp_decay (the rest is equal)
 log_dist_dens <- calc_dist_dens(pts$rast, type_density = "Gauss", scale = scales,
-                                transform_dist = "exp_decay", exp_hl = 200,
+                                transform_dist = "exp_decay", half_life = 200,
                                 extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(log_dist_dens)
 

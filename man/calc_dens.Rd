@@ -30,7 +30,7 @@ maximum extent in x and y for the final output, in the format c(min,max). It is 
 a region of interest but consider the surroundings when calculating densities. The default is to
 keep the same extent of the input raster.}
 
-\item{`plotit}{\link{logical(1)=FALSE}` \cr Should the outputs be plotted along the calculation?}
+\item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
 }
 \value{
 A RasterBrick with the density of features for all scales selected.

@@ -1,5 +1,7 @@
 library(mobsim)
-library(raster)
+library(terra)
+library(dplyr)
+library(sf)
 
 set.seed(1234)
 
@@ -30,7 +32,7 @@ exp_d1 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_decay_parms = c(
 plot(exp_d1)
 # using half life
 half_life <- 1000 # intensity gets down to 1/16 = 0.06 for 4*half_life
-exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_hl = 1000)
+exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", half_life = 1000)
 plot(exp_d2)
 # buffer
 pts_shp <- pts$pts %>% 
@@ -42,7 +44,16 @@ pts_shp %>%
   plot(add = T)
 # 4000m
 pts_shp %>% 
-  sf::st_buffer(dist = 2000) %>% 
+  sf::st_buffer(dist = 4000) %>% 
   sf::st_union() %>% 
   plot(add = T)
 
+# bartlett distance, ZOI = 2000m
+bart_d <- calc_dist(pts$rast,
+                    transform_dist = "bartlett", bartlett_zoi = 2000)
+plot(bart_d)
+# buffer 2000m
+pts_shp %>% 
+  sf::st_buffer(dist = 2000) %>% 
+  sf::st_union() %>% 
+  plot(add = T)

@@ -21,18 +21,20 @@
 #' @return A `data.frame` with the (x,y) random coordinates.
 #' 
 #' @examples 
+#' library(sf)
+#' 
 #' pts <- set_points_sample(100)
 #' plot(pts)
-#' pts2 <- set_points_sample(100, method = "random")
+#' pts2 <- set_points_sample(100, type = "random")
 #' plot(pts2)
 #' 
-#' library(raster)
-#' x <- raster(system.file("external/test.grd", package="raster"))
+#' library(terra)
+#' library(stars)
+#' x <- rast(system.file("external/test.grd", package="raster"))
 #' pts3 <- set_points_sample(100, base_polygon = x)
 #' plot(pts3)
 #' 
 #' @export
-#' 
 set_points_sample <- function(n_features = 1000,
                               type = c("regular", "random")[1],
                               base_polygon = NULL,
@@ -47,7 +49,7 @@ set_points_sample <- function(n_features = 1000,
     
   } else {
     # Creates bbox around a raster
-    if(class(base_polygon) %in% paste0("Raster", c("Layer", "Stack", "Brick"))) {
+    if(class(base_polygon) %in% c(paste0("Raster", c("Layer", "Stack", "Brick")), "SpatRaster") ) {
       pol <- base_polygon %>% 
         sf::st_bbox() %>% 
         sf::st_as_sfc() 
