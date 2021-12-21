@@ -12,8 +12,8 @@ calc_dist(
   exp_decay_parms = c(1, 0.01),
   bartlett_zoi = NULL,
   dist_offset = 1,
-  extent_x_cut = bbox(points)[1, ],
-  extent_y_cut = bbox(points)[2, ],
+  extent_x_cut = terra::ext(points)[c(1, 2)],
+  extent_y_cut = terra::ext(points)[c(3, 4)],
   use_terra = TRUE,
   plotit = FALSE
 )
@@ -77,7 +77,7 @@ TO IMPROVE3: Add other possible transformations to distance.
 }
 \examples{
 library(mobsim)
-library(raster)
+library(terra)
 library(dplyr)
 library(sf)
 
@@ -88,7 +88,7 @@ ext <- 30000
 wd <- ext/20
 pts <- set_points(n_features = 1000, centers = 1,
                   width = wd, res = 100,
-                  extent_x = c(0, ext), extent_y = c(0, ext), use_terra = F)
+                  extent_x = c(0, ext), extent_y = c(0, ext))
 plot(pts$pts)
 plot(pts$rast)
 

@@ -56,8 +56,8 @@ calc_dist <- function(points,
                       exp_decay_parms = c(1, 0.01),
                       bartlett_zoi = NULL,
                       dist_offset = 1,
-                      extent_x_cut = bbox(points)[1,],
-                      extent_y_cut = bbox(points)[2,],
+                      extent_x_cut = terra::ext(points)[c(1,2)],
+                      extent_y_cut = terra::ext(points)[c(3,4)],
                       use_terra = TRUE,
                       plotit = FALSE) {
 
@@ -91,5 +91,8 @@ calc_dist <- function(points,
   names(dist_r) <- "distance"
   if(plotit) plot(dist_r)
 
-  terra::crop(dist_r, extent(c(extent_y_cut, extent_x_cut)))
+  if(use_terra)
+    terra::crop(dist_r, terra::ext(c(extent_x_cut, extent_y_cut)))
+  else
+    raster::crop(dist_r, raster::extent(c(extent_x_cut, extent_y_cut)))
 }
