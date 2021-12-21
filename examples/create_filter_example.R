@@ -41,6 +41,6 @@ neigh_r_bart3000 <- terra::focal(r, filt_bart3000, fun = "sum")
 
 # plot
 plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000), 
-     main = c("exp filter 3000m", "step filter 3000m"))
+     main = c("exp filter 3000m", "step filter 3000m", "Bartlett filter 3000m"))
 # plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))
 # plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))
