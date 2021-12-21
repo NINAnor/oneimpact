@@ -4,15 +4,18 @@
 #' a raster representing the distance from each pixel to the neareast feature.
 #' The output distance can be transformed (so far, with the options log-distance, sqrt-distance, 
 #' exponential decay distance, Bartlett distance).
+#' 
+#' Explain here better what is the log, sqrt, exp_decay, bartlett, and when a ZOI is defined.
 #'
-#' TO IMPROVE1: implement with `terra`.
+#' TO IMPROVE1: implement with `terra`. Seems Ok. WE SHOULD DETECT IF THE INPUT IS RASTER OR TERRA
+#' 
+#' TO IMPROVE2: define ZOI parameters, defined for exp decay given a certain ratio.
 #'
-#' TO IMPROVE2: do the same in communication with GRASS GIS.
+#' TO IMPROVE3: do the same in communication with GRASS GIS.
 #'
-#' TO IMPROVE3: Add other possible transformations to distance.
-#'
-#' @param points `[RasterLayer]` \cr Raster representing locations of features, with 1 where the features
-#' are located and NA elsewhere.
+#' @param points `[RasterLayer,SpatRaster]` \cr Raster representing locations of features, with 1 where the features
+#' are located and NA elsewhere. Can be a [RasterLayer] from [raster] package or a [SpatRaster] from
+#' [terra] package.
 #' @param transform_dist `[character(1)=NULL]{"log","sqrt", "exp_decay", "bartlett}` \cr 
 #' By default, NULL - distances are no transformed. If `log`, the distances are
 #' log-transformed. If `sqrt`, the output is `sqrt(distance)`. If `exp_decay`, the exponential
@@ -30,7 +33,7 @@
 #' @param exp_decay_parms `[numeric(2)=c(1,0.01)]` \cr Parameters (`N_0`, `lambda`) for the exponential decay 
 #' distance, if `transform_dist = exp_decay`. The value of `lambda` define here is used only if `half_life = NULL`,
 #' otherwise the value of `half_life` is used to determine `lambda`.
-#' @param bartlett `[numeric(1)=NULL]` \cr Zone of Influence (ZoI) of the Bartlett distance, if
+#' @param bartlett_zoi `[numeric(1)=NULL]` \cr Zone of Influence (ZoI) of the Bartlett distance, if
 #' `transform_dist = bartlett`. It corresponds to the distance beyonf which the distance is zero.
 #' @param dist_offset `[numeric(1)=1]` \cr Number to add to distance before transforming it,
 #' to avoid `-Inf`/`Inf` values (e.g. in the case of log). It should be a very small value compared to the
@@ -40,9 +43,9 @@
 #' keep the same extent of the input raster.
 #' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along the calculation?
 #'
-#' @returns A RasterLayer with the distance to the nearest feature. Depending on the choice of
-#' `transform_dist`, the output distance can be log- or sqrt-transformed, or one can choose to calculate
-#' the exponential decay or Bartlett decay distance. Other types of transformation
+#' @returns A `RasterLayer` (or `SpatRaster`, depending on the input) with the distance to the nearest feature. 
+#' Depending on the choice of `transform_dist`, the output distance can be log- or sqrt-transformed, or one can choose to calculate
+#' the exponential decay or Bartlett decay distance. Other types of transformation (e.g. Gaussian?)
 #' to be implemented in the future.
 #'
 #' @example examples/calc_dist_example.R
@@ -58,8 +61,15 @@ calc_dist <- function(points,
                       dist_offset = 1,
                       extent_x_cut = terra::ext(points)[c(1,2)],
                       extent_y_cut = terra::ext(points)[c(3,4)],
-                      use_terra = TRUE,
                       plotit = FALSE) {
+  
+  # check if the input is a terra or raster object
+  if(class(points) %in% c("SpatRaster")) {
+    use_terra <- TRUE
+  } else {
+    # we should check if it is raster again here
+    use_terra <- FALSE
+  }
 
   # distance
   dist_r <- terra::distance(points)
@@ -88,9 +98,11 @@ calc_dist <- function(points,
           } else
             stop("You should select an appropriate transformation method for distance.")
 
+  # rename distance layer
   names(dist_r) <- "distance"
   if(plotit) plot(dist_r)
 
+  # return cropped distance layer
   if(use_terra)
     terra::crop(dist_r, terra::ext(c(extent_x_cut, extent_y_cut)))
   else

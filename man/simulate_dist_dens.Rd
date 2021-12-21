@@ -51,12 +51,13 @@ Other options still to be implemented.}
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
 range of values of distance.}
 
-\item{type_density}{\verb{[character(1)="Gauss"]\{"Gauss", "circle", "rectangle"\}} \cr
-Type of filter used to calculate density. See description for details.}
-
 \item{scale}{\verb{[numeric(1)=100]} \cr Scale of the neighborhood analysis, used to calculate densities.
 It can be a single value of a vector of values, in which case several density maps (for each scale)
-are created.}
+are created. For \code{type = "circle"}, scale corresponds to the radius of the circle filter. For \code{type = "Gauss"},
+it corresponds to the standard deviation of the Gaussian distribution. If \code{type = "rectangle"}, it corresponds
+to the size of the side of a square filter. See \code{\link[terra:focalMat]{terra::focalMat()}} for more details.
+If \code{type = "mfilter"}, scale is not a numeric value but a matrix itself, defined by the user. See description
+in the details.}
 
 \item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectors representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max). The default is to

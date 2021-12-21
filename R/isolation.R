@@ -40,7 +40,7 @@ isolation <- function(x, n_rand = 100, ext = c(0, 1), lonlat = FALSE) {
   # create random points
   rand <- data.frame(x = runif(n_rand, ext[1], ext[2]), y = runif(n_rand, ext[1], ext[2]))
   # calc dist
-  dists  <- pointDistance(x, rand, lonlat = lonlat)
+  dists  <- raster::pointDistance(x, rand, lonlat = lonlat)
   # min dist (nearest neighbor)
   apply(dists, 2, min)
 }

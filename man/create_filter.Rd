@@ -52,6 +52,13 @@ functions to be used in neighborhood analyses for rasters. It is possible
 to export these matrices as text files, for use with external softwares
 such as the r.mfilter module within GRASS GIS.
 }
+\details{
+\subsection{IMPLEMENT BARTLETT}{
+}
+
+\subsection{POLSSIBLY: IMPLEMENT IN THE SAME WAY AS FOCAL, WITH INPUT RASTER AS ARGUMENT, POSSIBLY}{
+}
+}
 \examples{
 library(terra)
 library(dplyr)
@@ -80,7 +87,7 @@ plot(c(r, neigh_r_exp1000, neigh_r_exp3000),
 # create step filter
 filt_step3000 <- create_filter(zoi = 3000, method = "step",
                                res = res(r)[1], normalize = T)
-# use exponential filter
+# use step filter
 neigh_r_step3000 <- terra::focal(r, filt_step3000, fun = "sum")
 
 # plot
@@ -88,5 +95,15 @@ plot(c(neigh_r_exp3000, neigh_r_step3000),
      main = c("exp filter 3000m", "step filter 3000m"))
 # plot(app(c(neigh_r_exp3000, neigh_r_step3000), "diff"))
 
+# create bartlett filter
+filt_bart3000 <- create_filter(zoi = 3000, method = "bartlett",
+                               res = res(r)[1], normalize = T)
+# use bartlett filter
+neigh_r_bart3000 <- terra::focal(r, filt_bart3000, fun = "sum")
 
+# plot
+plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000), 
+     main = c("exp filter 3000m", "step filter 3000m"))
+# plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))
+# plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))
 }

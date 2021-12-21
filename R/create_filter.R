@@ -5,6 +5,9 @@
 #' to export these matrices as text files, for use with external softwares
 #' such as the r.mfilter module within GRASS GIS.
 #' 
+#' #### IMPLEMENT BARTLETT
+#' #### POLSSIBLY: IMPLEMENT IN THE SAME WAY AS FOCAL, WITH INPUT RASTER AS ARGUMENT, POSSIBLY
+#' 
 #' @inheritParams set_filt_exp_decay
 #' 
 #' @return A matrix with the weight values.
@@ -35,6 +38,10 @@ create_filter <- function(zoi = NULL,
   } else {
     if(method == "step") {
       parms <- set_filt_step(zoi = zoi, res = res)
+    } else {
+      if(method == "bartlett") {
+        parms <- set_filt_bartlett(zoi = zoi, res = res)
+      }
     }
   }
   
@@ -56,6 +63,10 @@ create_filter <- function(zoi = NULL,
   } else {
     if(method == "step") {
       dist_mat <- 1 * (dist_mat <= radius_pix)
+    } else {
+      if(method == "bartlett") {
+        dist_mat <- pmax((1 + parms$beta * dist_mat), 0)
+      }
     }
   }
   # image(dist_mat)
@@ -123,7 +134,7 @@ set_filt_exp_decay <- function(zoi = NULL,
   
   # define half life in terms on number of pixels
   half_life <- half_life/res
-  # difine lambda
+  # define lambda
   lambda <- log(2)/half_life
   # tmp <- exp(-lambda * c(0:round(half_life*6))/half_life)
   # define radius and size (diameter)
@@ -141,6 +152,17 @@ set_filt_step <- function(zoi, res){
   size_pix <- 2*radius_pix + 1
   
   return(list(zoi = zoi, radius_pix = radius_pix, size_pix = size_pix, lambda = NULL))
+}
+
+set_filt_bartlett <- function(zoi, res){
+
+  # define radius and size (diameter)
+  radius_pix <- floor(zoi/res)
+  size_pix <- 2*radius_pix + 1
+  # define beta (beta = -b/a or beta = -1/zoi)
+  beta <- -1/radius_pix
+
+  return(list(zoi = zoi, radius_pix = radius_pix, size_pix = size_pix, beta = beta))
 }
 
 # ed(100)

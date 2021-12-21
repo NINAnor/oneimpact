@@ -6,55 +6,75 @@
 \usage{
 calc_dens(
   points,
-  type_density = c("Gauss", "circle", "rectangle")[1],
+  type = c("circle", "Gauss", "rectangle", "mfilter")[1],
   scale = 100,
-  extent_x_cut = bbox(points)[1, ],
-  extent_y_cut = bbox(points)[2, ],
+  extent_x_cut = terra::ext(points)[c(1, 2)],
+  extent_y_cut = terra::ext(points)[c(3, 4)],
+  na.rm = FALSE,
   plotit = FALSE,
   ...
 )
 }
 \arguments{
-\item{points}{\verb{[RasterLayer]} \cr Raster representing locations of features, with 1 where the features
-are localted and NA elsewhere.}
+\item{points}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features, with 1 where the features
+are located and NA elsewhere. Can be a \link{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
+\link{terra} package.}
 
-\item{type_density}{\verb{[character(1)="Gauss"]\{"Gauss", "circle", "rectangle"\}} \cr
+\item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "mfilter"\}} \cr
 Type of filter used to calculate density. See description for details.}
 
 \item{scale}{\verb{[numeric(1)=100]} \cr Scale of the neighborhood analysis, used to calculate densities.
 It can be a single value of a vector of values, in which case several density maps (for each scale)
-are created.}
+are created. For \code{type = "circle"}, scale corresponds to the radius of the circle filter. For \code{type = "Gauss"},
+it corresponds to the standard deviation of the Gaussian distribution. If \code{type = "rectangle"}, it corresponds
+to the size of the side of a square filter. See \code{\link[terra:focalMat]{terra::focalMat()}} for more details.
+If \code{type = "mfilter"}, scale is not a numeric value but a matrix itself, defined by the user. See description
+in the details.}
 
 \item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max). It is intended to keep only
 a region of interest but consider the surroundings when calculating densities. The default is to
 keep the same extent of the input raster.}
 
+\item{na.rm}{\verb{[logical(1)=FALSE]} \cr Should missing values be removed for filtering calculations?
+Option for the neighborhood analysis, performed through the \code{\link[terra:focal]{terra::focal()}} function.}
+
 \item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
+
+\item{...}{Other arguments to be used within \code{\link[terra:focal]{terra::focal()}}.}
 }
 \value{
-A RasterBrick with the density of features for all scales selected.
+A \link{RasterLayer} or \link{SpatRaster} (according to the input \code{points} map) with the density of features.
+Alternatively, a \code{RasterBrick}
+or multi-layer \code{SpatRaster}, if multile \code{scale} values are given, with the density of features for all scales selected.
 }
 \description{
 This function takes in a raster with locations of infrastructure and calculates
 a raster (or set of rasters, in case there is more the one value for \code{scale})
 representing the density of features in space (through a spatial filter/neighborhood analysis).
-The neighborhood analysis is done with the \code{\link[raster:focal]{raster::focal()}} function.
+The neighborhood analysis is done with the \code{\link[terra:focal]{terra::focal()}} function.
 }
 \details{
-The neighborhood analysis can be done with different methods. The default is a Gaussian filter
-(\code{type_density = "Gauss"}), in which case scale corresponds to the sigma paramater of the Gaussian
-filter. If \code{type_density = "circle"} or \code{type_density = "rectangle"}, the scale corresponds to the
-radius of the circle or width of the rectangle, respectively. See \code{\link[raster:focalWeight]{raster::focalWeight()}} for more
+The neighborhood analysis can be done with different methods. The default is a circular filter
+(\code{type = "circle"}), in which case the parameter \code{scale} corresponds to the radius of the circle
+centered on the central pixel. Other possibilities are a Gaussian filter
+(\code{type = "Gauss"}), in which case scale corresponds to the sigma parameter of a Gaussian
+functionl and \code{type = "rectangle"}, in which case the scale corresponds to the
+size size of the rectangle. For all these methods, these parameters feed the function
+\code{\link[terra:focalMat]{terra::focalMat()}} to create the input weight matrix. See \code{\link[terra:focalMat]{terra::focalMat()}} for more
 details.
 
-TO IMPROVE1: implement with \code{terra}.
+If one wants to use their own filter or weight matrix, it is possible to define \code{type = "mfilter"}
+and provide a matrix to the parameter \code{scale} instead, such as one created through the
+\code{\link[terra:focalMat]{terra::focalMat()}} or the \code{\link[=create_filter]{create_filter()}} functions.
+
+TO IMPROVE1: implement with \code{terra}. WE SHOULD DETECT IF THE INPUT IS RASTER OR TERRA
 
 TO IMPROVE2: do the same in communication with GRASS GIS.
 }
 \examples{
 library(mobsim)
-library(raster)
+library(terra)
 
 set.seed(1234)
 
@@ -64,18 +84,30 @@ wd <- ext/20
 pts <- set_points(n_features = 1000, centers = 1,
                   width = wd, res = 100,
                   extent_x = c(0, ext), extent_y = c(0, ext),
-                  buffer_around = 10000)
+                  buffer_around = 10000)#, use_terra = F)
 plot(pts$pts)
 plot(pts$rast)
 
-# calculate distance and densities considering only the initial extent
+# calculate densities for multiple scales, 
+# considering only the initial extent, for a Gaussian filter
 scales <- c(250, 500, 1000, 2500, 5000)/2
-dens <- calc_dens(pts$rast, type_density = "Gauss", scale = scales,
+dens <- calc_dens(pts$rast, type = "Gauss", scale = scales,
                   extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(dens)
 
-# calculate log_dist (the rest is equal)
-dens_circle <- calc_dens(pts$rast, type_density = "circle", scale = 2*scales,
+# calculate densities for multiple scales, 
+# using a circle neighborhood
+dens_circle <- calc_dens(pts$rast, type = "circle", scale = scales,
                          extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(dens_circle)
+
+# calculate densities for multiple scales, 
+# using a user-defined filter (exp_decay)
+my_filter <- create_filter(zoi = 1000, res = 100, method = "exp_decay")
+dens_exp <- calc_dens(pts$rast, type = "mfilter", scale = my_filter,
+                         extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
+plot(c(dens[[3]], dens_circle[[3]], dens_exp),
+     main = c("Gaussian filter", "Circle neighborhood", "Exponential decay filter"))
+
+     
 }

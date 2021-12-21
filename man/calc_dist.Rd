@@ -14,13 +14,13 @@ calc_dist(
   dist_offset = 1,
   extent_x_cut = terra::ext(points)[c(1, 2)],
   extent_y_cut = terra::ext(points)[c(3, 4)],
-  use_terra = TRUE,
   plotit = FALSE
 )
 }
 \arguments{
-\item{points}{\verb{[RasterLayer]} \cr Raster representing locations of features, with 1 where the features
-are located and NA elsewhere.}
+\item{points}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features, with 1 where the features
+are located and NA elsewhere. Can be a \link{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
+\link{terra} package.}
 
 \item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "bartlett\}} \cr
 By default, NULL - distances are no transformed. If \code{log}, the distances are
@@ -43,6 +43,9 @@ decay distances.}
 distance, if \code{transform_dist = exp_decay}. The value of \code{lambda} define here is used only if \code{half_life = NULL},
 otherwise the value of \code{half_life} is used to determine \code{lambda}.}
 
+\item{bartlett_zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) of the Bartlett distance, if
+\code{transform_dist = bartlett}. It corresponds to the distance beyonf which the distance is zero.}
+
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to distance before transforming it,
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
 range of values of distance.}
@@ -52,14 +55,11 @@ maximum extent in x and y for the final output, in the format c(min,max). The de
 keep the same extent of the input raster.}
 
 \item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
-
-\item{bartlett}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) of the Bartlett distance, if
-\code{transform_dist = bartlett}. It corresponds to the distance beyonf which the distance is zero.}
 }
 \value{
-A RasterLayer with the distance to the nearest feature. Depending on the choice of
-\code{transform_dist}, the output distance can be log- or sqrt-transformed, or one can choose to calculate
-the exponential decay or Bartlett decay distance. Other types of transformation
+A \code{RasterLayer} (or \code{SpatRaster}, depending on the input) with the distance to the nearest feature.
+Depending on the choice of \code{transform_dist}, the output distance can be log- or sqrt-transformed, or one can choose to calculate
+the exponential decay or Bartlett decay distance. Other types of transformation (e.g. Gaussian?)
 to be implemented in the future.
 }
 \description{
@@ -69,11 +69,13 @@ The output distance can be transformed (so far, with the options log-distance, s
 exponential decay distance, Bartlett distance).
 }
 \details{
-TO IMPROVE1: implement with \code{terra}.
+Explain here better what is the log, sqrt, exp_decay, bartlett, and when a ZOI is defined.
 
-TO IMPROVE2: do the same in communication with GRASS GIS.
+TO IMPROVE1: implement with \code{terra}. Seems Ok. WE SHOULD DETECT IF THE INPUT IS RASTER OR TERRA
 
-TO IMPROVE3: Add other possible transformations to distance.
+TO IMPROVE2: define ZOI parameters, defined for exp decay given a certain ratio.
+
+TO IMPROVE3: do the same in communication with GRASS GIS.
 }
 \examples{
 library(mobsim)

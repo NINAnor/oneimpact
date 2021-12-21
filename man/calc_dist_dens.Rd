@@ -21,8 +21,9 @@ calc_dist_dens(
 )
 }
 \arguments{
-\item{points}{\verb{[RasterLayer]} \cr Raster representing locations of features, with 1 where the features
-are located and NA elsewhere.}
+\item{points}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features, with 1 where the features
+are located and NA elsewhere. Can be a \link{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
+\link{terra} package.}
 
 \item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "bartlett\}} \cr
 By default, NULL - distances are no transformed. If \code{log}, the distances are
@@ -49,18 +50,24 @@ decay distances.}
 distance, if \code{transform_dist = exp_decay}. The value of \code{lambda} define here is used only if \code{half_life = NULL},
 otherwise the value of \code{half_life} is used to determine \code{lambda}.}
 
-\item{type_density}{\verb{[character(1)="Gauss"]\{"Gauss", "circle", "rectangle"\}} \cr
-Type of filter used to calculate density. See description for details.}
+\item{bartlett_zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) of the Bartlett distance, if
+\code{transform_dist = bartlett}. It corresponds to the distance beyonf which the distance is zero.}
 
 \item{scale}{\verb{[numeric(1)=100]} \cr Scale of the neighborhood analysis, used to calculate densities.
 It can be a single value of a vector of values, in which case several density maps (for each scale)
-are created.}
+are created. For \code{type = "circle"}, scale corresponds to the radius of the circle filter. For \code{type = "Gauss"},
+it corresponds to the standard deviation of the Gaussian distribution. If \code{type = "rectangle"}, it corresponds
+to the size of the side of a square filter. See \code{\link[terra:focalMat]{terra::focalMat()}} for more details.
+If \code{type = "mfilter"}, scale is not a numeric value but a matrix itself, defined by the user. See description
+in the details.}
 
 \item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectors representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max). The default is to
 keep the same extent of the input raster.}
 
 \item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
+
+\item{...}{Other arguments to be used within \code{\link[terra:focal]{terra::focal()}}.}
 }
 \value{
 A RasterBrick with de distance to the nearest feature and the densities for all scales selected.
