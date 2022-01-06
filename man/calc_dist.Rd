@@ -5,20 +5,21 @@
 \title{Calculate distance from the nearest feature}
 \usage{
 calc_dist(
-  points,
+  x,
   transform_dist = NULL,
+  zoi = NULL,
   log_base = exp(1),
+  zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
-  bartlett_zoi = NULL,
   dist_offset = 1,
-  extent_x_cut = terra::ext(points)[c(1, 2)],
-  extent_y_cut = terra::ext(points)[c(3, 4)],
+  extent_x_cut = terra::ext(x)[c(1, 2)],
+  extent_y_cut = terra::ext(x)[c(3, 4)],
   plotit = FALSE
 )
 }
 \arguments{
-\item{points}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features, with 1 where the features
+\item{x}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features, with 1 where the features
 are located and NA elsewhere. Can be a \link{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
 \link{terra} package.}
 
@@ -29,7 +30,22 @@ decay distance is calculated. If \code{bartlett}, a triangular tent-shaped decay
 See details below.
 Other options still to be implemented.}
 
+\item{zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI), in meters. The ZoI is distance or scale up to
+which we consider there is effect of an infrastructure or variable. It is considered only when
+\code{transform_dist = "bartlett"} or \code{transform_dist = "exp_decay"}.
+For the Bartlett distance, it corresponds to the distance beyond which the distance is zero.
+For the exponential decay distance, the ZoI is used to define the half_life of the exponential decay
+function, based on the parameter \code{zoi_hl_ratio}, that defines the ratio between the ZoI and the half life.
+For instance, if the \code{zoi = 4000} m and \code{zoi_hl_ratio = 4}, the ZoI corresponds to the distance at which
+the exponential decay decreases to \code{0.5**4 = 0.0625}. In such a case, the half life is defined as
+\code{half_life = 1000}.}
+
 \item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{transform_dist = log}.}
+
+\item{zoi_hl_ratio}{\verb{[numeric(1)=6]} \cr Ratio between the ZoI and the half life of the exponential decay
+distance function. It is used to define the ZoI for the exponential decay function. For instance, if
+\code{half_life = 1000} and \code{zoi_hl_ratio = 4}, the ZoI will be 4000 m (when the exponential decay decrease to
+\code{0.5**4 = 0.0625}.}
 
 \item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life of the exponential decay function, in case
 \code{transform_dist = exp_decay}. The lambda exponent from the exponential funcion is defined as
@@ -42,9 +58,6 @@ decay distances.}
 \item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr Parameters (\code{N_0}, \code{lambda}) for the exponential decay
 distance, if \code{transform_dist = exp_decay}. The value of \code{lambda} define here is used only if \code{half_life = NULL},
 otherwise the value of \code{half_life} is used to determine \code{lambda}.}
-
-\item{bartlett_zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) of the Bartlett distance, if
-\code{transform_dist = bartlett}. It corresponds to the distance beyonf which the distance is zero.}
 
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to distance before transforming it,
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
@@ -107,34 +120,79 @@ plot(log_d)
 sqrt_d <- calc_dist(pts$rast, transform_dist = "sqrt")
 plot(sqrt_d)
 
-# calculate exponential decay distance
+# calculate exponential decay distance using exp_decay_parms parameter
 exp_d1 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_decay_parms = c(1, 0.001))
 plot(exp_d1)
-# using half life
-half_life <- 1000 # intensity gets down to 1/16 = 0.06 for 4*half_life
-exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", half_life = 1000)
+
+# calculate exponential decay distance using half life parameter
+# if half_life = 250 m and zoi_hl_ratio = 4, zoi is 1000 m
+half_life2 <- 250 # intensity gets down to 1/16 = 0.06 for 4*half_life
+exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", half_life = half_life2)
 plot(exp_d2)
 # buffer
 pts_shp <- pts$pts \%>\% 
   sf::st_as_sf(coords = c(1,2))
-# 1000m
+# half_life = 250m
+pts_shp \%>\% 
+  sf::st_buffer(dist = 250) \%>\% 
+  sf::st_union() \%>\% 
+  plot(add = T, border = "red")
+# zoi = 1000m
 pts_shp \%>\% 
   sf::st_buffer(dist = 1000) \%>\% 
   sf::st_union() \%>\% 
-  plot(add = T)
-# 4000m
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
+
+# calculate exponential decay distance using zoi parameter
+zoi3 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
+exp_d3 <- calc_dist(pts$rast, transform_dist = "exp_decay", zoi = zoi3)
+plot(exp_d3)
+# buffer
+pts_shp <- pts$pts \%>\% 
+  sf::st_as_sf(coords = c(1,2))
+# half_life = 1000m
+pts_shp \%>\% 
+  sf::st_buffer(dist = 1000) \%>\% 
+  sf::st_union() \%>\% 
+  plot(add = T, border = "red")
+# zoi = 4000m
 pts_shp \%>\% 
   sf::st_buffer(dist = 4000) \%>\% 
   sf::st_union() \%>\% 
-  plot(add = T)
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
+
+# one can also change the definition of zoi, to zoi = half_life = 6, for instance
+# when the intensity decreases to 1/64 = 0.016
+zoi4 <- 4000 
+zoi_hl_ratio4 = 6
+exp_d4 <- calc_dist(pts$rast, transform_dist = "exp_decay", zoi = zoi4, 
+                    zoi_hl_ratio = zoi_hl_ratio4)
+plot(exp_d4)
+# buffer
+pts_shp <- pts$pts \%>\% 
+  sf::st_as_sf(coords = c(1,2))
+# 667m (4000/6)
+pts_shp \%>\% 
+  sf::st_buffer(dist = 667) \%>\% 
+  sf::st_union() \%>\% 
+  plot(add = T, border = "red")
+# 1000m
+pts_shp \%>\% 
+  sf::st_buffer(dist = 4000) \%>\% 
+  sf::st_union() \%>\% 
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
 # bartlett distance, ZOI = 2000m
 bart_d <- calc_dist(pts$rast,
-                    transform_dist = "bartlett", bartlett_zoi = 2000)
+                    transform_dist = "bartlett", zoi = 2000)
 plot(bart_d)
 # buffer 2000m
 pts_shp \%>\% 
   sf::st_buffer(dist = 2000) \%>\% 
   sf::st_union() \%>\% 
-  plot(add = T)
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
 }

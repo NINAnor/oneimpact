@@ -5,8 +5,9 @@
 #' to export these matrices as text files, for use with external softwares
 #' such as the r.mfilter module within GRASS GIS.
 #' 
-#' #### IMPLEMENT BARTLETT
+#' #### COMPARE WITH smoothie::kernel2dsmooth and smoothie::kernel2dmeitsjer, maybe wrap some options here
 #' #### POLSSIBLY: IMPLEMENT IN THE SAME WAY AS FOCAL, WITH INPUT RASTER AS ARGUMENT, POSSIBLY
+#' #### check: if the outer ring of the matrix is all zero, remove it
 #' 
 #' @inheritParams set_filt_exp_decay
 #' 
@@ -127,10 +128,10 @@ set_filt_exp_decay <- function(zoi = NULL,
                                max_dist = 50000){
   
   # define zoi or half life, depending on which is given as input
-  if(is.null(half_life)) 
-    half_life <- zoi/zoi_hl_ratio
-  else
+  if(is.null(zoi)) 
     zoi <- half_life * zoi_hl_ratio
+  else
+    half_life <- zoi/zoi_hl_ratio
   
   # define half life in terms on number of pixels
   half_life <- half_life/res

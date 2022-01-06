@@ -22,6 +22,7 @@ plot(dens)
 
 # calculate densities for multiple scales, 
 # using a circle neighborhood
+scales <- c(250, 500, 1000, 2500, 5000)
 dens_circle <- calc_dens(pts$rast, type = "circle", scale = scales,
                          extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(dens_circle)

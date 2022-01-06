@@ -36,8 +36,8 @@
 #' See `Details` for more information.
 #' @param centers `[integer(1)=1]` \cr Number of centers around which the features will be placed.
 #' Used only if `method = "mobsim"`.
-#' @param width `[numeric(1)=0.05]` \cr Radius of the "patches" of features, around the "patch" centers.
-#' Used only if `method = "mobsim"`.
+#' @param width `[numeric(1)=0.05]` \cr Mean distance between each of the features in a cluster 
+#' and the center of the cluster. Used only if `method = "mobsim"`.
 #' @param base_raster `[RasterLayer=NULL]` \cr Base raster to define weights for creating the random points.
 #' Used only if `method = "raster"`.
 #' @param nlmr_function `[character(1)="nlm_mpd"]` \cr Name of the function from NLMR package used to create

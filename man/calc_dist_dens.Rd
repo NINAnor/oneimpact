@@ -50,9 +50,6 @@ decay distances.}
 distance, if \code{transform_dist = exp_decay}. The value of \code{lambda} define here is used only if \code{half_life = NULL},
 otherwise the value of \code{half_life} is used to determine \code{lambda}.}
 
-\item{bartlett_zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) of the Bartlett distance, if
-\code{transform_dist = bartlett}. It corresponds to the distance beyonf which the distance is zero.}
-
 \item{scale}{\verb{[numeric(1)=100]} \cr Scale of the neighborhood analysis, used to calculate densities.
 It can be a single value of a vector of values, in which case several density maps (for each scale)
 are created. For \code{type = "circle"}, scale corresponds to the radius of the circle filter. For \code{type = "Gauss"},

@@ -27,33 +27,78 @@ plot(log_d)
 sqrt_d <- calc_dist(pts$rast, transform_dist = "sqrt")
 plot(sqrt_d)
 
-# calculate exponential decay distance
+# calculate exponential decay distance using exp_decay_parms parameter
 exp_d1 <- calc_dist(pts$rast, transform_dist = "exp_decay", exp_decay_parms = c(1, 0.001))
 plot(exp_d1)
-# using half life
-half_life <- 1000 # intensity gets down to 1/16 = 0.06 for 4*half_life
-exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", half_life = 1000)
+
+# calculate exponential decay distance using half life parameter
+# if half_life = 250 m and zoi_hl_ratio = 4, zoi is 1000 m
+half_life2 <- 250 # intensity gets down to 1/16 = 0.06 for 4*half_life
+exp_d2 <- calc_dist(pts$rast, transform_dist = "exp_decay", half_life = half_life2)
 plot(exp_d2)
 # buffer
 pts_shp <- pts$pts %>% 
   sf::st_as_sf(coords = c(1,2))
-# 1000m
+# half_life = 250m
+pts_shp %>% 
+  sf::st_buffer(dist = 250) %>% 
+  sf::st_union() %>% 
+  plot(add = T, border = "red")
+# zoi = 1000m
 pts_shp %>% 
   sf::st_buffer(dist = 1000) %>% 
   sf::st_union() %>% 
-  plot(add = T)
-# 4000m
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
+
+# calculate exponential decay distance using zoi parameter
+zoi3 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
+exp_d3 <- calc_dist(pts$rast, transform_dist = "exp_decay", zoi = zoi3)
+plot(exp_d3)
+# buffer
+pts_shp <- pts$pts %>% 
+  sf::st_as_sf(coords = c(1,2))
+# half_life = 1000m
+pts_shp %>% 
+  sf::st_buffer(dist = 1000) %>% 
+  sf::st_union() %>% 
+  plot(add = T, border = "red")
+# zoi = 4000m
 pts_shp %>% 
   sf::st_buffer(dist = 4000) %>% 
   sf::st_union() %>% 
-  plot(add = T)
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
+
+# one can also change the definition of zoi, to zoi = half_life = 6, for instance
+# when the intensity decreases to 1/64 = 0.016
+zoi4 <- 4000 
+zoi_hl_ratio4 = 6
+exp_d4 <- calc_dist(pts$rast, transform_dist = "exp_decay", zoi = zoi4, 
+                    zoi_hl_ratio = zoi_hl_ratio4)
+plot(exp_d4)
+# buffer
+pts_shp <- pts$pts %>% 
+  sf::st_as_sf(coords = c(1,2))
+# 667m (4000/6)
+pts_shp %>% 
+  sf::st_buffer(dist = 667) %>% 
+  sf::st_union() %>% 
+  plot(add = T, border = "red")
+# 1000m
+pts_shp %>% 
+  sf::st_buffer(dist = 4000) %>% 
+  sf::st_union() %>% 
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
 # bartlett distance, ZOI = 2000m
 bart_d <- calc_dist(pts$rast,
-                    transform_dist = "bartlett", bartlett_zoi = 2000)
+                    transform_dist = "bartlett", zoi = 2000)
 plot(bart_d)
 # buffer 2000m
 pts_shp %>% 
   sf::st_buffer(dist = 2000) %>% 
   sf::st_union() %>% 
-  plot(add = T)
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)

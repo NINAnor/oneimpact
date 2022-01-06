@@ -35,8 +35,8 @@ See \code{Details} for more information.}
 \item{centers}{\verb{[integer(1)=1]} \cr Number of centers around which the features will be placed.
 Used only if \code{method = "mobsim"}.}
 
-\item{width}{\verb{[numeric(1)=0.05]} \cr Radius of the "patches" of features, around the "patch" centers.
-Used only if \code{method = "mobsim"}.}
+\item{width}{\verb{[numeric(1)=0.05]} \cr Mean distance between each of the features in a cluster
+and the center of the cluster. Used only if \code{method = "mobsim"}.}
 
 \item{base_raster}{\verb{[RasterLayer=NULL]} \cr Base raster to define weights for creating the random points.
 Used only if \code{method = "raster"}.}
