@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_dist.R
 \name{calc_dist}
 \alias{calc_dist}
-\title{Calculate distance from the nearest feature}
+\title{Calculate influence from the nearest feature}
 \usage{
 calc_dist(
   x,

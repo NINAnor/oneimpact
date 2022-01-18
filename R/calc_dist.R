@@ -1,4 +1,4 @@
-#' Calculate distance from the nearest feature
+#' Calculate influence from the nearest feature
 #'
 #' This function takes in a raster with locations of infrastructure and calculates
 #' a raster representing the distance from each pixel to the neareast feature.
@@ -117,7 +117,8 @@ calc_dist <- function(x,
           if(transform_dist == "bartlett") {
             dist_r <- (1 - (1/zoi)*dist_r)
             zero <- dist_r
-            values(zero) <- 0
+            size_landscape <- prod(dim(zero)[c(1:2)])
+            values(zero) <- rep(0, size_landscape)
             dist_zero_stack <- c(dist_r, zero)
             
             if(use_terra) {
