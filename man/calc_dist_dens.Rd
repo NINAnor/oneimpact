@@ -20,52 +20,6 @@ calc_dist_dens(
   ...
 )
 }
-\arguments{
-\item{points}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features, with 1 where the features
-are located and NA elsewhere. Can be a \link{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
-\link{terra} package.}
-
-\item{transform_dist}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "bartlett\}} \cr
-By default, NULL - distances are no transformed. If \code{log}, the distances are
-log-transformed. If \code{sqrt}, the output is \code{sqrt(distance)}. If \code{exp_decay}, the exponential
-decay distance is calculated. If \code{bartlett}, a triangular tent-shaped decay distance is returned.
-See details below.
-Other options still to be implemented.}
-
-\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{transform_dist = log}.}
-
-\item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to distance before transforming it,
-to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
-range of values of distance.}
-
-\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life of the exponential decay function, in case
-\code{transform_dist = exp_decay}. The lambda exponent from the exponential funcion is defined as
-\code{lambda = log(2)/half_life}. By definition, t each distance interval equals to \code{half_life} from the
-source features, the magnitude of the exponential decay distance decreases by 1/2. This means that,
-for instance, at a distance of \code{4*half_life} to the nearest feature, the exponential decay distance
-has a magnitude of 1/16 ~ 0.06. This can be useful to define the Zone of Influence for exponential
-decay distances.}
-
-\item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr Parameters (\code{N_0}, \code{lambda}) for the exponential decay
-distance, if \code{transform_dist = exp_decay}. The value of \code{lambda} define here is used only if \code{half_life = NULL},
-otherwise the value of \code{half_life} is used to determine \code{lambda}.}
-
-\item{scale}{\verb{[numeric(1)=100]} \cr Scale of the neighborhood analysis, used to calculate densities.
-It can be a single value of a vector of values, in which case several density maps (for each scale)
-are created. For \code{type = "circle"}, scale corresponds to the radius of the circle filter. For \code{type = "Gauss"},
-it corresponds to the standard deviation of the Gaussian distribution. If \code{type = "rectangle"}, it corresponds
-to the size of the side of a square filter. See \code{\link[terra:focalMat]{terra::focalMat()}} for more details.
-If \code{type = "mfilter"}, scale is not a numeric value but a matrix itself, defined by the user. See description
-in the details.}
-
-\item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectors representing the minimum and
-maximum extent in x and y for the final output, in the format c(min,max). The default is to
-keep the same extent of the input raster.}
-
-\item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
-
-\item{...}{Other arguments to be used within \code{\link[terra:focal]{terra::focal()}}.}
-}
 \value{
 A RasterBrick with de distance to the nearest feature and the densities for all scales selected.
 }
