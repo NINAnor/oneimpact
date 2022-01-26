@@ -176,6 +176,7 @@ calc_influence_nearest <- function(
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
+  hnorm_decay_parms = c(1, 20),
   dist_offset = 1,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
@@ -367,7 +368,7 @@ calc_influence_nearest_GRASS <- function(
   ...) {
   
   # check if the transformation is valid
-  possible_transformations <- c("log", "sqrt", "exp_decay", "bartlett")
+  possible_transformations <- c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm")
   if(!is.null(transform))
     if(!(transform %in% possible_transformations))
       stop("You should select an appropriate transformation method for distance.")

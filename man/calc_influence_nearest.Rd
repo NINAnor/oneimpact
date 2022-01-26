@@ -13,6 +13,7 @@ calc_influence_nearest(
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
+  hnorm_decay_parms = c(1, 20),
   dist_offset = 1,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
@@ -107,6 +108,12 @@ influence, if \code{transform = exp_decay}. The value of \code{lambda} defined h
 By default, \code{N_0} is defined as 1, which means the influence is 1 where the infrastructure feature
 is located, and it decreases as the Euclidean distance from it increases.}
 
+\item{hnorm_decay_parms}{\verb{[numeric(2)=c(1,20)]} \cr Parameters (\code{N_0}, \code{sigma}) for the half-normal decay
+influence, if \code{transform = Gauss} or \code{transform = half_normal}. The value of \code{sigme} defined here is used
+to define the decay rate \code{lambda}only if \code{zoi = NULL} and \code{half_life = NULL}, otherwise one of these
+parameters is used to determine \code{lambda}. By default, \code{N_0} is defined as 1, which means the influence is 1
+where the infrastructure feature is located, and it decreases as the Euclidean distance from it increases.}
+
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to the Euclidean distance before transforming it,
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
 range of values of Euclidean distance, not to influence any further analyses.}
@@ -142,12 +149,6 @@ These parameters is ignored when the calculations are performed in R (if \code{w
 
 \item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}} when the calculations are performed in R.
 No additional parameters implemented for computation in GRASS GIS.}
-
-\item{hnorm_decay_parms}{\verb{[numeric(2)=c(1,20)]} \cr Parameters (\code{N_0}, \code{sigma}) for the half-normal decay
-influence, if \code{transform = Gauss} or \code{transform = half_normal}. The value of \code{sigme} defined here is used
-to define the decay rate \code{lambda}only if \code{zoi = NULL} and \code{half_life = NULL}, otherwise one of these
-parameters is used to determine \code{lambda}. By default, \code{N_0} is defined as 1, which means the influence is 1
-where the infrastructure feature is located, and it decreases as the Euclidean distance from it increases.}
 }
 \value{
 If the calculations are performed in R (if \code{where = "R"}), the function returns a \code{RasterLayer}
