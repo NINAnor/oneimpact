@@ -8,14 +8,21 @@ calc_influence_nearest(
   x,
   zoi = NULL,
   transform = NULL,
+  where = c("R", "GRASS")[1],
   log_base = exp(1),
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   dist_offset = 1,
-  extent_x_cut = terra::ext(x)[c(1, 2)],
-  extent_y_cut = terra::ext(x)[c(3, 4)],
+  extent_x_cut = NULL,
+  extent_y_cut = NULL,
   plotit = FALSE,
+  output_map_name = NULL,
+  metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
+  remove_intermediate = TRUE,
+  print_expression = TRUE,
+  quiet = TRUE,
+  overwrite = FALSE,
   ...
 )
 }
@@ -53,15 +60,25 @@ feature.
 \code{N_0 * exp(-lambda * euclidean_distance)}. \code{N_0} and \code{lambda} are parameters to be defined.
 The decayment rate lambda might be defined in terms of the exponential half-life or
 a definition of zone of influence (ZoI).
+\item If \code{Gauss} or \code{half_norm}, the influence measure is the half-normal decay distance: \cr
+\code{N_0 * exp(-lambda * (euclidean_distance^2))}. \code{N_0} and \code{lambda} are parameters to be defined.
+The decayment rate lambda might be defined in terms of the Gaussian half-life or
+a definition of zone of influence (ZoI), or yet by the standard deviation (sigma) of the
+half-normal distribution (\code{lambda = 0.5/(sigma^2)}).
 \item If \code{bartlett}, the influence measure is a triangular tent-shaped decay distance is returned.
 }
 See details below.
 Other options still to be implemented (such as other functions and a generic user-defined
 function as input).}
 
+\item{where}{\verb{[character(1)="R"]\{"R", "GRASS"\}} \cr Where the calculations should be performed, in R or
+GRASS GIS. Calculations within GRASS GIS (\code{where = "GRASS"}) require an active connection between the R session
+and a GRASS GIS location and mapset and that the input map is already loaded in this the current mapset.}
+
 \item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{transform = log}.}
 
-\item{zoi_hl_ratio}{\verb{[numeric(1)=6]} \cr Ratio between the zone of influence (ZoI) of the infrastrucure
+\item{zoi_hl_ratio}{\verb{[numeric(1)=4]} \cr REVIEW THAT, THE IDEA IS SIMILAR BUT SLIGHTLY DIFFERENT FOR GAUSSIAN
+Ratio between the zone of influence (ZoI) of the infrastrucure
 and the half-life of the exponential decay distance function. It is used to define the
 the half-life and decay parameter lambda of the exponential decay function, based on a value of ZoI.
 By changing this parameter, one can be more or less flexible in the definition of ZoI for
@@ -70,15 +87,19 @@ For example: if \code{zoi_hl_ratio = 4}, the ZoI is defined as the distance from
 where the decay distance influence decreases to \code{0.5^4 = 0.0625}. If \code{zoi_hl_ratio = 6}, the ZoI
 is defined as tyhe distance when the exponential decay influence decreases to \code{0.5^6 = 0.015625}}
 
-\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half-life of the exponential decay function, in case
-\code{transform = exp_decay}. The exponential decay exponent (lambda) from the exponential function is defined as
-\code{lambda = log(2)/half_life}. By definition, when one gets away from the source feature by a
+\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half-life of the exponential decay function or half-normal decay function,
+in case \code{transform = exp_decay} or \code{transform = half_norm}. The exponential decay exponent (lambda) from the exponential function is defined as
+\code{lambda = log(2)/half_life}. For the half-normal decay the exponent (lambda) is \code{lambda = log(2)/(half_life**2)}
+By definition, when one gets away from the source feature by a
 distance interval equals to \code{half_life}, the magnitude of the exponential decay distance decreases by 1/2.
 This means that, for instance, at a distance of \code{4*half_life} to the nearest feature, the exponential decay
 influence has a magnitude of \code{(1/2)^4 = 1/16 ~ 0.06}. This can be useful to define the
 Zone of Influence (ZoI) for exponential decay distances. If the \code{zoi} parameter is not NULL, the
 \code{half_life} parameter is ignored and half-life of the exponential decay is defined by the \code{zoi} and
-\code{zoi_hl_ratio} parameters.}
+\code{zoi_hl_ratio} parameters.
+The half-life definition for the half-normal/Gaussian function is slightly different. While the definition¨
+of half-life still holds, the relationship with its decay is different. The distance at which
+the function decreases to \code{(1/2)^4 = 1/16 ~ 0.06}, for instance, is \code{sqrt(4)*half_life}.}
 
 \item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr Parameters (\code{N_0}, \code{lambda}) for the exponential decay
 influence, if \code{transform = exp_decay}. The value of \code{lambda} defined here is used only if
@@ -92,18 +113,52 @@ range of values of Euclidean distance, not to influence any further analyses.}
 
 \item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vectors representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max). Used to cut the raster to
-specific smaller extents. The default is to keep the same extent of the input raster.}
+specific smaller extents. The default is to keep the same extent of the input raster.
+Not used for computation in GRASS GIS yet, but it might be implemented if necessary.}
 
-\item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
+\item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation? Valid only when
+the calculations are done within R (not in GRASS GIS).}
 
-\item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}}.}
+\item{output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map name, to be used only within
+GRASS (if \code{where = "GRASS"}). Bu default, this is NULL and the output map names are a concatenation of
+the input map name (e.g. "map_houses") and the decay function and zoi used (e.g. for \code{transform = "exp_decay"}
+and \code{zoi = 1000}, the name would be "map_houses_exp_decay_1000").
+This parameter is ignored when the calculations are performed in R (if \code{where = "R"}).}
+
+\item{metric}{\verb{[character(1)="euclidean"]\{"euclidean", "geodesic", "squared", "maximum", "manhattan"\}} \cr
+If the calculations are perfomed within GRASS GIS, this is the \code{metric} argument to calculate the distance
+from the infrastructure features with the module \code{r.grow.distance}. More information at the
+\href{https://grass.osgeo.org/grass78/manuals/r.grow.distance.html}{GRASS GIS documentation for this function}.
+This parameter is ignored when the calculations are performed in R (if \code{where = "R"}).}
+
+\item{remove_intermediate}{= TRUE
+This parameter is ignored when the calculations are performed in R (if \code{where = "R"}).}
+
+\item{print_expression}{= TRUE
+This parameter is ignored when the calculations are performed in R (if \code{where = "R"}).}
+
+\item{quiet, overwrite}{= TRUE,
+These parameters is ignored when the calculations are performed in R (if \code{where = "R"}).}
+
+\item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}} when the calculations are performed in R.
+No additional parameters implemented for computation in GRASS GIS.}
+
+\item{hnorm_decay_parms}{\verb{[numeric(2)=c(1,20)]} \cr Parameters (\code{N_0}, \code{sigma}) for the half-normal decay
+influence, if \code{transform = Gauss} or \code{transform = half_normal}. The value of \code{sigme} defined here is used
+to define the decay rate \code{lambda}only if \code{zoi = NULL} and \code{half_life = NULL}, otherwise one of these
+parameters is used to determine \code{lambda}. By default, \code{N_0} is defined as 1, which means the influence is 1
+where the infrastructure feature is located, and it decreases as the Euclidean distance from it increases.}
 }
 \value{
-A \code{RasterLayer} (or \code{SpatRaster}, according to the class of the input object) with the
-influence of the nearest feature. By default, it is the Euclidean distance to the nearest feature.
+If the calculations are performed in R (if \code{where = "R"}), the function returns a \code{RasterLayer}
+(or \code{SpatRaster}, according to the class of the input object) with the
+influence of the nearest feature. If the calculations are performed in GRASS GIS (if \code{where = "GRASS"}),
+the maps are kept only within the GRASS GIS location/mapset and the function returns the name of the
+calculated maps. \cr
+By default, the output influence map is the Euclidean distance to the nearest feature.
 Depending on the choice of \code{transform}, the output distance can be log- or sqrt-transformed distance,
-or one can choose to calculate the exponential decay or Bartlett decay influence.
-Other types of transformation (e.g. Gaussian?) to be implemented in the future.
+or one can choose to calculate the exponential decay, half-normal decay, or Bartlett decay influence.
+Other types of transformation to be implemented in the future.
 }
 \description{
 This function takes in a raster with locations of infrastructure and calculates
@@ -111,9 +166,11 @@ a raster representing the influence to each pixel from the neareast feature of t
 of infrastructure. By default, the output measure of influence is the Euclidean distance
 to the nearest feature. However, this influence measure can be changed to
 transformed distance measures (so far, log- and sqrt-distance) or to decay distance functions
-(so far, exponential decay distance and Bartlett distance). For the decay distance
+(so far, exponential decay distance, half-normal distance, and Bartlett distance). For the decay distance
 measures of influence, a zone of influence (zoi) might be used as input for designing
-the curve.
+the curve. The calculations might be done within R or within GRASS GIS. In the latter case,
+it requires an active connection between the R session and a GRASS GIS location and mapset
+(through the package \link{rgrass7}), and that the input maps are already loaded within this GRASS GIS mapset.
 }
 \details{
 The input raster should have positive values in the pixels where infrastructure
@@ -121,13 +178,21 @@ are located and NA/no-data in all other places. The input raster is supposed to
 represent the location of point, line, or polygon infrastructure (e.g. houses, roads, mining areas),
 but any landscape variable whose representation might be one of those would fit here
 (e.g. areas of forest or any other habitat type or land cover). We recommend that the
-input raster is on a metric projection, so that distances and influence measures are
+input raster has a metric projection, so that distances and influence measures are
 based on distance to infrastructure measured in meters.
 
-Explain here better what is the log, sqrt, exp_decay, bartlett, and when a ZOI is defined.
+If the calculations are done in R, the input is a raster map and the function returns
+another raster map. If the calculations are done within GRASS GIS, the input is the name
+of a raster map already loaded in a GRASS GIS location and mapset, and the function returns
+only the name of the output map. This map is stored in the the GRASS GIS location/mapset,
+and might be retrieved to R through the \code{\link[rgrass7:readRAST]{rgrass7::readRAST()}} function, for instance.
+The calculations in GRASS GIS are done through the modules
+\href{https://grass.osgeo.org/grass78/manuals/r.grow.distance.html}{\code{r.grow.distance}} for computing
+the Euclidean distance to the nearest features and
+\href{https://grass.osgeo.org/grass78/manuals/r.mapcalc.simple.html}{\code{r.mapcalc.simple}}
+to transform this distance into the different forms of measures of influence of the nearest features.
 
-TO IMPROVE3: do the same in communication with GRASS GIS.
-TO IMPROVE4: implement any generic funtion as input to "transform".
+TO IMPROVE: implement any generic function as input to "transform".
 }
 \examples{
 library(mobsim)
@@ -147,26 +212,26 @@ plot(pts$pts)
 plot(pts$rast)
 
 # calculate distance to the nearest feature
-d <- influence_nearest(pts$rast)
+d <- calc_influence_nearest(pts$rast)
 plot(d)
 
 # calculate log_dist (the rest is equal)
-log_d <- influence_nearest(pts$rast, transform = "log", log_base = 10)
+log_d <- calc_influence_nearest(pts$rast, transform = "log", log_base = 10)
 plot(log_d)
 
 # calculate sqrt_dist
-sqrt_d <- influence_nearest(pts$rast, transform = "sqrt")
+sqrt_d <- calc_influence_nearest(pts$rast, transform = "sqrt")
 plot(sqrt_d)
 
 # calculate exponential decay influence using exp_decay_parms parameter
-exp_d1 <- influence_nearest(pts$rast, transform = "exp_decay", exp_decay_parms = c(1, 0.001))
+exp_d1 <- calc_influence_nearest(pts$rast, transform = "exp_decay", exp_decay_parms = c(1, 0.001))
 plot(exp_d1)
 
 # calculate exponential decay influence using half life parameter
 # if half_life = 250 m and zoi_hl_ratio = 4, zoi is 1000 m
 half_life2 <- 250 # intensity gets down to 1/16 = 0.06 for 4*half_life=1000m
 zoi_hl_ratio2 <- 4 # default
-exp_d2 <- influence_nearest(pts$rast, transform = "exp_decay", half_life = half_life2)
+exp_d2 <- calc_influence_nearest(pts$rast, transform = "exp_decay", half_life = half_life2)
 plot(exp_d2)
 # buffer
 pts_shp <- pts$pts \%>\% 
@@ -186,7 +251,7 @@ legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), l
 # calculate exponential decay influence using zoi parameter
 zoi3 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
 zoi_hl_ratio3 <- 4 # default
-exp_d3 <- influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi3)
+exp_d3 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi3)
 plot(exp_d3)
 # buffer
 pts_shp <- pts$pts \%>\% 
@@ -207,7 +272,7 @@ legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), l
 # when the intensity decreases to 1/64 = 0.016
 zoi4 <- 4000 
 zoi_hl_ratio4 = 6
-exp_d4 <- influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4, 
+exp_d4 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4, 
                     zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
@@ -226,7 +291,7 @@ pts_shp \%>\%
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
 # bartlett influence, ZOI = 2000m
-bart_d <- influence_nearest(pts$rast, transform = "bartlett", zoi = 2000)
+bart_d <- calc_influence_nearest(pts$rast, transform = "bartlett", zoi = 2000)
 plot(bart_d)
 
 # buffer 2000m

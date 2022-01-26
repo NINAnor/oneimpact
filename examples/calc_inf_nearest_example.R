@@ -15,26 +15,26 @@ plot(pts$pts)
 plot(pts$rast)
 
 # calculate distance to the nearest feature
-d <- influence_nearest(pts$rast)
+d <- calc_influence_nearest(pts$rast)
 plot(d)
 
 # calculate log_dist (the rest is equal)
-log_d <- influence_nearest(pts$rast, transform = "log", log_base = 10)
+log_d <- calc_influence_nearest(pts$rast, transform = "log", log_base = 10)
 plot(log_d)
 
 # calculate sqrt_dist
-sqrt_d <- influence_nearest(pts$rast, transform = "sqrt")
+sqrt_d <- calc_influence_nearest(pts$rast, transform = "sqrt")
 plot(sqrt_d)
 
 # calculate exponential decay influence using exp_decay_parms parameter
-exp_d1 <- influence_nearest(pts$rast, transform = "exp_decay", exp_decay_parms = c(1, 0.001))
+exp_d1 <- calc_influence_nearest(pts$rast, transform = "exp_decay", exp_decay_parms = c(1, 0.001))
 plot(exp_d1)
 
 # calculate exponential decay influence using half life parameter
 # if half_life = 250 m and zoi_hl_ratio = 4, zoi is 1000 m
 half_life2 <- 250 # intensity gets down to 1/16 = 0.06 for 4*half_life=1000m
 zoi_hl_ratio2 <- 4 # default
-exp_d2 <- influence_nearest(pts$rast, transform = "exp_decay", half_life = half_life2)
+exp_d2 <- calc_influence_nearest(pts$rast, transform = "exp_decay", half_life = half_life2)
 plot(exp_d2)
 # buffer
 pts_shp <- pts$pts %>% 
@@ -54,7 +54,7 @@ legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), l
 # calculate exponential decay influence using zoi parameter
 zoi3 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
 zoi_hl_ratio3 <- 4 # default
-exp_d3 <- influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi3)
+exp_d3 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi3)
 plot(exp_d3)
 # buffer
 pts_shp <- pts$pts %>% 
@@ -75,7 +75,7 @@ legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), l
 # when the intensity decreases to 1/64 = 0.016
 zoi4 <- 4000 
 zoi_hl_ratio4 = 6
-exp_d4 <- influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4, 
+exp_d4 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4, 
                     zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
@@ -94,7 +94,7 @@ pts_shp %>%
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
 # bartlett influence, ZOI = 2000m
-bart_d <- influence_nearest(pts$rast, transform = "bartlett", zoi = 2000)
+bart_d <- calc_influence_nearest(pts$rast, transform = "bartlett", zoi = 2000)
 plot(bart_d)
 
 # buffer 2000m

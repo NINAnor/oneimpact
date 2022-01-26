@@ -7,3 +7,12 @@
 #' sem ter que criar o mfilter
 #' - calc_dist_dens - with terra
 #' - simulate_dist_dens - with terra
+#' 
+#' - implement calculation using buffers around points instead of the whole map
+#' 
+#' 
+#' New:
+#' - Add multiple zoi for calculate nearest
+#' - Implement cumulative for GRASS
+#' - Implement exp_decay and Bartlett already in cumulative, without need of create_filter
+
