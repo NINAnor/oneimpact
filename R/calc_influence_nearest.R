@@ -165,6 +165,7 @@
 #' Other types of transformation to be implemented in the future.
 #'
 #' @example examples/calc_inf_nearest_example.R
+#' @example examples/calc_inf_nearestGRASS_example.R
 #'
 #' @export
 calc_influence_nearest <- function(
@@ -333,10 +334,16 @@ calc_influence_nearest_r <- function(
               
               dist_r <- hnorm_decay_parms[1] * exp(-lambda * (dist_r**2))
             } else
-              stop("You should select an appropriate transformation method for distance.")
+              stop("You should select an appropriate transformation method for the influence.")
   
-  # rename nearest influence layer
-  names(dist_r) <- "influence_nearest"
+  # rename nearest influence layer, including transformation
+  name <- ifelse(is.null(transform), "influence_nearest", 
+                 paste0("influence_nearest", "_", transform))
+  # and the zoi
+  zoi_methods <- c("exp_decay", "bartlett", "Gauss", "half_norm")
+  if(!is.null(transform))
+    if(transform %in% zoi_methods) name <- paste0(name, zoi)
+  names(dist_r) <- name
   # should the result be plotted?
   if(plotit) plot(dist_r)
   
@@ -363,8 +370,8 @@ calc_influence_nearest_GRASS <- function(
   output_map_name = NULL,
   metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
   remove_intermediate = TRUE,
-  print_expression = TRUE,
-  quiet = TRUE, overwrite = FALSE,
+  print_expression = FALSE,
+  quiet = FALSE, overwrite = FALSE,
   ...) {
   
   # check if the transformation is valid
@@ -392,7 +399,7 @@ calc_influence_nearest_GRASS <- function(
   # Start by calculating the Euclidean distance from features
   
   # output name within GRASS GIS
-  out_euclidean <- paste0(x, "_euclidean_dist")
+  out_euclidean <- paste0(x, "_inf_nearest")
   # if there is not transformation
   if(is.null(transform)) {
     # if the user provides an output map name, overwrite it
@@ -409,7 +416,7 @@ calc_influence_nearest_GRASS <- function(
     rgrass7::execGRASS("g.region", s = extent_y_cut[1], n = extent_y_cut[2], align = x, flags = flags_region)
        
   # print message
-  rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...") 
+  if(!quiet) rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...") 
   # calculate
   rgrass7::execGRASS("r.grow.distance", input = x, distance = out_euclidean, metric = metric, flags = flags)
   # check if it should be deleted afterwards
@@ -425,8 +432,6 @@ calc_influence_nearest_GRASS <- function(
       # sog distance
       # message
       out_message <- "Calculating log-distance..."
-      # output name within GRASS GIS
-      out_influence <- paste0(x, "_log_dist")
       # expression
       expression_influence <- sprintf("log(A + %f, %f)", dist_offset, log_base)
       if(print_expression) print(expression_influence)
@@ -437,8 +442,6 @@ calc_influence_nearest_GRASS <- function(
       # sqrt distance
       # message
       out_message <- "Calculating sqrt-distance..."
-      # output name within GRASS GIS
-      out_influence <- paste0(x, "_sqrt_dist")
       # expression
       expression_influence <- sprintf("sqrt(A + %f)", dist_offset)
       if(print_expression) print(expression_influence) 
@@ -470,8 +473,6 @@ calc_influence_nearest_GRASS <- function(
       # exponential decay influence
       # message
       out_message <- "Calculating exponential decay influence..."
-      # output name within GRASS GIS
-      out_influence <- paste0(x, "_exp_decay")
       # expression
       expression_influence <- sprintf("%f * exp(-%f * A)", exp_decay_parms[1], lambda)
       if(print_expression) print(expression_influence) 
@@ -483,8 +484,6 @@ calc_influence_nearest_GRASS <- function(
       # betlett (tent-shaped or linear decay) influence
       # message
       out_message <- "Calculating Bartlett influence..."
-      # output name within GRASS GIS
-      out_influence <- paste0(x, "_bartlett_decay")
       # expression
       expression_influence <- sprintf("if(A <= %f, 1 - (1/%f) * A, 0)", zoi, zoi)
       if(print_expression) print(expression_influence)
@@ -516,19 +515,26 @@ calc_influence_nearest_GRASS <- function(
       # exponential decay influence
       # message
       out_message <- "Calculating half-normal decay influence..."
-      # output name within GRASS GIS
-      out_influence <- paste0(x, "_half_norm_decay")
       # expression
       expression_influence <- sprintf("%f * exp(-%f * pow(A, 2))", hnorm_decay_parms[1], lambda)
       if(print_expression) print(expression_influence) 
       
     }
     
-    # if the user provides an output map name, overwrite it
-    if(!is.null(output_map_name)) out_influence <- output_map_name
-  
+    # if the user provides an output map name, use it
+    if(!is.null(output_map_name)) 
+      out_influence <- output_map_name 
+    else {
+      # otherwise, name it according to the method
+      out_influence <- paste0(x, "_inf_nearest_", transform)
+      # and maybe the zoi
+      zoi_methods <- c("exp_decay", "bartlett", "Gauss", "half_norm")
+      if(!is.null(transform))
+        if(transform %in% zoi_methods) out_influence <- paste0(out_influence, zoi)
+    }
+    
     # print message
-    rgrass7::execGRASS("g.message", message = out_message)
+    if(!quiet) rgrass7::execGRASS("g.message", message = out_message)
     # set region
     rgrass7::execGRASS("g.region", raster = out_euclidean, flags = flags_region)
     # calculate

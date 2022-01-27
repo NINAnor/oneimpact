@@ -1,3 +1,4 @@
+# Running calc_influence_nearest through R
 library(mobsim)
 library(terra)
 library(dplyr)
@@ -103,3 +104,5 @@ pts_shp %>%
   sf::st_union() %>% 
   plot(add = T, border = "black")
 legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
+
+#--------------------

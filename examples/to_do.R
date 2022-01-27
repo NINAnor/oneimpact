@@ -15,4 +15,7 @@
 #' - Add multiple zoi for calculate nearest
 #' - Implement cumulative for GRASS
 #' - Implement exp_decay and Bartlett already in cumulative, without need of create_filter
+#' 
+#' - calc_influence_nearest: add file with two-three examples for the documentation fo the function
+#' - add a layer to the package, for testing
 
