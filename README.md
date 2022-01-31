@@ -1,10 +1,10 @@
 # oneimpact
 
-Tools for the assessment of cumulative impacts from multiple infrastructure in ecology
+Tools for the assessment of cumulative impacts from multiple infrastructure in ecological studies
 
 ## Usage
 
-To install the development version of `oneimpact` R package, please use:
+To install the development version of the `oneimpact` R package, please use:
 
 ```
 library(devtools)
