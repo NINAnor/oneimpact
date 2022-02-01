@@ -24,15 +24,21 @@ plot(cuminf)
 # using a circle neighborhood
 zoi_values <- c(250, 500, 1000, 2500, 5000)
 cuminf_circle <- calc_influence_cumulative(pts$rast, type = "circle", zoi = zoi_values,
-                         extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
+                                           extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf_circle)
 
-# calculate cumulative influence for multiple zones of influence, 
-# using a user-defined filter (exp_decay)
-my_filter <- create_filter(zoi = 1000, res = 100, method = "exp_decay")
-cuminf_exp <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_filter,
+# calculate cumulative influence for a single zones of influence 
+# using a user-defined filter
+my_filter <- create_filter(pts$rast, zoi = 1000, method = "exp_decay")
+cuminf_user <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_filter,
                                         extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
-plot(c(cuminf[[3]], cuminf_circle[[3]], cuminf_exp),
-     main = c("Gaussian filter", "Circle neighborhood", "Exponential decay filter"))
+plot(c(cuminf[[3]], cuminf_circle[[3]], cuminf_user),
+     main = c("Gaussian filter", "Circle neighborhood", "User-defined filter"))
 
-     
+# calculate cumulative influence for multiple zones of influence, 
+# using an exp_decay neighborhood
+zoi_values <- c(250, 500, 1000, 2500, 5000)
+cuminf_exp <- calc_influence_cumulative(pts$rast, type = "exp_decay", zoi = zoi_values,
+                                        extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
+plot(cuminf_exp)
+

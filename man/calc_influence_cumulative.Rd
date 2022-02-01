@@ -7,10 +7,19 @@
 calc_influence_cumulative(
   x,
   zoi = 100,
-  type = c("circle", "Gauss", "rectangle", "mfilter")[1],
-  extent_x_cut = terra::ext(x)[c(1, 2)],
-  extent_y_cut = terra::ext(x)[c(3, 4)],
-  na.rm = FALSE,
+  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter")[1],
+  where = c("R", "GRASS")[1],
+  zoi_hl_ratio = 4,
+  half_life = NULL,
+  exp_decay_parms = c(1, 0.01),
+  min_intensity = 0.01,
+  max_dist = 50000,
+  normalize = FALSE,
+  extent_x_cut = NULL,
+  extent_y_cut = NULL,
+  na.policy = "omit",
+  na.rm = TRUE,
+  quiet = FALSE,
   plotit = FALSE,
   ...
 )
@@ -41,7 +50,7 @@ Option for the neighborhood analysis, performed through the \code{\link[terra:fo
 
 \item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along the calculation?}
 
-\item{...}{Other arguments to be used within \code{\link[terra:focal]{terra::focal()}}.}
+\item{...}{Other arguments to be used within \code{\link[=create_filter]{create_filter()}} or \code{\link[terra:focal]{terra::focal()}}.}
 }
 \value{
 A \link{RasterLayer} or \link{SpatRaster} (according to the input \code{x} map) with the density of features.
@@ -49,12 +58,17 @@ Alternatively, a \code{RasterBrick}
 or multi-layer \code{SpatRaster}, if multile \code{zoi} values are given, with the density of features for all scales selected.
 }
 \description{
+r.resamp.filter resamples an input raster, filtering the input with an analytic kernel.
+Each output cell is typically calculated based upon a small subset of the input cells,
+not the entire input. r.resamp.filter performs convolution (i.e. a weighted sum is
+calculated for every raster cell).
+}
+\details{
 This function takes in a raster with locations of infrastructure and calculates
 a raster (or set of rasters, in case there is more the one value for \code{zoi})
 representing the density of features in space (through a spatial filter/neighborhood analysis).
 The neighborhood analysis is done with the \code{\link[terra:focal]{terra::focal()}} function.
-}
-\details{
+
 The neighborhood analysis can be done with different methods. The default is a circular filter
 (\code{type = "circle"}), in which case the parameter \code{zoi} corresponds to the radius of the circle
 centered on the central pixel. Other possibilities are a Gaussian filter
@@ -99,16 +113,22 @@ plot(cuminf)
 # using a circle neighborhood
 zoi_values <- c(250, 500, 1000, 2500, 5000)
 cuminf_circle <- calc_influence_cumulative(pts$rast, type = "circle", zoi = zoi_values,
-                         extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
+                                           extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf_circle)
 
-# calculate cumulative influence for multiple zones of influence, 
-# using a user-defined filter (exp_decay)
-my_filter <- create_filter(zoi = 1000, res = 100, method = "exp_decay")
-cuminf_exp <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_filter,
+# calculate cumulative influence for a single zones of influence 
+# using a user-defined filter
+my_filter <- create_filter(pts$rast, zoi = 1000, method = "exp_decay")
+cuminf_user <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_filter,
                                         extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
-plot(c(cuminf[[3]], cuminf_circle[[3]], cuminf_exp),
-     main = c("Gaussian filter", "Circle neighborhood", "Exponential decay filter"))
+plot(c(cuminf[[3]], cuminf_circle[[3]], cuminf_user),
+     main = c("Gaussian filter", "Circle neighborhood", "User-defined filter"))
 
-     
+# calculate cumulative influence for multiple zones of influence, 
+# using an exp_decay neighborhood
+zoi_values <- c(250, 500, 1000, 2500, 5000)
+cuminf_exp <- calc_influence_cumulative(pts$rast, type = "exp_decay", zoi = zoi_values,
+                                        extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
+plot(cuminf_exp)
+
 }
