@@ -6,13 +6,13 @@ Author: Bernardo Niebuhr, Bram van Moorter, Manuela Panzacchi
 Maintainer: Bernardo Niebuhr <bernardo.brandao@nina.no>
 Description: Describe the package later
 Depends:
-    R
+    R (>= 2.10)
 Imports: 
-    dplyr, mobsim, terra, raster, sf, NLMR
+    dplyr, purrr, terra, raster, sf, mobsim
 Suggests:
-    rasterVis, landscapetools
+    rasterVis, landscapetools, NLMR
 License: Not defined yet
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
