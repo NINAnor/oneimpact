@@ -36,7 +36,7 @@ The features might be represented by points (e.g. houses, cabins, wind turbines)
 (e.g. roads, power lines, railways), or polygons (e.g. mining areas, urban areas, or
 any other spatial variable represented as polygons or areas).}
 
-\item{zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI), in map units meters.
+\item{zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI), in map units (preferentially meters).
 The ZoI is the distance, scale, or buffer size around a feature up to which we consider there is
 an effect or influence of an infrastructure or variable. It is considered only when
 \code{transform = "bartlett"} or \code{transform = "exp_decay"}. \cr

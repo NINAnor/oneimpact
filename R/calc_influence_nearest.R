@@ -40,7 +40,7 @@
 #' (e.g. roads, power lines, railways), or polygons (e.g. mining areas, urban areas, or
 #' any other spatial variable represented as polygons or areas). 
 #' 
-#' @param zoi `[numeric(1)=NULL]` \cr Zone of Influence (ZoI), in map units meters. 
+#' @param zoi `[numeric(1)=NULL]` \cr Zone of Influence (ZoI), in map units (preferentially meters). 
 #' The ZoI is the distance, scale, or buffer size around a feature up to which we consider there is 
 #' an effect or influence of an infrastructure or variable. It is considered only when
 #' `transform = "bartlett"` or `transform = "exp_decay"`. \cr
