@@ -1,0 +1,268 @@
+---
+title: Calculating the influence from the nearest feature in both R and GRASS GIS using the `oneimpact` pacakge
+author: "Bernardo Niebuhr"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+output: 
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi = 300)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+
+```{r settings, results="hide", message=FALSE, warning=FALSE}
+# libraries
+library(rgrass7)
+library(raster)
+library(terra)
+
+library(NinaR)
+library(dplyr)
+
+library(viridis)
+
+library(oneimpact)
+```
+
+Connect to GRASS.
+
+```{r connect2GRASS}
+# start GRASS and connect to my mapset
+grassdir <- system("grass78 --config path", intern = T)
+gisDB <- "/data/grass"
+loc <- "ETRS_33N/"
+ms <- "u_bb_cuminf"
+# initGRASS(gisBase = grassdir,
+#           home = tempdir(), 
+#           override = T,
+#           gisDbase = gisDB,
+#           location = loc, 
+#           mapset = ms)
+
+# more directly within NINA
+NinaR::grassConnect(mapset = ms)
+```
+
+
+```{r prepare_input}
+# copy test region vector and map of private cabins
+
+# check region
+gmeta() # g.copy is not affected by the region
+
+# copy region vector
+rgrass7::execGRASS("g.copy", parameters = list(vector = "region_test_influence@u_bernardo.brandao,region_test_influence"),
+                   flags = c("overwrite"))
+# copy private cabins
+rgrass7::execGRASS("g.copy", parameters = list(raster = "private_cabins_rast@u_bernardo.brandao,private_cabins_rast"),
+                   flags = c("overwrite"))
+
+# define region
+
+# I defined a region_test_influence through the GRASS GUI and using v.in.region output=region_test_influence
+rgrass7::execGRASS("g.region", parameters = list(vector = "region_test_influence", align = "private_cabins_rast"),
+          flags = "p")
+
+# create a new small map for the current region, just to ease visualization in R
+rgrass7::execGRASS("r.mapcalc", expression = "private_cabins_sub = if(!isnull(private_cabins_rast), 1, null())",
+          flags = c("overwrite", "quiet"))
+
+# show input map and region here
+rgrass7::use_sp()
+cabins <- readRAST(c("private_cabins_rast_sub")) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+a <- rgrass7::execGRASS("r.category", map = "patches", flags = "quiet")
+attributes(a)$resOut
+rgrass7::execGRASS("g.list", type = "raster")
+
+terra::plot(cabins, col = "black")
+```
+# Euclidean distance
+
+```{r eucidean}
+# R
+cabins_dist_r <- calc_influence_nearest(cabins, where = "R")
+
+# GRASS
+name_var <- "private_cabins_sub"
+cabins_dist_names <- calc_influence_nearest(name_var, where = "GRASS", quiet = F, overwrite = T)
+
+# visualize
+cabins_dist_grass <- readRAST(cabins_dist_names) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(cabins_dist_r, cabins_dist_grass), 
+            main = paste("Euclidean distance from private cabins - ", 
+                         c("R", "GRASS")))
+```
+# Log distance
+
+```{r log_dist}
+# R
+cabins_logdist_r <- calc_influence_nearest(cabins, transform = "log", log_base = 10, where = "R")
+
+# GRASS
+name_var <- "private_cabins_sub"
+cabins_logdist_names <- calc_influence_nearest(name_var, transform = "log", log_base = 10, 
+                                               where = "GRASS", quiet = F, overwrite = T)
+
+# visualize
+cabins_logdist_grass <- readRAST(cabins_logdist_names) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(cabins_logdist_r, cabins_logdist_grass), 
+            main = paste("Log-distance from private cabins - ", 
+                         c("R", "GRASS")))
+```
+
+# Square root distance
+
+```{r sqrt_dist}
+# R
+cabins_sqrtdist_r <- calc_influence_nearest(cabins, transform = "sqrt", where = "R")
+
+# GRASS
+name_var <- "private_cabins_sub"
+cabins_sqrtdist_names <- calc_influence_nearest(name_var, transform = "sqrt", 
+                                               where = "GRASS", quiet = F, overwrite = T)
+
+# visualize
+cabins_sqrtdist_grass <- readRAST(cabins_sqrtdist_names) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(cabins_sqrtdist_r, cabins_sqrtdist_grass), 
+            main = paste("Sqrt-distance from private cabins - ", 
+                         c("R", "GRASS")))
+```
+
+# Exponental decay influence
+
+Example with ZoI = 1000m
+
+```{r exp_decay}
+# R
+cabins_exp_decay_r <- calc_influence_nearest(cabins, transform = "exp_decay", 
+                                             zoi = 1000, where = "R")
+
+# GRASS
+name_var <- "private_cabins_sub"
+cabins_exp_decay_names <- calc_influence_nearest(name_var, transform = "exp_decay",
+                                                 zoi = 1000, where = "GRASS", 
+                                                 quiet = F, overwrite = T)
+
+# visualize
+cabins_exp_decay_grass <- readRAST(cabins_exp_decay_names) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(cabins_exp_decay_r, cabins_exp_decay_grass), 
+            main = paste("Exp-decay influence from private cabins - ", 
+                         c("R", "GRASS")))
+```
+
+# Bartlett decay
+
+Example with ZoI = 1000m
+
+
+```{r bartlett}
+# R
+cabins_bartlett_r <- calc_influence_nearest(cabins, transform = "bartlett",
+                                            zoi = 1000, where = "R")
+
+# GRASS
+name_var <- "private_cabins_sub"
+cabins_bartlett_names <- calc_influence_nearest(name_var, transform = "bartlett",
+                                                zoi = 1000, where = "GRASS",
+                                                quiet = F, overwrite = T)
+
+# visualize
+cabins_bartlett_grass <- readRAST(cabins_bartlett_names) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(cabins_bartlett_r, cabins_bartlett_grass), 
+            main = paste("Linear-decay influence from private cabins - ", 
+                         c("R", "GRASS")))
+```
+
+# Half-normal (Gaussian) decay influence
+
+Example with ZoI = 1000m
+
+```{r gaussian}
+# R
+cabins_hnorm_decay_r <- calc_influence_nearest(cabins, transform = "half_norm",
+                                               zoi = 1000, where = "R")
+
+# GRASS
+name_var <- "private_cabins_sub"
+cabins_hnorm_decay_names <- calc_influence_nearest(name_var, transform = "half_norm",
+                                                   zoi = 1000, where = "GRASS",
+                                                   quiet = T, overwrite = T)
+
+# visualize
+cabins_exp_decay_grass <- readRAST(cabins_hnorm_decay_names) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(cabins_hnorm_decay_r, cabins_exp_decay_grass), 
+            main = paste("Halfnormal influence from private cabins - ", 
+                         c("R", "GRASS")))
+```
+
+```{r}
+# Euclidean distance
+# name_var <- "private_cabins_sub"
+# execGRASS("r.resamp.filter", input = name_var, output = "test_neighborhood", filter = "gauss,box", radius = c(500,1500))
+# 
+# execGRASS("r.mapcalc", expression = "private_cabins_binary = if(isnull(private_cabins_sub), 0, 1)", flags = "overwrite")
+# 
+# execGRASS("r.neighbors", input = "private_cabins_binary", output = "test_neighborhood", size = 5, flags = "overwrite")
+# 
+# Zone of Influence
+# cumulative zone of influence
+# cumulative affected area
+# landcape effect, cumulative weight - "Miguet et al"
+# Perceived disturbance
+# 
+# multiply two layers referreing to two different scales of a variable density
+# 
+# # visualize
+# cabins_dens <- readRAST("test_neighborhood") %>% 
+#   raster::raster() %>% 
+#   terra::rast()
+# 
+# terra::plot(cabins_dens, main = "Density")
+# 
+# threshold = 0.05
+# execGRASS("r.mapcalc", expression = "areas = if(test_neighborhood > 0.05, 1, 0)", flags = "overwrite")
+# 
+# cabins_areas_affected <- readRAST("areas") %>% 
+#   raster::raster() %>% 
+#   terra::rast()
+# 
+# terra::plot(cabins_areas_affected, main = "areas affected")
+# 
+# #
+# execGRASS("g.extension", extension = "r.area")
+# 
+# execGRASS("r.clump", input = "areas", output = "patches", flags = "overwrite")
+# 
+# cabins_areas_patches <- readRAST("patches") %>% 
+#   raster::raster() %>% 
+#   terra::rast()
+# 
+# terra::plot(cabins_areas_affected, main = "patch areas affected")
+
+
+```

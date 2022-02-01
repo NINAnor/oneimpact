@@ -14,9 +14,10 @@ create_filter(
   min_intensity = 0.01,
   max_dist = 5000,
   normalize = FALSE,
+  divisor = 1,
   round_vals = NULL,
   save_txt = FALSE,
-  save_format = "GRASS",
+  save_format = c("GRASS_r.mfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
   output = c("CumInf", "Densiy")[1],
@@ -53,8 +54,8 @@ Gaussian neighborhood with parameterization in terms of \code{zoi} to be impleme
 \item{method}{\verb{[character(1)="exp_decay"]\{"exp_decay", "bartlett", "circle", "threshold", "step", "rectangle"\}} \cr
 Rectangle = boxcar in smoothie::kernel2dmeitsjer
 Gaussian neighborhood with parameterization in terms of \code{zoi} to be implemented. So far it is possible to
-create Gaussian filters using other functions such as \link[terra:focalMat(type = "Gauss")]{terra::focalMat(type = "Gauss")} and
-\link[smoothie:kernel2dmeitsjer(type = "gauss")]{smoothie::kernel2dmeitsjer(type = "gauss")}.}
+create Gaussian filters using other functions such as \code{\link[terra:focalMat]{terra::focalMat()}} with parameter
+\code{type = "Gauss"} and \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}} with parameter \code{type = "gauss"}.}
 
 \item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life parameter of the exponential decay function, in meters. If NULL,
 the half life is define in terms of the ZoI and the \code{zoi_hl_ratio} parameter, which defines the ratio
@@ -71,6 +72,33 @@ define the size (radius) of the window that define the filter.}
 
 \item{max_dist}{\verb{[numeric(1)=50000]} \cr Maximum size (in meters) to
 define the size (radius) of the window that define the filter.}
+
+\item{normalize}{\verb{[logical(1)=FALSE]} \cr Whether the matrix should be normalized (sum of all cell is 1, if
+\code{normalize = TRUE}) or kept as it is (default, \code{normalize = FALSE}).}
+
+\item{divisor}{\verb{[numeric(1)=1]} \cr By default, 1. This is the divisor of the neighborhood
+matrix, when used within \code{r.mfilter}. According the the module documentation, "The filter process produces a new ¨
+category value for each cell in the input raster map layer by multiplying the category values of the cells
+in the n x n neighborhood around the center cell by the corresponding matrix value and adding them together.
+If a divisor is specified, the sum is divided by this divisor." \cr
+If the divisor is zero, "then the divisor is computed for each cell as the sum of the MATRIX values where
+the corresponding input cell is non-null." In other words, the output map will be rescaled to the
+interval \link{0,1}. If \code{normalize = TRUE}, the divisor is set to \code{n*n}.}
+
+\item{save_format}{\verb{[character(1)="GRASS_r.mfilter"]\{"GRASS_r.mfilter", "raw"\}} \cr
+Format in which the function should be saved. Currently, only GRASS GIS format for the module \code{r.mfilter}
+(\code{save_format = "GRASS_r.mfilter"}, according to the required format for \code{r.mfilter} module, details
+\href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here}) or raw (\code{save_format = "raw"}),
+in which only the values of the matrix are printed.}
+
+\item{save_folder}{\verb{[character(1)=NULL]} \cr Path to the folder where the matrix file should be written.
+If \code{NULL}, the current directory is used.}
+
+\item{save_file}{\verb{[character(1)=NULL]} \cr Name of the output file, generally a ".txt" file.
+If \code{NULL}, a standard filename is created, using the the \code{method} and \code{zoi}. E.g. "filter_bartlett2000.txt".}
+
+\item{parallel}{\verb{[logical(1)=TRUE]} \cr Whether the computation should be paralelized or not (details in
+the documentation of the \href{(https://grass.osgeo.org/grass78/manuals/r.mfilter.html)}{\code{r.mfilter}} module).}
 }
 \value{
 A matrix with the weight values.
@@ -147,4 +175,8 @@ plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000),
 # create_filter(r, zoi = 1000, method = "bartlett",
 #               max_dist = 5000,
 #               normalize = T, save_txt = TRUE)
+}
+\seealso{
+See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
+\code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices.
 }

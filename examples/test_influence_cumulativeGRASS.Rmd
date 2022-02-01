@@ -1,0 +1,429 @@
+---
+title: Calculating the cumulative influence from multiple features in both R and GRASS GIS using the `oneimpact` pacakge
+author: "Bernardo Niebuhr"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+output: 
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      dpi = 300)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+
+```{r settings, results="hide", message=FALSE, warning=FALSE}
+# libraries
+library(rgrass7)
+library(raster)
+library(terra)
+
+library(NinaR)
+library(dplyr)
+library(purrr)
+
+library(viridis)
+
+library(oneimpact)
+```
+
+Connect to GRASS.
+
+```{r connect2GRASS}
+# start GRASS and connect to my mapset
+grassdir <- system("grass78 --config path", intern = T)
+gisDB <- "/data/grass"
+loc <- "ETRS_33N/"
+ms <- "u_bb_cuminf"
+# initGRASS(gisBase = grassdir,
+#           home = tempdir(), 
+#           override = T,
+#           gisDbase = gisDB,
+#           location = loc, 
+#           mapset = ms)
+
+# more directly within NINA
+NinaR::grassConnect(mapset = ms)
+
+rgrass7::use_sp()
+rgrass7::use_sf()
+```
+
+
+```{r prepare_input}
+# copy test region vector and map of private cabins
+
+# check region
+gmeta() # g.copy is not affected by the region
+
+# copy region vector
+rgrass7::execGRASS("g.copy", parameters = list(vector = "region_test_influence@u_bernardo.brandao,region_test_influence"),
+                   flags = c("overwrite"))
+# copy private cabins
+rgrass7::execGRASS("g.copy", parameters = list(raster = "private_cabins_rast@u_bernardo.brandao,private_cabins_rast"),
+                   flags = c("overwrite"))
+
+# define region
+
+# I defined a region_test_influence through the GRASS GUI and using v.in.region output=region_test_influence
+rgrass7::execGRASS("g.region", parameters = list(vector = "region_test_influence", align = "private_cabins_rast"),
+          flags = "p")
+
+# create a new small map for the current region, just to ease visualization in R
+rgrass7::execGRASS("r.mapcalc", expression = "private_cabins_sub = if(!isnull(private_cabins_rast), 1, null())",
+          flags = c("overwrite", "quiet"))
+```
+
+Retrieve input raster data to R
+
+```{r retrieve_input_raster}
+# show input map and region here
+rgrass7::use_sp()
+cabins <- rgrass7::readRAST(c("private_cabins_rast_sub")) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(cabins, col = "black")
+```
+
+
+# Exponential decay filter
+
+## Single scale
+
+```{r exp_single}
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = 500, type = "exp_decay")
+plot(expR)
+
+# GRASS
+name_var <- "private_cabins_sub"
+
+# first we binarize the input map
+# binarize
+cabins_bin_name <- util_binarize_GRASS(name_var, null = 0, overwrite = T)
+
+# visualize
+cabins_bin <- rgrass7::readRAST(cabins_bin_name) %>% 
+  raster::raster() %>% 
+  terra::rast()
+plot(cabins_bin, main = "Binarized map of cabins")
+
+# now we calculate cumulative influence
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = 500, type = "exp_decay",
+                                       where = "GRASS", quiet = T, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(expR, expG), 
+            main = paste("Exponential decay filter - ", 
+                         c("R", "GRASS")))
+
+
+
+
+# normalization
+# no: 0 to 100 cabins
+# in the end: sum = 1
+# before the end: where we have max number of cabins = 1
+
+# expG_name <- calc_influence_cumulative_GRASS(x = name_var, zoi = 1000, type = "exp_decay",
+#                                              overwrite = T, quiet = F)
+# 
+# expG_name2 <- calc_influence_cumulative_GRASS(x = name_var, zoi = c(1000, 2000), type = "exp_decay",
+#                                              overwrite = T, quiet = F)
+
+
+```
+
+## Multiple scales
+
+```{r exp_multi}
+# ZoI
+zoi_vals <- c(500, 1000, 1500, 2000)
+
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = zoi_vals, type = "exp_decay")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = zoi_vals, type = "exp_decay",
+                                       where = "GRASS", quiet = T, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::stack() %>% 
+  terra::rast()
+
+terra::plot(expG, main = paste("Exponential decay cum. influence, ZoI = ", zoi_vals))
+```
+
+# Bartlett 
+
+## Single scale
+
+```{r bart_single}
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = 500, type = "bartlett")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+# calculate cumulative influence
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = 500, type = "bartlett",
+                                       where = "GRASS", quiet = F, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(expR, expG), 
+            main = paste("Bartlett decay filter - ", 
+                         c("R", "GRASS")))
+```
+
+## Multiple scales
+
+```{r bart_multi}
+# ZoI
+zoi_vals <- c(500, 1000, 1500, 2000)
+
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = zoi_vals, type = "bartlett")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = zoi_vals, type = "bartlett",
+                                       where = "GRASS", quiet = T, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::stack() %>% 
+  terra::rast()
+
+terra::plot(expG, main = paste("Bartlett decay cum. influence, ZoI = ", zoi_vals))
+```
+
+# Circle window 
+
+## Single scale
+
+```{r circle_single}
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = 500, type = "circle")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+# calculate cumulative influence
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = 500, type = "threshold",
+                                       where = "GRASS", quiet = F, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(expR, expG), 
+            main = paste("Threshold filter - ", 
+                         c("R", "GRASS")))
+```
+
+## Multiple scales
+
+```{r circle_multi}
+# ZoI
+zoi_vals <- c(500, 1000, 1500, 2000)
+
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = zoi_vals, type = "circle")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = zoi_vals, type = "circle",
+                                       where = "GRASS", quiet = T, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::stack() %>% 
+  terra::rast()
+
+terra::plot(expG, main = paste("Bartlett decay cum. influence, ZoI = ", zoi_vals))
+```
+
+# Rectangular window 
+
+## Single scale
+
+```{r sq_single}
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = 500, type = "rectangle")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+# calculate cumulative influence
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = 500, type = "rectangle",
+                                       where = "GRASS", quiet = F, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(expR, expG), 
+            main = paste("Rectangle filter - ", 
+                         c("R", "GRASS")))
+```
+
+## Multiple scales
+
+```{r sq_multi}
+# ZoI
+zoi_vals <- c(500, 1000, 1500, 2000)
+
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = zoi_vals, type = "rectangle")
+plot(expR, main = paste("Rectangle-window cum. influence, ZoI = ", zoi_vals))
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = zoi_vals, type = "rectangle",
+                                       where = "GRASS", quiet = T, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::stack() %>% 
+  terra::rast()
+
+terra::plot(expG, main = paste("Rectangle-window cum. influence, ZoI = ", zoi_vals))
+```
+
+# Gaussian window 
+
+## Single scale
+
+```{r gauss_single}
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = 250, type = "Gauss")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+# calculate cumulative influence
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = 250, type = "Gauss",
+                                       where = "GRASS", quiet = F, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(expR, expG), 
+            main = paste("Gaussian filter - ", 
+                         c("R", "GRASS")))
+```
+
+## Multiple scales
+
+```{r gauss_multi}
+# ZoI
+zoi_vals <- c(500, 1000, 1500, 2000)
+
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = zoi_vals, type = "Gauss")
+plot(expR, main = paste("Gaussian-window cum. influence, ZoI = ", zoi_vals))
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = zoi_vals, type = "Gauss",
+                                       where = "GRASS", quiet = T, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::stack() %>% 
+  terra::rast()
+
+terra::plot(expG, main = paste("Rectangle-window cum. influence, ZoI = ", zoi_vals))
+```
+
+# User-defined window 
+
+## Single scale
+
+```{r mfilter_single}
+my_filter <- create_filter(r = 100, zoi = 5000, method = "exp_decay", zoi_hl_ratio = 5)
+
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = my_filter, type = "mfilter")
+plot(expR)
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+# calculate cumulative influence
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = my_filter, type = "mfilter",
+                                       where = "GRASS", quiet = F, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::raster() %>% 
+  terra::rast()
+
+terra::plot(c(expR, expG), 
+            main = paste("User-defined filter - ", 
+                         c("R", "GRASS")))
+```
+
+## Multiple scales
+
+```{r mfilter_multi}
+# ZoI
+zoi_vals <- c(2000, 3000, 4000, 5000)
+my_filters <- purrr::map(zoi_vals, create_filter, r = 100, zoi_hl_ratio = 5)
+
+# R
+expR <- calc_influence_cumulative(x = cabins, zoi = my_filters, type = "mfilter")
+plot(expR, main = paste("User-defined-window cum. influence, ZoI = ", zoi_vals))
+
+# GRASS
+
+# binarized map
+cabins_bin_name <- "private_cabins_sub_bin"
+
+expG_name <- calc_influence_cumulative(x = cabins_bin_name, zoi = my_filters, type = "mfilter",
+                                       where = "GRASS", quiet = T, overwrite = T)
+# visualize
+expG <- rgrass7::readRAST(expG_name) %>% 
+  raster::stack() %>% 
+  terra::rast()
+
+terra::plot(expG, main = paste("User-defined-window cum. influence, ZoI = ", zoi_vals))
+```

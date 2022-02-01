@@ -38,8 +38,8 @@
 #' @param method `[character(1)="exp_decay"]{"exp_decay", "bartlett", "circle", "threshold", "step", "rectangle"}` \cr
 #' Rectangle = boxcar in smoothie::kernel2dmeitsjer
 #' Gaussian neighborhood with parameterization in terms of `zoi` to be implemented. So far it is possible to
-#' create Gaussian filters using other functions such as [terra::focalMat(type = "Gauss")] and
-#' [smoothie::kernel2dmeitsjer(type = "gauss")].
+#' create Gaussian filters using other functions such as [terra::focalMat()] with parameter
+#' `type = "Gauss"` and [smoothie::kernel2dmeitsjer()] with parameter `type = "gauss"`.
 #'
 #' @param half_life `[numeric(1)=NULL]` \cr Half life parameter of the exponential decay function, in meters. If NULL,
 #' the half life is define in terms of the ZoI and the `zoi_hl_ratio` parameter, which defines the ratio
@@ -53,11 +53,36 @@
 #' define the size (radius) of the window that define the filter.
 #' @param max_dist `[numeric(1)=50000]` \cr Maximum size (in meters) to
 #' define the size (radius) of the window that define the filter.
-#' @inheritParams set_filt_exp_decay
+#'
+#' @param divisor ...
+#' @param save_format `[character(1)="GRASS_r.mfilter"]{"GRASS_r.mfilter", "raw"}` \cr
+#' Format in which the function should be saved. Currently, only GRASS GIS format for the module `r.mfilter`
+#' (`save_format = "GRASS_r.mfilter"`, according to the required format for `r.mfilter` module, details
+#' [here](https://grass.osgeo.org/grass78/manuals/r.mfilter.html)) or raw (`save_format = "raw"`),
+#' in which only the values of the matrix are printed.
+#' @param save_folder `[character(1)=NULL]` \cr Path to the folder where the matrix file should be written.
+#' If `NULL`, the current directory is used.
+#' @param save_file `[character(1)=NULL]` \cr Name of the output file, generally a ".txt" file.
+#' If `NULL`, a standard filename is created, using the the `method` and `zoi`. E.g. "filter_bartlett2000.txt".
+#' @param normalize `[logical(1)=FALSE]` \cr Whether the matrix should be normalized (sum of all cell is 1, if
+#' `normalize = TRUE`) or kept as it is (default, `normalize = FALSE`).
+#' @param divisor `[numeric(1)=1]` \cr By default, 1. This is the divisor of the neighborhood
+#' matrix, when used within `r.mfilter`. According the the module documentation, "The filter process produces a new ¨
+#' category value for each cell in the input raster map layer by multiplying the category values of the cells
+#' in the n x n neighborhood around the center cell by the corresponding matrix value and adding them together.
+#' If a divisor is specified, the sum is divided by this divisor." \cr
+#' If the divisor is zero, "then the divisor is computed for each cell as the sum of the MATRIX values where
+#' the corresponding input cell is non-null." In other words, the output map will be rescaled to the
+#' interval [0,1]. If `normalize = TRUE`, the divisor is set to `n*n`.
+#' @param parallel `[logical(1)=TRUE]` \cr Whether the computation should be paralelized or not (details in
+#' the documentation of the [`r.mfilter`]((https://grass.osgeo.org/grass78/manuals/r.mfilter.html)) module).
 #'
 #' @return A matrix with the weight values.
 #'
 #' @example examples/create_filter_example.R
+#'
+#' @seealso See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
+#' [raster::focalWeight()] for other functions to create filters or weight matrices.
 #'
 #' @export
 create_filter <- function(r = 100,
@@ -68,9 +93,10 @@ create_filter <- function(r = 100,
                           min_intensity = 0.01,
                           max_dist = 5000,
                           normalize = FALSE,
+                          divisor = 1,
                           round_vals = NULL,
                           save_txt = FALSE,
-                          save_format = "GRASS",
+                          save_format = c("GRASS_r.mfilter", "raw")[1],
                           save_folder = NULL,
                           save_file = NULL,
                           output = c("CumInf", "Densiy")[1],
@@ -133,7 +159,7 @@ create_filter <- function(r = 100,
   }
 
   if(method == "rectangle") {
-    values(dist_mat) <- 1
+    dist_mat[] <- 1
   }
   # image(dist_mat)
   # plot(terra::rast(dist_mat))
@@ -154,23 +180,16 @@ create_filter <- function(r = 100,
 
   if(save_txt) {
     # save matrix outside R for use within GRASS GIS
-    save_mfilter(dist_mat, zoi = zoi, method = method, 
-                 save_format = c("GRASS"), save_folder = save_folder,
-                 save_file = save_file, parallel = parallel, separator = " ")
-    
+    save_mfilter(filt = dist_mat, zoi = zoi, method = method,
+                 save_format = save_format, save_folder = save_folder,
+                 save_file = save_file, parallel = parallel,
+                 divisor = divisor, separator = " ")
+
   }
 
   dist_mat
 }
 
-#' @param zoi_hl_ratio `[numeric(1)=6]` \cr Ratio between the ZoI and the half life of the exponential decay
-#' distance function. It is used to define the ZoI for the exponential decay function. For instance, if
-#' `half_life = 1000` and `zoi_hl_ratio = 4`, the ZoI will be 4000 m (when the exponential decay decrease to
-#' `0.5**4 = 0.0625`.
-#' @param min_intensity `[numeric(1)=0.01]` \cr Minimum intensity of the exponential decay function to
-#' define the size (radius) of the window that define the filter.
-#' @param max_dist `[numeric(1)=50000]` \cr Maximum size (in meters) to
-#' define the size (radius) of the window that define the filter.
 set_filt_exp_decay <- function(zoi = NULL,
                                half_life = NULL,
                                res = 100,

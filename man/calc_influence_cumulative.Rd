@@ -9,18 +9,24 @@ calc_influence_cumulative(
   zoi = 100,
   type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter")[1],
   where = c("R", "GRASS")[1],
+  module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   min_intensity = 0.01,
   max_dist = 50000,
   normalize = FALSE,
+  divisor = 1,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
   na.policy = "omit",
   na.rm = TRUE,
-  quiet = FALSE,
   plotit = FALSE,
+  parallel = TRUE,
+  output_map_name = NULL,
+  remove_intermediate = TRUE,
+  overwrite = FALSE,
+  quiet = TRUE,
   ...
 )
 }
@@ -37,7 +43,7 @@ to the size of the side of a square filter. See \code{\link[terra:focalMat]{terr
 If \code{type = "mfilter"}, scale is not a numeric value but a matrix itself, defined by the user. See description
 in the details.}
 
-\item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "mfilter"\}} \cr
+\item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter"\}} \cr
 Type of filter used to calculate density. See description for details.}
 
 \item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector representing the minimum and

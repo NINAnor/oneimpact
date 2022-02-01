@@ -1,61 +1,89 @@
 #' Save kernel/filter matrix to use in r.mfilter within GRASS GIS
-#' 
+#'
 #' @param filt `[matrix]` \cr Matrix, such as one created by [oneimpact::create_filter()] or [terra::focalMat()].
 #' @param zoi `[numeric(1)]` \cr Zone of Influence of the matrix, in meters.
 #' @param method `[character(1)]` Function for the kernel or filter matrix (see `method` parameter for [create_filter()]).
-#' @param save_format `[character(1)=GRASS]{"GRASS", "raw"}` \cr Format in which the function should be saved. Currently, only GRASS GIS format 
-#' (`save_format = "GRASS"`, according to the required format for `r.mfilter` module, details 
+#' @param save_format `[character(1)="GRASS_r.mfilter"]{"GRASS_r.mfilter", "raw"}` \cr
+#' Format in which the function should be saved. Currently, only GRASS GIS format for the module `r.mfilter`
+#' (`save_format = "GRASS_r.mfilter"`, according to the required format for `r.mfilter` module, details
 #' [here](https://grass.osgeo.org/grass78/manuals/r.mfilter.html)) or raw (`save_format = "raw"`),
 #' in which only the values of the matrix are printed.
 #' @param save_folder `[character(1)=NULL]` \cr Path to the folder where the matrix file should be written.
 #' If `NULL`, the current directory is used.
-#' @param save_file `[character(1)=NULL]` \cr Name of the output file, generally a ".txt" file. 
+#' @param save_file `[character(1)=NULL]` \cr Name of the output file, generally a ".txt" file.
 #' If `NULL`, a standard filename is created, using the the `method` and `zoi`. E.g. "filter_bartlett2000.txt".
 #' @param normalize `[logical(1)=FALSE]` \cr Whether the matrix should be normalized (sum of all cell is 1, if
 #' `normalize = TRUE`) or kept as it is (default, `normalize = FALSE`).
-#' @param parallel `[logical(1)=TRUE]` \cr Whether the computation should be paralelized or not (details in 
+#' @param divisor `[numeric(1)=1]` \cr By default, 1. This is the divisor of the neighborhood
+#' matrix, when used within `r.mfilter`. According the the module documentation, "The filter process produces a new ¨
+#' category value for each cell in the input raster map layer by multiplying the category values of the cells
+#' in the n x n neighborhood around the center cell by the corresponding matrix value and adding them together.
+#' If a divisor is specified, the sum is divided by this divisor." \cr
+#' If the divisor is zero, "then the divisor is computed for each cell as the sum of the MATRIX values where
+#' the corresponding input cell is non-null." In other words, the output map will be rescaled to the
+#' interval [0,1]. If `normalize = TRUE`, the divisor is set to `n*n`.
+#' @param parallel `[logical(1)=TRUE]` \cr Whether the computation should be paralelized or not (details in
 #' the documentation of the [`r.mfilter`]((https://grass.osgeo.org/grass78/manuals/r.mfilter.html)) module).
-#' @param separator `[character(1)=" "]` \cr Separator between values of the matrix, within each line. Default is 
+#' @param separator `[character(1)=" "]` \cr Separator between values of the matrix, within each line. Default is
 #' a space.
-#' 
+#'
 #' @return None. The funcion only saves the input matrix as an external file.
-#' 
-#' @examples 
+#'
+#' @examples
 #' my_filter <- create_filter(r = 100, method = "bartlett", zoi = 1000, round = 4)
 #' save_mfilter(my_filter, zoi = 1000, method = "bartlett", save_format = "GRASS")
-#' 
+#'
 #' @export
 save_mfilter <- function(
   filt,
-  zoi, 
-  method, 
-  save_format = c("GRASS", "raw")[1],
+  zoi,
+  method,
+  save_format = c("GRASS_r.mfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
+  divisor = 1,
   normalize = FALSE,
   parallel = TRUE,
   separator = " ") {
-  
-  if(!normalize) DIV <- 0 else DIV <- size_pix**2
+
+  # define the divisor
+  DIV <- divisor
+  # if normalize = TRUE, replace DIV
+  if(normalize) DIV <- size_pix**2
+
+  # should the computation be parallelized?
   if(parallel) TYP <- "P" else TYP <- "S"
-  if(save_format == "GRASS") {
-    if(is.null(save_file)) {
-      save_file <- paste0("filter_", method, zoi, ".txt")
-    }
-    if(is.null(save_folder)) { 
-      file_out <- save_file
-    } else {
-      file_out <- paste0(save_folder, "/", save_file)
-    } 
-    
-    con <- file(file_out, "w")
+
+  # output file name
+  if(is.null(save_file)) {
+    save_file <- paste0("filter_", method, zoi, ".txt")
+  }
+  if(is.null(save_folder)) {
+    file_out <- save_file
+  } else {
+    file_out <- paste0(save_folder, "/", save_file)
+  }
+
+  # open file
+  con <- file(file_out, "w")
+
+  # r.mfilter preamble
+  if(save_format == "GRASS_r.mfilter") {
     writeLines(paste0("TITLE filter ", method, " ", zoi, "m"), con = con, sep = "\n", useBytes = FALSE)
     writeLines(paste0("MATRIX ", dim(filt)[2]), con = con, sep = "\n", useBytes = FALSE)
-    for (i in c(1:nrow(filt))) {
-      writeLines(paste0(filt[i,], collapse = separator), con = con, sep = "\n", useBytes = FALSE)
-    }
+  }
+
+  # write matrix
+  for (i in c(1:nrow(filt))) {
+    writeLines(paste0(filt[i,], collapse = separator), con = con, sep = "\n", useBytes = FALSE)
+  }
+
+  # r.mfilter post-info
+  if(save_format == "GRASS_r.mfilter") {
     writeLines(paste0("DIVISOR ", DIV), con = con, sep = "\n", useBytes = FALSE)
     writeLines(paste0("TYPE ", TYP), con = con, sep = "\n", useBytes = FALSE)
-    close(con)
   }
+
+  # close file
+  close(con)
 }

@@ -59,18 +59,24 @@ calc_influence_cumulative <- function(x,
                                       zoi = 100,
                                       type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter")[1],
                                       where = c("R", "GRASS")[1],
+                                      module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
                                       zoi_hl_ratio = 4,
                                       half_life = NULL,
                                       exp_decay_parms = c(1, 0.01),
                                       min_intensity = 0.01,
                                       max_dist = 50000,
                                       normalize = FALSE,
+                                      divisor = 1,
                                       extent_x_cut = NULL,
                                       extent_y_cut = NULL,
                                       na.policy = "omit",
                                       na.rm = TRUE,
-                                      quiet = FALSE,
-                                      plotit = FALSE, ...) {
+                                      plotit = FALSE,
+                                      parallel = TRUE,
+                                      output_map_name = NULL,
+                                      remove_intermediate = TRUE,
+                                      overwrite = FALSE,
+                                      quiet = TRUE,...) {
 
   # Run in R
   if(where %in% c("R", "r")) {
@@ -97,7 +103,29 @@ calc_influence_cumulative <- function(x,
   } else {
 
     # Run in GRASS GIS
-    stop("GRASS to be implemented")
+    if(where %in% c("GRASS", "grass", "GRASS GIS", "grass gis")) {
+      inf_cumulative <- calc_influence_cumulative_GRASS(x = x,
+                                                        zoi = zoi,
+                                                        type = type,
+                                                        module = module,
+                                                        zoi_hl_ratio = zoi_hl_ratio,
+                                                        half_life = half_life,
+                                                        exp_decay_parms = exp_decay_parms,
+                                                        min_intensity = min_intensity,
+                                                        max_dist = max_dist,
+                                                        divisor = divisor,
+                                                        normalize = normalize,
+                                                        extent_x_cut = extent_x_cut,
+                                                        extent_y_cut = extent_y_cut,
+                                                        parallel = parallel,
+                                                        output_map_name = output_map_name,
+                                                        remove_intermediate = remove_intermediate,
+                                                        overwrite = overwrite,
+                                                        quiet = quiet,
+                                                        ...)
+
+      return(inf_cumulative)
+    }
   }
 
 
@@ -144,9 +172,9 @@ calc_influence_cumulative_r <- function(
   # plot(r0)
 
   # define filters
-  if(type %in% c("exp_decay", "bartlett")) {
+  if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "step", "rectangle")) {
     if(length(zoi) == 1) {
-      filt <- create_filter(r0, zoi = zoi, method = "exp_decay",
+      filt <- create_filter(r0, zoi = zoi, method = type,
                             zoi_hl_ratio = zoi_hl_ratio,
                             half_life = half_life,
                             max_dist = max_dist,
@@ -154,7 +182,7 @@ calc_influence_cumulative_r <- function(
                             normalize = normalize, ...)
     } else {
       filt <- purrr::map(zoi, function(z, ...) {
-        create_filter(r0, zoi = z, method = "exp_decay",
+        create_filter(r0, zoi = z, method = type,
                       zoi_hl_ratio = zoi_hl_ratio,
                       half_life = half_life,
                       max_dist = max_dist,
@@ -168,9 +196,14 @@ calc_influence_cumulative_r <- function(
     filt <- zoi
   }
 
-  if(type %in% c("circle", "Gauss", "rectangle")) {
+  # those methods were put above with the create_filter function
+  # type = c("circle", "rectangle", "threshold", "step")
+  # only Gauss is kept here, so far
+  # if(type %in% c("circle", "Gauss", "rectangle", "threshold", "step")) {
+  if(type %in% c("Gauss")) {
 
-    if(type == "rectangle") zoi = 2*zoi # for this case d is the side of the square
+    # if(type %in% c("threshold", "step")) type <- "circle"
+    # if(type == "rectangle") zoi = 2*zoi # for this case d is the side of the square
 
     if(length(zoi) == 1) {
       filt <- terra::focalMat(r0, d = zoi, type = type)
@@ -238,19 +271,18 @@ calc_influence_cumulative_GRASS <- function(
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
-  hnorm_decay_parms = c(1, 20),
+  # hnorm_decay_parms = c(1, 20),
   min_intensity = 0.01,
   max_dist = 50000,
+  divisor = 1,
   normalize = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
+  parallel = TRUE,
   output_map_name = NULL,
   remove_intermediate = TRUE,
-  print_expression = FALSE,
   overwrite = FALSE,
-  overwrite_bin = FALSE,
-  quiet = FALSE,
-  parallel = ...,
+  quiet = TRUE,
   ...) {
 
   # flags
@@ -269,6 +301,8 @@ calc_influence_cumulative_GRASS <- function(
   # 2. check if the map is already in GRASS GIS mapset, or if it should be uploaded from the disc or from R
   # check if x is a string that exists within GRASS GIS mapset
 
+  ##### CUT extent to be implemented
+
   # start by setting the region
   rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
 
@@ -277,14 +311,15 @@ calc_influence_cumulative_GRASS <- function(
   input_bin <- x
   values_input <- rgrass7::execGRASS("r.category", map = input_bin, separator = " ", flags = "quiet")
   values_input <- sort(as.numeric(attributes(values_input)$resOut))
-  if(length(values_input) == 1) {
-    input_bin <- paste0(x, "_bin")
-    if(overwrite_bin) {
-      fl_bin <- ifelse("overwrite" %in% flags, flags, c(flags, "overwrite"))
-      rgrass7::execGRASS("r.mapcalc", expression = sprintf("%s = %s", input_bin, x), flags = fl_bin)
-    }
-    rgrass7::execGRASS("r.null", map = input_bin, null = 0)
-    if(remove_intermediate) to_remove <- c(to_remove, input_bin)
+  if(sort(values_input) != c(0,1)) {
+    stop("Please make sure the input map is binary, with values 0 or 1 only.")
+    # input_bin <- paste0(x, "_bin")
+    # if(overwrite_bin) {
+    #   fl_bin <- ifelse("overwrite" %in% flags, flags, c(flags, "overwrite"))
+    #   rgrass7::execGRASS("r.mapcalc", expression = sprintf("%s = %s", input_bin, x), flags = fl_bin)
+    # }
+    # rgrass7::execGRASS("r.null", map = input_bin, null = 0)
+    # if(remove_intermediate) to_remove <- c(to_remove, input_bin)
   }
 
   # define the name of the output map
@@ -311,6 +346,12 @@ calc_influence_cumulative_GRASS <- function(
   #   if(type == )
   # }
 
+  # for r.neighbors, it always performs the average, it is not possible to sum
+  # the matrix is always normalized
+  # one must use the argument size in conjunction with the weight matrix
+  # we must a specific output from save_mfilter for that, with only the numbers
+  # r.neighbors input=private_cabins_sub_bin output=test_neighbors method=count size=21 weight=test_neighbors_exp_filt500.txt --o
+
   # perform calculations for "r.mfilter"
   if(module == "r.mfilter") {
 
@@ -324,6 +365,7 @@ calc_influence_cumulative_GRASS <- function(
                               half_life = half_life,
                               max_dist = max_dist,
                               min_intensity = min_intensity,
+                              divisor = divisor,
                               normalize = normalize, save_txt = TRUE,
                               save_file = filter_file, ...)
       } else {
@@ -333,6 +375,7 @@ calc_influence_cumulative_GRASS <- function(
                         half_life = half_life,
                         max_dist = max_dist,
                         min_intensity = min_intensity,
+                        divisor = divisor,
                         normalize = normalize, save_txt = TRUE,
                         save_file = file, ...)
         })
@@ -364,6 +407,14 @@ calc_influence_cumulative_GRASS <- function(
 
       # create filters with focalMat for "Gauss", zoi represents the sd
       if(type == "Gauss") {
+
+        # create raster to define resolution
+        reg_proj <- rgrass7::getLocationProj()
+        r0 <- terra::rast(nrows = region$rows, ncols = region$cols,
+                          xmin = region$w, xmax = region$e,
+                          ymin = region$s, ymax = region$n,
+                          crs = reg_proj)
+
         if(length(zoi) == 1) {
           filt <- terra::focalMat(r0, d = zoi, type = type)
           if(!normalize) filt <- filt/max(filt, na.rm = T)
@@ -381,10 +432,11 @@ calc_influence_cumulative_GRASS <- function(
       # for one matrix only
       if(is.matrix(filt)) {
         filter_count <- 1
-        filter_file <- tempfile(paste0("my_filter_", filter_count, "_"))
+        filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
         # save matrix outside R for use within GRASS GIS
-        save_mfilter(filt, zoi = "", method = method,
-                     save_format = c("GRASS"),
+        save_mfilter(filt, zoi = "", method = type,
+                     divisor = divisor,
+                     save_format = c("GRASS_r.mfilter"),
                      save_file = filter_file,
                      parallel = parallel,
                      separator = " ")
@@ -392,12 +444,13 @@ calc_influence_cumulative_GRASS <- function(
         # for multiple matrices
         if(is.list(filt)) {
           filter_count <- 1:length(filt)
-          filter_file <- tempfile(paste0("my_filter_", filter_count, "_"))
+          filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
           # save matrices outside R for use within GRASS GIS
           filt <- purrr::map2(filt, filter_file, function(f, file, ...) {
-            save_mfilter(f, zoi = "", method = method,
-                         save_format = c("GRASS"),
-                         save_file = filter_file,
+            save_mfilter(f, zoi = "", method = type,
+                         divisor = divisor,
+                         save_format = c("GRASS_r.mfilter"),
+                         save_file = file,
                          parallel = parallel,
                          separator = " ")
           })
@@ -411,7 +464,7 @@ calc_influence_cumulative_GRASS <- function(
     if(is.matrix(filt)) {
       out_names <- out_map
       if(type != "mfilter") out_names <- paste0(out_names, zoi)
-      parms <- list(input = input_bin, output = out_map, filter = filter_file)
+      parms <- list(input = input_bin, output = out_names, filter = filter_file)
     } else {
       # several matrices or zoi values
       if(is.list(filt)) {
@@ -421,7 +474,6 @@ calc_influence_cumulative_GRASS <- function(
       }
     }
   }
-
 
   # run neighborhood analysis
   if("list" %in% class(filt)) {

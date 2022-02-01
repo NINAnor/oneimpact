@@ -8,9 +8,10 @@ save_mfilter(
   filt,
   zoi,
   method,
-  save_format = c("GRASS", "raw")[1],
+  save_format = c("GRASS_r.mfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
+  divisor = 1,
   normalize = FALSE,
   parallel = TRUE,
   separator = " "
@@ -23,8 +24,9 @@ save_mfilter(
 
 \item{method}{\verb{[character(1)]} Function for the kernel or filter matrix (see \code{method} parameter for \code{\link[=create_filter]{create_filter()}}).}
 
-\item{save_format}{\verb{[character(1)=GRASS]\{"GRASS", "raw"\}} \cr Format in which the function should be saved. Currently, only GRASS GIS format
-(\code{save_format = "GRASS"}, according to the required format for \code{r.mfilter} module, details
+\item{save_format}{\verb{[character(1)="GRASS_r.mfilter"]\{"GRASS_r.mfilter", "raw"\}} \cr
+Format in which the function should be saved. Currently, only GRASS GIS format for the module \code{r.mfilter}
+(\code{save_format = "GRASS_r.mfilter"}, according to the required format for \code{r.mfilter} module, details
 \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here}) or raw (\code{save_format = "raw"}),
 in which only the values of the matrix are printed.}
 
@@ -33,6 +35,15 @@ If \code{NULL}, the current directory is used.}
 
 \item{save_file}{\verb{[character(1)=NULL]} \cr Name of the output file, generally a ".txt" file.
 If \code{NULL}, a standard filename is created, using the the \code{method} and \code{zoi}. E.g. "filter_bartlett2000.txt".}
+
+\item{divisor}{\verb{[numeric(1)=1]} \cr By default, 1. This is the divisor of the neighborhood
+matrix, when used within \code{r.mfilter}. According the the module documentation, "The filter process produces a new ¨
+category value for each cell in the input raster map layer by multiplying the category values of the cells
+in the n x n neighborhood around the center cell by the corresponding matrix value and adding them together.
+If a divisor is specified, the sum is divided by this divisor." \cr
+If the divisor is zero, "then the divisor is computed for each cell as the sum of the MATRIX values where
+the corresponding input cell is non-null." In other words, the output map will be rescaled to the
+interval \link{0,1}. If \code{normalize = TRUE}, the divisor is set to \code{n*n}.}
 
 \item{normalize}{\verb{[logical(1)=FALSE]} \cr Whether the matrix should be normalized (sum of all cell is 1, if
 \code{normalize = TRUE}) or kept as it is (default, \code{normalize = FALSE}).}
