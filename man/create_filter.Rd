@@ -2,32 +2,61 @@
 % Please edit documentation in R/create_filter.R
 \name{create_filter}
 \alias{create_filter}
-\title{Create filters for raster neighborhood analyses}
+\title{Create filters or kernel matrices for raster neighborhood analyses}
 \usage{
 create_filter(
+  r = 100,
   zoi = NULL,
-  res = 100,
-  method = c("exp_decay", "step", "bartlett")[1],
+  method = c("exp_decay", "bartlett", "circle", "threshold", "step", "Gauss",
+    "rectangle")[1],
   half_life = NULL,
   zoi_hl_ratio = 4,
   min_intensity = 0.01,
   max_dist = 5000,
   normalize = FALSE,
-  round_vals = 3,
+  round_vals = NULL,
   save_txt = FALSE,
   save_format = "GRASS",
-  save_folder = ".",
+  save_folder = NULL,
+  save_file = NULL,
   output = c("CumInf", "Densiy")[1],
-  paralell = TRUE
+  parallel = TRUE
 )
 }
 \arguments{
-\item{zoi}{\verb{[numeric(1)]} \cr Zone of Influence (ZoI), in meters. The ZoI is distance or scale up to
-which we consider there is effect of an infrastructure or variable for setting the filter.}
+\item{r}{Either a numeric value corresponding to the resolution (pixel size) that each pixel in the filter matrix
+should correspond to; or a raster object (\code{SpatRaster} from the \code{terra} package or \code{RasterLayer}, \code{RasterBrick}, or
+\code{RasterStack} from the \code{raster} package) from which such resolution can be extracted.}
 
-\item{res}{\verb{[numeric(1)=100]} \cr Resolution (pixel size) of the filter.}
+\item{zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI), in map units (preferentially meters).
+The ZoI is the distance, scale, or buffer size around a feature up to which we consider there is
+an effect or influence of an infrastructure or variable. \cr
+For the circle neighborhood (equivalent to step or threshold neighborhoods), the \code{zoi} corresponds to the radius
+(or thresold) of the circle, beyond which the filter is zero. \cr
+For the rectangular neighborhood, the \code{zoi} corresponds to half the size of the square size, or
+\verb{square size = 2*zoi}. For a rectangular filter with different size of the sides, use \code{\link[terra:focal]{terra::focal()}} (but
+please note the interpretation of the parameters is different). \cr
+For the Bartlett neighborhood, the \code{zoi} corresponds to the distance beyond which the filter is zero. \cr
+For the exponential decay neighborhood, the \code{zoi} is used to define the half-life and the lambda
+of the exponential decay function, based on the parameter \code{zoi_hl_ratio},
+that defines the ratio between the ZoI and the exponential half-life. Since the half-life is the value
+where the exponential decay decreases by \code{0.5}, a ratio of, for instance, \code{zoi_hl_ratio = 4} (default)
+would mean that the ZoI is defined as the value where the exponential decay decreases to \code{0.5^4 = 0.0625}.
+In this case, if \code{zoi = 4000} m, this means that the ZoI is four times higher than the half-life, i.e.
+\code{half_life = 1000} and \code{lambda = log(2)/half_life = 6.93e-4}. The definition of a zone of
+influence does not imply a cutoff of the exponential decay function but is only used to define
+its parameters, based on the defined \code{zoi_hl_ratio} parameter. The cutoff is given either by the
+\code{min_intensity} or the \code{max_dist} parameters.
+If \code{zoi = NULL}, the exponential decay is defined based on the \code{half_life} parameter. \cr
+Gaussian neighborhood with parameterization in terms of \code{zoi} to be implemented.}
 
-\item{half_life}{\verb{[numeric(1)]} \cr Half life parameter of the exponential decay function, in meters. If NULL,
+\item{method}{\verb{[character(1)="exp_decay"]\{"exp_decay", "bartlett", "circle", "threshold", "step", "rectangle"\}} \cr
+Rectangle = boxcar in smoothie::kernel2dmeitsjer
+Gaussian neighborhood with parameterization in terms of \code{zoi} to be implemented. So far it is possible to
+create Gaussian filters using other functions such as \link[terra:focalMat(type = "Gauss")]{terra::focalMat(type = "Gauss")} and
+\link[smoothie:kernel2dmeitsjer(type = "gauss")]{smoothie::kernel2dmeitsjer(type = "gauss")}.}
+
+\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life parameter of the exponential decay function, in meters. If NULL,
 the half life is define in terms of the ZoI and the \code{zoi_hl_ratio} parameter, which defines the ratio
 between the ZoI and the half life. By default, we set this ratio as \code{zoi/half_life = 4}.
 The exponent of the exponential decay distance function is defined as \code{lambda = log(2)/half_life}.}
@@ -64,22 +93,21 @@ such as the r.mfilter module within GRASS GIS.
 }
 \examples{
 library(terra)
-library(raster)
 library(dplyr)
 
 # load example raster in metric system
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f) \%>\% 
   terra::project("EPSG:32631")
-terra::ext(r)[1:2] \%>\% diff
+# terra::ext(r)[1:2] \%>\% diff
 
 # create exponential filter
-filt_exp1000 <- create_filter(zoi = 1000, method = "exp_decay",
+filt_exp1000 <- create_filter(r, zoi = 1000, method = "exp_decay",
                               max_dist = 5000,
-                              res = res(r)[1], normalize = T)
-filt_exp3000 <- create_filter(zoi = 3000, method = "exp_decay", 
+                              normalize = T)
+filt_exp3000 <- create_filter(r, zoi = 3000, method = "exp_decay", 
                               max_dist = 5000,
-                              res = res(r)[1], normalize = T)
+                              normalize = T)
 # use exponential filter
 neigh_r_exp1000 <- terra::focal(r, filt_exp1000, fun = "sum", 
                                 na.policy="omit", na.rm=TRUE)
@@ -91,8 +119,8 @@ plot(c(r, neigh_r_exp1000, neigh_r_exp3000),
      main = c("original", "exp filter 1000m", "exp filter 3000m"))
 
 # create step filter
-filt_step3000 <- create_filter(zoi = 3000, method = "step",
-                               res = res(r)[1], normalize = T)
+filt_step3000 <- create_filter(r, zoi = 3000, method = "step",
+                               normalize = T)
 # use step filter
 neigh_r_step3000 <- terra::focal(r, filt_step3000, fun = "sum", 
                                  na.policy="omit", na.rm=TRUE)
@@ -103,8 +131,8 @@ plot(c(neigh_r_exp3000, neigh_r_step3000),
 # plot(app(c(neigh_r_exp3000, neigh_r_step3000), "diff"))
 
 # create bartlett filter
-filt_bart3000 <- create_filter(zoi = 3000, method = "bartlett",
-                               res = res(r)[1], normalize = T)
+filt_bart3000 <- create_filter(r, zoi = 3000, method = "bartlett",
+                               normalize = T)
 # use bartlett filter
 neigh_r_bart3000 <- terra::focal(r, filt_bart3000, fun = "sum",
                                  na.policy="omit", na.rm=TRUE)
@@ -114,4 +142,9 @@ plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000),
      main = c("exp filter 3000m", "step filter 3000m", "Bartlett filter 3000m"))
 # plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))
 # plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))
+
+# save outside R for use in GRASS GIS
+# create_filter(r, zoi = 1000, method = "bartlett",
+#               max_dist = 5000,
+#               normalize = T, save_txt = TRUE)
 }

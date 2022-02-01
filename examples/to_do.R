@@ -1,21 +1,38 @@
-#' Next steps
+#'---
+#' title: oneimpact - Next steps
+#' author: "Bernardo Niebuhr"
+#' date: "`r format(Sys.time(), '%Y-%m-%d')`"
+#' output:
+#'   pdf_document: default
+#'   html_document: default
+#'---
 #' 
-#' - arrumar parametros e definicao de zoi para calc_dist exp_decay
-#' - zoi para Gaussian
-#' - implementar multiple zois for calc_influence_nearest e ver como juntar em calc_influence
-#' - inserir a possibilidade de usar exp_decay e bartlett dentro do calc_influence_cumulative,
-#' sem ter que criar o mfilter
-#' - calc_dist_dens - with terra
-#' - simulate_dist_dens - with terra
+#' 1. `calc_influence_nearest`:
 #' 
-#' - implement calculation using buffers around points instead of the whole map
+#' - Add support for multiple zoi input values
 #' 
+#' 2. `calc_influence_cumulative`:
+#' - Document parameters and al
+#' - implement exp_decay and Bartlett without the need to use create_filter (embed it)
+#' - implement function within GRASS
+#' - make example for GRASS
+#' - test time for different implementations in GRASS (r.resamp.filter, r.mfilter)
+#' - not so important: implement Gaussian with parameters based on zoi
 #' 
-#' New:
-#' - Add multiple zoi for calculate nearest
-#' - Implement cumulative for GRASS
-#' - Implement exp_decay and Bartlett already in cumulative, without need of create_filter
+#' 3. `create_filter`:
+#' - Document parameters and all
+#' - implement Gaussian filter parameterized on zoi
 #' 
-#' - calc_influence_nearest: add file with two-three examples for the documentation fo the function
-#' - add a layer to the package, for testing
+#' 4. All functions:
+#' - Possible: standardize parameters (method, type, transform, including "euclidean" as an option for nearest)
+#' 
+#' 5. `calc_influence`: 
+#' - implement for R and GRASS 
+#' 
+#' 6. simulate_dist_dens - with terra - not important
+#' 
+#' 7. Implement calculation using buffers around points instead of the whole map
+#' 
+#' 8. Data:
+#' - add a layer to the package, for testing (cabins, describe it)
 
