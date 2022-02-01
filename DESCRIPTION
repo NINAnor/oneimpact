@@ -10,7 +10,7 @@ Depends:
 Imports: 
     dplyr, purrr, terra, raster, sf, mobsim
 Suggests:
-    rasterVis, landscapetools, NLMR
+    landscapetools, NLMR, smoothie, rasterVis
 License: Not defined yet
 Encoding: UTF-8
 LazyData: false

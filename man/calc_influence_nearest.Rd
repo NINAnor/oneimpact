@@ -51,7 +51,7 @@ In this case, if \code{zoi = 4000} m, this means that the ZoI is four times high
 influence does not imply a cuttoff of the exponential decay function but is only used to define
 its parameters, based on the defined \code{zoi_hl_ratio} parameter.}
 
-\item{transform}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "bartlett"\}} \cr
+\item{transform}{\verb{[character(1)=NULL]\{"log","sqrt", "exp_decay", "Gauss", "bartlett"\}} \cr
 By default, NULL, when the measure of influence is the Euclidean distance to the nearest
 feature.
 \itemize{
@@ -144,7 +144,8 @@ This parameter is ignored when the calculations are performed in R (if \code{whe
 \item{print_expression}{= TRUE
 This parameter is ignored when the calculations are performed in R (if \code{where = "R"}).}
 
-\item{quiet, overwrite}{= TRUE,
+\item{quiet, overwrite}{\verb{[logical(1)]} \cr Whether the procedures is GRASS GIS should be run
+quetly (flag \code{quiet = TRUE}) and whether the output maps should be overwriten (flag \code{overwrite = TRUE}).
 These parameters is ignored when the calculations are performed in R (if \code{where = "R"}).}
 
 \item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}} when the calculations are performed in R.
