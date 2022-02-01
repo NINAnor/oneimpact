@@ -40,7 +40,7 @@ study_area <- sf::st_read("inst/vector/study_area.gpkg")
 study_area
 
 # save
-usethis::use_data(study_area, overwrite = TRUE)
+# usethis::use_data(study_area, overwrite = TRUE)
 
 #------------------
 # Get cabins
@@ -59,4 +59,5 @@ cabins <- terra::rast("inst/raster/cabins.tif")
 cabins
 
 # save
-usethis::use_data(cabins, overwrite = TRUE)
+# usethis::use_data(cabins, overwrite = TRUE)
+
