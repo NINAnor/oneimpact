@@ -88,11 +88,12 @@ If one wants to use their own filter or weight matrix, it is possible to define 
 and provide a matrix to the parameter \code{zoi} instead, such as one created through the
 \code{\link[terra:focalMat]{terra::focalMat()}} or the \code{\link[=create_filter]{create_filter()}} functions.
 
-TO IMPROVE1: implement with \code{terra}. WE SHOULD DETECT IF THE INPUT IS RASTER OR TERRA
+TO IMPROVE1: Do not forget to mention the edge effects in r.mfilter in GRASS
 
 TO IMPROVE2: do the same in communication with GRASS GIS.
 }
 \examples{
+# Running calc_influence_cumulative through R
 library(mobsim)
 library(terra)
 
@@ -108,21 +109,21 @@ pts <- set_points(n_features = 1000, centers = 1,
 plot(pts$pts)
 plot(pts$rast)
 
-# calculate cumulative influence for multiple zones of influence, 
+# calculate cumulative influence for multiple zones of influence,
 # considering only the initial extent, for a Gaussian filter
 zoi_values <- c(250, 500, 1000, 2500, 5000)/2
 cuminf <- calc_influence_cumulative(pts$rast, type = "Gauss", zoi = zoi_values,
                                     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf)
 
-# calculate cumulative influence for multiple zones of influence, 
+# calculate cumulative influence for multiple zones of influence,
 # using a circle neighborhood
 zoi_values <- c(250, 500, 1000, 2500, 5000)
 cuminf_circle <- calc_influence_cumulative(pts$rast, type = "circle", zoi = zoi_values,
                                            extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf_circle)
 
-# calculate cumulative influence for a single zones of influence 
+# calculate cumulative influence for a single zones of influence
 # using a user-defined filter
 my_filter <- create_filter(pts$rast, zoi = 1000, method = "exp_decay")
 cuminf_user <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_filter,
@@ -130,11 +131,86 @@ cuminf_user <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_fi
 plot(c(cuminf[[3]], cuminf_circle[[3]], cuminf_user),
      main = c("Gaussian filter", "Circle neighborhood", "User-defined filter"))
 
-# calculate cumulative influence for multiple zones of influence, 
+# calculate cumulative influence for multiple zones of influence,
 # using an exp_decay neighborhood
 zoi_values <- c(250, 500, 1000, 2500, 5000)
 cuminf_exp <- calc_influence_cumulative(pts$rast, type = "exp_decay", zoi = zoi_values,
                                         extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf_exp)
 
+#--------------------
+# Running calc_influence_cumulative through GRASS GIS
+library(rgrass7)
+library(raster)
+library(terra)
+library(dplyr)
+
+# connect to grass gis 7.8
+grassdir <- system("grass78 --config path", intern = T)
+gisDB <- "/data/grass"
+loc <- "ETRS_33N/"
+ms <- "u_bb_cuminf"
+rgrass7::initGRASS(gisBase = grassdir,
+                   home = tempdir(),
+                   override = T,
+                   gisDbase = gisDB,
+                   location = loc,
+                   mapset = ms)
+
+# Load raster data
+f <- system.file("raster/cabins.tif", package = "oneimpact")
+cabins_sp <- raster::raster(f) \%>\%
+  as("SpatialPixelsDataFrame")
+# define map name within GRASS GIS
+cabins_g <- "private_cabins_sub"
+# add file to GRASS GIS mapset
+rgrass7::use_sp()
+rgrass7::writeRAST(cabins_sp, cabins_g, overwrite = TRUE)
+
+# check
+cabins <- cabins_sp \%>\%
+  raster::raster() \%>\%
+  terra::rast()
+terra::plot(cabins, col = "black",
+            main = "Map of cabins")
+
+#---
+# define region in GRASS GIS
+rgrass7::execGRASS("g.region", raster = cabins_g,
+                   flags = "p")
+
+# Input map name within GRASS GIS - binary map
+cabins_bin_g <- util_binarize_GRASS(cabins_g, output = "private_cabins_bin",
+                                    null = 0, overwrite = TRUE)
+
+# check input
+cabins_bin <- rgrass7::readRAST(cabins_bin_g) \%>\%
+  raster::raster() \%>\%
+  terra::rast()
+plot(cabins_bin, col = c("lightyellow", "black"),
+     main = "Binarized map of cabins")
+
+# Exponential decay
+exp_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "exp_decay",
+                                      where = "GRASS", overwrite = T, quiet = F)
+# Bartlett decay
+barlett_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "bartlett",
+                                      where = "GRASS", overwrite = T, quiet = F)
+# Gaussian decay
+gauss_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000/2, type = "Gauss",
+                                        where = "GRASS", overwrite = T, quiet = F)
+# Threshold decay (circle, step)
+threshold_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "threshold",
+                                            where = "GRASS", overwrite = T, quiet = F)
+
+(all_names <- c(exp_name, barlett_name, gauss_name, threshold_name))
+
+# visualize
+cabins_influence_cumulative <- readRAST(all_names) \%>\%
+  raster::stack() \%>\%
+  terra::rast()
+
+title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
+                "Gaussian decay 500m", "Threshold decay 1000m")
+terra::plot(cabins_influence_cumulative, main = title_plot)
 }

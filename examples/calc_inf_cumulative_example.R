@@ -1,3 +1,4 @@
+# Running calc_influence_cumulative through R
 library(mobsim)
 library(terra)
 
@@ -13,21 +14,21 @@ pts <- set_points(n_features = 1000, centers = 1,
 plot(pts$pts)
 plot(pts$rast)
 
-# calculate cumulative influence for multiple zones of influence, 
+# calculate cumulative influence for multiple zones of influence,
 # considering only the initial extent, for a Gaussian filter
 zoi_values <- c(250, 500, 1000, 2500, 5000)/2
 cuminf <- calc_influence_cumulative(pts$rast, type = "Gauss", zoi = zoi_values,
                                     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf)
 
-# calculate cumulative influence for multiple zones of influence, 
+# calculate cumulative influence for multiple zones of influence,
 # using a circle neighborhood
 zoi_values <- c(250, 500, 1000, 2500, 5000)
 cuminf_circle <- calc_influence_cumulative(pts$rast, type = "circle", zoi = zoi_values,
                                            extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf_circle)
 
-# calculate cumulative influence for a single zones of influence 
+# calculate cumulative influence for a single zones of influence
 # using a user-defined filter
 my_filter <- create_filter(pts$rast, zoi = 1000, method = "exp_decay")
 cuminf_user <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_filter,
@@ -35,10 +36,11 @@ cuminf_user <- calc_influence_cumulative(pts$rast, type = "mfilter", zoi = my_fi
 plot(c(cuminf[[3]], cuminf_circle[[3]], cuminf_user),
      main = c("Gaussian filter", "Circle neighborhood", "User-defined filter"))
 
-# calculate cumulative influence for multiple zones of influence, 
+# calculate cumulative influence for multiple zones of influence,
 # using an exp_decay neighborhood
 zoi_values <- c(250, 500, 1000, 2500, 5000)
 cuminf_exp <- calc_influence_cumulative(pts$rast, type = "exp_decay", zoi = zoi_values,
                                         extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cuminf_exp)
 
+#--------------------

@@ -23,7 +23,7 @@
 #' and provide a matrix to the parameter `zoi` instead, such as one created through the
 #' [terra::focalMat()] or the [oneimpact::create_filter()] functions.
 #'
-#' TO IMPROVE1: implement with `terra`. WE SHOULD DETECT IF THE INPUT IS RASTER OR TERRA
+#' TO IMPROVE1: Do not forget to mention the edge effects in r.mfilter in GRASS
 #'
 #' TO IMPROVE2: do the same in communication with GRASS GIS.
 #'
@@ -53,6 +53,7 @@
 #' or multi-layer `SpatRaster`, if multile `zoi` values are given, with the density of features for all scales selected.
 #'
 #' @example examples/calc_inf_cumulative_example.R
+#' @example examples/calc_inf_cumulativeGRASS_example.R
 #'
 #' @export
 calc_influence_cumulative <- function(x,
@@ -308,11 +309,14 @@ calc_influence_cumulative_GRASS <- function(
 
   # check if the input raster presents only a single value (1,NA)
   # if so, transform it into a binary map (1,0) or (integer numbers, 0)
+
+  # check if input is integer, then it works. If not, r.category requires an argument "values"
+
   input_bin <- x
-  values_input <- rgrass7::execGRASS("r.category", map = input_bin, separator = " ", flags = "quiet")
-  values_input <- sort(as.numeric(attributes(values_input)$resOut))
-  if(sort(values_input) != c(0,1)) {
-    stop("Please make sure the input map is binary, with values 0 or 1 only.")
+  # values_input <- rgrass7::execGRASS("r.category", map = input_bin, separator = " ", flags = "quiet")
+  # values_input <- sort(as.numeric(attributes(values_input)$resOut))
+  # if(sort(values_input) != c(0,1)) {
+  #   stop("Please make sure the input map is binary, with values 0 or 1 only.")
     # input_bin <- paste0(x, "_bin")
     # if(overwrite_bin) {
     #   fl_bin <- ifelse("overwrite" %in% flags, flags, c(flags, "overwrite"))
@@ -320,7 +324,7 @@ calc_influence_cumulative_GRASS <- function(
     # }
     # rgrass7::execGRASS("r.null", map = input_bin, null = 0)
     # if(remove_intermediate) to_remove <- c(to_remove, input_bin)
-  }
+  # }
 
   # define the name of the output map
   if(!is.null(output_map_name)) {
