@@ -14,6 +14,7 @@ calc_influence_nearest(
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
@@ -67,6 +68,10 @@ The decayment rate lambda might be defined in terms of the Gaussian half-life or
 a definition of zone of influence (ZoI), or yet by the standard deviation (sigma) of the
 half-normal distribution (\code{lambda = 0.5/(sigma^2)}).
 \item If \code{bartlett}, the influence measure is a triangular tent-shaped decay distance is returned.
+\item If \code{threshold} or \code{step}, a constant influence is consider within the zone of influence (ZoI).
+All pixels closer than \code{zoi} to infrastructure are considered as "under the influence" of the nearest
+feature, with a constant influence value defined by the \code{constant_influence} parameter, and all other
+pixels are assumed to have zero influence.
 }
 See details below.
 Other options still to be implemented (such as other functions and a generic user-defined
@@ -113,6 +118,10 @@ influence, if \code{transform = Gauss} or \code{transform = half_normal}. The va
 to define the decay rate \code{lambda}only if \code{zoi = NULL} and \code{half_life = NULL}, otherwise one of these
 parameters is used to determine \code{lambda}. By default, \code{N_0} is defined as 1, which means the influence is 1
 where the infrastructure feature is located, and it decreases as the Euclidean distance from it increases.}
+
+\item{constant_influence}{\verb{[numeric(1)=1]} \cr Constant value of the influence of the nearest feature if
+\code{transform = "threshold"} or \code{transform = "step"}. Default is 1. In this case, all pixels closer to any
+infrastructure than the \code{zoi} are classified with this constant value.}
 
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to the Euclidean distance before transforming it,
 to avoid \code{-Inf}/\code{Inf} values (e.g. in the case of log). It should be a very small value compared to the
@@ -237,17 +246,17 @@ zoi_hl_ratio2 <- 4 # default
 exp_d2 <- calc_influence_nearest(pts$rast, transform = "exp_decay", half_life = half_life2)
 plot(exp_d2)
 # buffer
-pts_shp <- pts$pts \%>\% 
+pts_shp <- pts$pts \%>\%
   sf::st_as_sf(coords = c(1,2))
 # half_life = 250m
-pts_shp \%>\% 
-  sf::st_buffer(dist = half_life2) \%>\% 
-  sf::st_union() \%>\% 
+pts_shp \%>\%
+  sf::st_buffer(dist = half_life2) \%>\%
+  sf::st_union() \%>\%
   plot(add = T, border = "red")
 # zoi = 1000m
-pts_shp \%>\% 
-  sf::st_buffer(dist = half_life2*zoi_hl_ratio2) \%>\% 
-  sf::st_union() \%>\% 
+pts_shp \%>\%
+  sf::st_buffer(dist = half_life2*zoi_hl_ratio2) \%>\%
+  sf::st_union() \%>\%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
@@ -257,39 +266,39 @@ zoi_hl_ratio3 <- 4 # default
 exp_d3 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi3)
 plot(exp_d3)
 # buffer
-pts_shp <- pts$pts \%>\% 
+pts_shp <- pts$pts \%>\%
   sf::st_as_sf(coords = c(1,2))
 # half_life = 1000m
-pts_shp \%>\% 
-  sf::st_buffer(dist = zoi3/zoi_hl_ratio3) \%>\% 
-  sf::st_union() \%>\% 
+pts_shp \%>\%
+  sf::st_buffer(dist = zoi3/zoi_hl_ratio3) \%>\%
+  sf::st_union() \%>\%
   plot(add = T, border = "red")
 # zoi = 4000m
-pts_shp \%>\% 
-  sf::st_buffer(dist = zoi3) \%>\% 
-  sf::st_union() \%>\% 
+pts_shp \%>\%
+  sf::st_buffer(dist = zoi3) \%>\%
+  sf::st_union() \%>\%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
 # one can also change the definition of zoi, to zoi = half_life = 6, for instance
 # when the intensity decreases to 1/64 = 0.016
-zoi4 <- 4000 
+zoi4 <- 4000
 zoi_hl_ratio4 = 6
-exp_d4 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4, 
+exp_d4 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4,
                     zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
-pts_shp <- pts$pts \%>\% 
+pts_shp <- pts$pts \%>\%
   sf::st_as_sf(coords = c(1,2))
 # 667m (4000/6)
-pts_shp \%>\% 
-  sf::st_buffer(dist = zoi4/zoi_hl_ratio4) \%>\% 
-  sf::st_union() \%>\% 
+pts_shp \%>\%
+  sf::st_buffer(dist = zoi4/zoi_hl_ratio4) \%>\%
+  sf::st_union() \%>\%
   plot(add = T, border = "red")
 # 1000m
-pts_shp \%>\% 
-  sf::st_buffer(dist = zoi4) \%>\% 
-  sf::st_union() \%>\% 
+pts_shp \%>\%
+  sf::st_buffer(dist = zoi4) \%>\%
+  sf::st_union() \%>\%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
@@ -298,17 +307,22 @@ bart_d <- calc_influence_nearest(pts$rast, transform = "bartlett", zoi = 2000)
 plot(bart_d)
 
 # buffer 2000m
-pts_shp \%>\% 
-  sf::st_buffer(dist = 2000) \%>\% 
-  sf::st_union() \%>\% 
+pts_shp \%>\%
+  sf::st_buffer(dist = 2000) \%>\%
+  sf::st_union() \%>\%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
+
+# calculate threshold influence
+d <- calc_influence_nearest(pts$rast, transform = "threshold", zoi = 2000)
+plot(d)
 
 #--------------------
 # Running calc_influence_nearest through GRASS GIS
 library(rgrass7)
 library(raster)
 library(terra)
+library(sp)
 library(dplyr)
 
 # connect to grass gis 7.8
@@ -323,45 +337,56 @@ rgrass7::initGRASS(gisBase = grassdir,
                    location = loc,
                    mapset = ms)
 
-# define region
-##########################
-# change it here when these data are within the R package
 
-# I defined a region_test_influence through the GRASS GUI and using v.in.region output=region_test_influence
-rgrass7::execGRASS("g.region", parameters = list(vector = "region_test_influence", align = "private_cabins_rast"),
-                   flags = "p")
-
-# show input map and region here
+# Load raster data
+f <- system.file("raster/cabins.tif", package = "oneimpact")
+cabins_sp <- raster::raster(f) \%>\%
+  as("SpatialPixelsDataFrame")
+# define map name within GRASS GIS
+cabins_g <- "private_cabins_sub"
+# add file to GRASS GIS mapset
 rgrass7::use_sp()
-cabins <- readRAST(c("private_cabins_rast_sub")) \%>\% 
-  raster::raster() \%>\% 
-  terra::rast()
+rgrass7::writeRAST(cabins_sp, cabins_g, overwrite = TRUE)
 
+# check
+cabins <- cabins_sp \%>\%
+  raster::raster() \%>\%
+  terra::rast()
 terra::plot(cabins, col = "black")
 
+#---
+# define region in GRASS GIS
+rgrass7::execGRASS("g.region", raster = cabins_g,
+                   flags = "p")
+
 # Input map name within GRASS GIS
-name_var <- "private_cabins_sub"
+cabins_g
+
 # Euclidean
-euclidean_name <- calc_influence_nearest(name_var, where = "GRASS", 
+euclidean_name <- calc_influence_nearest(cabins_g, where = "GRASS",
                                          quiet = T, overwrite = T)
 # Log
-log_name <- calc_influence_nearest(name_var, transform = "log", log_base = 10,
+log_name <- calc_influence_nearest(cabins_g, transform = "log", log_base = 10,
                                    where = "GRASS", quiet = T, overwrite = T)
 # Exponential decay ZoI=1000m
-expdecay_name <- calc_influence_nearest(name_var, transform = "exp_decay", zoi = 1000,
+expdecay_name <- calc_influence_nearest(cabins_g, transform = "exp_decay", zoi = 1000,
                                         where = "GRASS", quiet = T, overwrite = T)
 # Bartlett decay ZoI=1000m
-bartlett_name <- calc_influence_nearest(name_var, transform = "bartlett", zoi = 1000,
+bartlett_name <- calc_influence_nearest(cabins_g, transform = "bartlett", zoi = 1000,
                                         where = "GRASS", quiet = T, overwrite = T)
+# Threshold influence ZoI = 1000m
+threshold_name <- calc_influence_nearest(cabins_g, transform = "threshold", zoi = 1000,
+                                         where = "GRASS", quiet = T, overwrite = T)
 
-(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name))
+(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name, threshold_name))
 
 # visualize
-cabins_influence_nearest <- readRAST(all_names) \%>\% 
-  raster::stack() \%>\% 
+cabins_influence_nearest <- readRAST(all_names) \%>\%
+  raster::stack() \%>\%
   terra::rast()
 
-title_plot <- c("Euclidean distance", "Log distance (base 10)", 
-                "Exponential decay 1000m", "Bartlett decay 1000m")
+title_plot <- c("Euclidean distance", "Log distance (base 10)",
+                "Exponential decay 1000m", "Bartlett decay 1000m",
+                "Threshold influence 1000m")
 terra::plot(cabins_influence_nearest, main = title_plot)
 }

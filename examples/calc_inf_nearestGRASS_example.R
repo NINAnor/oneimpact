@@ -2,6 +2,7 @@
 library(rgrass7)
 library(raster)
 library(terra)
+library(sp)
 library(dplyr)
 
 # connect to grass gis 7.8
@@ -16,44 +17,55 @@ rgrass7::initGRASS(gisBase = grassdir,
                    location = loc,
                    mapset = ms)
 
-# define region
-##########################
-# change it here when these data are within the R package
 
-# I defined a region_test_influence through the GRASS GUI and using v.in.region output=region_test_influence
-rgrass7::execGRASS("g.region", parameters = list(vector = "region_test_influence", align = "private_cabins_rast"),
-                   flags = "p")
-
-# show input map and region here
+# Load raster data
+f <- system.file("raster/cabins.tif", package = "oneimpact")
+cabins_sp <- raster::raster(f) %>%
+  as("SpatialPixelsDataFrame")
+# define map name within GRASS GIS
+cabins_g <- "private_cabins_sub"
+# add file to GRASS GIS mapset
 rgrass7::use_sp()
-cabins <- readRAST(c("private_cabins_rast_sub")) %>% 
-  raster::raster() %>% 
-  terra::rast()
+rgrass7::writeRAST(cabins_sp, cabins_g, overwrite = TRUE)
 
+# check
+cabins <- cabins_sp %>%
+  raster::raster() %>%
+  terra::rast()
 terra::plot(cabins, col = "black")
 
+#---
+# define region in GRASS GIS
+rgrass7::execGRASS("g.region", raster = cabins_g,
+                   flags = "p")
+
 # Input map name within GRASS GIS
-name_var <- "private_cabins_sub"
+cabins_g
+
 # Euclidean
-euclidean_name <- calc_influence_nearest(name_var, where = "GRASS", 
+euclidean_name <- calc_influence_nearest(cabins_g, where = "GRASS",
                                          quiet = T, overwrite = T)
 # Log
-log_name <- calc_influence_nearest(name_var, transform = "log", log_base = 10,
+log_name <- calc_influence_nearest(cabins_g, transform = "log", log_base = 10,
                                    where = "GRASS", quiet = T, overwrite = T)
 # Exponential decay ZoI=1000m
-expdecay_name <- calc_influence_nearest(name_var, transform = "exp_decay", zoi = 1000,
+expdecay_name <- calc_influence_nearest(cabins_g, transform = "exp_decay", zoi = 1000,
                                         where = "GRASS", quiet = T, overwrite = T)
 # Bartlett decay ZoI=1000m
-bartlett_name <- calc_influence_nearest(name_var, transform = "bartlett", zoi = 1000,
+bartlett_name <- calc_influence_nearest(cabins_g, transform = "bartlett", zoi = 1000,
                                         where = "GRASS", quiet = T, overwrite = T)
+# Threshold influence ZoI = 1000m
+threshold_name <- calc_influence_nearest(cabins_g, transform = "threshold", zoi = 1000,
+                                         where = "GRASS", quiet = T, overwrite = T)
 
-(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name))
+(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name, threshold_name))
 
 # visualize
-cabins_influence_nearest <- readRAST(all_names) %>% 
-  raster::stack() %>% 
+cabins_influence_nearest <- readRAST(all_names) %>%
+  raster::stack() %>%
   terra::rast()
 
-title_plot <- c("Euclidean distance", "Log distance (base 10)", 
-                "Exponential decay 1000m", "Bartlett decay 1000m")
+title_plot <- c("Euclidean distance", "Log distance (base 10)",
+                "Exponential decay 1000m", "Bartlett decay 1000m",
+                "Threshold influence 1000m")
 terra::plot(cabins_influence_nearest, main = title_plot)

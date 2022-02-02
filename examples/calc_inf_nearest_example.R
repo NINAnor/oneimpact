@@ -38,17 +38,17 @@ zoi_hl_ratio2 <- 4 # default
 exp_d2 <- calc_influence_nearest(pts$rast, transform = "exp_decay", half_life = half_life2)
 plot(exp_d2)
 # buffer
-pts_shp <- pts$pts %>% 
+pts_shp <- pts$pts %>%
   sf::st_as_sf(coords = c(1,2))
 # half_life = 250m
-pts_shp %>% 
-  sf::st_buffer(dist = half_life2) %>% 
-  sf::st_union() %>% 
+pts_shp %>%
+  sf::st_buffer(dist = half_life2) %>%
+  sf::st_union() %>%
   plot(add = T, border = "red")
 # zoi = 1000m
-pts_shp %>% 
-  sf::st_buffer(dist = half_life2*zoi_hl_ratio2) %>% 
-  sf::st_union() %>% 
+pts_shp %>%
+  sf::st_buffer(dist = half_life2*zoi_hl_ratio2) %>%
+  sf::st_union() %>%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
@@ -58,39 +58,39 @@ zoi_hl_ratio3 <- 4 # default
 exp_d3 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi3)
 plot(exp_d3)
 # buffer
-pts_shp <- pts$pts %>% 
+pts_shp <- pts$pts %>%
   sf::st_as_sf(coords = c(1,2))
 # half_life = 1000m
-pts_shp %>% 
-  sf::st_buffer(dist = zoi3/zoi_hl_ratio3) %>% 
-  sf::st_union() %>% 
+pts_shp %>%
+  sf::st_buffer(dist = zoi3/zoi_hl_ratio3) %>%
+  sf::st_union() %>%
   plot(add = T, border = "red")
 # zoi = 4000m
-pts_shp %>% 
-  sf::st_buffer(dist = zoi3) %>% 
-  sf::st_union() %>% 
+pts_shp %>%
+  sf::st_buffer(dist = zoi3) %>%
+  sf::st_union() %>%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
 # one can also change the definition of zoi, to zoi = half_life = 6, for instance
 # when the intensity decreases to 1/64 = 0.016
-zoi4 <- 4000 
+zoi4 <- 4000
 zoi_hl_ratio4 = 6
-exp_d4 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4, 
+exp_d4 <- calc_influence_nearest(pts$rast, transform = "exp_decay", zoi = zoi4,
                     zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
-pts_shp <- pts$pts %>% 
+pts_shp <- pts$pts %>%
   sf::st_as_sf(coords = c(1,2))
 # 667m (4000/6)
-pts_shp %>% 
-  sf::st_buffer(dist = zoi4/zoi_hl_ratio4) %>% 
-  sf::st_union() %>% 
+pts_shp %>%
+  sf::st_buffer(dist = zoi4/zoi_hl_ratio4) %>%
+  sf::st_union() %>%
   plot(add = T, border = "red")
 # 1000m
-pts_shp %>% 
-  sf::st_buffer(dist = zoi4) %>% 
-  sf::st_union() %>% 
+pts_shp %>%
+  sf::st_buffer(dist = zoi4) %>%
+  sf::st_union() %>%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
@@ -99,10 +99,14 @@ bart_d <- calc_influence_nearest(pts$rast, transform = "bartlett", zoi = 2000)
 plot(bart_d)
 
 # buffer 2000m
-pts_shp %>% 
-  sf::st_buffer(dist = 2000) %>% 
-  sf::st_union() %>% 
+pts_shp %>%
+  sf::st_buffer(dist = 2000) %>%
+  sf::st_union() %>%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
+
+# calculate threshold influence
+d <- calc_influence_nearest(pts$rast, transform = "threshold", zoi = 2000)
+plot(d)
 
 #--------------------

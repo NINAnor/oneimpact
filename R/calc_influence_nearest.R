@@ -71,6 +71,10 @@
 #' a definition of zone of influence (ZoI), or yet by the standard deviation (sigma) of the
 #' half-normal distribution (`lambda = 0.5/(sigma^2)`).
 #'   \item If `bartlett`, the influence measure is a triangular tent-shaped decay distance is returned.
+#'   \item If `threshold` or `step`, a constant influence is consider within the zone of influence (ZoI).
+#' All pixels closer than `zoi` to infrastructure are considered as "under the influence" of the nearest
+#' feature, with a constant influence value defined by the `constant_influence` parameter, and all other
+#' pixels are assumed to have zero influence.
 #' }
 #' See details below.
 #' Other options still to be implemented (such as other functions and a generic user-defined
@@ -122,6 +126,10 @@
 #' to avoid `-Inf`/`Inf` values (e.g. in the case of log). It should be a very small value compared to the
 #' range of values of Euclidean distance, not to influence any further analyses.
 #'
+#' @param constant_influence `[numeric(1)=1]` \cr Constant value of the influence of the nearest feature if
+#' `transform = "threshold"` or `transform = "step"`. Default is 1. In this case, all pixels closer to any
+#' infrastructure than the `zoi` are classified with this constant value.
+#'
 #' @param extent_x_cut,entent_y_cut `[numeric vector(2)=c(0,1)]` \cr Vectors representing the minimum and
 #' maximum extent in x and y for the final output, in the format c(min,max). Used to cut the raster to
 #' specific smaller extents. The default is to keep the same extent of the input raster.
@@ -172,13 +180,14 @@
 calc_influence_nearest <- function(
   x,
   zoi = NULL,
-  transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm")[1],
+  transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   where = c("R", "GRASS")[1],
   log_base = exp(1),
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
@@ -203,6 +212,7 @@ calc_influence_nearest <- function(
                                             half_life = half_life,
                                             exp_decay_parms = exp_decay_parms,
                                             hnorm_decay_parms = hnorm_decay_parms,
+                                            constant_influence = constant_influence,
                                             dist_offset = dist_offset,
                                             extent_x_cut = extent_x_cut,
                                             extent_y_cut = extent_y_cut,
@@ -221,6 +231,7 @@ calc_influence_nearest <- function(
                                                   half_life = half_life,
                                                   exp_decay_parms = exp_decay_parms,
                                                   hnorm_decay_parms = hnorm_decay_parms,
+                                                  constant_influence = constant_influence,
                                                   dist_offset = dist_offset,
                                                   extent_x_cut = extent_x_cut,
                                                   extent_y_cut = extent_y_cut,
@@ -241,12 +252,13 @@ calc_influence_nearest <- function(
 calc_influence_nearest_r <- function(
   x,
   zoi = NULL,
-  transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm")[1],
+  transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   log_base = exp(1),
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = terra::ext(x)[c(1,2)],
   extent_y_cut = terra::ext(x)[c(3,4)],
@@ -334,8 +346,15 @@ calc_influence_nearest_r <- function(
               }
 
               dist_r <- hnorm_decay_parms[1] * exp(-lambda * (dist_r**2))
-            } else
-              stop("You should select an appropriate transformation method for the influence.")
+            } else {
+              if(transform %in% c("threshold", "step")) {
+
+                # for threshold influence of the nearest, keep pixels with dist <= zoi constant
+                values(dist_r) <- ifelse(values(dist_r) < zoi, constant_influence, 0)
+
+              } else
+                stop("You should select an appropriate transformation method for the influence.")
+            }
 
   # rename nearest influence layer, including transformation
   name <- ifelse(is.null(transform), "influence_nearest",
@@ -359,12 +378,13 @@ calc_influence_nearest_r <- function(
 calc_influence_nearest_GRASS <- function(
   x,
   zoi = NULL,
-  transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett")[1],
+  transform = NULL,
   log_base = exp(1),
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
@@ -376,7 +396,7 @@ calc_influence_nearest_GRASS <- function(
   ...) {
 
   # check if the transformation is valid
-  possible_transformations <- c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm")
+  possible_transformations <- c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")
   if(!is.null(transform))
     if(!(transform %in% possible_transformations))
       stop("You should select an appropriate transformation method for distance.")
@@ -430,7 +450,7 @@ calc_influence_nearest_GRASS <- function(
 
     if(transform == "log") {
 
-      # sog distance
+      # log distance
       # message
       out_message <- "Calculating log-distance..."
       # expression
@@ -522,6 +542,16 @@ calc_influence_nearest_GRASS <- function(
 
     }
 
+    if(transform %in% c("threshold", "step")) {
+
+      # threshold influence
+      # message
+      out_message <- "Calculating threshold influence..."
+      # expression
+      expression_influence <- sprintf("if(A < %f, %f, 0)", zoi, constant_influence)
+      if(print_expression) print(expression_influence)
+    }
+
     # if the user provides an output map name, use it
     if(!is.null(output_map_name))
       out_influence <- output_map_name
@@ -529,7 +559,7 @@ calc_influence_nearest_GRASS <- function(
       # otherwise, name it according to the method
       out_influence <- paste0(x, "_inf_nearest_", transform)
       # and maybe the zoi
-      zoi_methods <- c("exp_decay", "bartlett", "Gauss", "half_norm")
+      zoi_methods <- c("exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")
       if(!is.null(transform))
         if(transform %in% zoi_methods) out_influence <- paste0(out_influence, zoi)
     }
