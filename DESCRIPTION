@@ -1,17 +1,22 @@
 Package: oneimpact
 Type: Package
-Title: Useful functions in the context of assessment of cumulative effects of anthropogenic infrastructure 
+Title: Tools for the assessment of cumulative effects of anthropogenic infrastructure
 Version: 0.1.0
-Author: Bernardo Niebuhr, Bram van Moorter, Manuela Panzacchi
-Maintainer: Bernardo Niebuhr <bernardo.brandao@nina.no>
+Authors@R: c(
+    person("Bernardo", "Niebuhr", email = "bernardo_brandaum@yahoo.com.br",
+        role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0453-315X")),
+    person("Manuela", "Panzacchi", email = "manuela.panzacchi@nina.no",
+        role = "aut"),
+    person("Bram", "van Moorter", email = "bram.van.moorter@nina.no",
+        role = "aut", comment = c(ORCID = "0000-0002-3196-1993")))
 Description: Describe the package later
 Depends:
-    R (>= 2.10)
+    R (>= 3.3)
 Imports: 
     dplyr, purrr, terra, raster, sf, mobsim
 Suggests:
-    landscapetools, NLMR, smoothie, rasterVis
-License: Not defined yet
+    rgrass7, landscapetools, NLMR, smoothie, rasterVis
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
