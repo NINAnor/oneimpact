@@ -7,7 +7,8 @@
 calc_influence_cumulative(
   x,
   zoi = 100,
-  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter")[1],
+  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
+    "step", "mfilter")[1],
   where = c("R", "GRASS")[1],
   module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
   zoi_hl_ratio = 4,
@@ -31,9 +32,14 @@ calc_influence_cumulative(
 )
 }
 \arguments{
-\item{x}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features, with 1 where the features
-are located and NA elsewhere. Can be a \link{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
-\link{terra} package.}
+\item{x}{\verb{[RasterLayer,SpatRaster,character]} \cr Raster representing locations of features,
+preferentially a binary map with 1 where the features are located and 0 elsewhere.
+Can be a \link{RasterLayer} from \link{raster} package or a \link{SpatRaster} from  \link{terra} package.
+If \code{where = "GRASS"}, \code{x} must be a string corresponding to the name of the input map within
+a GRASS GIS mapset. Continuous or discrete raster maps with multiple categories can be binarized
+to be used as input for \code{calc_influence_cumulative} through \code{\link[landscapetools:util_binarize]{landscapetools::util_binarize()}}
+in R or \link{util_binarize_GRASS} in GRASS GIS, or through common raster algebra in both
+environments.}
 
 \item{zoi}{\verb{[numeric(1)=100]} \cr Scale of the neighborhood analysis, used to calculate densities.
 It can be a single value of a vector of values, in which case several density maps (for each scale)
@@ -43,7 +49,7 @@ to the size of the side of a square filter. See \code{\link[terra:focalMat]{terr
 If \code{type = "mfilter"}, scale is not a numeric value but a matrix itself, defined by the user. See description
 in the details.}
 
-\item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter"\}} \cr
+\item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter"\}} \cr
 Type of filter used to calculate density. See description for details.}
 
 \item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector representing the minimum and

@@ -26,7 +26,7 @@ any other spatial variable represented as polygons or areas).}
 \item{zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI), in map units (preferentially meters).
 The ZoI is the distance, scale, or buffer size around a feature up to which we consider there is
 an effect or influence of an infrastructure or variable. It is considered only when
-\code{transform = "bartlett"} or \code{transform = "exp_decay"}. \cr
+\code{type = "bartlett"} or \code{type = "exp_decay"}. \cr
 For the Bartlett influence, it corresponds to the distance beyond which the distance is zero. \cr
 For the exponential decay influence, the ZoI is used to define the half-life and the lambda
 of the exponential decay function, based on the parameter \code{zoi_hl_ratio},

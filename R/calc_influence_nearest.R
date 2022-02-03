@@ -30,7 +30,7 @@
 #' [`r.mapcalc.simple`](https://grass.osgeo.org/grass78/manuals/r.mapcalc.simple.html)
 #' to transform this distance into the different forms of measures of influence of the nearest features.
 #'
-#' TO IMPROVE: implement any generic function as input to "transform".
+#' TO IMPROVE: implement any generic function as input to "type".
 #'
 #' @param x `[RasterLayer,SpatRaster]` \cr Raster representing locations of features, with value 1
 #' (or any other positive value) where the features are located and NA elsewhere.
@@ -43,7 +43,7 @@
 #' @param zoi `[numeric(1)=NULL]` \cr Zone of Influence (ZoI), in map units (preferentially meters).
 #' The ZoI is the distance, scale, or buffer size around a feature up to which we consider there is
 #' an effect or influence of an infrastructure or variable. It is considered only when
-#' `transform = "bartlett"` or `transform = "exp_decay"`. \cr
+#' `type = "bartlett"` or `type = "exp_decay"`. \cr
 #' For the Bartlett influence, it corresponds to the distance beyond which the distance is zero. \cr
 #' For the exponential decay influence, the ZoI is used to define the half-life and the lambda
 #' of the exponential decay function, based on the parameter `zoi_hl_ratio`,
@@ -55,7 +55,7 @@
 #' influence does not imply a cuttoff of the exponential decay function but is only used to define
 #' its parameters, based on the defined `zoi_hl_ratio` parameter.
 #'
-#' @param transform `[character(1)=NULL]{"log","sqrt", "exp_decay", "Gauss", "bartlett"}` \cr
+#' @param type `[character(1)=NULL]{"euclidean", "log","sqrt", "exp_decay", "Gauss", "bartlett", "threshold", "step"}` \cr
 #' By default, NULL, when the measure of influence is the Euclidean distance to the nearest
 #' feature.
 #' \itemize{
@@ -84,7 +84,7 @@
 #' GRASS GIS. Calculations within GRASS GIS (`where = "GRASS"`) require an active connection between the R session
 #' and a GRASS GIS location and mapset and that the input map is already loaded in this the current mapset.
 #'
-#' @param log_base `[numeric(1)=exp(1)]` \cr Base of the logarithm, if `transform = log`.
+#' @param log_base `[numeric(1)=exp(1)]` \cr Base of the logarithm, if `type = log`.
 #'
 #' @param zoi_hl_ratio `[numeric(1)=4]` \cr REVIEW THAT, THE IDEA IS SIMILAR BUT SLIGHTLY DIFFERENT FOR GAUSSIAN
 #' Ratio between the zone of influence (ZoI) of the infrastrucure
@@ -97,7 +97,7 @@
 #' is defined as tyhe distance when the exponential decay influence decreases to `0.5^6 = 0.015625`
 #'
 #' @param half_life `[numeric(1)=NULL]` \cr Half-life of the exponential decay function or half-normal decay function,
-#' in case `transform = exp_decay` or `transform = half_norm`. The exponential decay exponent (lambda) from the exponential function is defined as
+#' in case `type = exp_decay` or `type = half_norm`. The exponential decay exponent (lambda) from the exponential function is defined as
 #' `lambda = log(2)/half_life`. For the half-normal decay the exponent (lambda) is `lambda = log(2)/(half_life**2)`
 #' By definition, when one gets away from the source feature by a
 #' distance interval equals to `half_life`, the magnitude of the exponential decay distance decreases by 1/2.
@@ -111,13 +111,13 @@
 #' the function decreases to `(1/2)^4 = 1/16 ~ 0.06`, for instance, is `sqrt(4)*half_life`.
 #'
 #' @param exp_decay_parms `[numeric(2)=c(1,0.01)]` \cr Parameters (`N_0`, `lambda`) for the exponential decay
-#' influence, if `transform = exp_decay`. The value of `lambda` defined here is used only if
+#' influence, if `type = exp_decay`. The value of `lambda` defined here is used only if
 #' `zoi = NULL` and `half_life = NULL`, otherwise one of these parameters is used to determine `lambda`.
 #' By default, `N_0` is defined as 1, which means the influence is 1 where the infrastructure feature
 #' is located, and it decreases as the Euclidean distance from it increases.
 #'
 #' @param hnorm_decay_parms `[numeric(2)=c(1,20)]` \cr Parameters (`N_0`, `sigma`) for the half-normal decay
-#' influence, if `transform = Gauss` or `transform = half_normal`. The value of `sigme` defined here is used
+#' influence, if `type = Gauss` or `type = half_normal`. The value of `sigme` defined here is used
 #' to define the decay rate `lambda`only if `zoi = NULL` and `half_life = NULL`, otherwise one of these
 #' parameters is used to determine `lambda`. By default, `N_0` is defined as 1, which means the influence is 1
 #' where the infrastructure feature is located, and it decreases as the Euclidean distance from it increases.
@@ -127,7 +127,7 @@
 #' range of values of Euclidean distance, not to influence any further analyses.
 #'
 #' @param constant_influence `[numeric(1)=1]` \cr Constant value of the influence of the nearest feature if
-#' `transform = "threshold"` or `transform = "step"`. Default is 1. In this case, all pixels closer to any
+#' `type = "threshold"` or `type = "step"`. Default is 1. In this case, all pixels closer to any
 #' infrastructure than the `zoi` are classified with this constant value.
 #'
 #' @param extent_x_cut,entent_y_cut `[numeric vector(2)=c(0,1)]` \cr Vectors representing the minimum and
@@ -140,7 +140,7 @@
 #'
 #' @param output_map_name `[character(1)=NULL]` \cr Name of the output map name, to be used only within
 #' GRASS (if `where = "GRASS"`). Bu default, this is NULL and the output map names are a concatenation of
-#' the input map name (e.g. "map_houses") and the decay function and zoi used (e.g. for `transform = "exp_decay"`
+#' the input map name (e.g. "map_houses") and the decay function and zoi used (e.g. for `type = "exp_decay"`
 #' and `zoi = 1000`, the name would be "map_houses_exp_decay_1000").
 #' This parameter is ignored when the calculations are performed in R (if `where = "R"`).
 #'
@@ -169,7 +169,7 @@
 #' the maps are kept only within the GRASS GIS location/mapset and the function returns the name of the
 #' calculated maps. \cr
 #' By default, the output influence map is the Euclidean distance to the nearest feature.
-#' Depending on the choice of `transform`, the output distance can be log- or sqrt-transformed distance,
+#' Depending on the choice of `type`, the output distance can be log- or sqrt-transformed distance,
 #' or one can choose to calculate the exponential decay, half-normal decay, or Bartlett decay influence.
 #' Other types of transformation to be implemented in the future.
 #'
@@ -180,7 +180,7 @@
 calc_influence_nearest <- function(
   x,
   zoi = NULL,
-  transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
+  type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   where = c("R", "GRASS")[1],
   log_base = exp(1),
   zoi_hl_ratio = 4,
@@ -206,7 +206,7 @@ calc_influence_nearest <- function(
 
     inf_nearest <- calc_influence_nearest_r(x = x,
                                             zoi = zoi,
-                                            transform = transform,
+                                            type = type,
                                             log_base = log_base,
                                             zoi_hl_ratio = zoi_hl_ratio,
                                             half_life = half_life,
@@ -225,7 +225,7 @@ calc_influence_nearest <- function(
     if(where %in% c("GRASS", "grass", "GRASS GIS", "grass gis")) {
       inf_nearest <- calc_influence_nearest_GRASS(x = x,
                                                   zoi = zoi,
-                                                  transform = transform,
+                                                  type = type,
                                                   log_base = log_base,
                                                   zoi_hl_ratio = zoi_hl_ratio,
                                                   half_life = half_life,
@@ -252,7 +252,7 @@ calc_influence_nearest <- function(
 calc_influence_nearest_r <- function(
   x,
   zoi = NULL,
-  transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
+  type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   log_base = exp(1),
   zoi_hl_ratio = 4,
   half_life = NULL,
@@ -281,10 +281,10 @@ calc_influence_nearest_r <- function(
   dist_r <- terra::distance(x, ...)
 
   # transform distance
-  if(!is.null(transform))
-    if(transform == "log") dist_r <- log(dist_r+dist_offset, base = log_base) else
-      if(transform == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
-        if(transform == "exp_decay") {
+  if(type != "euclidean")
+    if(type == "log") dist_r <- log(dist_r+dist_offset, base = log_base) else
+      if(type == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
+        if(type == "exp_decay") {
           # define zoi or half life, depending on which is given as input
 
           # if zoi is given, it is used.
@@ -308,7 +308,7 @@ calc_influence_nearest_r <- function(
 
           dist_r <- exp_decay_parms[1] * exp(-lambda * dist_r)
         } else
-          if(transform == "bartlett") {
+          if(type == "bartlett") {
             dist_r <- (1 - (1/zoi)*dist_r)
             zero <- dist_r
             size_landscape <- prod(dim(zero)[c(1:2)])
@@ -323,7 +323,7 @@ calc_influence_nearest_r <- function(
             }
 
           } else
-            if(transform %in% c("Gauss", "half_norm")) {
+            if(type %in% c("Gauss", "half_norm")) {
               # define zoi or half life, depending on which is given as input
 
               # if zoi is given, it is used.
@@ -347,23 +347,22 @@ calc_influence_nearest_r <- function(
 
               dist_r <- hnorm_decay_parms[1] * exp(-lambda * (dist_r**2))
             } else {
-              if(transform %in% c("threshold", "step")) {
+              if(type %in% c("threshold", "step")) {
 
                 # for threshold influence of the nearest, keep pixels with dist <= zoi constant
                 values(dist_r) <- ifelse(values(dist_r) < zoi, constant_influence, 0)
 
               } else
-                stop("You should select an appropriate transformation method for the influence.")
+                stop("You should select an appropriate transformation method ('type' parameter) for the influence.")
             }
 
   # rename nearest influence layer, including transformation
-  name <- ifelse(is.null(transform), "influence_nearest",
-                 paste0("influence_nearest", "_", transform))
+  name <- paste0("influence_nearest", "_", type)
   # and the zoi
-  zoi_methods <- c("exp_decay", "bartlett", "Gauss", "half_norm")
-  if(!is.null(transform))
-    if(transform %in% zoi_methods) name <- paste0(name, zoi)
+  zoi_methods <- c("exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")
+  if(type %in% zoi_methods) name <- paste0(name, zoi)
   names(dist_r) <- name
+
   # should the result be plotted?
   if(plotit) plot(dist_r)
 
@@ -378,7 +377,7 @@ calc_influence_nearest_r <- function(
 calc_influence_nearest_GRASS <- function(
   x,
   zoi = NULL,
-  transform = NULL,
+  type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   log_base = exp(1),
   zoi_hl_ratio = 4,
   half_life = NULL,
@@ -396,10 +395,9 @@ calc_influence_nearest_GRASS <- function(
   ...) {
 
   # check if the transformation is valid
-  possible_transformations <- c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")
-  if(!is.null(transform))
-    if(!(transform %in% possible_transformations))
-      stop("You should select an appropriate transformation method for distance.")
+  possible_types <- c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")
+  if(!(type %in% possible_types))
+    stop("You should select an appropriate method ('type' parameter) for the nearest influence calculation.")
 
   # flags
   flags <- c()
@@ -420,9 +418,9 @@ calc_influence_nearest_GRASS <- function(
   # Start by calculating the Euclidean distance from features
 
   # output name within GRASS GIS
-  out_euclidean <- paste0(x, "_inf_nearest")
+  out_euclidean <- paste0(x, "_inf_nearest_euclidean")
   # if there is not transformation
-  if(is.null(transform)) {
+  if(type == "euclidean") {
     # if the user provides an output map name, overwrite it
     if(!is.null(output_map_name)) out_euclidean <- output_map_name
     # if no transformation, the output influence is the euclidean distance
@@ -443,12 +441,12 @@ calc_influence_nearest_GRASS <- function(
   # check if it should be deleted afterwards
   # check if the layer already exists first; if not, remove it in the end.
   if(remove_intermediate)
-    if(!is.null(transform)) to_remove <- c(to_remove, out_euclidean)
+    if(type != "euclidean") to_remove <- c(to_remove, out_euclidean)
 
   # transform distance
-  if(!is.null(transform)) {
+  if(type != "euclidean") {
 
-    if(transform == "log") {
+    if(type == "log") {
 
       # log distance
       # message
@@ -458,7 +456,7 @@ calc_influence_nearest_GRASS <- function(
       if(print_expression) print(expression_influence)
     }
 
-    if(transform == "sqrt") {
+    if(type == "sqrt") {
 
       # sqrt distance
       # message
@@ -469,7 +467,7 @@ calc_influence_nearest_GRASS <- function(
 
     }
 
-    if(transform == "exp_decay") {
+    if(type == "exp_decay") {
       # define zoi or half life, depending on which is given as input
 
       # if zoi is given, it is used.
@@ -500,7 +498,7 @@ calc_influence_nearest_GRASS <- function(
 
     }
 
-    if(transform == "bartlett") {
+    if(type == "bartlett") {
 
       # betlett (tent-shaped or linear decay) influence
       # message
@@ -511,7 +509,7 @@ calc_influence_nearest_GRASS <- function(
 
     }
 
-    if(transform == "Gauss" | transform == "half_norm") {
+    if(type %in% c("Gauss", "half_norm")) {
       # define zoi or half life, depending on which is given as input
 
       # if zoi is given, it is used.
@@ -542,7 +540,7 @@ calc_influence_nearest_GRASS <- function(
 
     }
 
-    if(transform %in% c("threshold", "step")) {
+    if(type %in% c("threshold", "step")) {
 
       # threshold influence
       # message
@@ -557,11 +555,10 @@ calc_influence_nearest_GRASS <- function(
       out_influence <- output_map_name
     else {
       # otherwise, name it according to the method
-      out_influence <- paste0(x, "_inf_nearest_", transform)
+      out_influence <- paste0(x, "_inf_nearest_", type)
       # and maybe the zoi
       zoi_methods <- c("exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")
-      if(!is.null(transform))
-        if(transform %in% zoi_methods) out_influence <- paste0(out_influence, zoi)
+      if(type %in% zoi_methods) out_influence <- paste0(out_influence, zoi)
     }
 
     # print message
@@ -576,157 +573,3 @@ calc_influence_nearest_GRASS <- function(
   # return only names
   return(out_influence)
 }
-
-
-# backup
-# calc_influence_nearest <- function(
-#   x,
-#   zoi = NULL,
-#   transform = NULL, #c("log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm")[1],
-#   where = c("R", "GRASS")[1],
-#   log_base = exp(1),
-#   zoi_hl_ratio = 4,
-#   half_life = NULL,
-#   exp_decay_parms = c(1, 0.01),
-#   dist_offset = 1,
-#   extent_x_cut = NULL,
-#   extent_y_cut = NULL,
-#   plotit = FALSE,
-#   output_map_name = NULL,
-#   metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
-#   remove_intermediate = TRUE,
-#   print_expression = TRUE,
-#   quiet = TRUE, overwrite = FALSE,
-#   ...) {
-#
-#   # Run in R
-#   if(where %in% c("R", "r")) {
-#     if(is.null(extent_x_cut)) extent_x_cut <- terra::ext(x)[c(1,2)]
-#     if(is.null(extent_y_cut)) extent_y_cut <- terra::ext(x)[c(3,4)]
-#
-#     # check if the input is a terra or raster object
-#     if(class(x) %in% c("SpatRaster")) {
-#       use_terra <- TRUE
-#     } else {
-#       if(class(x) %in% c("RasterLayer", "RasterBrick", "RasterStack")) {
-#         use_terra <- FALSE
-#       } else {
-#         classes <- c("SpatRaster", "RasterLayer", "RasterBrick", "RasterStack")
-#         stop(paste0("Please make sure x is an object of one of these classes: ",
-#                     paste(classes, collapse = ","), "."))
-#       }
-#     }
-#
-#     # Euclidean distance
-#     dist_r <- terra::distance(x, ...)
-#
-#     # transform distance
-#     if(!is.null(transform))
-#       if(transform == "log") dist_r <- log(dist_r+dist_offset, base = log_base) else
-#         if(transform == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
-#           if(transform == "exp_decay") {
-#             # define zoi or half life, depending on which is given as input
-#
-#             # if zoi is given, it is used.
-#             # if zoi is not given:
-#             if(is.null(zoi)) {
-#               # and half_life is not given either:
-#               if(is.null(half_life)) {
-#                 # lambda is calculated from exp_decay_parms
-#                 lambda <- exp_decay_parms[2]
-#               } else {
-#                 # if half_life is given, lambda is calculated from that
-#                 zoi <- half_life * zoi_hl_ratio # not used!
-#                 lambda <- log(2)/half_life
-#               }
-#             } else {
-#               # if zoi is given, it is used to
-#               # define half_life and lambda
-#               half_life <- zoi/zoi_hl_ratio
-#               lambda <- log(2)/half_life
-#             }
-#
-#             dist_r <- exp_decay_parms[1] * exp(-lambda * dist_r)
-#           } else
-#             if(transform == "bartlett") {
-#               dist_r <- (1 - (1/zoi)*dist_r)
-#               zero <- dist_r
-#               size_landscape <- prod(dim(zero)[c(1:2)])
-#               values(zero) <- rep(0, size_landscape)
-#               dist_zero_stack <- c(dist_r, zero)
-#
-#               if(use_terra) {
-#                 dist_r <- terra::app(dist_zero_stack, "max")
-#               } else {
-#                 dist_zero_stack <- raster::stack(dist_zero_stack)
-#                 dist_r <- raster::calc(dist_zero_stack, max)
-#               }
-#
-#             } else
-#               if(transform %in% c("Gauss", "half_norm")) {
-#                 # define zoi or half life, depending on which is given as input
-#
-#                 # if zoi is given, it is used.
-#                 # if zoi is not given:
-#                 if(is.null(zoi)) {
-#                   # and half_life is not given either:
-#                   if(is.null(half_life)) {
-#                     # lambda is calculated from exp_decay_parms
-#                     lambda <- 0.5/(hnorm_decay_parms[2]**2) # lambda = 0.5/(sigma^2)
-#                   } else {
-#                     # if half_life is given, lambda is calculated from that
-#                     zoi <- half_life * sqrt(zoi_hl_ratio) # not used!
-#                     lambda <- log(2)/(half_life**2)
-#                   }
-#                 } else {
-#                   # if zoi is given, it is used to
-#                   # define half_life and lambda
-#                   half_life <- zoi/sqrt(zoi_hl_ratio)
-#                   lambda <- log(2)/(half_life**2)
-#                 }
-#
-#                 dist_r <- hnorm_decay_parms[1] * exp(-lambda * (dist_r**2))
-#               } else
-#                 stop("You should select an appropriate transformation method for distance.")
-#
-#     # rename nearest influence layer
-#     names(dist_r) <- "influence_nearest"
-#     # should the result be plotted?
-#     if(plotit) plot(dist_r)
-#
-#     # return cropped distance layer
-#     if(use_terra)
-#       inf_nearest <- terra::crop(dist_r, terra::ext(c(extent_x_cut, extent_y_cut)))
-#     else
-#       inf_nearest <- raster::crop(dist_r, raster::extent(c(extent_x_cut, extent_y_cut)))
-#
-#     return(inf_nearest)
-#   } else {
-#
-#     # Run in GRASS GIS
-#     if(where %in% c("GRASS", "grass", "GRASS GIS", "grass gis")) {
-#       inf_nearest <- calc_influence_nearest_GRASS(x = x,
-#                                                   zoi = zoi,
-#                                                   transform = transform,
-#                                                   log_base = log_base,
-#                                                   zoi_hl_ratio = zoi_hl_ratio,
-#                                                   half_life = half_life,
-#                                                   exp_decay_parms = exp_decay_parms,
-#                                                   hnorm_decay_parms = hnorm_decay_parms,
-#                                                   dist_offset = dist_offset,
-#                                                   extent_x_cut = extent_x_cut,
-#                                                   extent_y_cut = extent_y_cut,
-#                                                   plotit = plotit,
-#                                                   output_map_name = output_map_name,
-#                                                   metric = metric,
-#                                                   remove_intermediate = remove_intermediate,
-#                                                   print_expression = print_expression,
-#                                                   quiet = quiet,
-#                                                   overwrite = overwrite,
-#                                                   ...)
-#
-#       return(inf_nearest)
-#     }
-#   }
-#
-# }

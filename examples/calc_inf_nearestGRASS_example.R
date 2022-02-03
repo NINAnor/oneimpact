@@ -46,16 +46,16 @@ cabins_g
 euclidean_name <- calc_influence_nearest(cabins_g, where = "GRASS",
                                          quiet = T, overwrite = T)
 # Log
-log_name <- calc_influence_nearest(cabins_g, transform = "log", log_base = 10,
+log_name <- calc_influence_nearest(cabins_g, type = "log", log_base = 10,
                                    where = "GRASS", quiet = T, overwrite = T)
 # Exponential decay ZoI=1000m
-expdecay_name <- calc_influence_nearest(cabins_g, transform = "exp_decay", zoi = 1000,
+expdecay_name <- calc_influence_nearest(cabins_g, type = "exp_decay", zoi = 1000,
                                         where = "GRASS", quiet = T, overwrite = T)
 # Bartlett decay ZoI=1000m
-bartlett_name <- calc_influence_nearest(cabins_g, transform = "bartlett", zoi = 1000,
+bartlett_name <- calc_influence_nearest(cabins_g, type = "bartlett", zoi = 1000,
                                         where = "GRASS", quiet = T, overwrite = T)
 # Threshold influence ZoI = 1000m
-threshold_name <- calc_influence_nearest(cabins_g, transform = "threshold", zoi = 1000,
+threshold_name <- calc_influence_nearest(cabins_g, type = "threshold", zoi = 1000,
                                          where = "GRASS", quiet = T, overwrite = T)
 
 (all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name, threshold_name))

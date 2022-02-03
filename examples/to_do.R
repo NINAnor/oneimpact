@@ -8,6 +8,7 @@
 #'---
 #'
 #' 1. `calc_influence_nearest`:
+#' - Change `transform` to `type` and include euclidean as the default option
 #' - Add support for multiple zoi input values
 #' - example in GRASS creating a grass db
 #'
