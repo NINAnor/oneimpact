@@ -27,10 +27,16 @@
 #'
 #' TO IMPROVE2: do the same in communication with GRASS GIS.
 #'
-#' @param x `[RasterLayer,SpatRaster]` \cr Raster representing locations of features, with 1 where the features
-#' are located and NA elsewhere. Can be a [RasterLayer] from [raster] package or a [SpatRaster] from
-#' [terra] package.
-#' @param type `[character(1)="circle"]{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter"}` \cr
+#' @param x `[RasterLayer,SpatRaster,character]` \cr Raster representing locations of features,
+#' preferentially a binary map with 1 where the features are located and 0 elsewhere.
+#' Can be a [RasterLayer] from [raster] package or a [SpatRaster] from  [terra] package.
+#' If `where = "GRASS"`, `x` must be a string corresponding to the name of the input map within
+#' a GRASS GIS mapset. Continuous or discrete raster maps with multiple categories can be binarized
+#' to be used as input for `calc_influence_cumulative` through [landscapetools::util_binarize()]
+#' in R or [oneimpact::util_binarize_GRASS] in GRASS GIS, or through common raster algebra in both
+#' environments.
+#'
+#' @param type `[character(1)="circle"]{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter"}` \cr
 #' Type of filter used to calculate density. See description for details.
 #' @param zoi `[numeric(1)=100]` \cr Scale of the neighborhood analysis, used to calculate densities.
 #' It can be a single value of a vector of values, in which case several density maps (for each scale)
@@ -58,7 +64,8 @@
 #' @export
 calc_influence_cumulative <- function(x,
                                       zoi = 100,
-                                      type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter")[1],
+                                      type = c("circle", "Gauss", "rectangle", "exp_decay",
+                                               "bartlett", "threshold", "step", "mfilter")[1],
                                       where = c("R", "GRASS")[1],
                                       module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
                                       zoi_hl_ratio = 4,
@@ -135,7 +142,7 @@ calc_influence_cumulative <- function(x,
 calc_influence_cumulative_r <- function(
   x,
   zoi = 100,
-  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter")[1],
+  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
   zoi_hl_ratio = 4,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
@@ -267,7 +274,7 @@ calc_influence_cumulative_r <- function(
 calc_influence_cumulative_GRASS <- function(
   x,
   zoi = 100,
-  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "mfilter")[1],
+  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
   module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
   zoi_hl_ratio = 4,
   half_life = NULL,
