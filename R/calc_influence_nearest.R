@@ -294,10 +294,13 @@ calc_influence_nearest_r <- function(
             if(is.null(half_life)) {
               # lambda is calculated from exp_decay_parms
               lambda <- exp_decay_parms[2]
+              # zoi approximated, only used for the name of the layer
+              zoi <- as.integer(log(2)/lambda * zoi_hl_ratio)
             } else {
               # if half_life is given, lambda is calculated from that
-              zoi <- half_life * zoi_hl_ratio # not used!
               lambda <- log(2)/half_life
+              # zoi approximated, only used for the name of the layer
+              zoi <- half_life * zoi_hl_ratio
             }
           } else {
             # if zoi is given, it is used to
