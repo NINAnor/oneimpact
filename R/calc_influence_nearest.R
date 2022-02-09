@@ -573,6 +573,11 @@ calc_influence_nearest_GRASS <- function(
                        a = out_euclidean, output = out_influence, flags = flags)
   }
 
+  # remove intermediate maps
+  remove_flags = ifelse(quiet, c("f", "quiet"), "f")
+  if(remove_intermediate) rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
+                                             flags = remove_flags)
+
   # return only names
   return(out_influence)
 }

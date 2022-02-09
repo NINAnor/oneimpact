@@ -69,3 +69,9 @@ title_plot <- c("Euclidean distance", "Log distance (base 10)",
                 "Exponential decay 1000m", "Bartlett decay 1000m",
                 "Threshold influence 1000m")
 terra::plot(cabins_influence_nearest, main = title_plot)
+
+# remove rasters created
+to_remove_vect <- c(test_region_name, cabins_vect_name)
+to_remove_rast <- c(all_names)
+# rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")
+# rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")

@@ -521,6 +521,11 @@ calc_influence_cumulative_GRASS <- function(
 
   }
 
+  # remove intermediate maps
+  # remove_flags = ifelse(quiet, c("f", "quiet"), "f")
+  # if(remove_intermediate) rgrass7::execGRASS("g.remove", type = "vect", name = to_remove,
+  #                                            flags = remove_flags)
+
   # return only names
   return(out_names)
 }
