@@ -50,32 +50,37 @@ util_v2rast_count_GRASS <- function(x,
       rgrass7::execGRASS("g.region", vector = x, align = align, flags = flags_region)
 
   #--- procedures ---
-  # set temporary region
-  temp_region <- "temp_region_v2rast_count"
-  if(remove_intermediate) to_remove <- c(to_remove, temp_region)
-  rgrass7::execGRASS("v.in.region", output = temp_region, flags = flags)
-
-  # set temporary vector
-  if(verbose) rgrass7::execGRASS("g.message", message = "Copying input vector...")
-  temp_vect <- "temp_vect_v2rast_count"
-  if(remove_intermediate) to_remove <- c(to_remove, temp_vect)
-  flags_extract <- c("t", flags)
-  rgrass7::execGRASS("v.select", ainput = x, binput = temp_region,
-                     operator = "within", output = temp_vect, flags = flags_extract)
-
-  # add new column for counting
-  if(verbose) rgrass7::execGRASS("g.message", message = "Adding new column for counting...")
+  # If no column is given, the vector is copied only for the computational region and
+  # a column with value=1 is created
   if(is.null(column)) {
+
+    # set temporary region
+    temp_region <- "temp_region_v2rast_count"
+    if(remove_intermediate) to_remove <- c(to_remove, temp_region)
+    rgrass7::execGRASS("v.in.region", output = temp_region, flags = flags)
+
+    # set temporary vector
+    if(verbose) rgrass7::execGRASS("g.message", message = "Copying input vector...")
+    temp_vect <- "temp_vect_v2rast_count"
+    if(remove_intermediate) to_remove <- c(to_remove, temp_vect)
+    flags_extract <- c("t", flags)
+    rgrass7::execGRASS("v.select", ainput = x, binput = temp_region,
+                       operator = "within", output = temp_vect, flags = flags_extract)
+
+    # add new column for counting
+    if(verbose) rgrass7::execGRASS("g.message", message = "Adding new column for counting...")
     column_count <- "val_c"
+    flags_table <- c()
+    if(quiet) flags_table <- c(flags_table, "quiet")
+    rgrass7::execGRASS("v.db.addtable", map = temp_vect, columns = sprintf("%s integer", column_count),
+                       flags = flags_table)
+    rgrass7::execGRASS("v.db.update", map = temp_vect, column = column_count, value = "1",
+                       flags = flags_table)
   } else {
+    # If the column is given, the input vector and column are used
+    temp_vect <- x
     column_count <- column
   }
-  flags_table <- c()
-  if(quiet) flags_table <- c(flags_table, "quiet")
-  rgrass7::execGRASS("v.db.addtable", map = temp_vect, columns = sprintf("%s integer", column_count),
-                     flags = flags_table)
-  rgrass7::execGRASS("v.db.update", map = temp_vect, column = column_count, value = "1",
-                     flags = flags_table)
 
   # write temporary ascii file
   if(verbose) rgrass7::execGRASS("g.message", message = "Writing output ascii and rasterizing...")
@@ -88,8 +93,9 @@ util_v2rast_count_GRASS <- function(x,
 
   # remove intermediate maps
   remove_flags = ifelse(quiet, c("f", "quiet"), "f")
-  if(remove_intermediate) rgrass7::execGRASS("g.remove", type = "vect", name = to_remove,
-                                             flags = remove_flags)
+  if(remove_intermediate & length(to_remove) > 0)
+    rgrass7::execGRASS("g.remove", type = "vect", name = to_remove,
+                       flags = remove_flags)
 
   # return output map names
   output

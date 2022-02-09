@@ -33,8 +33,12 @@ cabins_vect_name <- "private_cabins_vect"
 sf::st_read(c) %>%
   rgrass7::writeVECT(vname = cabins_vect_name, v.in.ogr_flags = "overwrite")
 
-# rasterize with count
-cabins_count_name <- util_v2rast_count_GRASS(cabins_vect_name, output = "cabins_count", quiet = T, overwrite = T)
+# rasterize with count, creating a new temp_vector
+cabins_count_name <- util_v2rast_count_GRASS(cabins_vect_name, output = "cabins_count", quiet = F, overwrite = T)
+
+# rasterize with count, withour creating a temporary vector
+cabins_count_name <- util_v2rast_count_GRASS(cabins_vect_name, output = "cabins_count",
+                                             column = "value", quiet = F, overwrite = T)
 
 # visualize
 rgrass7::use_sp()
