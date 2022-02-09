@@ -72,3 +72,9 @@ cabins_influence_cumulative <- readRAST(all_names) %>%
 title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
                 "Gaussian decay 500m", "Threshold decay 1000m")
 terra::plot(cabins_influence_cumulative, main = title_plot)
+
+# remove rasters created
+to_remove_vect <- c(test_region_name, cabins_vect_name)
+to_remove_rast <- c(all_names)
+# rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")
+# rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
