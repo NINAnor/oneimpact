@@ -1,5 +1,7 @@
 #' Rasterizes a vector counting the number of features in each pixel
 #'
+#' Add within and other arguments for grass functions as options/parameters
+#'
 #' @param x Input vector map.
 #' @param output Output map name.
 #' @param column `[chracter(1)=NULL` \cr Default is `NULL`. If not `NULL`, the name of a column
@@ -48,12 +50,18 @@ util_v2rast_count_GRASS <- function(x,
       rgrass7::execGRASS("g.region", vector = x, align = align, flags = flags_region)
 
   #--- procedures ---
+  # set temporary region
+  temp_region <- "temp_region_v2rast_count"
+  if(remove_intermediate) to_remove <- c(to_remove, temp_region)
+  rgrass7::execGRASS("v.in.region", output = temp_region, flags = flags)
+
   # set temporary vector
   if(verbose) rgrass7::execGRASS("g.message", message = "Copying input vector...")
   temp_vect <- "temp_vect_v2rast_count"
   if(remove_intermediate) to_remove <- c(to_remove, temp_vect)
   flags_extract <- c("t", flags)
-  rgrass7::execGRASS("v.extract", input = x, output = temp_vect, flags = flags_extract)
+  rgrass7::execGRASS("v.select", ainput = x, binput = temp_region,
+                     operator = "within", output = temp_vect, flags = flags_extract)
 
   # add new column for counting
   if(verbose) rgrass7::execGRASS("g.message", message = "Adding new column for counting...")

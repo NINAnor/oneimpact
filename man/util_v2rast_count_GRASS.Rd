@@ -35,7 +35,7 @@ If \code{FALSE}, the current computational region is used.}
 computational region to produce the output map.}
 }
 \description{
-Rasterizes a vector counting the number of features in each pixel
+Add within and other arguments for grass functions as options/parameters
 }
 \examples{
 # libraries
