@@ -495,7 +495,8 @@ calc_influence_cumulative_GRASS <- function(
       z <- filter_count[[i]]
 
       # message
-      if(!quiet) print(paste0("Calculating for ZoI ", z, "..."))
+      msg <- paste0("Calculating cumulative influence for ZoI ", z, ", method ", type, "...")
+      if(!quiet) print(msg)
       # region
       # set region
       rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
@@ -510,7 +511,8 @@ calc_influence_cumulative_GRASS <- function(
     z <- filter_count
 
     # message
-    if(!quiet) print(paste0("Calculating for ZoI ", z, "..."))
+    msg <- paste0("Calculating cumulative influence for ZoI ", z, ", method ", type, "...")
+    if(!quiet) print(msg)
     # region
     # set region
     rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
