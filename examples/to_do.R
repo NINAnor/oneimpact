@@ -8,9 +8,10 @@
 #'---
 #'
 #' 1. `calc_influence_nearest`:
-#' - Change `transform` to `type` and include euclidean as the default option
+#' - Change `transform` to `type` and include euclidean as the default option - OK
 #' - Add support for multiple zoi input values
 #' - example in GRASS creating a grass db
+#'
 #'
 #' 2. `calc_influence_cumulative`:
 #' - Document parameters and al
@@ -30,6 +31,8 @@
 #'
 #' 5. `calc_influence`:
 #' - implement for R and GRASS
+#'
+#' 6. `influence_functions` and `plot_influence2d`: document
 #'
 #' 6. simulate_dist_dens - with terra - not important
 #'
