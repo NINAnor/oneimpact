@@ -11,7 +11,8 @@ calc_influence_nearest(
     "threshold", "step")[1],
   where = c("R", "GRASS")[1],
   log_base = exp(1),
-  zoi_hl_ratio = 4,
+  zoi_decay_threshold = 0.05,
+  zoi_hl_ratio = NULL,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
@@ -317,6 +318,17 @@ legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
 # calculate threshold influence
 d <- calc_influence_nearest(pts$rast, type = "threshold", zoi = 2000)
 plot(d)
+
+# Gaussian decay influence
+g_d <- calc_influence_nearest(pts$rast, type = "Gauss", zoi = 2000)
+plot(g_d)
+
+# buffer 2000m
+pts_shp \%>\%
+  sf::st_buffer(dist = 2000) \%>\%
+  sf::st_union() \%>\%
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
 
 #--------------------
 # Running calc_influence_nearest through GRASS GIS

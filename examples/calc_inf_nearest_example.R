@@ -109,4 +109,15 @@ legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
 d <- calc_influence_nearest(pts$rast, type = "threshold", zoi = 2000)
 plot(d)
 
+# Gaussian decay influence
+g_d <- calc_influence_nearest(pts$rast, type = "Gauss", zoi = 2000)
+plot(g_d)
+
+# buffer 2000m
+pts_shp %>%
+  sf::st_buffer(dist = 2000) %>%
+  sf::st_union() %>%
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
+
 #--------------------

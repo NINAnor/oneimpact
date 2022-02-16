@@ -183,7 +183,8 @@ calc_influence_nearest <- function(
   type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   where = c("R", "GRASS")[1],
   log_base = exp(1),
-  zoi_hl_ratio = 4,
+  zoi_decay_threshold = 0.05,
+  zoi_hl_ratio = NULL,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
@@ -208,6 +209,7 @@ calc_influence_nearest <- function(
                                             zoi = zoi,
                                             type = type,
                                             log_base = log_base,
+                                            zoi_decay_threshold = zoi_decay_threshold,
                                             zoi_hl_ratio = zoi_hl_ratio,
                                             half_life = half_life,
                                             exp_decay_parms = exp_decay_parms,
@@ -227,6 +229,7 @@ calc_influence_nearest <- function(
                                                   zoi = zoi,
                                                   type = type,
                                                   log_base = log_base,
+                                                  zoi_decay_threshold = zoi_decay_threshold,
                                                   zoi_hl_ratio = zoi_hl_ratio,
                                                   half_life = half_life,
                                                   exp_decay_parms = exp_decay_parms,
@@ -254,7 +257,8 @@ calc_influence_nearest_r <- function(
   zoi = NULL,
   type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   log_base = exp(1),
-  zoi_hl_ratio = 4,
+  zoi_decay_threshold = 0.05,
+  zoi_hl_ratio = NULL,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
@@ -331,24 +335,29 @@ calc_influence_nearest_r <- function(
 
               # if zoi is given, it is used.
               # if zoi is not given:
-              if(is.null(zoi)) {
-                # and half_life is not given either:
-                if(is.null(half_life)) {
-                  # lambda is calculated from exp_decay_parms
-                  lambda <- 0.5/(hnorm_decay_parms[2]**2) # lambda = 0.5/(sigma^2)
-                } else {
-                  # if half_life is given, lambda is calculated from that
-                  zoi <- half_life * sqrt(zoi_hl_ratio) # not used!
-                  lambda <- log(2)/(half_life**2)
-                }
-              } else {
-                # if zoi is given, it is used to
-                # define half_life and lambda
-                half_life <- zoi/sqrt(zoi_hl_ratio)
-                lambda <- log(2)/(half_life**2)
-              }
+              # if(is.null(zoi)) {
+              #   # and half_life is not given either:
+              #   if(is.null(half_life)) {
+              #     # lambda is calculated from exp_decay_parms
+              #     lambda <- 0.5/(hnorm_decay_parms[2]**2) # lambda = 0.5/(sigma^2)
+              #   } else {
+              #     # if half_life is given, lambda is calculated from that
+              #     zoi <- half_life * sqrt(zoi_hl_ratio) # not used!
+              #     lambda <- log(2)/(half_life**2)
+              #   }
+              # } else {
+              #   # if zoi is given, it is used to
+              #   # define half_life and lambda
+              #   half_life <- zoi/sqrt(zoi_hl_ratio)
+              #   lambda <- log(2)/(half_life**2)
+              # }
+              #
+              # dist_r <- hnorm_decay_parms[1] * exp(-lambda * (dist_r**2))
 
-              dist_r <- hnorm_decay_parms[1] * exp(-lambda * (dist_r**2))
+              dist_r <- gaussian_decay(x = dist_r,
+                                       zoi = zoi,
+                                       hnorm_decay_parms = hnorm_decay_parms,
+                                       zoi_decay_threshold = zoi_decay_threshold)
             } else {
               if(type %in% c("threshold", "step")) {
 
@@ -382,7 +391,8 @@ calc_influence_nearest_GRASS <- function(
   zoi = NULL,
   type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   log_base = exp(1),
-  zoi_hl_ratio = 4,
+  zoi_decay_threshold = 0.05,
+  zoi_hl_ratio = NULL,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
