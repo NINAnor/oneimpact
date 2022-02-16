@@ -31,10 +31,10 @@
 #'
 #' @examples
 #' my_filter <- create_filter(r = 100, method = "bartlett", zoi = 1000, round = 4)
-#' save_mfilter(my_filter, zoi = 1000, method = "bartlett", save_format = "GRASS")
+#' save_filter(my_filter, zoi = 1000, method = "bartlett", save_format = "GRASS")
 #'
 #' @export
-save_mfilter <- function(
+save_filter <- function(
   filt,
   zoi,
   method,

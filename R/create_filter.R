@@ -180,7 +180,7 @@ create_filter <- function(r = 100,
 
   if(save_txt) {
     # save matrix outside R for use within GRASS GIS
-    save_mfilter(filt = dist_mat, zoi = zoi, method = method,
+    save_filter(filt = dist_mat, zoi = zoi, method = method,
                  save_format = save_format, save_folder = save_folder,
                  save_file = save_file, parallel = parallel,
                  divisor = divisor, separator = " ")
