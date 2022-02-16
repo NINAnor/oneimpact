@@ -57,8 +57,12 @@ bartlett_name <- calc_influence_nearest(cabins_g, type = "bartlett", zoi = 1000,
 # Threshold influence ZoI = 1000m
 threshold_name <- calc_influence_nearest(cabins_g, type = "threshold", zoi = 1000,
                                          where = "GRASS", quiet = T, overwrite = T)
+# Gaussian influence ZoI = 1000m
+gaussian_name <- calc_influence_nearest(cabins_g, type = "Gauss", zoi = 1000,
+                                         where = "GRASS", quiet = T, overwrite = T)
 
-(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name, threshold_name))
+
+(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name, threshold_name, gaussian_name))
 
 # visualize
 cabins_influence_nearest <- readRAST(all_names) %>%
@@ -67,7 +71,7 @@ cabins_influence_nearest <- readRAST(all_names) %>%
 
 title_plot <- c("Euclidean distance", "Log distance (base 10)",
                 "Exponential decay 1000m", "Bartlett decay 1000m",
-                "Threshold influence 1000m")
+                "Threshold influence 1000m", "Gaussian influence 1000m")
 terra::plot(cabins_influence_nearest, main = title_plot)
 
 # remove rasters created

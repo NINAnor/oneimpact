@@ -188,6 +188,7 @@ calc_influence_nearest <- function(
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  sigma = NULL,
   constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = NULL,
@@ -214,6 +215,7 @@ calc_influence_nearest <- function(
                                             half_life = half_life,
                                             exp_decay_parms = exp_decay_parms,
                                             hnorm_decay_parms = hnorm_decay_parms,
+                                            sigma = sigma,
                                             constant_influence = constant_influence,
                                             dist_offset = dist_offset,
                                             extent_x_cut = extent_x_cut,
@@ -234,6 +236,7 @@ calc_influence_nearest <- function(
                                                   half_life = half_life,
                                                   exp_decay_parms = exp_decay_parms,
                                                   hnorm_decay_parms = hnorm_decay_parms,
+                                                  sigma = sigma,
                                                   constant_influence = constant_influence,
                                                   dist_offset = dist_offset,
                                                   extent_x_cut = extent_x_cut,
@@ -262,6 +265,7 @@ calc_influence_nearest_r <- function(
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  sigma = NULL,
   constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = terra::ext(x)[c(1,2)],
@@ -289,33 +293,16 @@ calc_influence_nearest_r <- function(
     if(type == "log") dist_r <- log(dist_r+dist_offset, base = log_base) else
       if(type == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
         if(type == "exp_decay") {
-          # define zoi or half life, depending on which is given as input
-
-          # if zoi is given, it is used.
-          # if zoi is not given:
-          if(is.null(zoi)) {
-            # and half_life is not given either:
-            if(is.null(half_life)) {
-              # lambda is calculated from exp_decay_parms
-              lambda <- exp_decay_parms[2]
-              # zoi approximated, only used for the name of the layer
-              zoi <- as.integer(log(2)/lambda * zoi_hl_ratio)
-            } else {
-              # if half_life is given, lambda is calculated from that
-              lambda <- log(2)/half_life
-              # zoi approximated, only used for the name of the layer
-              zoi <- half_life * zoi_hl_ratio
-            }
-          } else {
-            # if zoi is given, it is used to
-            # define half_life and lambda
-            half_life <- zoi/zoi_hl_ratio
-            lambda <- log(2)/half_life
-          }
-
-          dist_r <- exp_decay_parms[1] * exp(-lambda * dist_r)
+          dist_r <- exp_decay(x = dist_r,
+                              zoi = zoi,
+                              exp_decay_parms = exp_decay_parms,
+                              zoi_decay_threshold = zoi_decay_threshold,
+                              half_life = half_life,
+                              zoi_hl_ratio = zoi_hl_ratio)
         } else
           if(type == "bartlett") {
+
+            ################# change to function later on
             dist_r <- (1 - (1/zoi)*dist_r)
             zero <- dist_r
             size_landscape <- prod(dim(zero)[c(1:2)])
@@ -331,36 +318,15 @@ calc_influence_nearest_r <- function(
 
           } else
             if(type %in% c("Gauss", "half_norm")) {
-              # define zoi or half life, depending on which is given as input
-
-              # if zoi is given, it is used.
-              # if zoi is not given:
-              # if(is.null(zoi)) {
-              #   # and half_life is not given either:
-              #   if(is.null(half_life)) {
-              #     # lambda is calculated from exp_decay_parms
-              #     lambda <- 0.5/(hnorm_decay_parms[2]**2) # lambda = 0.5/(sigma^2)
-              #   } else {
-              #     # if half_life is given, lambda is calculated from that
-              #     zoi <- half_life * sqrt(zoi_hl_ratio) # not used!
-              #     lambda <- log(2)/(half_life**2)
-              #   }
-              # } else {
-              #   # if zoi is given, it is used to
-              #   # define half_life and lambda
-              #   half_life <- zoi/sqrt(zoi_hl_ratio)
-              #   lambda <- log(2)/(half_life**2)
-              # }
-              #
-              # dist_r <- hnorm_decay_parms[1] * exp(-lambda * (dist_r**2))
-
               dist_r <- gaussian_decay(x = dist_r,
                                        zoi = zoi,
                                        hnorm_decay_parms = hnorm_decay_parms,
-                                       zoi_decay_threshold = zoi_decay_threshold)
+                                       zoi_decay_threshold = zoi_decay_threshold,
+                                       sigma = sigma)
             } else {
               if(type %in% c("threshold", "step")) {
 
+                ################# change to function later on
                 # for threshold influence of the nearest, keep pixels with dist <= zoi constant
                 values(dist_r) <- ifelse(values(dist_r) < zoi, constant_influence, 0)
 
@@ -396,6 +362,7 @@ calc_influence_nearest_GRASS <- function(
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  sigma = NULL,
   constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = NULL,
@@ -481,25 +448,28 @@ calc_influence_nearest_GRASS <- function(
     }
 
     if(type == "exp_decay") {
-      # define zoi or half life, depending on which is given as input
 
-      # if zoi is given, it is used.
-      # if zoi is not given:
-      if(is.null(zoi)) {
-        # and half_life is not given either:
-        if(is.null(half_life)) {
-          # lambda is calculated from exp_decay_parms
-          lambda <- exp_decay_parms[2]
+      # define lambda depending on the input parameter
+      # if zoi is given, it is used
+      if(!is.null(zoi)) {
+        # if zoi_hl_ratio is null, use zoi_decay_threshold
+        if(is.null(zoi_hl_ratio)) {
+          lambda <- log(1/zoi_decay_threshold) / zoi
         } else {
-          # if half_life is given, lambda is calculated from that
-          zoi <- half_life * zoi_hl_ratio # not used!
+          # if zoi_hl_ratio is given, calculate lambda
+          half_life <- zoi/zoi_hl_ratio
           lambda <- log(2)/half_life
         }
+
       } else {
-        # if zoi is given, it is used to
-        # define half_life and lambda
-        half_life <- zoi/zoi_hl_ratio
-        lambda <- log(2)/half_life
+        # if zoi is not given:
+        # and half life is given
+        if(!is.null(half_life)) {
+          lambda <- log(2)/half_life
+        } else {
+          # otherwise take it from the parameters
+          lambda <- exp_decay_parms[2]
+        }
       }
 
       # exponential decay influence
@@ -513,6 +483,7 @@ calc_influence_nearest_GRASS <- function(
 
     if(type == "bartlett") {
 
+      ################# change to function later on
       # betlett (tent-shaped or linear decay) influence
       # message
       out_message <- "Calculating Bartlett influence..."
@@ -525,23 +496,15 @@ calc_influence_nearest_GRASS <- function(
     if(type %in% c("Gauss", "half_norm")) {
       # define zoi or half life, depending on which is given as input
 
-      # if zoi is given, it is used.
-      # if zoi is not given:
-      if(is.null(zoi)) {
-        # and half_life is not given either:
-        if(is.null(half_life)) {
-          # lambda is calculated from hnorm_decay_parms
-          lambda <- 0.5/(hnorm_decay_parms[2]**2) # lambda = 0.5/(sigma^2)
-        } else {
-          # if half_life is given, lambda is calculated from that
-          zoi <- half_life * sqrt(zoi_hl_ratio) # not used!
-          lambda <- log(2)/(half_life**2)
-        }
+      if(!is.null(zoi)) {
+        lambda = log(1/zoi_decay_threshold) / (zoi**2)
       } else {
-        # if zoi is given, it is used to
-        # define half_life and lambda
-        half_life <- zoi/sqrt(zoi_hl_ratio)
-        lambda <- log(2)/(half_life**2)
+        if(!is.null(sigma)) {
+          lambda = 1/(2*sigma**2)
+        } else {
+          lambda <- hnorm_decay_parms[2]
+        }
+
       }
 
       # exponential decay influence
@@ -585,8 +548,9 @@ calc_influence_nearest_GRASS <- function(
 
   # remove intermediate maps
   remove_flags = ifelse(quiet, c("f", "quiet"), "f")
-  if(remove_intermediate) rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
-                                             flags = remove_flags)
+  if(remove_intermediate & length(to_remove) > 1)
+    rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
+                       flags = remove_flags)
 
   # return only names
   return(out_influence)

@@ -16,6 +16,7 @@ calc_influence_nearest(
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  sigma = NULL,
   constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = NULL,
@@ -241,12 +242,29 @@ plot(sqrt_d)
 exp_d1 <- calc_influence_nearest(pts$rast, type = "exp_decay", exp_decay_parms = c(1, 0.001))
 plot(exp_d1)
 
+# calculate exponential decay influence using zoi and zoi_decay_threshold (default)
+zoi2 <- 1000 # zoi = 1000m
+zoi_decay_threshold2 <- 0.05 # here zoi is the distance where the function reaches 0.05
+exp_d2 <- calc_influence_nearest(pts$rast, type = "exp_decay", zoi = zoi2,
+                                 zoi_decay_threshold = zoi_decay_threshold2)
+plot(exp_d2)
+# buffer
+pts_shp <- pts$pts \%>\%
+  sf::st_as_sf(coords = c(1,2))
+# zoi = 1000m
+pts_shp \%>\%
+  sf::st_buffer(dist = half_life2*zoi_hl_ratio2) \%>\%
+  sf::st_union() \%>\%
+  plot(add = T, border = "black")
+legend("bottomright", legend = c("ZoI"), col = c("black"), lwd=1.1)
+
 # calculate exponential decay influence using half life parameter
 # if half_life = 250 m and zoi_hl_ratio = 4, zoi is 1000 m
-half_life2 <- 250 # intensity gets down to 1/16 = 0.06 for 4*half_life=1000m
-zoi_hl_ratio2 <- 4 # default
-exp_d2 <- calc_influence_nearest(pts$rast, type = "exp_decay", half_life = half_life2)
-plot(exp_d2)
+half_life3 <- 250 # intensity gets down to 1/16 = 0.06 for 4*half_life=1000m
+zoi_hl_ratio3 <- 4 # default
+exp_d4 <- calc_influence_nearest(pts$rast, type = "exp_decay", half_life = half_life3,
+                                 zoi_hl_ratio = zoi_hl_ratio3)
+plot(exp_d4)
 # buffer
 pts_shp <- pts$pts \%>\%
   sf::st_as_sf(coords = c(1,2))
@@ -262,42 +280,21 @@ pts_shp \%>\%
   plot(add = T, border = "black")
 legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
 
-# calculate exponential decay influence using zoi parameter
-zoi3 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
-zoi_hl_ratio3 <- 4 # default
-exp_d3 <- calc_influence_nearest(pts$rast, type = "exp_decay", zoi = zoi3)
-plot(exp_d3)
-# buffer
-pts_shp <- pts$pts \%>\%
-  sf::st_as_sf(coords = c(1,2))
-# half_life = 1000m
-pts_shp \%>\%
-  sf::st_buffer(dist = zoi3/zoi_hl_ratio3) \%>\%
-  sf::st_union() \%>\%
-  plot(add = T, border = "red")
-# zoi = 4000m
-pts_shp \%>\%
-  sf::st_buffer(dist = zoi3) \%>\%
-  sf::st_union() \%>\%
-  plot(add = T, border = "black")
-legend("bottomright", legend = c("half life", "ZoI"), col = c("red", "black"), lwd=1.1)
-
-# one can also change the definition of zoi, to zoi = half_life = 6, for instance
-# when the intensity decreases to 1/64 = 0.016
-zoi4 <- 4000
-zoi_hl_ratio4 = 6
-exp_d4 <- calc_influence_nearest(pts$rast, type = "exp_decay", zoi = zoi4,
+# calculate exponential decay influence using zoi parameter and zoi_hl_ratio
+zoi4 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
+zoi_hl_ratio4 <- 6 # default
+exp_d4 <- calc_influence_nearest(pts$rast, type = "exp_decay", zoi = zoi3,
                                  zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
 pts_shp <- pts$pts \%>\%
   sf::st_as_sf(coords = c(1,2))
-# 667m (4000/6)
+# half_life = 1000m
 pts_shp \%>\%
   sf::st_buffer(dist = zoi4/zoi_hl_ratio4) \%>\%
   sf::st_union() \%>\%
   plot(add = T, border = "red")
-# 1000m
+# zoi = 4000m
 pts_shp \%>\%
   sf::st_buffer(dist = zoi4) \%>\%
   sf::st_union() \%>\%
@@ -390,8 +387,12 @@ bartlett_name <- calc_influence_nearest(cabins_g, type = "bartlett", zoi = 1000,
 # Threshold influence ZoI = 1000m
 threshold_name <- calc_influence_nearest(cabins_g, type = "threshold", zoi = 1000,
                                          where = "GRASS", quiet = T, overwrite = T)
+# Gaussian influence ZoI = 1000m
+gaussian_name <- calc_influence_nearest(cabins_g, type = "Gauss", zoi = 1000,
+                                         where = "GRASS", quiet = T, overwrite = T)
 
-(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name, threshold_name))
+
+(all_names <- c(euclidean_name, log_name, expdecay_name, bartlett_name, threshold_name, gaussian_name))
 
 # visualize
 cabins_influence_nearest <- readRAST(all_names) \%>\%
@@ -400,7 +401,7 @@ cabins_influence_nearest <- readRAST(all_names) \%>\%
 
 title_plot <- c("Euclidean distance", "Log distance (base 10)",
                 "Exponential decay 1000m", "Bartlett decay 1000m",
-                "Threshold influence 1000m")
+                "Threshold influence 1000m", "Gaussian influence 1000m")
 terra::plot(cabins_influence_nearest, main = title_plot)
 
 # remove rasters created
