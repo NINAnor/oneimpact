@@ -35,11 +35,11 @@
 #' If `zoi = NULL`, the exponential decay is defined based on the `half_life` parameter. \cr
 #' Gaussian neighborhood with parameterization in terms of `zoi` to be implemented.
 #'
-#' @param method `[character(1)="exp_decay"]{"exp_decay", "bartlett", "circle", "threshold", "step", "rectangle"}` \cr
+#' @param method `[character(1)="exp_decay"]{"exp_decay", "bartlett", "circle", "threshold", "step", "Gauss", "rectangle"}` \cr
 #' Rectangle = boxcar in smoothie::kernel2dmeitsjer
-#' Gaussian neighborhood with parameterization in terms of `zoi` to be implemented. So far it is possible to
-#' create Gaussian filters using other functions such as [terra::focalMat()] with parameter
-#' `type = "Gauss"` and [smoothie::kernel2dmeitsjer()] with parameter `type = "gauss"`.
+#' Gaussian neighborhood with parameterization in terms of `zoi` implemented, but with a differen parameterization
+#' from [terra::focalMat()] with parameter
+#' `type = "Gauss"` and [smoothie::kernel2dmeitsjer()] with parameter `type = "gauss"` - we use zoi.
 #'
 #' @param half_life `[numeric(1)=NULL]` \cr Half life parameter of the exponential decay function, in meters. If NULL,
 #' the half life is define in terms of the ZoI and the `zoi_hl_ratio` parameter, which defines the ratio
@@ -88,8 +88,10 @@
 create_filter <- function(r = 100,
                           zoi = NULL,
                           method = c("exp_decay", "bartlett", "circle", "threshold", "step", "Gauss", "rectangle")[1],
+                          zoi_decay_threshold = 0.05,
                           half_life = NULL,
-                          zoi_hl_ratio = 4,
+                          zoi_hl_ratio = NULL,
+                          sigma = NULL,
                           min_intensity = 0.01,
                           max_dist = 5000,
                           normalize = FALSE,
@@ -115,8 +117,11 @@ create_filter <- function(r = 100,
 
   # apply function
   if(method == "exp_decay") {
-    parms <- set_filt_exp_decay(zoi = zoi, half_life = half_life,
-                                res = res, zoi_hl_ratio = zoi_hl_ratio,
+    parms <- set_filt_exp_decay(zoi = zoi,
+                                zoi_decay_threshold = zoi_decay_threshold,
+                                res = res,
+                                half_life = half_life,
+                                zoi_hl_ratio = zoi_hl_ratio,
                                 min_intensity = min_intensity,
                                 max_dist = max_dist)
   }
@@ -131,6 +136,15 @@ create_filter <- function(r = 100,
 
   if(method == "rectangle") {
     parms <- set_filt_rectangle(zoi = zoi, res = res)
+  }
+
+  if(method %in% c("Gauss")) {
+    parms <- set_filt_gassian_decay(zoi = zoi,
+                                    zoi_decay_threshold = zoi_decay_threshold,
+                                    res = res,
+                                    sigma = sigma,
+                                    min_intensity = min_intensity,
+                                    max_dist = max_dist)
   }
 
   # get parameters
@@ -160,6 +174,10 @@ create_filter <- function(r = 100,
 
   if(method == "rectangle") {
     dist_mat[] <- 1
+  }
+
+  if(method == "Gauss") {
+    dist_mat <- exp(-parms$lambda * dist_mat**2)
   }
   # image(dist_mat)
   # plot(terra::rast(dist_mat))
@@ -191,22 +209,37 @@ create_filter <- function(r = 100,
 }
 
 set_filt_exp_decay <- function(zoi = NULL,
+                               zoi_decay_threshold = 0.05,
                                half_life = NULL,
                                res = 100,
-                               zoi_hl_ratio = 4,
+                               zoi_hl_ratio = NULL,
                                min_intensity = 0.01,
                                max_dist = 50000){
 
-  # define zoi or half life, depending on which is given as input
-  if(is.null(zoi))
-    zoi <- half_life * zoi_hl_ratio
-  else
-    half_life <- zoi/zoi_hl_ratio
+  # define lambda depending on the input parameter
+  if(!is.null(zoi)) {
 
-  # define half life in terms on number of pixels
-  half_life <- half_life/res
-  # define lambda
-  lambda <- log(2)/half_life
+    # define zoi in terms on number of pixels
+    zoi <- zoi/res
+
+    if(is.null(zoi_hl_ratio)) {
+      lambda <- log(1/zoi_decay_threshold) / zoi
+    } else {
+      half_life <- zoi/zoi_hl_ratio
+      lambda <- log(2)/half_life
+    }
+
+  } else {
+
+    if(!is.null(half_life)) {
+      # define zoi or half life, depending on which is given as input
+      half_life <- half_life/res
+      lambda <- log(2)/half_life
+    } else {
+      stop("Either both 'zoi' and 'zoi_decay_threshold' must be specified, or both 'half_life' and 'zoi_hl_ratio'.")
+    }
+  }
+
   # tmp <- exp(-lambda * c(0:round(half_life*6))/half_life)
   # define radius and size (diameter)
   tmp <- exp(-lambda * c(0:round(2*zoi)))
@@ -241,6 +274,38 @@ set_filt_bartlett <- function(zoi, res){
   size_pix <- 2*radius_pix + 1
   # define beta (beta = -b/a or beta = -1/zoi)
   lambda <- -1/(zoi/res)
+
+  return(list(zoi = zoi, radius_pix = radius_pix, size_pix = size_pix, lambda = lambda))
+}
+
+set_filt_gassian_decay <- function(zoi = NULL,
+                                   zoi_decay_threshold = 0.05,
+                                   res = 100,
+                                   sigma = NULL,
+                                   min_intensity = 0.01,
+                                   max_dist = 50000){
+
+
+  if(!is.null(zoi)) {
+    # define zoi in terms on number of pixels
+    zoi <- zoi/res
+    lambda = log(1/zoi_decay_threshold) / (zoi**2)
+  } else {
+    if(!is.null(sigma)) {
+      # define sigma in terms on number of pixels
+      sigma <- sigma/res
+      lambda = 1/(2*sigma**2)
+    } else {
+      stop("Either 'zoi' or 'sigma' must be specified.")
+    }
+
+  }
+
+  # tmp <- exp(-lambda * c(0:round(half_life*6))/half_life)
+  # define radius and size (diameter)
+  tmp <- exp(-lambda * c(0:round(2*zoi))**2)
+  radius_pix <- min(which(tmp < min_intensity)[1], round(max_dist/res))
+  size_pix <- 2*radius_pix + 1
 
   return(list(zoi = zoi, radius_pix = radius_pix, size_pix = size_pix, lambda = lambda))
 }

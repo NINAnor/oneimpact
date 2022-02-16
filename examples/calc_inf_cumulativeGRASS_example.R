@@ -50,13 +50,15 @@ plot(cabins_bin, col = c("lightyellow", "black"),
      main = "Binarized map of cabins")
 
 # Exponential decay
-exp_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "exp_decay",
+exp_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000,
+                                      zoi_decay_threshold = 0.01, type = "exp_decay",
                                       where = "GRASS", overwrite = T, quiet = F)
 # Bartlett decay
 barlett_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "bartlett",
                                       where = "GRASS", overwrite = T, quiet = F)
 # Gaussian decay
-gauss_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000/2, type = "Gauss",
+gauss_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000,
+                                        zoi_decay_threshold = 0.01, type = "Gauss",
                                         where = "GRASS", overwrite = T, quiet = F)
 # Threshold decay (circle, step)
 threshold_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "threshold",
@@ -65,12 +67,12 @@ threshold_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type =
 (all_names <- c(exp_name, barlett_name, gauss_name, threshold_name))
 
 # visualize
-cabins_influence_cumulative <- readRAST(all_names) %>%
+cabins_influence_cumulative <- rgrass7::readRAST(all_names) %>%
   raster::stack() %>%
   terra::rast()
 
 title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
-                "Gaussian decay 500m", "Threshold decay 1000m")
+                "Gaussian decay 1000m", "Threshold decay 1000m")
 terra::plot(cabins_influence_cumulative, main = title_plot)
 
 # remove rasters created

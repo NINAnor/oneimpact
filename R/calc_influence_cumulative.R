@@ -68,7 +68,8 @@ calc_influence_cumulative <- function(x,
                                                "bartlett", "threshold", "step", "mfilter")[1],
                                       where = c("R", "GRASS")[1],
                                       module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
-                                      zoi_hl_ratio = 4,
+                                      zoi_decay_threshold = 0.05,
+                                      zoi_hl_ratio = NULL,
                                       half_life = NULL,
                                       exp_decay_parms = c(1, 0.01),
                                       min_intensity = 0.01,
@@ -94,6 +95,7 @@ calc_influence_cumulative <- function(x,
     inf_cumulative <- calc_influence_cumulative_r(x,
                                                   zoi = zoi,
                                                   type = type,
+                                                  zoi_decay_threshold = zoi_decay_threshold,
                                                   zoi_hl_ratio = zoi_hl_ratio,
                                                   half_life = half_life,
                                                   exp_decay_parms = exp_decay_parms,
@@ -116,6 +118,7 @@ calc_influence_cumulative <- function(x,
                                                         zoi = zoi,
                                                         type = type,
                                                         module = module,
+                                                        zoi_decay_threshold = zoi_decay_threshold,
                                                         zoi_hl_ratio = zoi_hl_ratio,
                                                         half_life = half_life,
                                                         exp_decay_parms = exp_decay_parms,
@@ -143,7 +146,8 @@ calc_influence_cumulative_r <- function(
   x,
   zoi = 100,
   type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
-  zoi_hl_ratio = 4,
+  zoi_decay_threshold = 0.05,
+  zoi_hl_ratio = NULL,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   min_intensity = 0.01,
@@ -180,7 +184,7 @@ calc_influence_cumulative_r <- function(
   # plot(r0)
 
   # define filters
-  if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "step", "rectangle")) {
+  if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "step", "rectangle", "Gauss")) {
     if(length(zoi) == 1) {
       filt <- create_filter(r0, zoi = zoi, method = type,
                             zoi_hl_ratio = zoi_hl_ratio,
@@ -208,22 +212,22 @@ calc_influence_cumulative_r <- function(
   # type = c("circle", "rectangle", "threshold", "step")
   # only Gauss is kept here, so far
   # if(type %in% c("circle", "Gauss", "rectangle", "threshold", "step")) {
-  if(type %in% c("Gauss")) {
-
-    # if(type %in% c("threshold", "step")) type <- "circle"
-    # if(type == "rectangle") zoi = 2*zoi # for this case d is the side of the square
-
-    if(length(zoi) == 1) {
-      filt <- terra::focalMat(r0, d = zoi, type = type)
-      if(!normalize) filt <- filt/max(filt, na.rm = T)
-    } else {
-      filt <- purrr::map(zoi, function(z) {
-        ft <- terra::focalMat(r0, d = z, type = type)
-        if(!normalize) ft <- ft/max(ft, na.rm = T)
-        ft
-      })
-    }
-  }
+  # if(type %in% c("Gauss")) {
+  #
+  #   # if(type %in% c("threshold", "step")) type <- "circle"
+  #   # if(type == "rectangle") zoi = 2*zoi # for this case d is the side of the square
+  #
+  #   if(length(zoi) == 1) {
+  #     filt <- terra::focalMat(r0, d = zoi, type = type)
+  #     if(!normalize) filt <- filt/max(filt, na.rm = T)
+  #   } else {
+  #     filt <- purrr::map(zoi, function(z) {
+  #       ft <- terra::focalMat(r0, d = z, type = type)
+  #       if(!normalize) ft <- ft/max(ft, na.rm = T)
+  #       ft
+  #     })
+  #   }
+  # }
 
   # neighborhood analysis
   if(type == "mfilter") {
@@ -276,7 +280,8 @@ calc_influence_cumulative_GRASS <- function(
   zoi = 100,
   type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
   module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
-  zoi_hl_ratio = 4,
+  zoi_decay_threshold = 0.05,
+  zoi_hl_ratio = NULL,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   # hnorm_decay_parms = c(1, 20),
@@ -367,7 +372,7 @@ calc_influence_cumulative_GRASS <- function(
   if(module == "r.mfilter") {
 
     # define filters
-    if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "step", "rectangle")) {
+    if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "step", "rectangle", "Gauss")) {
       filter_count <- zoi
       filter_file <- tempfile(paste0("my_filter", filter_count, "_"))
       if(length(zoi) == 1) {
@@ -394,7 +399,7 @@ calc_influence_cumulative_GRASS <- function(
     }
 
     # In these cases the matrix is not defined by create_filter
-    if(type %in% c("mfilter", "Gauss")) {
+    if(type %in% c("mfilter")) {
 
       # Filters pre-defined for "mfilter"
       if(type == "mfilter") {
@@ -416,27 +421,27 @@ calc_influence_cumulative_GRASS <- function(
         }
       }
 
-      # create filters with focalMat for "Gauss", zoi represents the sd
-      if(type == "Gauss") {
-
-        # create raster to define resolution
-        reg_proj <- rgrass7::getLocationProj()
-        r0 <- terra::rast(nrows = region$rows, ncols = region$cols,
-                          xmin = region$w, xmax = region$e,
-                          ymin = region$s, ymax = region$n,
-                          crs = reg_proj)
-
-        if(length(zoi) == 1) {
-          filt <- terra::focalMat(r0, d = zoi, type = type)
-          if(!normalize) filt <- filt/max(filt, na.rm = T)
-        } else {
-          filt <- purrr::map(zoi, function(z) {
-            ft <- terra::focalMat(r0, d = z, type = type)
-            if(!normalize) ft <- ft/max(ft, na.rm = T)
-            ft
-          })
-        }
-      }
+      # # create filters with focalMat for "Gauss", zoi represents the sd
+      # if(type == "Gauss") {
+      #
+      #   # create raster to define resolution
+      #   reg_proj <- rgrass7::getLocationProj()
+      #   r0 <- terra::rast(nrows = region$rows, ncols = region$cols,
+      #                     xmin = region$w, xmax = region$e,
+      #                     ymin = region$s, ymax = region$n,
+      #                     crs = reg_proj)
+      #
+      #   if(length(zoi) == 1) {
+      #     filt <- terra::focalMat(r0, d = zoi, type = type)
+      #     if(!normalize) filt <- filt/max(filt, na.rm = T)
+      #   } else {
+      #     filt <- purrr::map(zoi, function(z) {
+      #       ft <- terra::focalMat(r0, d = z, type = type)
+      #       if(!normalize) ft <- ft/max(ft, na.rm = T)
+      #       ft
+      #     })
+      #   }
+      # }
 
       # matrices created, save them outside R for use in GRASS GIS
 

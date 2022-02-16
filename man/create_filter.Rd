@@ -9,8 +9,10 @@ create_filter(
   zoi = NULL,
   method = c("exp_decay", "bartlett", "circle", "threshold", "step", "Gauss",
     "rectangle")[1],
+  zoi_decay_threshold = 0.05,
   half_life = NULL,
-  zoi_hl_ratio = 4,
+  zoi_hl_ratio = NULL,
+  sigma = NULL,
   min_intensity = 0.01,
   max_dist = 5000,
   normalize = FALSE,
@@ -51,11 +53,11 @@ its parameters, based on the defined \code{zoi_hl_ratio} parameter. The cutoff i
 If \code{zoi = NULL}, the exponential decay is defined based on the \code{half_life} parameter. \cr
 Gaussian neighborhood with parameterization in terms of \code{zoi} to be implemented.}
 
-\item{method}{\verb{[character(1)="exp_decay"]\{"exp_decay", "bartlett", "circle", "threshold", "step", "rectangle"\}} \cr
+\item{method}{\verb{[character(1)="exp_decay"]\{"exp_decay", "bartlett", "circle", "threshold", "step", "Gauss", "rectangle"\}} \cr
 Rectangle = boxcar in smoothie::kernel2dmeitsjer
-Gaussian neighborhood with parameterization in terms of \code{zoi} to be implemented. So far it is possible to
-create Gaussian filters using other functions such as \code{\link[terra:focalMat]{terra::focalMat()}} with parameter
-\code{type = "Gauss"} and \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}} with parameter \code{type = "gauss"}.}
+Gaussian neighborhood with parameterization in terms of \code{zoi} implemented, but with a differen parameterization
+from \code{\link[terra:focalMat]{terra::focalMat()}} with parameter
+\code{type = "Gauss"} and \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}} with parameter \code{type = "gauss"} - we use zoi.}
 
 \item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life parameter of the exponential decay function, in meters. If NULL,
 the half life is define in terms of the ZoI and the \code{zoi_hl_ratio} parameter, which defines the ratio
@@ -125,22 +127,26 @@ library(dplyr)
 
 # load example raster in metric system
 f <- system.file("ex/elev.tif", package="terra")
-r <- rast(f) \%>\% 
+r <- rast(f) \%>\%
   terra::project("EPSG:32631")
 # terra::ext(r)[1:2] \%>\% diff
 
 # create exponential filter
-filt_exp1000 <- create_filter(r, zoi = 1000, method = "exp_decay",
+filt_exp1000 <- create_filter(r, zoi = 1000,
+                              zoi_decay_threshold = 0.01,
+                              method = "exp_decay",
                               max_dist = 5000,
                               normalize = T)
-filt_exp3000 <- create_filter(r, zoi = 3000, method = "exp_decay", 
+filt_exp3000 <- create_filter(r, zoi = 3000,
+                              zoi_decay_threshold = 0.01,
+                              method = "exp_decay",
                               max_dist = 5000,
                               normalize = T)
 # use exponential filter
-neigh_r_exp1000 <- terra::focal(r, filt_exp1000, fun = "sum", 
-                                na.policy="omit", na.rm=TRUE)
-neigh_r_exp3000 <- terra::focal(r, filt_exp3000, fun = "sum", 
-                                na.policy="omit", na.rm=TRUE)
+neigh_r_exp1000 <- terra::focal(r, filt_exp1000, fun = "sum",
+                                na.policy = "omit", na.rm = TRUE)
+neigh_r_exp3000 <- terra::focal(r, filt_exp3000, fun = "sum",
+                                na.policy = "omit", na.rm = TRUE)
 
 # plot
 plot(c(r, neigh_r_exp1000, neigh_r_exp3000),
@@ -150,11 +156,11 @@ plot(c(r, neigh_r_exp1000, neigh_r_exp3000),
 filt_step3000 <- create_filter(r, zoi = 3000, method = "step",
                                normalize = T)
 # use step filter
-neigh_r_step3000 <- terra::focal(r, filt_step3000, fun = "sum", 
-                                 na.policy="omit", na.rm=TRUE)
+neigh_r_step3000 <- terra::focal(r, filt_step3000, fun = "sum",
+                                 na.policy = "omit", na.rm = TRUE)
 
 # plot
-plot(c(neigh_r_exp3000, neigh_r_step3000), 
+plot(c(neigh_r_exp3000, neigh_r_step3000),
      main = c("exp filter 3000m", "step filter 3000m"))
 # plot(app(c(neigh_r_exp3000, neigh_r_step3000), "diff"))
 
@@ -163,11 +169,21 @@ filt_bart3000 <- create_filter(r, zoi = 3000, method = "bartlett",
                                normalize = T)
 # use bartlett filter
 neigh_r_bart3000 <- terra::focal(r, filt_bart3000, fun = "sum",
-                                 na.policy="omit", na.rm=TRUE)
+                                 na.policy = "omit", na.rm = TRUE)
+
+# create Gaussian filter - parameterized with zoi
+filt_gauss3000 <- create_filter(r, zoi = 3000, method = "Gauss",
+                                zoi_decay_threshold = 0.01,
+                                normalize = T)
+# use bartlett filter
+neigh_r_gauss3000 <- terra::focal(r, filt_gauss3000, fun = "sum",
+                                 na.policy = "omit", na.rm = TRUE)
+
 
 # plot
-plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000), 
-     main = c("exp filter 3000m", "step filter 3000m", "Bartlett filter 3000m"))
+plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
+     main = c("exp filter 3000m", "step filter 3000m",
+              "Bartlett filter 3000m", "Gaussian filter 3000m"))
 # plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))
 # plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))
 

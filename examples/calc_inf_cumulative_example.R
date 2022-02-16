@@ -16,10 +16,10 @@ plot(pts$rast)
 
 # calculate cumulative influence for multiple zones of influence,
 # considering only the initial extent, for a Gaussian filter
-zoi_values <- c(250, 500, 1000, 2500, 5000)/2
-cuminf <- calc_influence_cumulative(pts$rast, type = "Gauss", zoi = zoi_values,
+zoi_values <- c(250, 500, 1000, 2500, 5000)
+cuminf_gauss <- calc_influence_cumulative(pts$rast, type = "Gauss", zoi = zoi_values,
                                     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
-plot(cuminf)
+plot(cuminf_gauss)
 
 # calculate cumulative influence for multiple zones of influence,
 # using a circle neighborhood

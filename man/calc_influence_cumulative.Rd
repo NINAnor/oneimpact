@@ -11,7 +11,8 @@ calc_influence_cumulative(
     "step", "mfilter")[1],
   where = c("R", "GRASS")[1],
   module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
-  zoi_hl_ratio = 4,
+  zoi_decay_threshold = 0.05,
+  zoi_hl_ratio = NULL,
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   min_intensity = 0.01,
@@ -117,10 +118,10 @@ plot(pts$rast)
 
 # calculate cumulative influence for multiple zones of influence,
 # considering only the initial extent, for a Gaussian filter
-zoi_values <- c(250, 500, 1000, 2500, 5000)/2
-cuminf <- calc_influence_cumulative(pts$rast, type = "Gauss", zoi = zoi_values,
+zoi_values <- c(250, 500, 1000, 2500, 5000)
+cuminf_gauss <- calc_influence_cumulative(pts$rast, type = "Gauss", zoi = zoi_values,
                                     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
-plot(cuminf)
+plot(cuminf_gauss)
 
 # calculate cumulative influence for multiple zones of influence,
 # using a circle neighborhood
@@ -197,13 +198,15 @@ plot(cabins_bin, col = c("lightyellow", "black"),
      main = "Binarized map of cabins")
 
 # Exponential decay
-exp_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "exp_decay",
+exp_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000,
+                                      zoi_decay_threshold = 0.01, type = "exp_decay",
                                       where = "GRASS", overwrite = T, quiet = F)
 # Bartlett decay
 barlett_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "bartlett",
                                       where = "GRASS", overwrite = T, quiet = F)
 # Gaussian decay
-gauss_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000/2, type = "Gauss",
+gauss_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000,
+                                        zoi_decay_threshold = 0.01, type = "Gauss",
                                         where = "GRASS", overwrite = T, quiet = F)
 # Threshold decay (circle, step)
 threshold_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type = "threshold",
@@ -212,12 +215,12 @@ threshold_name <- calc_influence_cumulative(x = cabins_bin_g, zoi = 1000, type =
 (all_names <- c(exp_name, barlett_name, gauss_name, threshold_name))
 
 # visualize
-cabins_influence_cumulative <- readRAST(all_names) \%>\%
+cabins_influence_cumulative <- rgrass7::readRAST(all_names) \%>\%
   raster::stack() \%>\%
   terra::rast()
 
 title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
-                "Gaussian decay 500m", "Threshold decay 1000m")
+                "Gaussian decay 1000m", "Threshold decay 1000m")
 terra::plot(cabins_influence_cumulative, main = title_plot)
 
 # remove rasters created

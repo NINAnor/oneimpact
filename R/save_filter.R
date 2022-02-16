@@ -31,7 +31,7 @@
 #'
 #' @examples
 #' my_filter <- create_filter(r = 100, method = "bartlett", zoi = 1000, round = 4)
-#' save_filter(my_filter, zoi = 1000, method = "bartlett", save_format = "GRASS")
+#' save_filter(my_filter, zoi = 1000, method = "bartlett", save_format = "GRASS_r.mfilter")
 #'
 #' @export
 save_filter <- function(
