@@ -1,5 +1,12 @@
 #' Evaluation of single covariate effects at multiple scales
 #'
+#' @param mod `[character(1)]` \cr Type of model to be fit (e.g. "lm", "glm", "glmer").
+#' @param multief `[character]` \cr Vector containing the names of the columns of the input
+#' `data.frame`, corresponding to the covariate, calculated at multiple zoi, radii, or scales,
+#' whose fit will be assessed.
+#' @param data `[data.frame]` \cr `data.frame` containing the response variable and all model
+#' covariates, including the covariate measured at multiple scales, whose fit will be assessed.
+#' @param formula `[formula]` \cr formula to be applied to each model...
 #'
 #' @author Pablo Yair Huais <<phuais@gmail.com>>
 #'
@@ -7,7 +14,7 @@
 #' @references Huais, PY. 2018. multifit: an R function for multi-scale analysis in landscape ecology. Landscape Ecology, 33: 1023. https://doi.org/10.1007/s10980-018-0657-5
 #'
 #' @export
-multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion = "AIC", site_id = NULL,
+multifit_single <- function(mod, multief, data, formula = NULL, args = NULL, criterion = "AIC", site_id = NULL,
                      signif = TRUE, alpha = 0.05, plot_est = FALSE, print_sum = FALSE,
                      xlab = "Radius [km]", ylab = NULL, labels = NULL, type = "b", pch = c(1, 16)){
 
@@ -197,14 +204,17 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
     # Trying to extract p.values...
     p.types <- c("Pr(>|z|)", "Pr(>|t|)", "p-value", "p.value")
     p.label <- p.types[p.types %in% colnames(coeff)]
+    # matching row name and getting row number
+    # may be an issue if there are polynomial terms
+    row.number <- grep(as.character(multief[i]), row.names(coeff))
     if(length(p.label) > 0){
-      p.value <- coeff[as.character(multief[i]), p.label]
+      p.value <- coeff[row.number, p.label]
     } else {
       coeff   <- summary$tTable
       p.types <- "p-value"
       p.label <- p.types[p.types %in% colnames(coeff)]
       if(length(p.label) > 0){
-        p.value <- coeff[as.character(multief[i]), p.label]
+        p.value <- coeff[row.number, p.label]
       } else {
         p.value <- NA
       }
@@ -212,10 +222,10 @@ multifit <- function(mod, multief, data, formula = NULL, args = NULL, criterion 
 
     # Trying to extract e.values...
     if("Estimate" %in% colnames(coeff)){
-      e.value <- coeff[as.character(multief[i]), "Estimate"]
+      e.value <- coeff[row.number, "Estimate"]
     } else {
       if("Value" %in% colnames(coeff)){
-        e.value <- coeff[as.character(multief[i]), "Value"]
+        e.value <- coeff[row.number, "Value"]
       } else {
         e.value <- NA
       }
