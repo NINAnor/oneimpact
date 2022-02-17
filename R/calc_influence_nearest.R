@@ -476,7 +476,10 @@ calc_influence_nearest_GRASS <- function(
       # message
       out_message <- "Calculating exponential decay influence..."
       # expression
-      expression_influence <- sprintf("%f * exp(-%f * A)", exp_decay_parms[1], lambda)
+      # expression_influence <- sprintf("%f * exp(-%f * A)", exp_decay_parms[1], lambda)
+      # alternative parameterization with inv_lambda
+      inv_lambda <- 1/lambda
+      expression_influence <- sprintf("%f * exp(- (1/%f) * A)", exp_decay_parms[1], inv_lambda)
       if(print_expression) print(expression_influence)
 
     }
@@ -511,7 +514,10 @@ calc_influence_nearest_GRASS <- function(
       # message
       out_message <- "Calculating half-normal decay influence..."
       # expression
-      expression_influence <- sprintf("%f * exp(-%f * pow(A, 2))", hnorm_decay_parms[1], lambda)
+      # expression_influence <- sprintf("%f * exp(-%f * pow(A, 2))", hnorm_decay_parms[1], lambda)
+      # alternative parameteization with inv_lambda
+      inv_lambda <- 1/lambda
+      expression_influence <- sprintf("%f * exp(- (1/%f) * pow(A, 2))", hnorm_decay_parms[1], inv_lambda)
       if(print_expression) print(expression_influence)
 
     }
