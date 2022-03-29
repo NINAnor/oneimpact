@@ -13,9 +13,9 @@ Description: Describe the package later
 Depends:
     R (>= 3.3)
 Imports: 
-    dplyr, tibble, purrr, rgrass7, terra, raster, sf, ggplot2, mobsim
+    dplyr, tibble, purrr, rgrass7, terra, sf, ggplot2
 Suggests:
-    landscapetools, NLMR, smoothie, rasterVis
+    raster, landscapetools, NLMR, smoothie, rasterVis, mobsim 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
