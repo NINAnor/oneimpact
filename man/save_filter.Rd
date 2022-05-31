@@ -6,8 +6,8 @@
 \usage{
 save_filter(
   filt,
-  zoi,
-  method,
+  zoi_radius,
+  type,
   save_format = c("GRASS_r.mfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
@@ -18,26 +18,28 @@ save_filter(
 )
 }
 \arguments{
-\item{filt}{\verb{[matrix]} \cr Matrix, such as one created by \code{\link[=create_filter]{create_filter()}} or \code{\link[terra:focalMat]{terra::focalMat()}}.}
+\item{filt}{\verb{[matrix]} \cr Filter or weight matrix, such as one created by \link{create_filter} or \link[terra:focalMat]{terra::focalMat}.}
 
-\item{zoi}{\verb{[numeric(1)]} \cr Zone of Influence of the matrix, in meters.}
+\item{zoi_radius}{\verb{[numeric(1)]} \cr Radius of the Zone of Influence (ZoI) of the matrix, in meters.}
 
-\item{method}{\verb{[character(1)]} Function for the kernel or filter matrix (see \code{method} parameter for \code{\link[=create_filter]{create_filter()}}).}
+\item{type}{\verb{[character(1)]} Function for the kernel or filter matrix (see \code{type} parameter for \link{create_filter}).}
 
 \item{save_format}{\verb{[character(1)="GRASS_r.mfilter"]\{"GRASS_r.mfilter", "raw"\}} \cr
-Format in which the function should be saved. Currently, only GRASS GIS format for the module \code{r.mfilter}
-(\code{save_format = "GRASS_r.mfilter"}, according to the required format for \code{r.mfilter} module, details
-\href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here}) or raw (\code{save_format = "raw"}),
-in which only the values of the matrix are printed.}
+Format in which the function should be saved. Currently, either of the two options:
+\itemize{
+\item GRASS GIS format for the module \code{r.mfilter}
+(\code{save_format = "GRASS_r.mfilter"}), see details \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here});
+\item raw matrix (\code{save_format = "raw"}), in which only the values of the matrix are printed.
+}}
 
 \item{save_folder}{\verb{[character(1)=NULL]} \cr Path to the folder where the matrix file should be written.
-If \code{NULL}, the current directory is used.}
+If \code{NULL}, the current working directory is used.}
 
 \item{save_file}{\verb{[character(1)=NULL]} \cr Name of the output file, generally a ".txt" file.
-If \code{NULL}, a standard filename is created, using the the \code{method} and \code{zoi}. E.g. "filter_bartlett2000.txt".}
+If \code{NULL}, a standard filename is created, using the \code{type} and \code{zoi_radius}. E.g. "filter_bartlett2000.txt".}
 
 \item{divisor}{\verb{[numeric(1)=1]} \cr By default, 1. This is the divisor of the neighborhood
-matrix, when used within \code{r.mfilter}. According the the module documentation, "The filter process produces a new ¨
+matrix when used within \code{r.mfilter}. According the the module documentation, "The filter process produces a new
 category value for each cell in the input raster map layer by multiplying the category values of the cells
 in the n x n neighborhood around the center cell by the corresponding matrix value and adding them together.
 If a divisor is specified, the sum is divided by this divisor." \cr
@@ -45,7 +47,7 @@ If the divisor is zero, "then the divisor is computed for each cell as the sum o
 the corresponding input cell is non-null." In other words, the output map will be rescaled to the
 interval \link{0,1}. If \code{normalize = TRUE}, the divisor is set to \code{n*n}.}
 
-\item{normalize}{\verb{[logical(1)=FALSE]} \cr Whether the matrix should be normalized (sum of all cell is 1, if
+\item{normalize}{\verb{[logical(1)=FALSE]} \cr Whether the matrix should be normalized (sum of all cells is 1 if
 \code{normalize = TRUE}) or kept as it is (default, \code{normalize = FALSE}).}
 
 \item{parallel}{\verb{[logical(1)=TRUE]} \cr Whether the computation should be paralelized or not (details in
@@ -58,10 +60,19 @@ a space.}
 None. The funcion only saves the input matrix as an external file.
 }
 \description{
-Save kernel/filter matrix to use in r.mfilter within GRASS GIS
+This function saves a matrix with weights (filter or kernel matrix) in an external text file,
+to be used outside R. It can save either the raw matrix
+or use the standards for running \code{r.mfilter} within GRASS GIS (with specific header and details).
+}
+\details{
+If used in the \code{r.mfilter} GRASS GIS module, "The filter process produces a new category value
+for each cell in the input raster map layer by multiplying the category values of the cells in the n x n
+neighborhood around the center cell by the corresponding matrix value and adding them together.
+If a divisor is specified, the sum is divided by this divisor." See details
+\href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here}.
 }
 \examples{
-my_filter <- create_filter(r = 100, method = "bartlett", zoi = 1000, round = 4)
-save_filter(my_filter, zoi = 1000, method = "bartlett", save_format = "GRASS_r.mfilter")
+my_filter <- create_filter(r = 100, type = "bartlett", zoi_radius = 1000, round = 4)
+save_filter(my_filter, zoi_radius = 1000, type = "bartlett", save_format = "GRASS_r.mfilter")
 
 }
