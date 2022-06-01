@@ -8,7 +8,7 @@ save_filter(
   filt,
   zoi_radius,
   type,
-  save_format = c("GRASS_r.mfilter", "raw")[1],
+  save_format = c("GRASS_rmfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
   divisor = 1,
@@ -24,11 +24,11 @@ save_filter(
 
 \item{type}{\verb{[character(1)]} Function for the kernel or filter matrix (see \code{type} parameter for \link{create_filter}).}
 
-\item{save_format}{\verb{[character(1)="GRASS_r.mfilter"]\{"GRASS_r.mfilter", "raw"\}} \cr
+\item{save_format}{\verb{[character(1)="GRASS_rmfilter"]\{"GRASS_rmfilter", "raw"\}} \cr
 Format in which the function should be saved. Currently, either of the two options:
 \itemize{
 \item GRASS GIS format for the module \code{r.mfilter}
-(\code{save_format = "GRASS_r.mfilter"}), see details \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here});
+(\code{save_format = "GRASS_rmfilter"}), see details \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here});
 \item raw matrix (\code{save_format = "raw"}), in which only the values of the matrix are printed.
 }}
 
@@ -51,7 +51,7 @@ interval \link{0,1}. If \code{normalize = TRUE}, the divisor is set to \code{n*n
 \code{normalize = TRUE}) or kept as it is (default, \code{normalize = FALSE}).}
 
 \item{parallel}{\verb{[logical(1)=TRUE]} \cr Whether the computation should be paralelized or not (details in
-the documentation of the \href{(https://grass.osgeo.org/grass78/manuals/r.mfilter.html)}{\code{r.mfilter}} module).}
+the documentation of the \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{\code{r.mfilter}} module).}
 
 \item{separator}{\verb{[character(1)=" "]} \cr Separator between values of the matrix, within each line. Default is
 a space.}
@@ -73,6 +73,9 @@ If a divisor is specified, the sum is divided by this divisor." See details
 }
 \examples{
 my_filter <- create_filter(r = 100, type = "bartlett", zoi_radius = 1000, round = 4)
-save_filter(my_filter, zoi_radius = 1000, type = "bartlett", save_format = "GRASS_r.mfilter")
+save_filter(my_filter, zoi_radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
 
+}
+\seealso{
+\href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{r.mfilter}
 }

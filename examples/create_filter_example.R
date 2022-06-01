@@ -1,21 +1,22 @@
 library(terra)
-library(dplyr)
 
-# load example raster in metric system
-f <- system.file("ex/elev.tif", package="terra")
-r <- rast(f) %>%
-  terra::project("EPSG:32631")
+# load example - raster of tourist private cabins
+f <- system.file("raster/cabins.tif", package="oneimpact")
+r <- rast(f)
 # terra::ext(r)[1:2] %>% diff
 
+# set value zero where there are no cabins
+r[is.na(r)] <- 0
+
 # create exponential filter
-filt_exp1000 <- create_filter(r, zoi = 1000,
-                              zoi_decay_threshold = 0.01,
-                              method = "exp_decay",
+filt_exp1000 <- create_filter(r, zoi_radius = 1000,
+                              zoi_limit = 0.01,
+                              type = "exp_decay",
                               max_dist = 5000,
                               normalize = T)
-filt_exp3000 <- create_filter(r, zoi = 3000,
-                              zoi_decay_threshold = 0.01,
-                              method = "exp_decay",
+filt_exp3000 <- create_filter(r, zoi_radius = 3000,
+                              zoi_limit = 0.01,
+                              type = "exp_decay",
                               max_dist = 5000,
                               normalize = T)
 # use exponential filter
@@ -29,7 +30,7 @@ plot(c(r, neigh_r_exp1000, neigh_r_exp3000),
      main = c("original", "exp filter 1000m", "exp filter 3000m"))
 
 # create step filter
-filt_step3000 <- create_filter(r, zoi = 3000, method = "step",
+filt_step3000 <- create_filter(r, zoi_radius = 3000, type = "step",
                                normalize = T)
 # use step filter
 neigh_r_step3000 <- terra::focal(r, filt_step3000, fun = "sum",
@@ -40,21 +41,21 @@ plot(c(neigh_r_exp3000, neigh_r_step3000),
      main = c("exp filter 3000m", "step filter 3000m"))
 # plot(app(c(neigh_r_exp3000, neigh_r_step3000), "diff"))
 
-# create bartlett filter
-filt_bart3000 <- create_filter(r, zoi = 3000, method = "bartlett",
+# create bartlett (linear/tent decay) filter
+filt_bart3000 <- create_filter(r, zoi_radius = 3000, type = "bartlett",
                                normalize = T)
 # use bartlett filter
 neigh_r_bart3000 <- terra::focal(r, filt_bart3000, fun = "sum",
                                  na.policy = "omit", na.rm = TRUE)
 
 # create Gaussian filter - parameterized with zoi
-filt_gauss3000 <- create_filter(r, zoi = 3000, method = "Gauss",
-                                zoi_decay_threshold = 0.01,
+filt_gauss3000 <- create_filter(r, zoi_radius = 3000,
+                                type = "Gauss",
+                                zoi_limit = 0.01,
                                 normalize = T)
-# use bartlett filter
+# use Gaussian filter
 neigh_r_gauss3000 <- terra::focal(r, filt_gauss3000, fun = "sum",
                                  na.policy = "omit", na.rm = TRUE)
-
 
 # plot
 plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
@@ -63,7 +64,11 @@ plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
 # plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))
 # plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))
 
+# Not run
 # save outside R for use in GRASS GIS
-# create_filter(r, zoi = 1000, method = "bartlett",
-#               max_dist = 5000,
-#               normalize = T, save_txt = TRUE)
+if(FALSE) {
+  create_filter(r, zoi_radius = 1000,
+                type = "bartlett",
+                max_dist = 5000,
+                normalize = T, save_txt = TRUE)
+}

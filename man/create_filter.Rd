@@ -6,10 +6,10 @@
 \usage{
 create_filter(
   r = 100,
-  zoi = NULL,
-  method = c("exp_decay", "bartlett", "circle", "threshold", "step", "Gauss",
-    "rectangle")[1],
-  zoi_decay_threshold = 0.05,
+  zoi_radius = NULL,
+  type = c("exp_decay", "bartlett", "circle", "threshold_decay", "gaussian_decay",
+    "Gauss", "rectangle")[1],
+  zoi_limit = 0.05,
   half_life = NULL,
   zoi_hl_ratio = NULL,
   sigma = NULL,
@@ -19,67 +19,98 @@ create_filter(
   divisor = 1,
   round_vals = NULL,
   save_txt = FALSE,
-  save_format = c("GRASS_r.mfilter", "raw")[1],
+  save_format = c("GRASS_rmfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
-  output = c("CumInf", "Densiy")[1],
   parallel = TRUE
 )
 }
 \arguments{
-\item{r}{Either a numeric value corresponding to the resolution (pixel size) that each pixel in the filter matrix
+\item{r}{\verb{[numric,SpatRaster,RasterLayer]} \cr Either a numeric value corresponding to the resolution (pixel size) that each pixel in the filter matrix
 should correspond to; or a raster object (\code{SpatRaster} from the \code{terra} package or \code{RasterLayer}, \code{RasterBrick}, or
 \code{RasterStack} from the \code{raster} package) from which such resolution can be extracted.}
 
-\item{zoi}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI), in map units (preferentially meters).
-The ZoI is the distance, scale, or buffer size around a feature up to which we consider there is
-an effect or influence of an infrastructure or variable. \cr
-For the circle neighborhood (equivalent to step or threshold neighborhoods), the \code{zoi} corresponds to the radius
-(or thresold) of the circle, beyond which the filter is zero. \cr
-For the rectangular neighborhood, the \code{zoi} corresponds to half the size of the square size, or
-\verb{square size = 2*zoi}. For a rectangular filter with different size of the sides, use \code{\link[terra:focal]{terra::focal()}} (but
-please note the interpretation of the parameters is different). \cr
-For the Bartlett neighborhood, the \code{zoi} corresponds to the distance beyond which the filter is zero. \cr
-For the exponential decay neighborhood, the \code{zoi} is used to define the half-life and the lambda
-of the exponential decay function, based on the parameter \code{zoi_hl_ratio},
-that defines the ratio between the ZoI and the exponential half-life. Since the half-life is the value
-where the exponential decay decreases by \code{0.5}, a ratio of, for instance, \code{zoi_hl_ratio = 4} (default)
-would mean that the ZoI is defined as the value where the exponential decay decreases to \code{0.5^4 = 0.0625}.
-In this case, if \code{zoi = 4000} m, this means that the ZoI is four times higher than the half-life, i.e.
-\code{half_life = 1000} and \code{lambda = log(2)/half_life = 6.93e-4}. The definition of a zone of
-influence does not imply a cutoff of the exponential decay function but is only used to define
-its parameters, based on the defined \code{zoi_hl_ratio} parameter. The cutoff is given either by the
-\code{min_intensity} or the \code{max_dist} parameters.
-If \code{zoi = NULL}, the exponential decay is defined based on the \code{half_life} parameter. \cr
-Gaussian neighborhood with parameterization in terms of \code{zoi} to be implemented.}
+\item{zoi_radius}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) radius, in map units (preferentially meters).
+The ZoI radius is the distance, scale, or buffer size around a feature up to which we consider there is
+an effect or influence of an infrastructure or variable. In \code{create_filter}, the interpretation of the
+zoi_radius differ depending on the shape of the zoi (parameter \code{type}):
+\itemize{
+\item For the circle neighborhood (\code{type = "circle"} or \code{type = "threshold"} or \code{type = "step"}),
+the \code{zoi_radius} corresponds to the radius (or threshold) of the circle, beyond which the filter is zero.
+\item For the rectangular neighborhood (\code{type = "rectangle"}), the \code{zoi_radius} corresponds to half the size of the square size, or
+\verb{square size = 2*zoi_radius}. For a rectangular filter with different size of the sides, use \code{\link[terra:focal]{terra::focal()}} (but
+please note the interpretation of the parameters is different).
+\item For the Bartlett neighborhood (\code{type = "bartlett"} or \code{type = "linear_decay"} or \code{type = "tent_decay"}),
+the \code{zoi_radius} corresponds to the distance beyond which the filter is zero.
+\item For the exponential decay neighborhood (\code{type = "exp_decay"}) and the Gaussian decay neighborhood
+(\code{type = "Gauss"} or \code{type = "gaussian_decay"}), the \code{zoi_radius} corresponds to the
+distance where the exponential decay function goes below a given limit distance defined by
+\code{zoi_limit}. See \link{zoi_functions} for details.
+\item If \code{zoi_radius = NULL}, the exponential or gaussian decay matrices are defined based on other
+parameters -- see below. This option will raise an error for the other types of filters.
+}}
 
-\item{method}{\verb{[character(1)="exp_decay"]\{"exp_decay", "bartlett", "circle", "threshold", "step", "Gauss", "rectangle"\}} \cr
-Rectangle = boxcar in smoothie::kernel2dmeitsjer
-Gaussian neighborhood with parameterization in terms of \code{zoi} implemented, but with a differen parameterization
-from \code{\link[terra:focalMat]{terra::focalMat()}} with parameter
-\code{type = "Gauss"} and \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}} with parameter \code{type = "gauss"} - we use zoi.}
+\item{type}{\verb{[character(1)="exp_decay"]\{"exp_decay", "bartlett", "circle", "threshold_decay", "gaussian_decay", "Gauss", "rectangle"\}} \cr
+Shape of the Zone of Influence of weight matrix. It can be any of:
+\itemize{
+\item \code{"circle"}, \code{"threshold"}, \code{"threshold_decay"}, \code{"step"} or \code{"step_decay"} for a threshold decay ZoI;
+\item \code{"exp_decay"} for exponential decay ZoI;
+\item \code{"Gauss"}, \code{"gaussian"}, or \code{"gaussian_decay"} for Gaussian decay ZoI;
+\item \code{"bartlett"}, \code{"bartlett_decay"}, \code{"linear_decay"}, or \code{"tent_decay"} for linear decay ZoI;
+\item \code{"rectangle"} for a rectangular ZoI.
+There might be some correspondence between the weight matrix \code{type} in \code{create_filter} and other
+similar functions (e.g. \code{type = "rectangle"} and \code{type = "boxcar"} in \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer} or
+\code{type = "Gauss"} in \code{\link[terra:focalMat]{terra::focalMat()}} with parameter
+\code{type = "gauss"} n \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}); however, the interpretation of the parameters used to
+define these matrices is different between functions.
+}}
 
-\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life parameter of the exponential decay function, in meters. If NULL,
-the half life is define in terms of the ZoI and the \code{zoi_hl_ratio} parameter, which defines the ratio
-between the ZoI and the half life. By default, we set this ratio as \code{zoi/half_life = 4}.
-The exponent of the exponential decay distance function is defined as \code{lambda = log(2)/half_life}.}
+\item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr For non-vanishing filters
+(e.g. \code{exp_decay}, \code{gaussian_decay}), this value is used to set the relationship
+between the ZoI radius and the decay functions:
+\code{zoi_radius} is defined as the minimum distance \code{x} at which the ZoI assumes values
+below \code{zoi_limit}. The default is 0.05. This parameter is used only
+of \code{zoi_radius} is not \code{NULL}.}
 
-\item{zoi_hl_ratio}{\verb{[numeric(1)=6]} \cr Ratio between the ZoI and the half life of the exponential decay
-distance function. It is used to define the ZoI for the exponential decay function. For instance, if
-\code{half_life = 1000} and \code{zoi_hl_ratio = 4}, the ZoI will be 4000 m (when the exponential decay decrease to
-\code{0.5**4 = 0.0625}.}
+\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life of the exponential decay
+function, in meters. By definition, the half life is
+the distance where the exponential decay function reaches 0.5 of its
+maximum value. For the \code{exp_decay} function,
+if the ZoI radius parameter is null (\code{zoi_radius = NULL}), the value of the
+exponential half life (\code{half_life = log(2)/lambda}) can used to parameterize the
+exponential decay function. See details in \link{zoi_functions}.}
 
-\item{min_intensity}{\verb{[numeric(1)=0.01]} \cr Minimum intensity of the exponential decay function to
-define the size (radius) of the window that define the filter.}
+\item{zoi_hl_ratio}{\verb{[numeric(1)=6]} \cr For the \code{exp_decay} function,
+if both the ZoI radius \code{zoi_radius} and \code{zoi_hl_ratio} are given and
+\code{half_life} is \code{NULL}, this value is used
+to set the ZoI radius (and \code{zoi_limit} is ignored).
+\code{zoi_hl_ratio} is the ratio between the
+ZoI radius value and the half life of the exponential function.
+For instance, if \code{zoi_radius = 1200} and \code{zoi_hl_ratio = 6}, this means
+\code{half_life} is 200. As a consequence, the exponential decay ZoI function
+decreases to 0.5 at distance 200, and the ZoI radius = 1200
+is defined as the distance
+at which the ZoI decreases to 0.5**6 = 0.015625.}
+
+\item{sigma}{\verb{[numeric(1)=NULL]} \cr Standard deviation of the Gaussian
+function. It related to the Gaussian decay rate \eqn{\lambda} as
+\code{lambda = 1/(2*sigma^2)}. Only considered to compute the ZoI
+for the \code{gaussian_decay} function when the ZoI radius parameter is null
+(\code{zoi_radius = NULL}).}
+
+\item{min_intensity}{\verb{[numeric(1)=0.01]} \cr Minimum intensity of the
+exponential and Gaussian decay functions to
+define the radius of the window that define the filter.}
 
 \item{max_dist}{\verb{[numeric(1)=50000]} \cr Maximum size (in meters) to
-define the size (radius) of the window that define the filter.}
+define the radius of the window that defines the filter. Only
+applicable for exponential and Gaussian decay functions.}
 
-\item{normalize}{\verb{[logical(1)=FALSE]} \cr Whether the matrix should be normalized (sum of all cell is 1, if
+\item{normalize}{\verb{[logical(1)=FALSE]} \cr Whether the matrix should be normalized (sum of all cells is 1 if
 \code{normalize = TRUE}) or kept as it is (default, \code{normalize = FALSE}).}
 
 \item{divisor}{\verb{[numeric(1)=1]} \cr By default, 1. This is the divisor of the neighborhood
-matrix, when used within \code{r.mfilter}. According the the module documentation, "The filter process produces a new ¨
+matrix when used within \code{r.mfilter}. According the the module documentation, "The filter process produces a new
 category value for each cell in the input raster map layer by multiplying the category values of the cells
 in the n x n neighborhood around the center cell by the corresponding matrix value and adding them together.
 If a divisor is specified, the sum is divided by this divisor." \cr
@@ -87,59 +118,82 @@ If the divisor is zero, "then the divisor is computed for each cell as the sum o
 the corresponding input cell is non-null." In other words, the output map will be rescaled to the
 interval \link{0,1}. If \code{normalize = TRUE}, the divisor is set to \code{n*n}.}
 
-\item{save_format}{\verb{[character(1)="GRASS_r.mfilter"]\{"GRASS_r.mfilter", "raw"\}} \cr
-Format in which the function should be saved. Currently, only GRASS GIS format for the module \code{r.mfilter}
-(\code{save_format = "GRASS_r.mfilter"}, according to the required format for \code{r.mfilter} module, details
-\href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here}) or raw (\code{save_format = "raw"}),
-in which only the values of the matrix are printed.}
+\item{round_vals}{\verb{[numeric(1)=NULL]} \cr Number of digits for rounding the weights
+in the output matrix. If \code{NULL} (default), weights are not rounded.}
+
+\item{save_txt}{\verb{[logical(1)=FALSE]} \cr Should the ZoI matrix be saved in an external
+text file? If \code{FALSE} (default), the output matrix is just printed within the R session.}
+
+\item{save_format}{\verb{[character(1)="GRASS_rmfilter"]\{"GRASS_rmfilter", "raw"\}} \cr
+Format in which the function should be saved. Currently, either of the two options:
+\itemize{
+\item GRASS GIS format for the module \code{r.mfilter}
+(\code{save_format = "GRASS_rmfilter"}), see details \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here});
+\item raw matrix (\code{save_format = "raw"}), in which only the values of the matrix are printed.
+}}
 
 \item{save_folder}{\verb{[character(1)=NULL]} \cr Path to the folder where the matrix file should be written.
-If \code{NULL}, the current directory is used.}
+If \code{NULL}, the current working directory is used.}
 
 \item{save_file}{\verb{[character(1)=NULL]} \cr Name of the output file, generally a ".txt" file.
-If \code{NULL}, a standard filename is created, using the the \code{method} and \code{zoi}. E.g. "filter_bartlett2000.txt".}
+If \code{NULL}, a standard filename is created, using the \code{type} and \code{zoi_radius}. E.g. "filter_bartlett2000.txt".}
 
 \item{parallel}{\verb{[logical(1)=TRUE]} \cr Whether the computation should be paralelized or not (details in
-the documentation of the \href{(https://grass.osgeo.org/grass78/manuals/r.mfilter.html)}{\code{r.mfilter}} module).}
+the documentation of the \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{\code{r.mfilter}} module).}
+
+\item{separator}{\verb{[character(1)=" "]} \cr Separator between values of the matrix, within each line. Default is
+a space.}
 }
 \value{
-A matrix with the weight values.
+A matrix with the weight values. In the context of cumulative impact assessment, we call it a
+zone of influence (ZoI) matrix used to compute the cumulative zone of influence. If \code{save_txt = TRUE},
+the matrix is saved in an output text file, e.g. to be used with external software.
 }
 \description{
 This function creates matrices of weights following different
-functions to be used in neighborhood analyses for rasters. It is possible
-to export these matrices as text files, for use with external softwares
-such as the r.mfilter module within GRASS GIS.
+functions to be used in neighborhood analyses for rasters. In the context of
+cumulative impact analysis, they represent the Zone of Influence (ZoI) of each
+infrastructure point/pixel, to be used to calculate the cumulative ZoI.
+It is possible to export these matrices as text files, for use with external software
+such as the \code{r.mfilter} module within GRASS GIS.
 }
 \details{
-\subsection{COMPARE WITH smoothie::kernel2dsmooth and smoothie::kernel2dmeitsjer, maybe wrap some options here}{
-}
+The function creates \eqn{n} x \eqn{n} ZoI or weight matrices based on functions with different shapes
+and parameterized with the ZoI radius, where \eqn{n} is the dimension of the matrix.
+For some functions (e.g. threshold decay, linear decay),
+the size of the matrix is defined by the ZoI radius, in meters,
+given the intended resolution (parameter \code{r}), potentially adding new lines and columns with value
+zero to keep \eqn{n} an odd number. For non-vanishing function (e.g. exponential or Gaussian decay),
+even though the function is parameterized with the ZoI radius the size of the matrix can
+go beyond this radius. In this case, the size of the matrix \eqn{n} is defined either by
+a minimum intensity function value (parameter \code{min_intensity}) or by a maximum distance for
+the matrix radius (parameter \code{min_dist}, which can be set to be the \code{zoi_radius}).
+Keeping \eqn{n} at a reasonable size guarantees that the neighborhood analysis using such input
+weight matrices is computationally feasible.
 
-\subsection{POLSSIBLY: IMPLEMENT IN THE SAME WAY AS FOCAL, WITH INPUT RASTER AS ARGUMENT, POSSIBLY}{
-}
-
-\subsection{check: if the outer ring of the matrix is all zero, remove it}{
-}
+Possible future implementation: compare results with
+\link[smoothie:kernel2dsmooth]{smoothie::kernel2dsmooth} and \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer}, maybe wrap some options here.
 }
 \examples{
 library(terra)
-library(dplyr)
 
-# load example raster in metric system
-f <- system.file("ex/elev.tif", package="terra")
-r <- rast(f) \%>\%
-  terra::project("EPSG:32631")
+# load example - raster of tourist private cabins
+f <- system.file("raster/cabins.tif", package="oneimpact")
+r <- rast(f)
 # terra::ext(r)[1:2] \%>\% diff
 
+# set value zero where there are no cabins
+r[is.na(r)] <- 0
+
 # create exponential filter
-filt_exp1000 <- create_filter(r, zoi = 1000,
-                              zoi_decay_threshold = 0.01,
-                              method = "exp_decay",
+filt_exp1000 <- create_filter(r, zoi_radius = 1000,
+                              zoi_limit = 0.01,
+                              type = "exp_decay",
                               max_dist = 5000,
                               normalize = T)
-filt_exp3000 <- create_filter(r, zoi = 3000,
-                              zoi_decay_threshold = 0.01,
-                              method = "exp_decay",
+filt_exp3000 <- create_filter(r, zoi_radius = 3000,
+                              zoi_limit = 0.01,
+                              type = "exp_decay",
                               max_dist = 5000,
                               normalize = T)
 # use exponential filter
@@ -153,7 +207,7 @@ plot(c(r, neigh_r_exp1000, neigh_r_exp3000),
      main = c("original", "exp filter 1000m", "exp filter 3000m"))
 
 # create step filter
-filt_step3000 <- create_filter(r, zoi = 3000, method = "step",
+filt_step3000 <- create_filter(r, zoi_radius = 3000, type = "step",
                                normalize = T)
 # use step filter
 neigh_r_step3000 <- terra::focal(r, filt_step3000, fun = "sum",
@@ -164,21 +218,21 @@ plot(c(neigh_r_exp3000, neigh_r_step3000),
      main = c("exp filter 3000m", "step filter 3000m"))
 # plot(app(c(neigh_r_exp3000, neigh_r_step3000), "diff"))
 
-# create bartlett filter
-filt_bart3000 <- create_filter(r, zoi = 3000, method = "bartlett",
+# create bartlett (linear/tent decay) filter
+filt_bart3000 <- create_filter(r, zoi_radius = 3000, type = "bartlett",
                                normalize = T)
 # use bartlett filter
 neigh_r_bart3000 <- terra::focal(r, filt_bart3000, fun = "sum",
                                  na.policy = "omit", na.rm = TRUE)
 
 # create Gaussian filter - parameterized with zoi
-filt_gauss3000 <- create_filter(r, zoi = 3000, method = "Gauss",
-                                zoi_decay_threshold = 0.01,
+filt_gauss3000 <- create_filter(r, zoi_radius = 3000,
+                                type = "Gauss",
+                                zoi_limit = 0.01,
                                 normalize = T)
-# use bartlett filter
+# use Gaussian filter
 neigh_r_gauss3000 <- terra::focal(r, filt_gauss3000, fun = "sum",
                                  na.policy = "omit", na.rm = TRUE)
-
 
 # plot
 plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
@@ -187,12 +241,23 @@ plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
 # plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))
 # plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))
 
+# Not run
 # save outside R for use in GRASS GIS
-# create_filter(r, zoi = 1000, method = "bartlett",
-#               max_dist = 5000,
-#               normalize = T, save_txt = TRUE)
+if(FALSE) {
+  create_filter(r, zoi_radius = 1000,
+                type = "bartlett",
+                max_dist = 5000,
+                normalize = T, save_txt = TRUE)
+}
 }
 \seealso{
-See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
-\code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices.
+See \link{zoi_functions} for some ZoI function shapes and
+\link{save_filter} for options to save the ZoI matrix as a text file. \cr
+See also \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer}, \link[terra:focalMat]{terra::focalMat}, and
+\link[raster:focalWeight]{raster::focalWeight} for other functions to create filters or weight matrices. \cr
+See
+\href{https://grass.osgeo.org/grass80/manuals/r.mfilter.html}{r.mfilter},
+\href{https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html}{r.resamp.filter}, and
+\href{https://grass.osgeo.org/grass80/manuals/r.neighbors.html}{r.neighbors} for
+GRASS GIS uses of filters in neighborhood analysis.
 }

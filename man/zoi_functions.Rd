@@ -88,7 +88,8 @@ of \code{zoi_radius} is not \code{NULL}.}
 the infrastructure or source of disturbance? Default is zero. For raster objects,
 this parameter should be ignored.}
 
-\item{half_life}{\verb{[numeric(1)=NULL]} \cr By definition, the half life is
+\item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life of the exponential decay
+function, in meters. By definition, the half life is
 the distance where the exponential decay function reaches 0.5 of its
 maximum value. For the \code{exp_decay} function,
 if the ZoI radius parameter is null (\code{zoi_radius = NULL}), the value of the

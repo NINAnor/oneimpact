@@ -13,10 +13,10 @@
 #' @param filt `[matrix]` \cr Filter or weight matrix, such as one created by [oneimpact::create_filter] or [terra::focalMat].
 #' @param zoi_radius `[numeric(1)]` \cr Radius of the Zone of Influence (ZoI) of the matrix, in meters.
 #' @param type `[character(1)]` Function for the kernel or filter matrix (see `type` parameter for [oneimpact::create_filter]).
-#' @param save_format `[character(1)="GRASS_r.mfilter"]{"GRASS_r.mfilter", "raw"}` \cr
+#' @param save_format `[character(1)="GRASS_rmfilter"]{"GRASS_rmfilter", "raw"}` \cr
 #' Format in which the function should be saved. Currently, either of the two options:
 #' - GRASS GIS format for the module `r.mfilter`
-#' (`save_format = "GRASS_r.mfilter"`), see details [here](https://grass.osgeo.org/grass78/manuals/r.mfilter.html));
+#' (`save_format = "GRASS_rmfilter"`), see details [here](https://grass.osgeo.org/grass78/manuals/r.mfilter.html));
 #' - raw matrix (`save_format = "raw"`), in which only the values of the matrix are printed.
 #' @param save_folder `[character(1)=NULL]` \cr Path to the folder where the matrix file should be written.
 #' If `NULL`, the current working directory is used.
@@ -33,22 +33,24 @@
 #' the corresponding input cell is non-null." In other words, the output map will be rescaled to the
 #' interval [0,1]. If `normalize = TRUE`, the divisor is set to `n*n`.
 #' @param parallel `[logical(1)=TRUE]` \cr Whether the computation should be paralelized or not (details in
-#' the documentation of the [`r.mfilter`]((https://grass.osgeo.org/grass78/manuals/r.mfilter.html)) module).
+#' the documentation of the [`r.mfilter`](https://grass.osgeo.org/grass78/manuals/r.mfilter.html) module).
 #' @param separator `[character(1)=" "]` \cr Separator between values of the matrix, within each line. Default is
 #' a space.
 #'
 #' @return None. The funcion only saves the input matrix as an external file.
 #'
+#' @seealso [r.mfilter](https://grass.osgeo.org/grass78/manuals/r.mfilter.html)
+#'
 #' @examples
 #' my_filter <- create_filter(r = 100, type = "bartlett", zoi_radius = 1000, round = 4)
-#' save_filter(my_filter, zoi_radius = 1000, type = "bartlett", save_format = "GRASS_r.mfilter")
+#' save_filter(my_filter, zoi_radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
 #'
 #' @export
 save_filter <- function(
   filt,
   zoi_radius,
   type,
-  save_format = c("GRASS_r.mfilter", "raw")[1],
+  save_format = c("GRASS_rmfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
   divisor = 1,
@@ -78,7 +80,7 @@ save_filter <- function(
   con <- file(file_out, "w")
 
   # r.mfilter preamble
-  if(save_format == "GRASS_r.mfilter") {
+  if(save_format == "GRASS_rmfilter") {
     writeLines(paste0("TITLE filter ", type, " ", zoi_radius, "m"), con = con, sep = "\n", useBytes = FALSE)
     writeLines(paste0("MATRIX ", dim(filt)[2]), con = con, sep = "\n", useBytes = FALSE)
   }
@@ -89,7 +91,7 @@ save_filter <- function(
   }
 
   # r.mfilter post-info
-  if(save_format == "GRASS_r.mfilter") {
+  if(save_format == "GRASS_rmfilter") {
     writeLines(paste0("DIVISOR ", DIV), con = con, sep = "\n", useBytes = FALSE)
     writeLines(paste0("TYPE ", TYP), con = con, sep = "\n", useBytes = FALSE)
   }
