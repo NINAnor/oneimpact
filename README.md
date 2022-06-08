@@ -3,28 +3,29 @@
 `oneimpact` provides tools for the assessment of cumulative impacts from multiple infrastructure and land use modification in ecological studies.
 The tools use R interface but the main calculations might be run in both R and GRASS GIS. The tools available so far are:
 
-#### Influence measures:
+### Compute zones of influence (ZoI):
 
-- `calc_influence_nearest`: Calculate the influence from the nearest infrastructure, according to multiple possible 
-decay functions and zones of influence.
-- `calc_influence_cumulative`: Calculate the cumulative influence of multiple infrastructure, according to multiple possible 
-decay functions and zones of influence.
-- `calc_influence`: Calculate both the influence of the nearest infrastructure and the cumulative influence, at multiple
-scales or zones of influence.
+- `calc_zoi_nearest`: Calculate the zone of influence from the nearest infrastructure, according to multiple possible 
+decay functions and zones of influence radii.
+- `calc_zoi_cumulative`: Calculate the cumulative zone of influence of multiple features, according to multiple possible 
+decay functions and zones of influence radii.
+- `calc_zoi`: Calculate both the the ZoI of the nearest infrastructure and the cumulative ZoI, at multiple
+scales or zones of influence radii.
 
-#### Auxiliary functions:
-
-- `util_binarize_GRASS`: Binarize continuous or multi-class categorical rasters within GRASS GIS. Binary maps are used 
-as input for cumulative influence and kernel density calculation.
-
-#### Spatial filters:
+### Spatial filters:
 
 - `create_filter`: Create filters or weight matrices for neighborhood analysis, according to different decay functions
-and parameterized using zones of influence.
-- `save_rmfilter`: Saves filters/weight matrices outside R for use within GRASS GIS modules.
+and parameterized using the zone of influence radius.
+- `save_mfilter`: Saves filters/weight matrices outside R for use within GRASS GIS modules.
 
+### Auxiliary functions:
 
-#### Support for landscape simulation:
+- `util_binarize_grass`: Binarize continuous or multi-class categorical rasters within GRASS GIS. Binary maps may be used 
+as input for cumulative zone of influence and kernel density calculation.
+- `util_v2rast_count_grass`: Rasterize a vector files counting the number of features within each pixel of the output
+raster. Count rasters may be used as input for cumulative zone of influence and kernel density calculation.
+
+### Support for landscape simulation:
 
 - `set_points`: simulate points in a landscape according to different rules and spatial patterns.
 
