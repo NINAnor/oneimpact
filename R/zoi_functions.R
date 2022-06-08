@@ -98,7 +98,7 @@
 #' between the ZoI radius and the decay functions:
 #' `zoi_radius` is defined as the minimum distance `x` at which the ZoI assumes values
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
-#' of `zoi_radius` is not `NULL`.
+#' if `zoi_radius` is not `NULL`.
 #'
 #' @param origin `[numeric(1)=0]` \cr In which position (in 1 dimension) is located
 #' the infrastructure or source of disturbance? Default is zero. For raster objects,

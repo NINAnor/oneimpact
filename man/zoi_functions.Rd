@@ -82,7 +82,7 @@ if both \code{zoi_radius = NULL} and \code{half_life = NULL}.}
 between the ZoI radius and the decay functions:
 \code{zoi_radius} is defined as the minimum distance \code{x} at which the ZoI assumes values
 below \code{zoi_limit}. The default is 0.05. This parameter is used only
-of \code{zoi_radius} is not \code{NULL}.}
+if \code{zoi_radius} is not \code{NULL}.}
 
 \item{origin}{\verb{[numeric(1)=0]} \cr In which position (in 1 dimension) is located
 the infrastructure or source of disturbance? Default is zero. For raster objects,
