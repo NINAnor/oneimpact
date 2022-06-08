@@ -1,4 +1,5 @@
-#' Calculates the influence from the nearest feature and the cumulative influence of infrastructure features
+#' Calculates the zone of influence from the nearest feature
+#' and the cumulative zone of influence of multiple features
 #'
 #' This function takes in a raster with locations of infrastructure and calculates (1)
 #' a raster representing the distance from each pixel to the neareast feature and (2)
@@ -14,24 +15,23 @@
 #'
 #' TO IMPROVE2: do the same in communication with GRASS GIS.
 #'
-#' @inheritParams calc_influence_nearest
-#' @inheritParams calc_influence_cumulative
+#' @inheritParams calc_zoi_nearest
+#' @inheritParams calc_zoi_cumulative
 #'
 #' @returns A RasterBrick with de distance to the nearest feature and the densities for all scales selected.
 #'
-#' @example examples/calc_influence_example.R
+#' @example examples/calc_zoi_example.R
 #'
-#' @export
 
 # function to calculate dist and density
-calc_influence <- function(x,
-                           zoi,
-                           transform_nearest = NULL,
-                           type_cumulative = c("circle", "Gauss", "rectangle", "mfilter")[1],
-                           extent_x_cut = bbox(x)[1,],
-                           extent_y_cut = bbox(x)[2,], 
-                           ...) {
-  
+calc_zoi <- function(x,
+                     zoi_radius,
+                     transform_nearest = NULL,
+                     type_cumulative = c("circle", "Gauss", "rectangle", "mfilter")[1],
+                     extent_x_cut = bbox(x)[1,],
+                     extent_y_cut = bbox(x)[2,],
+                     ...) {
+
   # check if the input is a terra or raster object
   if(class(x) %in% c("SpatRaster")) {
     use_terra <- TRUE
@@ -40,28 +40,28 @@ calc_influence <- function(x,
       use_terra <- FALSE
     } else {
       classes <- c("SpatRaster", "RasterLayer", "RasterBrick", "RasterStack")
-      stop(paste0("Please make sure x is an object of one of these classes: ", 
+      stop(paste0("Please make sure x is an object of one of these classes: ",
                   paste(classes, collapse = ","), "."))
     }
   }
 
   # nearest influence
-  nearest_r <- calc_influence_nearest(x = x,
-                                      transform = transform_nearest,
-                                      extent_x_cut = extent_x_cut,
-                                      extent_y_cut = extent_y_cut, 
-                                      ...)
+  nearest_r <- calc_zoi_nearest(x = x, zoi_radius = zoi_radius,
+                                transform = transform_nearest,
+                                extent_x_cut = extent_x_cut,
+                                extent_y_cut = extent_y_cut,
+                                ...)
 
   # cumulative influence
-  cumulative_r <- calc_influence_cumulative(x = x, zoi = zoi,
-                                            type = type_cumulative, 
-                                            extent_x_cut = extent_x_cut, 
-                                            extent_y_cut = extent_y_cut, 
-                                            ...)
+  cumulative_r <- calc_zoi_cumulative(x = x, zoi_radius = zoi_radius,
+                                      type = type_cumulative,
+                                      extent_x_cut = extent_x_cut,
+                                      extent_y_cut = extent_y_cut,
+                                      ...)
 
   # stack
   if(use_terra) r_stk <- do.call(c, list(nearest_r, cumulative_r)) else
     r_stk <- raster::stack(nearest_r, cumulative_r)
-  
+
   r_stk
 }
