@@ -18,7 +18,6 @@
 #'
 #' @example examples/simulate_dist_dens_example.R
 #'
-#' @export
 
 # function to simulate points and calc distance and density rasters
 simulate_dist_dens <- function(n_features = 1000, centers = 1,
