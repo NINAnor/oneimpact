@@ -5,9 +5,9 @@
 \alias{mean_isolation}
 \title{Isolation and mean isolation in space}
 \usage{
-isolation(x, n_rand = 100, ext = c(0, 1), lonlat = FALSE)
+isolation(x, n_rand = 100, ext = c(0, 1, 0, 1), lonlat = FALSE)
 
-mean_isolation(x, n_rand = 100, ext = c(0, 1), lonlat = FALSE)
+mean_isolation(x, n_rand = 100, ext = c(0, 1, 0, 1), lonlat = FALSE)
 }
 \arguments{
 \item{x}{\verb{[data.frame]} \cr \code{data.frame} with (x,y) coordinates in
