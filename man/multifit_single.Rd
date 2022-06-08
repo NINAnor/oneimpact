@@ -2,7 +2,7 @@
 % Please edit documentation in R/multifit_single.R
 \name{multifit_single}
 \alias{multifit_single}
-\title{Evaluation of single covariate effects at multiple scales}
+\title{Evaluation of single covariate effects at multiple scales or zones of influence (ZoI)}
 \source{
 \url{https://github.com/phuais/multifit}
 }
@@ -19,7 +19,7 @@ multifit_single(
   alpha = 0.05,
   plot_est = FALSE,
   print_sum = FALSE,
-  xlab = "Radius [km]",
+  xlab = "Radius [m]",
   ylab = NULL,
   labels = NULL,
   type = "b",
@@ -27,22 +27,61 @@ multifit_single(
 )
 }
 \arguments{
-\item{mod}{\verb{[character(1)]} \cr Type of model to be fit (e.g. "lm", "glm", "glmer").}
+\item{mod}{\verb{[character(1)]} \cr String depicting the statistical function to
+be applied (e.g. "lm", "glm", "glmer").}
 
-\item{multief}{\verb{[character]} \cr Vector containing the names of the columns of the input
-\code{data.frame}, corresponding to the covariate, calculated at multiple zoi, radii, or scales,
-whose fit will be assessed.}
+\item{multief}{\verb{[character]} \cr Vector containing the names of the columns
+of the input \code{data}, corresponding to the spatial attribute or covariate
+whose scale of effect or zone of influence will be assessed.
+All names correspond to the or covariate calculated at multiple zone of
+influence radii or scales.}
 
-\item{data}{\verb{[data.frame]} \cr \code{data.frame} containing the response variable and all model
-covariates, including the covariate measured at multiple scales, whose fit will be assessed.}
+\item{data}{\verb{[data.frame]} \cr \code{data.frame} containing the response variable
+and all model predictor variables, including the covariate measured at multiple
+scales or ZoI radii,  whose fit will be assessed.}
 
-\item{formula}{\verb{[formula]} \cr formula to be applied to each model...}
+\item{formula}{\verb{[character,formula]} \cr String depicting the statistical
+formula to be applied to the models. This must include at least the main
+response variable and a predictor variable named "multief"
+(e.g. response_variable ~ multief), corresponding to the covariate specified
+as the \code{multief} parameter.}
+
+\item{args}{\verb{[character]} \cr Character vector with any additional
+argument/s of the models (e.g. \code{args = c("family = poisson")} for a
+Poisson regression in a \code{glm}).}
+
+\item{criterion}{\verb{[character]} \cr String depicting the criterion to be
+used for the selection of the best model among the various spatial scales
+(i.e. the one with the strongest relationship with the response variable).
+This can be one of three options: ‘R2’ (for R-squared, i.e. coefficient of
+determination, not available for all model type \code{mod}),
+‘AIC’ (for Akaike Information Criterion), or ‘BIC’ (for Bayesian Information
+Criterion). Alternatively, the user may use an own function for the
+calculation of a different criterion. If this is the case, the user must
+specify the name of the function in a first element of the vector, and the
+model-selection criterion (‘max’ or ‘min’ of the value of the criterion,
+for R-squared-like and AIC-like criteria, respectively) in a second element
+(e.g. criterion = c(‘my_function’, ‘max’)).}
+
+\item{site_id}{\verb{[character]}\cr A string depicting the column name of the
+\code{data.frame} holding the identity of the different sites. Only relevant for
+the summary of the landscape attributes.}
+
+\item{signif}{\verb{[logical(1)=TRUE]} \cr Differentiate non-significant from
+significant models in the plot with different point shapes?}
+
+\item{alpha}{\verb{[numeric(1)=0.95]} \cr Numeric value, between 0 and 1.
+Statistical significance level (only relevant if \code{signif = TRUE}).}
+
+\item{...}{Other parameters passed to the \code{multifit} function.}
 }
 \description{
-Evaluation of single covariate effects at multiple scales
+Evaluation of single covariate effects at multiple scales or zones of influence (ZoI)
 }
 \references{
-Huais, PY. 2018. multifit: an R function for multi-scale analysis in landscape ecology. Landscape Ecology, 33: 1023. https://doi.org/10.1007/s10980-018-0657-5
+Huais, PY. 2018. multifit: an R function for multi-scale analysis
+in landscape ecology. Landscape Ecology, 33: 1023.
+https://doi.org/10.1007/s10980-018-0657-5
 }
 \author{
 Pablo Yair Huais <\href{mailto:phuais@gmail.com}{phuais@gmail.com}>
