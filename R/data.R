@@ -18,9 +18,9 @@ NULL
 #'
 #' Dataset containing the location of tourist private cabins is Southern
 #' Norway, within the study area for the [oneimpact] package.
-#' It corresponds to
-#' some specific building types (byggtyp_nbr = c("161", "162", "163",
-#' "171", "172")) form the public N50 dataset (describe further here).
+#' It corresponds to some specific building types (object_type = "Bygning",
+#' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
+#' The map was cut for the study area presented in the [oneimpact] package.
 #'
 #' @name cabins_vect.gpkg
 #'
@@ -39,17 +39,17 @@ NULL
 #'         \item{value:} {Value 1, to be used for rasterization purposes}
 #' }
 #'
-#' @source \url{to_add_here}
+#' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
 
-#' Cabins raster data
+#' Cabin presence raster data
 #'
-#' Raster data indicating pixels with presence of tourist private cabins in Norway. It corresponds to
-#' some specific building types (object_type = "Bygning", byggtyp_nbr = c("161", "162", "163",
-#' "171", "172")) form the public N50 dataset (describe further here). The original data
-#' were point vector data and were rasterized with 100m resolution, for the purpose
-#' of illustration here. The raster was cut for the study area presented in the [oneimpact]
-#' package.
+#' Raster data indicating pixels with presence of tourist private cabins in Norway.
+#' It corresponds to some specific building types (object_type = "Bygning",
+#' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
+#' The original data consisted of point vector data and were rasterized with 100m r
+#' esolution, for the purpose of illustration here. The raster was cut for the
+#' study area presented in the [oneimpact] package.
 #'
 #' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 #' \itemize{
@@ -63,6 +63,25 @@ NULL
 #'
 #' @name cabins.tif
 #'
-#' @source \url{to_complete_here}
+#' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
 
+#' Cabin count raster data
+#'
+#' Raster data indicating the number of tourist private cabins per pixel in Norway.
+#' It corresponds to some specific building types (object_type = "Bygning",
+#' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
+#' The original data consisted of point vector data and were rasterized with 100m
+#' resolution by counting the number of cabins in each pixel. The raster
+#' was cut for the study area presented in the [oneimpact] package.
+#'
+#' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
+#'
+#' @examples
+#' (f <- system.file("raster/cabins_count.tif", package = "oneimpact"))
+#' terra::rast(f)
+#'
+#' @name cabins_count.tif
+#'
+#' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
+NULL

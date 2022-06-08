@@ -81,3 +81,19 @@ cabins
 # save
 # usethis::use_data(cabins, overwrite = TRUE)
 
+# cabins count
+(s <- system.file("vector/cabins_vect.gpkg", package = "oneimpact"))
+v <- terra::vect(s)
+
+(f <- system.file("raster/cabins.tif", package = "oneimpact"))
+r <- terra::rast(f)
+
+cabins_count <- terra::rasterize(v, r, fun = length)
+cabins_count[is.na(cabins_count)] <- 0
+plot(cabins_count)
+
+# save externally
+terra::writeRaster(cabins_count, filename = "inst/raster/cabins_count.tif")
+# re-open
+cabins_count <- terra::rast("inst/raster/cabins_count.tif")
+cabins_count

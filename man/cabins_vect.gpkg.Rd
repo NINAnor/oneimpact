@@ -14,14 +14,14 @@ file presents the following columns:
 }
 }
 \source{
-\url{to_add_here}
+\url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 }
 \description{
 Dataset containing the location of tourist private cabins is Southern
 Norway, within the study area for the \link{oneimpact} package.
-It corresponds to
-some specific building types (byggtyp_nbr = c("161", "162", "163",
-"171", "172")) form the public N50 dataset (describe further here).
+It corresponds to some specific building types (object_type = "Bygning",
+byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
+The map was cut for the study area presented in the \link{oneimpact} package.
 }
 \examples{
 (s <- system.file("vector/cabins_vect.gpkg", package = "oneimpact"))
