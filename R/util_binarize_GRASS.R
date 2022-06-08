@@ -44,10 +44,10 @@
 #' and a documentation of raster algebra with [terra] [here](https://rspatial.org/terra/pkg/4-algebra.html) and with
 #' [raster] [here](https://rspatial.org/raster/pkg/4-algebra.html).
 #'
-#' @example examples/util_binarize_GRASS_example.R
+#' @example examples/util_binarize_grass_example.R
 #'
 #' @export
-util_binarize_GRASS <- function(x,
+util_binarize_grass <- function(x,
                                 breaks = 0.5,
                                 output = paste0(x, "_bin"),
                                 null = NULL,
@@ -77,26 +77,41 @@ util_binarize_GRASS <- function(x,
     # region
     rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
 
-    # binarize
-    out <- out_name[i]
-
-    expression = sprintf("if(A >= %f, %d, %d)", breaks[i], bin_values[2], bin_values[1])
-    rgrass7::execGRASS("r.mapcalc.simple",
-                       expression = expression,
-                       a = x,
-                       output = out,
-                       flags = flags)
-
+    # nulls
     if(!(is.null(null) & is.null(setnull))) {
+
+      # copy input
+      inter_map = "inter_map" # intermediate map
+      rgrass7::execGRASS("g.copy",
+                         parameters = list(raster = paste0(x, ",", inter_map)),
+                         flags = flags)
+
       # set parameters
-      parms <- list(map = out)
+      parms <- list(map = inter_map)
       if(!is.null(null)) parms <- append(parms, list(null = null))
       if(!is.null(setnull)) parms <- append(parms, list(setnull = setnull))
       if(quiet) qq <- "quiet" else qq <- c()
       # run r.null
       rgrass7::execGRASS("r.null", parameters = parms, flags = qq)
+
+      x <- inter_map
     }
+
+    # binarize
+    out <- out_name[i]
+
+    expr = sprintf("if(A >= %f, %d, %d)", breaks[i], bin_values[2], bin_values[1])
+    rgrass7::execGRASS("r.mapcalc.simple",
+                       expression = expr,
+                       a = x,
+                       output = out,
+                       flags = flags)
+
   }
+
+  # remove intermediate map
+  rgrass7::execGRASS("g.remove", type = "raster", name = "inter_map",
+                     flags = "f")
 
   return(out_name)
 }
