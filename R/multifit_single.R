@@ -1,22 +1,58 @@
-#' Evaluation of single covariate effects at multiple scales
+#' Evaluation of single covariate effects at multiple scales or zones of influence (ZoI)
 #'
-#' @param mod `[character(1)]` \cr Type of model to be fit (e.g. "lm", "glm", "glmer").
-#' @param multief `[character]` \cr Vector containing the names of the columns of the input
-#' `data.frame`, corresponding to the covariate, calculated at multiple zoi, radii, or scales,
-#' whose fit will be assessed.
-#' @param data `[data.frame]` \cr `data.frame` containing the response variable and all model
-#' covariates, including the covariate measured at multiple scales, whose fit will be assessed.
-#' @param formula `[formula]` \cr formula to be applied to each model...
+#' @param mod `[character(1)]` \cr String depicting the statistical function to
+#' be applied (e.g. "lm", "glm", "glmer").
+#' @param multief `[character]` \cr Vector containing the names of the columns
+#' of the input `data`, corresponding to the spatial attribute or covariate
+#' whose scale of effect or zone of influence will be assessed.
+#' All names correspond to the or covariate calculated at multiple zone of
+#' influence radii or scales.
+#' @param data `[data.frame]` \cr `data.frame` containing the response variable
+#' and all model predictor variables, including the covariate measured at multiple
+#' scales or ZoI radii,  whose fit will be assessed.
+#' @param formula `[character,formula]` \cr String depicting the statistical
+#' formula to be applied to the models. This must include at least the main
+#' response variable and a predictor variable named "multief"
+#' (e.g. response_variable ~ multief), corresponding to the covariate specified
+#' as the `multief` parameter.
+#' @param args `[character]` \cr Character vector with any additional
+#' argument/s of the models (e.g. `args = c("family = poisson")` for a
+#' Poisson regression in a `glm`).
+#' @param criterion `[character]` \cr String depicting the criterion to be
+#' used for the selection of the best model among the various spatial scales
+#' (i.e. the one with the strongest relationship with the response variable).
+#' This can be one of three options: ‘R2’ (for R-squared, i.e. coefficient of
+#' determination, not available for all model type `mod`),
+#' ‘AIC’ (for Akaike Information Criterion), or ‘BIC’ (for Bayesian Information
+#' Criterion). Alternatively, the user may use an own function for the
+#' calculation of a different criterion. If this is the case, the user must
+#' specify the name of the function in a first element of the vector, and the
+#' model-selection criterion (‘max’ or ‘min’ of the value of the criterion,
+#' for R-squared-like and AIC-like criteria, respectively) in a second element
+#' (e.g. criterion = c(‘my_function’, ‘max’)).
+#' @param site_id `[character]`\cr A string depicting the column name of the
+#' `data.frame` holding the identity of the different sites. Only relevant for
+#' the summary of the landscape attributes.
+#' @param signif `[logical(1)=TRUE]` \cr Differentiate non-significant from
+#' significant models in the plot with different point shapes?
+#' @param alpha `[numeric(1)=0.95]` \cr Numeric value, between 0 and 1.
+#' Statistical significance level (only relevant if `signif = TRUE`).
+#' @param ... Other parameters passed to the `multifit` function.
 #'
 #' @author Pablo Yair Huais <<phuais@gmail.com>>
 #'
 #' @source \url{https://github.com/phuais/multifit}
-#' @references Huais, PY. 2018. multifit: an R function for multi-scale analysis in landscape ecology. Landscape Ecology, 33: 1023. https://doi.org/10.1007/s10980-018-0657-5
+#' @references Huais, PY. 2018. multifit: an R function for multi-scale analysis
+#' in landscape ecology. Landscape Ecology, 33: 1023.
+#' https://doi.org/10.1007/s10980-018-0657-5
 #'
 #' @export
-multifit_single <- function(mod, multief, data, formula = NULL, args = NULL, criterion = "AIC", site_id = NULL,
-                     signif = TRUE, alpha = 0.05, plot_est = FALSE, print_sum = FALSE,
-                     xlab = "Radius [km]", ylab = NULL, labels = NULL, type = "b", pch = c(1, 16)){
+multifit_single <- function(mod, multief, data, formula = NULL, args = NULL,
+                            criterion = "AIC", site_id = NULL,
+                            signif = TRUE, alpha = 0.05,
+                            plot_est = FALSE, print_sum = FALSE,
+                            xlab = "Radius [m]", ylab = NULL, labels = NULL,
+                            type = "b", pch = c(1, 16)){
 
   # Arguments checking
   if(!is.character(mod) || length(mod) != 1) stop("Argument mod must be a character of length 1")
