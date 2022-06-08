@@ -4,65 +4,85 @@
 #' functions to be used in neighborhood analyses for rasters. In the context of
 #' cumulative impact analysis, they represent the Zone of Influence (ZoI) of each
 #' infrastructure point/pixel, to be used to calculate the cumulative ZoI.
-#' It is possible to export these matrices as text files, for use with external software
-#' such as the `r.mfilter` module within GRASS GIS.
+#' It is possible to export these matrices as text files, for use with external
+#' software such as the `r.mfilter` module within GRASS GIS.
 #'
-#' The function creates \eqn{n} x \eqn{n} ZoI or weight matrices based on functions with different shapes
-#' and parameterized with the ZoI radius, where \eqn{n} is the dimension of the matrix.
+#' The function creates \eqn{n} x \eqn{n} ZoI or weight matrices based on
+#' functions with different shapes and parameterized with the ZoI radius, where
+#' \eqn{n} is the dimension of the matrix.
 #' For some functions (e.g. threshold decay, linear decay),
 #' the size of the matrix is defined by the ZoI radius, in meters,
-#' given the intended resolution (parameter `r`), potentially adding new lines and columns with value
-#' zero to keep \eqn{n} an odd number. For non-vanishing function (e.g. exponential or Gaussian decay),
-#' even though the function is parameterized with the ZoI radius the size of the matrix can
-#' go beyond this radius. In this case, the size of the matrix \eqn{n} is defined either by
-#' a minimum intensity function value (parameter `min_intensity`) or by a maximum distance for
+#' given the intended resolution (parameter `r`), potentially adding new lines
+#' and columns with value zero to keep \eqn{n} an odd number.
+#' For non-vanishing function (e.g. exponential or Gaussian decay),
+#' even though the function is parameterized with the ZoI radius the size of
+#' the matrix can go beyond this radius. In this case, the size of the matrix
+#' \eqn{n} is defined either by a minimum intensity function value
+#' (parameter `min_intensity`) or by a maximum distance for
 #' the matrix radius (parameter `min_dist`, which can be set to be the `zoi_radius`).
-#' Keeping \eqn{n} at a reasonable size guarantees that the neighborhood analysis using such input
-#' weight matrices is computationally feasible.
+#' Keeping \eqn{n} at a reasonable size guarantees that the neighborhood
+#' analysis using such input weight matrices is computationally feasible.
 #'
 #' Possible future implementation: compare results with
-#' [smoothie::kernel2dsmooth] and [smoothie::kernel2dmeitsjer], maybe wrap some options here.
+#' [smoothie::kernel2dsmooth] and [smoothie::kernel2dmeitsjer],
+#' maybe wrap some options here.
 #'
-#' @param r `[numric,SpatRaster,RasterLayer]` \cr Either a numeric value corresponding to the resolution (pixel size) that each pixel in the filter matrix
-#' should correspond to; or a raster object (`SpatRaster` from the `terra` package or `RasterLayer`, `RasterBrick`, or
-#' `RasterStack` from the `raster` package) from which such resolution can be extracted.
+#' @param r `[numeric,SpatRaster,RasterLayer]` \cr Either a numeric value
+#' corresponding to the resolution (pixel size) that each pixel in the filter matrix
+#' should correspond to; or a raster object (`SpatRaster` from the `terra`
+#' package or `RasterLayer`, `RasterBrick`, or `RasterStack` from the
+#' `raster` package) from which such resolution can be extracted.
 #'
-#' @param zoi_radius `[numeric(1)=NULL]` \cr Zone of Influence (ZoI) radius, in map units (preferentially meters).
-#' The ZoI radius is the distance, scale, or buffer size around a feature up to which we consider there is
-#' an effect or influence of an infrastructure or variable. In `create_filter`, the interpretation of the
+#' @param zoi_radius `[numeric(1)=NULL]` \cr Zone of Influence (ZoI) radius,
+#' in map units (preferentially meters).
+#' The ZoI radius is the distance, scale, or buffer size around a
+#' feature up to which we consider there is
+#' an effect or influence of an infrastructure or variable. In `create_filter`,
+#' the interpretation of the
 #' zoi_radius differ depending on the shape of the zoi (parameter `type`):
-#' - For the circle neighborhood (`type = "circle"` or `type = "threshold"` or `type = "step"`),
-#' the `zoi_radius` corresponds to the radius (or threshold) of the circle, beyond which the filter is zero.
-#' - For the rectangular neighborhood (`type = "rectangle"`), the `zoi_radius` corresponds to half the size of the square size, or
-#' `square size = 2*zoi_radius`. For a rectangular filter with different size of the sides, use [terra::focal()] (but
+#' - For the circle neighborhood (`type = "circle"` or `type = "threshold"`
+#' or `type = "step"`), the `zoi_radius` corresponds to the radius
+#' (or threshold) of the circle, beyond which the filter is zero.
+#' - For the rectangular neighborhood (`type = "rectangle"` or `type = "box"`),
+#' the `zoi_radius` corresponds to half the size of the square size, or
+#' `square size = 2*zoi_radius`. For a rectangular filter with different size
+#' of the sides, use [terra::focal] (but
 #' please note the interpretation of the parameters is different).
-#' - For the Bartlett neighborhood (`type = "bartlett"` or `type = "linear_decay"` or `type = "tent_decay"`),
+#' - For the Bartlett neighborhood (`type = "bartlett"` or
+#' `type = "linear_decay"` or `type = "tent_decay"`),
 #' the `zoi_radius` corresponds to the distance beyond which the filter is zero.
-#' - For the exponential decay neighborhood (`type = "exp_decay"`) and the Gaussian decay neighborhood
-#' (`type = "Gauss"` or `type = "gaussian_decay"`), the `zoi_radius` corresponds to the
-#' distance where the exponential decay function goes below a given limit distance defined by
+#' - For the exponential decay neighborhood (`type = "exp_decay"`) and the
+#' Gaussian decay neighborhood (`type = "Gauss"` or `type = "gaussian_decay"`),
+#' the `zoi_radius` corresponds to the distance where the exponential decay
+#' function goes below a given limit distance defined by
 #' `zoi_limit`. See [oneimpact::zoi_functions] for details.
-#' - If `zoi_radius = NULL`, the exponential or gaussian decay matrices are defined based on other
-#' parameters -- see below. This option will raise an error for the other types of filters.
+#' - If `zoi_radius = NULL`, the exponential or gaussian decay matrices are
+#' defined based on other parameters -- see below. This option will raise an
+#' error for the other types of filters.
 #'
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing filters
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
 #' between the ZoI radius and the decay functions:
 #' `zoi_radius` is defined as the minimum distance `x` at which the ZoI assumes values
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
-#' of `zoi_radius` is not `NULL`.
+#' if `zoi_radius` is not `NULL`.
 #'
-#' @param type `[character(1)="exp_decay"]{"exp_decay", "bartlett", "circle", "threshold_decay", "gaussian_decay", "Gauss", "rectangle"}` \cr
+#' @param type `[character(1)="exp_decay"]{"exp_decay", "bartlett", "circle",
+#' "threshold_decay", "gaussian_decay", "Gauss", "rectangle"}` \cr
 #' Shape of the Zone of Influence of weight matrix. It can be any of:
-#' - `"circle"`, `"threshold"`, `"threshold_decay"`, `"step"` or `"step_decay"` for a threshold decay ZoI;
+#' - `"circle"`, `"threshold"`, `"threshold_decay"`, `"step"` or `"step_decay"`
+#' for a threshold decay ZoI;
 #' - `"exp_decay"` for exponential decay ZoI;
 #' - `"Gauss"`, `"gaussian"`, or `"gaussian_decay"` for Gaussian decay ZoI;
-#' - `"bartlett"`, `"bartlett_decay"`, `"linear_decay"`, or `"tent_decay"` for linear decay ZoI;
-#' - `"rectangle"` for a rectangular ZoI.
-#' There might be some correspondence between the weight matrix `type` in `create_filter` and other
-#' similar functions (e.g. `type = "rectangle"` and `type = "boxcar"` in [smoothie::kernel2dmeitsjer] or
-#' `type = "Gauss"` in [terra::focalMat()] with parameter
-#' `type = "gauss"` n [smoothie::kernel2dmeitsjer()]); however, the interpretation of the parameters used to
+#' - `"bartlett"`, `"bartlett_decay"`, `"linear_decay"`, or `"tent_decay"`
+#' for linear decay ZoI;
+#' - `"rectangle"` or `"box"` for a rectangular ZoI.
+#' There might be some correspondence between the weight matrix `type`
+#' in `create_filter` and other similar functions (e.g. `type = "rectangle"`
+#' and `type = "boxcar"` in [smoothie::kernel2dmeitsjer] or
+#' `type = "Gauss"` in [terra::focalMat] with parameter
+#' `type = "gauss"` n [smoothie::kernel2dmeitsjer]); however, the
+#' interpretation of the parameters used to
 #' define these matrices is different between functions.
 #'
 #' @param half_life `[numeric(1)=NULL]` \cr Half life of the exponential decay
@@ -190,7 +210,7 @@ create_filter <- function(r = 100,
     parms <- set_filt_bartlett(zoi_radius = zoi_radius, res = res)
   }
 
-  if(type == "rectangle") {
+  if(type %in% c("rectangle", "box")) {
     parms <- set_filt_rectangle(zoi_radius = zoi_radius, res = res)
   }
 
@@ -228,7 +248,7 @@ create_filter <- function(r = 100,
     dist_mat <- pmax((1 + parms$lambda * dist_mat), 0)
   }
 
-  if(type == "rectangle") {
+  if(type %in% c("rectangle", "box")) {
     dist_mat[] <- 1
   }
 
