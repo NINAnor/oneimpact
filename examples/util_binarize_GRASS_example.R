@@ -23,10 +23,10 @@ name_var <- "private_cabins_sub"
 # binarize the input map
 
 # map with only 1
-cabins_bin1_name <- util_binarize_GRASS(name_var, output = "cabins_bin1",
+cabins_bin1_name <- util_binarize_grass(name_var, output = "cabins_bin1",
                                         breaks = 1, overwrite = T)
 # map with 0, 1
-cabins_bin2_name <- util_binarize_GRASS(name_var, output = "cabins_bin2",
+cabins_bin2_name <- util_binarize_grass(name_var, output = "cabins_bin2",
                                         breaks = 1, null = 0, overwrite = T)
 
 # visualize
@@ -41,7 +41,7 @@ plot(cabins_bin1_2, main = c("Binarized map setting null to 0", "Binarized map k
 cont_map_name <- calc_influence_nearest(name_var, zoi = 1000, transform = "exp_decay",
                                         where = "GRASS", overwrite = T)
 # binarize
-cabins_bin2vals_name <- util_binarize_GRASS(cont_map_name, output = "cabins_bin",
+cabins_bin2vals_name <- util_binarize_grass(cont_map_name, output = "cabins_bin",
                                             breaks = c(0.3, 0.5), overwrite = T)
 # visualize
 cabins_bin2vals <- rgrass7::readRAST(c(cont_map_name, cabins_bin2vals_name)) %>%

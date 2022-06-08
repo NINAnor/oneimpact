@@ -16,11 +16,11 @@
 #' @return One or more strings with the names of the maps within the GRASS GIS mapset.
 #'
 #' @export
-util_find_layer_GRASS <- function(list_patterns,
-                             layers_grass = NULL,
-                             type = "raster",
-                             pattern = "*",
-                             mapset = "PERMANENT") {
+util_find_layer_grass <- function(list_patterns,
+                                  layers_grass = NULL,
+                                  type = "raster",
+                                  pattern = "*",
+                                  mapset = "PERMANENT") {
 
   # get all raster layers from GRASS, if this is not an input
   if(is.null(layers_grass))
