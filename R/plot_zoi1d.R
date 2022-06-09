@@ -60,10 +60,10 @@ plot_zoi1d <- function(points,
   # create x
   x <- seq(range_plot[1], range_plot[2], step)
   # apply function to each point
-  dat_y <- purrr::map_dfc(points, ~ fun(x = x, zoi_radius = zoi_radius, origin = .x, oneside = FALSE, ...))
+  dat_y <- purrr::map_dfc(points, function(z) fun(x = x, zoi_radius = zoi_radius, origin = z, oneside = FALSE, ...))
 
   # should functions accumulate or not?
-  if(cumulative) y <- apply(dat_y, 1, sum, na.rm = na.rm) else
+  if(cumulative) y <- lapply(dat_y, sum, na.rm = na.rm) else
     y <- apply(dat_y, 1, max, na.rm = na.rm)
 
   # tibble
