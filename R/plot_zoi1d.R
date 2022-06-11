@@ -63,17 +63,17 @@ plot_zoi1d <- function(points,
   dat_y <- purrr::map_dfc(points, function(z) fun(x = x, zoi_radius = zoi_radius, origin = z, oneside = FALSE, ...))
 
   # should functions accumulate or not?
-  if(cumulative) y <- lapply(dat_y, sum, na.rm = na.rm) else
+  if(cumulative) y <- apply(dat_y, 1, sum, na.rm = na.rm) else
     y <- apply(dat_y, 1, max, na.rm = na.rm)
 
   # tibble
   dat <- tibble::tibble(x = x, y = y)
 
   # plot
-  g1 <- ggplot(dat, aes(x = x, y = y)) +
-    geom_line() +
-    labs(x = "Distance", y = "Zone of Influence") +
-    theme_bw()
+  g1 <- ggplot2::ggplot(dat, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_line() +
+    ggplot2::labs(x = "Distance", y = "Zone of Influence") +
+    ggplot2::theme_bw()
 
   # return plot (and maybe df)
   if (isTRUE(return_df)) {
