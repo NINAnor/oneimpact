@@ -60,9 +60,10 @@ a space.}
 None. The funcion only saves the input matrix as an external file.
 }
 \description{
-This function saves a matrix with weights (filter or kernel matrix) in an external text file,
-to be used outside R. It can save either the raw matrix
-or use the standards for running \code{r.mfilter} within GRASS GIS (with specific header and details).
+This function saves a matrix with weights (filter or kernel matrix) in an external text file.
+It can save either the raw matrix
+or use the standards for running \code{r.mfilter} within GRASS GIS
+(with specific header and details).
 }
 \details{
 If used in the \code{r.mfilter} GRASS GIS module, "The filter process produces a new category value

@@ -18,6 +18,7 @@ calc_zoi_nearest(
   hnorm_decay_parms = c(1, 20),
   constant_influence = 1,
   dist_offset = 0,
+  zeroAsNA = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
   plotit = FALSE,
@@ -122,6 +123,9 @@ distance before transforming it, to avoid \code{-Inf}/\code{Inf} values
 compared to the range of values of Euclidean distance, not to influence any
 further analyses.}
 
+\item{zeroAsNA}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE} treats cells that are
+zero as if they were \code{NA}.}
+
 \item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector
 representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max).
@@ -197,7 +201,7 @@ from the neareast feature of that type of infrastructure. Zones of influence
 are defined by functions that decay with the Euclidean distance from each
 infrastructure and their rate of decay is controlled by the ZoI radius
 (\code{zoi_radius}), which defines how far the influence of an infrastructure
-feature goes. By default, the Gaussian decay ZoI is calculated, byt other
+feature goes. By default, the Gaussian decay ZoI is calculated, but other
 decay functions might be used (see \link{zoi_funtions} for examples).
 The function might also return the Euclidean distance to the nearest feature
 or a transformation from it (e.g. log- and sqrt-distance from the nearest

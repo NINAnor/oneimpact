@@ -1,8 +1,9 @@
 #' Save kernel/filter matrix to use in r.mfilter within GRASS GIS
 #'
-#' This function saves a matrix with weights (filter or kernel matrix) in an external text file,
-#' to be used outside R. It can save either the raw matrix
-#' or use the standards for running `r.mfilter` within GRASS GIS (with specific header and details).
+#' This function saves a matrix with weights (filter or kernel matrix) in an external text file.
+#' It can save either the raw matrix
+#' or use the standards for running `r.mfilter` within GRASS GIS
+#' (with specific header and details).
 #'
 #' @details If used in the `r.mfilter` GRASS GIS module, "The filter process produces a new category value
 #' for each cell in the input raster map layer by multiplying the category values of the cells in the n x n

@@ -15,6 +15,7 @@ calc_zoi_cumulative(
   zoi_limit = 0.05,
   min_intensity = 0.01,
   max_dist = 50000,
+  zeroAsNA = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
   na.policy = "omit",
@@ -92,6 +93,9 @@ define the radius of the window that define the filter. See
 define the radius of the window that defines the filter. Only
 applicable for exponential and Gaussian decay functions. See
 \link{create_filter} for details.}
+
+\item{zeroAsNA}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE} treats cells that are
+\code{NA} as if they were zero.}
 
 \item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector
 representing the minimum and
