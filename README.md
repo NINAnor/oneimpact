@@ -28,11 +28,11 @@ scales or zones of influence radii.
 and parameterized using the zone of influence radius.
 - `save_mfilter`: Saves filters/weight matrices outside R for use within GRASS GIS modules.
 
-### Auxiliary functions:
+### Ancillary functions:
 
-- `util_binarize_grass`: Binarize continuous or multi-class categorical rasters within GRASS GIS. Binary maps may be used 
+- `grass_binarize`: Binarize continuous or multi-class categorical rasters within GRASS GIS. Binary maps may be used 
 as input for cumulative zone of influence and kernel density calculation.
-- `util_v2rast_count_grass`: Rasterize a vector files counting the number of features within each pixel of the output
+- `grass_v2rast_count`: Rasterize a vector files counting the number of features within each pixel of the output
 raster. Count rasters may be used as input for cumulative zone of influence and kernel density calculation.
 
 ### Support for landscape simulation:
