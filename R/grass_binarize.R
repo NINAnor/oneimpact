@@ -44,17 +44,17 @@
 #' and a documentation of raster algebra with [terra] [here](https://rspatial.org/terra/pkg/4-algebra.html) and with
 #' [raster] [here](https://rspatial.org/raster/pkg/4-algebra.html).
 #'
-#' @example examples/util_binarize_grass_example.R
+#' @example examples/grass_binarize_example.R
 #'
 #' @export
-util_binarize_grass <- function(x,
-                                breaks = 0.5,
-                                output = paste0(x, "_bin"),
-                                null = NULL,
-                                setnull = NULL,
-                                bin_values = c(0, 1),
-                                quiet = TRUE,
-                                overwrite = FALSE, ...) {
+grass_binarize <- function(x,
+                           breaks = 0.5,
+                           output = paste0(x, "_bin"),
+                           null = NULL,
+                           setnull = NULL,
+                           bin_values = c(0, 1),
+                           quiet = TRUE,
+                           overwrite = FALSE, ...) {
 
   # Check function arguments ----
   if(is.numeric(breaks) == FALSE) stop("'breaks' must be a numeric vector.")

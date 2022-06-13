@@ -14,18 +14,18 @@
 #' @param align `[character(1)=NULL]` \cr Name of a raster map with which to align the
 #' computational region to produce the output map.
 #'
-#' @example examples/util_v2rast_count_grass_example.R
+#' @example examples/grass_v2rast_count_example.R
 #'
 #' @export
-util_v2rast_count_grass <- function(x,
-                                    output = paste0(x, "_count"),
-                                    column = NULL,
-                                    set_region = TRUE,
-                                    align = NULL,
-                                    remove_intermediate = TRUE,
-                                    quiet = TRUE,
-                                    verbose = FALSE,
-                                    overwrite = FALSE, ...) {
+grass_v2rast_count <- function(x,
+                               output = paste0(x, "_count"),
+                               column = NULL,
+                               set_region = TRUE,
+                               align = NULL,
+                               remove_intermediate = TRUE,
+                               quiet = TRUE,
+                               verbose = FALSE,
+                               overwrite = FALSE, ...) {
 
   #--- options ---
   # flags
