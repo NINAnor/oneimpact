@@ -8,7 +8,7 @@
 #' are defined by functions that decay with the Euclidean distance from each
 #' infrastructure and their rate of decay is controlled by the ZoI radius
 #' (`zoi_radius`), which defines how far the influence of an infrastructure
-#' feature goes. By default, the Gaussian decay ZoI is calculated, byt other
+#' feature goes. By default, the Gaussian decay ZoI is calculated, but other
 #' decay functions might be used (see [oneimpact::zoi_funtions] for examples).
 #' The function might also return the Euclidean distance to the nearest feature
 #' or a transformation from it (e.g. log- and sqrt-distance from the nearest
@@ -140,6 +140,9 @@
 #' Default is 1. In this case, all pixels closer to any
 #' infrastructure than the `zoi_radius` are classified with this constant value.
 #'
+#' @param zeroAsNA `[logical(1)=FALSE]` \cr If `TRUE` treats cells that are
+#' zero as if they were `NA`.
+#'
 #' @param extent_x_cut,entent_y_cut `[numeric vector(2)=c(0,1)]` \cr Vector
 #' representing the minimum and
 #' maximum extent in x and y for the final output, in the format c(min,max).
@@ -228,6 +231,7 @@ calc_zoi_nearest <- function(
   hnorm_decay_parms = c(1, 20),
   constant_influence = 1,
   dist_offset = 0,
+  zeroAsNA = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
   plotit = FALSE,
@@ -254,6 +258,7 @@ calc_zoi_nearest <- function(
                                       sigma = sigma,
                                       constant_influence = constant_influence,
                                       dist_offset = dist_offset,
+                                      zeroAsNA = zeroAsNA,
                                       extent_x_cut = extent_x_cut,
                                       extent_y_cut = extent_y_cut,
                                       plotit = plotit, ...)
@@ -303,6 +308,7 @@ calc_zoi_nearest_r <- function(
   sigma = NULL,
   constant_influence = 1,
   dist_offset = 0,
+  zeroAsNA = FALSE,
   extent_x_cut = terra::ext(x)[c(1,2)],
   extent_y_cut = terra::ext(x)[c(3,4)],
   plotit = FALSE, ...) {
@@ -329,8 +335,19 @@ calc_zoi_nearest_r <- function(
     stop("You should select an appropriate method ('type' parameter)
          for the calculation the ZoI of the nearest feature.")
 
+  # check if the input raster presents only a single value (1,NA)
+  # if so, transform it into a binary map (1,0)
+  r0 <- x
+  if(zeroAsNA) {
+    if(use_terra) {
+      r0 <- terra::classify(r0, cbind(NA, 0)) # binary map
+    } else {
+      r0 <- raster::reclassify(r0, cbind(NA, 0)) # binary map
+    }
+  }
+
   # Euclidean distance
-  dist_r <- terra::distance(x, ...)
+  dist_r <- terra::distance(r0, ...)
 
   # transform distance
   if(type != "euclidean")

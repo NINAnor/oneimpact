@@ -172,6 +172,9 @@
 #' applicable for exponential and Gaussian decay functions. See
 #' [oneimpact::create_filter] for details.
 #'
+#' @param zeroAsNA `[logical(1)=FALSE]` \cr If `TRUE` treats cells that are
+#' `NA` as if they were zero.
+#'
 #' @param extent_x_cut,entent_y_cut `[numeric vector(2)=c(0,1)]` \cr Vector
 #' representing the minimum and
 #' maximum extent in x and y for the final output, in the format c(min,max).
@@ -252,6 +255,7 @@ calc_zoi_cumulative <- function(x,
                                 zoi_limit = 0.05,
                                 min_intensity = 0.01,
                                 max_dist = 50000,
+                                zeroAsNA = FALSE,
                                 extent_x_cut = NULL,
                                 extent_y_cut = NULL,
                                 na.policy = "omit",
@@ -275,6 +279,7 @@ calc_zoi_cumulative <- function(x,
                                             zoi_limit = zoi_limit,
                                             min_intensity = min_intensity,
                                             max_dist = max_dist,
+                                            zeroAsNA = zeroAsNA,
                                             extent_x_cut = extent_x_cut,
                                             extent_y_cut = extent_y_cut,
                                             na.policy = na.policy,
@@ -325,6 +330,7 @@ calc_zoi_cumulative_r <- function(
   exp_decay_parms = c(1, 0.01),
   min_intensity = 0.01,
   max_dist = 50000,
+  zeroAsNA = FALSE,
   extent_x_cut = terra::ext(x)[c(1,2)],
   extent_y_cut = terra::ext(x)[c(3,4)],
   na.policy = "omit",
@@ -348,10 +354,12 @@ calc_zoi_cumulative_r <- function(
   # check if the input raster presents only a single value (1,NA)
   # if so, transform it into a binary map (1,0)
   r0 <- x
-  if(use_terra) {
-    if(diff(c(r0@ptr$range_min, r0@ptr$range_max)) == 0) r0 <- terra::classify(r0, cbind(NA, 0)) # binary map
-  } else {
-    if(diff(c(maxValue(r0), minValue(r0))) == 0) r0 <- raster::reclassify(r0, cbind(NA, 0)) # binary map
+  if(zeroAsNA) {
+    if(use_terra) {
+      r0 <- terra::classify(r0, cbind(NA, 0)) # binary map
+    } else {
+      r0 <- raster::reclassify(r0, cbind(NA, 0)) # binary map
+    }
   }
   # plot(r0)
 
