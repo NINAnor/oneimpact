@@ -3,6 +3,16 @@
 `oneimpact` provides tools for the assessment of cumulative impacts from multiple infrastructure and land use modification in ecological studies.
 The tools use R interface but the main calculations might be run in both R and GRASS GIS. The tools available so far are:
 
+### Zone of influence (ZoI) decay functions
+
+- zoi_functions: a set of decay zone of influence functions to characterize different shapes of the ZoI around infrastructure, 
+parameterized based on the zone of influence radius. The functions implemented so far are: threshold (`threshold_decay` or `step_decay`),
+linear decay (`linear_decay` or `bartlett_decay` or `tent_decay`), exponential decay (`exp_decay`), or Gaussian decay 
+(`gaussian_decay` or `half_norm_decay`).
+- `plot_zoi1d`: plot ZoI in 1 dimensional space for multiple points infrastructure, using both the ZoI of the nearest
+feature and the cumulative ZoI metric.
+
+
 ### Compute zones of influence (ZoI):
 
 - `calc_zoi_nearest`: Calculate the zone of influence from the nearest infrastructure, according to multiple possible 
@@ -18,11 +28,11 @@ scales or zones of influence radii.
 and parameterized using the zone of influence radius.
 - `save_mfilter`: Saves filters/weight matrices outside R for use within GRASS GIS modules.
 
-### Auxiliary functions:
+### Ancillary functions:
 
-- `util_binarize_grass`: Binarize continuous or multi-class categorical rasters within GRASS GIS. Binary maps may be used 
+- `grass_binarize`: Binarize continuous or multi-class categorical rasters within GRASS GIS. Binary maps may be used 
 as input for cumulative zone of influence and kernel density calculation.
-- `util_v2rast_count_grass`: Rasterize a vector files counting the number of features within each pixel of the output
+- `grass_v2rast_count`: Rasterize a vector files counting the number of features within each pixel of the output
 raster. Count rasters may be used as input for cumulative zone of influence and kernel density calculation.
 
 ### Support for landscape simulation:
