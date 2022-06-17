@@ -11,13 +11,16 @@ multifit_single_multivar(
   formula = NULL,
   args = NULL,
   criterion = "AIC",
+  corr_check = TRUE,
+  corr_criterion = c("usdm::vifcor", "usdm::vifstep")[1],
+  corr_threshold = 0.7,
   print_best = 5,
   ...
 )
 }
 \arguments{
-\item{covariates}{\verb{[character]} \cr List of names of the covariates to be tested, or a pattern
-within their names that differentiate among them.}
+\item{covariates}{\verb{[character]} \cr List of names of the covariates to be tested,
+or a pattern within their names that differentiate among them.}
 }
 \description{
 Evaluation of single covariate effects at multiple scales for multiple covariates
