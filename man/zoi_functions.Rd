@@ -182,17 +182,6 @@ zone of influence radius (\code{zoi_radius}). All pixels closer than
 the nearest feature, with a constant influence value defined by the
 \code{constant_influence} parameter, and all other pixels are assumed to have
 zero influence.
-\item If \code{euclidean}, the function returns the Euclidean distance as a
-proxy for the ZoI, even though a proper zone of influence is not defined
-in this case.
-\item If \code{log}, the function returns the log-distance:
-\code{log(euclidean_distance, base = log_base)} as a
-proxy for the ZoI, even though a proper zone of influence is not defined
-in this case.
-\item If \code{sqrt}, the functions returns the square rooted distance:
-\code{sqrt(euclidean_distance)} as a
-proxy for the ZoI, even though a proper zone of influence is not defined
-in this case.
 }}
 }
 \value{

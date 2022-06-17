@@ -229,6 +229,7 @@ calc_zoi_nearest <- function(
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  intercept = 1,
   constant_influence = 1,
   dist_offset = 0,
   zeroAsNA = FALSE,
@@ -243,6 +244,8 @@ calc_zoi_nearest <- function(
   quiet = TRUE, overwrite = FALSE,
   ...) {
 
+  # intercept and constant influence could be only one parameter
+
   # Run in R
   if(where %in% c("R", "r")) {
     if(is.null(extent_x_cut)) extent_x_cut <- terra::ext(x)[c(1,2)]
@@ -256,6 +259,7 @@ calc_zoi_nearest <- function(
                                       exp_decay_parms = exp_decay_parms,
                                       hnorm_decay_parms = hnorm_decay_parms,
                                       sigma = sigma,
+                                      intercept = intercept,
                                       constant_influence = constant_influence,
                                       dist_offset = dist_offset,
                                       zeroAsNA = zeroAsNA,
@@ -275,6 +279,7 @@ calc_zoi_nearest <- function(
                                             zoi_limit = zoi_limit,
                                             exp_decay_parms = exp_decay_parms,
                                             hnorm_decay_parms = hnorm_decay_parms,
+                                            intercept = intercept,
                                             constant_influence = constant_influence,
                                             dist_offset = dist_offset,
                                             extent_x_cut = extent_x_cut,
@@ -306,6 +311,7 @@ calc_zoi_nearest_r <- function(
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
   sigma = NULL,
+  intercept = 1,
   constant_influence = 1,
   dist_offset = 0,
   zeroAsNA = FALSE,
@@ -363,20 +369,9 @@ calc_zoi_nearest_r <- function(
         } else
           if(type %in% c("bartlett", "Bartlett", "bartlett_decay",
                          "linear_decay", "tent_decay")) {
-
-            ################# change to function later on
-            dist_r <- (1 - (1/zoi_radius)*dist_r)
-            zero <- dist_r
-            size_landscape <- prod(dim(zero)[c(1:2)])
-            values(zero) <- rep(0, size_landscape)
-            dist_zero_stack <- c(dist_r, zero)
-
-            if(use_terra) {
-              dist_r <- terra::app(dist_zero_stack, "max")
-            } else {
-              dist_zero_stack <- raster::stack(dist_zero_stack)
-              dist_r <- raster::calc(dist_zero_stack, max)
-            }
+            dist_r <- linear_decay(dist_r,
+                                   zoi_radius = zoi_radius,
+                                   intercept = intercept)
 
           } else
             if(type %in% c("Gauss", "half_norm", "gauss",
@@ -389,12 +384,9 @@ calc_zoi_nearest_r <- function(
             } else {
               if(type %in% c("threshold", "step",
                              "threshold_decay", "step_decay")) {
-
-                ################# change to function later on
-                # for threshold influence of the nearest, keep pixels with
-                # dist <= zoi_radius constant
-                values(dist_r) <- ifelse(values(dist_r) < zoi_radius,
-                                         constant_influence, 0)
+                dist_r <- threshold_decay(x = dist_r,
+                                          zoi_radius = zoi_radius,
+                                          constant_influence = constant_influence)
 
               } else
                 stop("You should select an appropriate transformation method ('type' parameter) for the influence.")
@@ -431,6 +423,7 @@ calc_zoi_nearest_grass <- function(
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
   sigma = NULL,
+  intercept = 1,
   constant_influence = 1,
   dist_offset = 1,
   extent_x_cut = NULL,

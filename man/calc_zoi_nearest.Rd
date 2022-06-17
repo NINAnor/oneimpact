@@ -190,7 +190,7 @@ returns the name of the calculated maps. \cr
 If the computation is done in GRASS GIS, the output is name of
 the output raster map within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-\link[rgrass7:read_RAST]{rgrass7::read_RAST} or export them outside GRASS using the
+\link[rgrass7:readRAST]{rgrass7::read_RAST} or export them outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \description{
@@ -217,7 +217,7 @@ are done within GRASS GIS, the input is the name of a raster map already
 loaded in a GRASS GIS location and mapset, and the function returns
 only the name of the output map. This map is stored in the the GRASS GIS
 location/mapset, and might be retrieved to R through the
-\link[rgrass7:read_RAST]{rgrass7::read_RAST} function or exported outside GRASS using the
+\link[rgrass7:readRAST]{rgrass7::read_RAST} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \details{
