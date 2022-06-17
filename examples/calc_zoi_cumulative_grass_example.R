@@ -35,7 +35,7 @@ rgrass7::execGRASS("g.region", raster = cabins_g,
                    flags = "p")
 
 # Input map name within GRASS GIS - binary map
-cabins_bin_g <- util_binarize_grass(cabins_g, breaks = 1, output = "cabins_example_bin",
+cabins_bin_g <- grass_binarize(cabins_g, breaks = 1, output = "cabins_example_bin",
                                     null = 0, overwrite = TRUE)
 
 # check input
