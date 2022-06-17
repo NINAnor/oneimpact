@@ -4,12 +4,17 @@
 \alias{zoi_functions}
 \alias{exp_decay}
 \alias{threshold_decay}
+\alias{threshold_decay.numeric}
+\alias{threshold_decay.SpatRaster}
 \alias{step_decay}
 \alias{bartlett_decay}
+\alias{bartlett_decay.numeric}
+\alias{bartlett_decay.SpatRaster}
 \alias{tent_decay}
 \alias{linear_decay}
 \alias{gaussian_decay}
 \alias{half_norm_decay}
+\alias{dist_decay}
 \title{Zone of Influence (ZoI) functions}
 \usage{
 exp_decay(
@@ -31,9 +36,29 @@ threshold_decay(
   oneside = TRUE
 )
 
+\method{threshold_decay}{numeric}(
+  x,
+  zoi_radius,
+  constant_influence = 1,
+  origin = 0,
+  oneside = TRUE
+)
+
+\method{threshold_decay}{SpatRaster}(
+  x,
+  zoi_radius,
+  constant_influence = 1,
+  origin = 0,
+  oneside = TRUE
+)
+
 step_decay(x, zoi_radius, constant_influence = 1, origin = 0, oneside = TRUE)
 
 bartlett_decay(x, zoi_radius, intercept = 1, origin = 0, oneside = TRUE)
+
+\method{bartlett_decay}{numeric}(x, zoi_radius, intercept = 1, origin = 0, oneside = TRUE)
+
+\method{bartlett_decay}{SpatRaster}(x, zoi_radius, intercept = 1, origin = 0, oneside = TRUE)
 
 tent_decay(x, zoi_radius, intercept = 1, origin = 0, oneside = TRUE)
 
@@ -56,6 +81,16 @@ half_norm_decay(
   sigma = NULL,
   zoi_limit = 0.05,
   origin = 0,
+  ...
+)
+
+dist_decay(
+  x,
+  zoi_radius = NULL,
+  type = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
+  zoi_limit = 0.05,
+  origin = 0,
+  oneside = TRUE,
   ...
 )
 }
@@ -130,6 +165,35 @@ function. It related to the Gaussian decay rate \eqn{\lambda} as
 \code{lambda = 1/(2*sigma^2)}. Only considered to compute the ZoI
 for the \code{gaussian_decay} function when the ZoI radius parameter is null
 (\code{zoi_radius = NULL}).}
+
+\item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "linear", "tent", "threshold", "step"\}} \cr Type or shape of the decay distance.
+\itemize{
+\item If \code{Gauss} or \code{half_norm}, the ZoI follows a half-normal shape: \cr
+\code{N_0 * exp(-lambda * (euclidean_distance^2))}. \code{N_0} and \code{lambda} are
+parameters to be defined -- see \link{zoi_functions} for details.
+\item If \code{exp_decay}, the ZoI follows an exponential decay shape: \cr
+\code{N_0 * exp(-lambda * euclidean_distance)}. \code{N_0} and \code{lambda} are
+parameters to be defined -- see \link{zoi_functions} for details.
+\item If \code{bartlett}, \code{linear_decay}, or \code{tent_decay}, the ZoI follows a
+linear decay shape within the ZoI radius (\code{zoi_radius}).
+\item If \code{threshold} or \code{step}, a constant influence is consider within the
+zone of influence radius (\code{zoi_radius}). All pixels closer than
+\code{zoi_radius} to infrastructure are considered as "under the influence" of
+the nearest feature, with a constant influence value defined by the
+\code{constant_influence} parameter, and all other pixels are assumed to have
+zero influence.
+\item If \code{euclidean}, the function returns the Euclidean distance as a
+proxy for the ZoI, even though a proper zone of influence is not defined
+in this case.
+\item If \code{log}, the function returns the log-distance:
+\code{log(euclidean_distance, base = log_base)} as a
+proxy for the ZoI, even though a proper zone of influence is not defined
+in this case.
+\item If \code{sqrt}, the functions returns the square rooted distance:
+\code{sqrt(euclidean_distance)} as a
+proxy for the ZoI, even though a proper zone of influence is not defined
+in this case.
+}}
 }
 \value{
 The ZoI values for a given array of x values, or a raster
@@ -305,4 +369,22 @@ f1 +
   stat_function(fun = gaussian_decay, args = list(zoi_radius = 20, zoi_limit = 0.05), linetype = 4) +
   labs(x = "Distance", y = "Zone of Influence") +
   theme_bw()
+
+# generic dist_decay function
+dist_decay(500, zoi_radius = 1000, type = "exp_decay")
+dist_decay(500, zoi_radius = 1000, type = "gaussian_decay")
+dist_decay(500, zoi_radius = 1000, type = "linear_decay")
+dist_decay(500, zoi_radius = 1000, type = "step_decay")
+
+# applying dist_decay functions for rasters
+library(terra)
+
+# calculate Euclidean distance
+f <- system.file("raster/cabins.tif", package = "oneimpact")
+cabins <- terra::rast(f)
+cabins_dist <- calc_zoi_nearest(cabins, type = "euclidean")
+
+# transform Euclidean in distance decay
+plot(dist_decay(cabins_dist, zoi_radius = 1000, type = "exp_decay"))
+plot(dist_decay(cabins_dist, zoi_radius = 1000, type = "tent_decay"))
 }
