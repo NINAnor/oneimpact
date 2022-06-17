@@ -285,17 +285,6 @@ half_norm_decay <- gaussian_decay
 #'   the nearest feature, with a constant influence value defined by the
 #'   `constant_influence` parameter, and all other pixels are assumed to have
 #'   zero influence.
-#'   \item If `euclidean`, the function returns the Euclidean distance as a
-#'   proxy for the ZoI, even though a proper zone of influence is not defined
-#'   in this case.
-#'   \item If `log`, the function returns the log-distance:
-#'   `log(euclidean_distance, base = log_base)` as a
-#'   proxy for the ZoI, even though a proper zone of influence is not defined
-#'   in this case.
-#'   \item If `sqrt`, the functions returns the square rooted distance:
-#'   `sqrt(euclidean_distance)` as a
-#'   proxy for the ZoI, even though a proper zone of influence is not defined
-#'   in this case.
 #' }
 #'
 #' @rdname zoi_functions
