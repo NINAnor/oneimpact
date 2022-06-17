@@ -16,6 +16,7 @@ calc_zoi_nearest(
   half_life = NULL,
   exp_decay_parms = c(1, 0.01),
   hnorm_decay_parms = c(1, 20),
+  intercept = 1,
   constant_influence = 1,
   dist_offset = 0,
   zeroAsNA = FALSE,
