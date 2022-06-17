@@ -175,8 +175,21 @@ exp_decay <- function(x, zoi_radius = NULL,
 #' @rdname zoi_functions
 #' @export
 threshold_decay <- function(x, zoi_radius, constant_influence = 1, origin = 0, oneside = TRUE) {
+  UseMethod("threshold_decay")
+}
+
+#' @name zoi_functions
+#' @export
+threshold_decay.numeric <- function(x, zoi_radius, constant_influence = 1, origin = 0, oneside = TRUE) {
   if(oneside) func <- identity else func <- abs
   ifelse(func(x - origin) < zoi_radius, constant_influence, 0)
+}
+
+#' @name zoi_functions
+#' @export
+threshold_decay.SpatRaster <- function(x, zoi_radius, constant_influence = 1, origin = 0, oneside = TRUE) {
+  if(oneside) func <- identity else func <- abs
+  ifel(func(x - origin) < zoi_radius, constant_influence, 0)
 }
 
 #' @rdname zoi_functions
@@ -189,9 +202,23 @@ step_decay <- threshold_decay
 #' @rdname zoi_functions
 #' @export
 bartlett_decay <- function(x, zoi_radius, intercept = 1, origin = 0, oneside = TRUE) {
+  UseMethod("bartlett_decay")
+}
+
+#' @rdname zoi_functions
+#' @export
+bartlett_decay.numeric <- function(x, zoi_radius, intercept = 1, origin = 0, oneside = TRUE) {
   if(oneside) func <- identity else func <- abs
   beta = -intercept/zoi_radius
   ifelse(func(x - origin) < zoi_radius, intercept + beta * func(x - origin), 0)
+}
+
+#' @rdname zoi_functions
+#' @export
+bartlett_decay.SpatRaster <- function(x, zoi_radius, intercept = 1, origin = 0, oneside = TRUE) {
+  if(oneside) func <- identity else func <- abs
+  beta = -intercept/zoi_radius
+  ifel(func(x - origin) < zoi_radius, intercept + beta * func(x - origin), 0)
 }
 
 #' @rdname zoi_functions
@@ -240,3 +267,66 @@ gaussian_decay <- function(x, zoi_radius = NULL,
 #' @rdname zoi_functions
 #' @export
 half_norm_decay <- gaussian_decay
+
+#' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
+#' "linear", "tent", "threshold", "step"}` \cr Type or shape of the decay distance.
+#' \itemize{
+#'   \item If `Gauss` or `half_norm`, the ZoI follows a half-normal shape: \cr
+#'   `N_0 * exp(-lambda * (euclidean_distance^2))`. `N_0` and `lambda` are
+#'   parameters to be defined -- see [oneimpact::zoi_functions] for details.
+#'   \item If `exp_decay`, the ZoI follows an exponential decay shape: \cr
+#'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
+#'   parameters to be defined -- see [oneimpact::zoi_functions] for details.
+#'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZoI follows a
+#'   linear decay shape within the ZoI radius (`zoi_radius`).
+#'   \item If `threshold` or `step`, a constant influence is consider within the
+#'   zone of influence radius (`zoi_radius`). All pixels closer than
+#'   `zoi_radius` to infrastructure are considered as "under the influence" of
+#'   the nearest feature, with a constant influence value defined by the
+#'   `constant_influence` parameter, and all other pixels are assumed to have
+#'   zero influence.
+#'   \item If `euclidean`, the function returns the Euclidean distance as a
+#'   proxy for the ZoI, even though a proper zone of influence is not defined
+#'   in this case.
+#'   \item If `log`, the function returns the log-distance:
+#'   `log(euclidean_distance, base = log_base)` as a
+#'   proxy for the ZoI, even though a proper zone of influence is not defined
+#'   in this case.
+#'   \item If `sqrt`, the functions returns the square rooted distance:
+#'   `sqrt(euclidean_distance)` as a
+#'   proxy for the ZoI, even though a proper zone of influence is not defined
+#'   in this case.
+#' }
+#'
+#' @rdname zoi_functions
+#' @export
+dist_decay <- function(x, zoi_radius = NULL,
+                       type = c("exp_decay", "gaussian_decay", "linear_decay",
+                                "threshold_decay")[1],
+                       zoi_limit = 0.05,
+                       origin = 0,
+                       oneside = TRUE,
+                       ...) {
+
+  if(type == "exp_decay") {
+    return(exp_decay(x = x, zoi_radius = zoi_radius, zoi_limit = zoi_limit,
+                     origin = origin, oneside = oneside, ...))
+  }
+
+  if(type %in% c("Gauss", "gauss", "Gaussian", "gaussian", "gaussian_decay",
+                 "normal", "Normal", "half_norm", "half_norm_decay")) {
+    return(gaussian_decay(x = x, zoi_radius = zoi_radius, zoi_limit = zoi_limit,
+                          origin = origin, oneside = oneside, ...))
+  }
+
+  if(type %in% c("Bartlett", "bartlett", "bartlett_decay", "linear",
+                 "linear_decay", "tent", "tent_decay")) {
+    return(linear_decay(x = x, zoi_radius = zoi_radius,
+                        origin = origin, oneside = oneside, ...))
+  }
+
+  if(type %in% c("threshold", "threshold_decay", "step", "step_decay")) {
+    return(threshold_decay(x = x, zoi_radius = zoi_radius,
+                           origin = origin, oneside = oneside, ...))
+  }
+}

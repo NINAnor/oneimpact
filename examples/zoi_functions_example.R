@@ -87,3 +87,21 @@ f1 +
   stat_function(fun = gaussian_decay, args = list(zoi_radius = 20, zoi_limit = 0.05), linetype = 4) +
   labs(x = "Distance", y = "Zone of Influence") +
   theme_bw()
+
+# generic dist_decay function
+dist_decay(500, zoi_radius = 1000, type = "exp_decay")
+dist_decay(500, zoi_radius = 1000, type = "gaussian_decay")
+dist_decay(500, zoi_radius = 1000, type = "linear_decay")
+dist_decay(500, zoi_radius = 1000, type = "step_decay")
+
+# applying dist_decay functions for rasters
+library(terra)
+
+# calculate Euclidean distance
+f <- system.file("raster/cabins.tif", package = "oneimpact")
+cabins <- terra::rast(f)
+cabins_dist <- calc_zoi_nearest(cabins, type = "euclidean")
+
+# transform Euclidean in distance decay
+plot(dist_decay(cabins_dist, zoi_radius = 1000, type = "exp_decay"))
+plot(dist_decay(cabins_dist, zoi_radius = 1000, type = "tent_decay"))
