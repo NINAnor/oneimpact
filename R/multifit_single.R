@@ -46,7 +46,6 @@
 #' in landscape ecology. Landscape Ecology, 33: 1023.
 #' https://doi.org/10.1007/s10980-018-0657-5
 #'
-#' @export
 multifit_single <- function(mod, multief, data, formula = NULL, args = NULL,
                             criterion = "AIC", site_id = NULL,
                             signif = TRUE, alpha = 0.05,
