@@ -370,7 +370,7 @@ calc_zoi_cumulative_r <- function(
 
   # cum zoi vs density
   if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) normalize <- FALSE
-    else if(output_type %in% c("density", "Density")) normalize <- TRUE
+  else if(output_type %in% c("density", "Density")) normalize <- TRUE
 
   # define filters
   if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "rectangle", "Gauss")) {
@@ -567,7 +567,7 @@ calc_zoi_cumulative_grass <- function(
       if(types[i] %in% c("Gauss", "gaussian_decay", "normal_decay"))
         types[i] <- "gauss"
       if(types[i] %in% c("bartlett_decay", "linear_decay",
-                        "Bartlett", "tent_decay"))
+                         "Bartlett", "tent_decay"))
         types[i] <- "bartlett"
       if(types[i] %in% c("rectangle"))
         types[i] <- "box"
@@ -761,25 +761,25 @@ calc_zoi_cumulative_grass <- function(
         filter_count <- 1
         filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
         # save matrix outside R for use within GRASS GIS
-        save_mfilter(filt, zoi_radius = "", type = type,
-                     divisor = divisor,
-                     save_format = c("GRASS_rmfilter"),
-                     save_file = filter_file,
-                     parallel = parallel,
-                     separator = " ")
+        save_filter(filt, zoi_radius = "", type = type,
+                    divisor = divisor,
+                    save_format = c("GRASS_rmfilter"),
+                    save_file = filter_file,
+                    parallel = parallel,
+                    separator = " ")
       } else {
         # for multiple matrices
         if(is.list(filt)) {
           filter_count <- 1:length(filt)
           filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
           # save matrices outside R for use within GRASS GIS
-          filt <- purrr::map2(filt, filter_file, function(f, file, ...) {
-            save_mfilter(f, zoi_radius = "", type = type,
-                         divisor = divisor,
-                         save_format = c("GRASS_rmfilter"),
-                         save_file = file,
-                         parallel = parallel,
-                         separator = " ")
+          purrr::map2(filt, filter_file, function(f, file, ...) {
+            save_filter(f, zoi_radius = "", type = type,
+                        divisor = divisor,
+                        save_format = c("GRASS_rmfilter"),
+                        save_file = file,
+                        parallel = parallel,
+                        separator = " ")
           })
         }
       }
