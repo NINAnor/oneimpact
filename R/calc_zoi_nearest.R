@@ -629,7 +629,7 @@ calc_zoi_nearest_grass <- function(
 
   # remove intermediate maps
   remove_flags = ifelse(quiet, c("f", "quiet"), "f")
-  if(remove_intermediate & length(to_remove) > 1)
+  if(remove_intermediate & length(to_remove) > 0)
     rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
                        flags = remove_flags)
 
