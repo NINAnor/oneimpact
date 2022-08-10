@@ -22,7 +22,7 @@ calc_zoi_cumulative(
   na.rm = TRUE,
   plotit = FALSE,
   output_map_name = NULL,
-  input_as_region = TRUE,
+  input_as_region = FALSE,
   remove_intermediate = TRUE,
   overwrite = FALSE,
   quiet = TRUE,

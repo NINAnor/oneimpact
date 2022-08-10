@@ -604,16 +604,16 @@ calc_zoi_cumulative_grass <- function(
         } else {
           filt <- purrr::map2(zoi_radius, filter_file, function(z, file, ...) {
             oneimpact::create_filter(r = resolution, zoi_radius = z,
-                          zoi_limit = zoi_limit, type = type,
-                          zoi_hl_ratio = zoi_hl_ratio,
-                          half_life = half_life,
-                          max_dist = max_dist,
-                          min_intensity = min_intensity,
-                          divisor = divisor,
-                          normalize = TRUE,
-                          save_txt = TRUE,
-                          save_format = "raw",
-                          save_file = file, ...)
+                                     zoi_limit = zoi_limit, type = type,
+                                     zoi_hl_ratio = zoi_hl_ratio,
+                                     half_life = half_life,
+                                     max_dist = max_dist,
+                                     min_intensity = min_intensity,
+                                     divisor = divisor,
+                                     normalize = TRUE,
+                                     save_txt = TRUE,
+                                     save_format = "raw",
+                                     save_file = file, ...)
           })
         }
       } else {
@@ -651,6 +651,14 @@ calc_zoi_cumulative_grass <- function(
         parm <- parms[[i]]
         z <- zoi_radius[[i]]
 
+        # change names for creating density map first, in case the
+        # final output is the cumulative ZoI
+        if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
+          out_final <- parm$output
+          parm$output <- paste0(parm$output, "_temp")
+          if(remove_intermediate) to_remove <- c(to_remove, parm$output)
+        }
+
         # message
         msg <- paste0("Calculating ", message_name, " for ", z, ", shape ",
                       type, "...")
@@ -661,6 +669,24 @@ calc_zoi_cumulative_grass <- function(
           rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
         # calculate
         rgrass7::execGRASS(module, parameters = parm, flags = flags)
+
+        # rescale to the cumulative ZoI, if this is the intended final output
+        if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
+
+          # maximum value from weight matrix
+          max_val <- max(filt[[i]], na.rm = TRUE)
+          # expression
+          expr <- paste0(out_final, " = ", parm$output, "/", max_val)
+
+          # message
+          msg <- paste0("Rescaling from density to cumulative ZoI...")
+          if(!quiet) print(msg)
+          print(expr)
+
+          # calculate ZoI map
+          out_final <- rgrass7::execGRASS("r.mapcalc", expression = expr,
+                                          flags = flags)
+        }
       }
 
     } else {
@@ -697,7 +723,7 @@ calc_zoi_cumulative_grass <- function(
         expr <- paste0(out_final, " = ", parm$output, "/", max_val)
 
         # message
-        msg <- paste0("Rescaling from density to ZoI...")
+        msg <- paste0("Rescaling from density to cumulative ZoI...")
         if(!quiet) print(msg)
         print(expr)
 
@@ -722,27 +748,27 @@ calc_zoi_cumulative_grass <- function(
       filter_count <- zoi_radius
       filter_file <- tempfile(paste0("my_filter", filter_count, "_"))
       if(length(zoi_radius) == 1) {
-        filt <- create_filter(r = resolution,
-                              zoi_radius = zoi_radius,
-                              type = type, zoi_limit = zoi_limit,
-                              zoi_hl_ratio = zoi_hl_ratio,
-                              half_life = half_life,
-                              max_dist = max_dist,
-                              min_intensity = min_intensity,
-                              divisor = divisor,
-                              normalize = normalize, save_txt = TRUE,
-                              save_file = filter_file, ...)
+        filt <- oneimpact::create_filter(r = resolution,
+                                         zoi_radius = zoi_radius,
+                                         type = type, zoi_limit = zoi_limit,
+                                         zoi_hl_ratio = zoi_hl_ratio,
+                                         half_life = half_life,
+                                         max_dist = max_dist,
+                                         min_intensity = min_intensity,
+                                         divisor = divisor,
+                                         normalize = normalize, save_txt = TRUE,
+                                         save_file = filter_file, ...)
       } else {
         filt <- purrr::map2(zoi_radius, filter_file, function(z, file, ...) {
-          create_filter(r = resolution, zoi_radius = z,
-                        zoi_limit = zoi_limit, type = type,
-                        zoi_hl_ratio = zoi_hl_ratio,
-                        half_life = half_life,
-                        max_dist = max_dist,
-                        min_intensity = min_intensity,
-                        divisor = divisor,
-                        normalize = normalize, save_txt = TRUE,
-                        save_file = file, ...)
+          oneimpact::create_filter(r = resolution, zoi_radius = z,
+                                   zoi_limit = zoi_limit, type = type,
+                                   zoi_hl_ratio = zoi_hl_ratio,
+                                   half_life = half_life,
+                                   max_dist = max_dist,
+                                   min_intensity = min_intensity,
+                                   divisor = divisor,
+                                   normalize = normalize, save_txt = TRUE,
+                                   save_file = file, ...)
         })
       }
     }
@@ -859,9 +885,11 @@ calc_zoi_cumulative_grass <- function(
   }
 
   # remove intermediate maps
-  # remove_flags = ifelse(quiet, c("f", "quiet"), "f")
-  # if(remove_intermediate) rgrass7::execGRASS("g.remove", type = "vect", name = to_remove,
-  #                                            flags = remove_flags)
+  remove_flags = ifelse(quiet, c("f", "quiet"), "f")
+  if(remove_intermediate)
+    if(length(to_remove) > 0)
+      rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
+                         flags = remove_flags)
 
   # return only names
   return(out_names)
