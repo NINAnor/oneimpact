@@ -465,7 +465,7 @@ calc_zoi_nearest_grass <- function(
   # Start by calculating the Euclidean distance from features
 
   # output name within GRASS GIS
-  out_euclidean <- paste0(x, "_inf_nearest_euclidean")
+  out_euclidean <- paste0(x, "_zoi_nearest_euclidean")
   # if there is not transformation
   if(type == "euclidean") {
     # if the user provides an output map name, overwrite it
