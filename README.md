@@ -26,7 +26,7 @@ scales or zones of influence radii.
 
 - `create_filter`: Create filters or weight matrices for neighborhood analysis, according to different decay functions
 and parameterized using the zone of influence radius.
-- `save_mfilter`: Saves filters/weight matrices outside R for use within GRASS GIS modules.
+- `save_filter`: Saves filters/weight matrices outside R for use within GRASS GIS modules.
 
 ### Ancillary functions:
 
