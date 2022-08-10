@@ -25,9 +25,9 @@ calc_zoi_nearest(
   plotit = FALSE,
   output_map_name = NULL,
   metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
-  input_as_region = TRUE,
+  input_as_region = FALSE,
   remove_intermediate = TRUE,
-  print_expression = TRUE,
+  print_expression = FALSE,
   quiet = TRUE,
   overwrite = FALSE,
   ...
@@ -155,7 +155,7 @@ More information at the GRASS GIS documentation for
 This parameter is ignored when the calculations are performed in R
 (\code{where = "R"}).}
 
-\item{input_as_region}{\verb{[logical(1)=TRUE]} \cr Should the input map \code{x} be
+\item{input_as_region}{\verb{[logical(1)=FALSE]} \cr Should the input map \code{x} be
 used to redefine the working GRASS region before cumulative ZoI calculation?
 If \code{TRUE}, \code{x} is used to define the region with \code{g.region}. If \code{FALSE},
 the region previously defined in the GRASS GIS session is used for computation.}
@@ -191,7 +191,7 @@ returns the name of the calculated maps. \cr
 If the computation is done in GRASS GIS, the output is name of
 the output raster map within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-\link[rgrass7:readRAST]{rgrass7::read_RAST} or export them outside GRASS using the
+\link[rgrass7:read_RAST]{rgrass7::read_RAST} or export them outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \description{
@@ -218,7 +218,7 @@ are done within GRASS GIS, the input is the name of a raster map already
 loaded in a GRASS GIS location and mapset, and the function returns
 only the name of the output map. This map is stored in the the GRASS GIS
 location/mapset, and might be retrieved to R through the
-\link[rgrass7:readRAST]{rgrass7::read_RAST} function or exported outside GRASS using the
+\link[rgrass7:read_RAST]{rgrass7::read_RAST} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \details{

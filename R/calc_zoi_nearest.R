@@ -170,7 +170,7 @@
 #' [this function](https://grass.osgeo.org/grass80/manuals/r.grow.distance.html).
 #' This parameter is ignored when the calculations are performed in R
 #' (`where = "R"`).
-#' @param input_as_region `[logical(1)=TRUE]` \cr Should the input map `x` be
+#' @param input_as_region `[logical(1)=FALSE]` \cr Should the input map `x` be
 #' used to redefine the working GRASS region before cumulative ZoI calculation?
 #' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
 #' the region previously defined in the GRASS GIS session is used for computation.
@@ -238,9 +238,9 @@ calc_zoi_nearest <- function(
   plotit = FALSE,
   output_map_name = NULL,
   metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
-  input_as_region = TRUE,
+  input_as_region = FALSE,
   remove_intermediate = TRUE,
-  print_expression = TRUE,
+  print_expression = FALSE,
   quiet = TRUE, overwrite = FALSE,
   ...) {
 
@@ -430,7 +430,7 @@ calc_zoi_nearest_grass <- function(
   extent_y_cut = NULL,
   output_map_name = NULL,
   metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
-  input_as_region = TRUE,
+  input_as_region = FALSE,
   remove_intermediate = TRUE,
   print_expression = FALSE,
   quiet = FALSE, overwrite = FALSE,
@@ -504,7 +504,7 @@ calc_zoi_nearest_grass <- function(
       out_message <- "Calculating log-distance..."
       # expression
       expression_influence <- sprintf("log(A + %f, %f)", dist_offset, log_base)
-      if(print_expression) print(expression_influence)
+
     }
 
     if(type == "sqrt") {
@@ -514,7 +514,6 @@ calc_zoi_nearest_grass <- function(
       out_message <- "Calculating sqrt-distance..."
       # expression
       expression_influence <- sprintf("sqrt(A + %f)", dist_offset)
-      if(print_expression) print(expression_influence)
 
     }
 
@@ -551,7 +550,6 @@ calc_zoi_nearest_grass <- function(
       # alternative parameterization with inv_lambda
       inv_lambda <- 1/lambda
       expression_influence <- sprintf("%f * exp(- (1/%f) * A)", exp_decay_parms[1], inv_lambda)
-      if(print_expression) print(expression_influence)
 
     }
 
@@ -563,7 +561,6 @@ calc_zoi_nearest_grass <- function(
       out_message <- "Calculating Bartlett influence..."
       # expression
       expression_influence <- sprintf("if(A <= %f, 1 - (1/%f) * A, 0)", zoi_radius, zoi_radius)
-      if(print_expression) print(expression_influence)
 
     }
 
@@ -590,7 +587,6 @@ calc_zoi_nearest_grass <- function(
       # alternative parameteization with inv_lambda
       inv_lambda <- 1/lambda
       expression_influence <- sprintf("%f * exp(- (1/%f) * pow(A, 2))", hnorm_decay_parms[1], inv_lambda)
-      if(print_expression) print(expression_influence)
 
     }
 
@@ -601,7 +597,7 @@ calc_zoi_nearest_grass <- function(
       out_message <- "Calculating threshold influence..."
       # expression
       expression_influence <- sprintf("if(A < %f, %f, 0)", zoi_radius, constant_influence)
-      if(print_expression) print(expression_influence)
+
     }
 
     # if the user provides an output map name, use it
@@ -621,9 +617,14 @@ calc_zoi_nearest_grass <- function(
     # set region
     if(input_as_region)
       rgrass7::execGRASS("g.region", raster = out_euclidean, flags = flags_region)
-    # calculate
-    rgrass7::execGRASS("r.mapcalc.simple", expression = expression_influence,
-                       a = out_euclidean, output = out_influence, flags = flags)
+
+    # compute ZoI
+    for(ii in seq_along(expression_influence)) {
+      if(print_expression) print(expression_influence[ii])
+      rgrass7::execGRASS("r.mapcalc.simple", expression = expression_influence[ii],
+                         a = out_euclidean, output = out_influence[ii], flags = flags)
+    }
+
   }
 
   # remove intermediate maps
