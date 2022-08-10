@@ -262,7 +262,7 @@ calc_zoi_cumulative <- function(x,
                                 na.rm = TRUE,
                                 plotit = FALSE,
                                 output_map_name = NULL,
-                                input_as_region = TRUE,
+                                input_as_region = FALSE,
                                 remove_intermediate = TRUE,
                                 overwrite = FALSE,
                                 quiet = TRUE, ...) {
@@ -319,24 +319,24 @@ calc_zoi_cumulative <- function(x,
 
 # implementation in R
 calc_zoi_cumulative_r <- function(
-  x,
-  zoi_radius = 100,
-  type = c("circle", "Gauss", "rectangle", "exp_decay",
-           "bartlett", "threshold", "mfilter")[1],
-  output_type = c("cumulative_zoi", "density")[1],
-  zoi_limit = 0.05,
-  zoi_hl_ratio = NULL,
-  half_life = NULL,
-  exp_decay_parms = c(1, 0.01),
-  min_intensity = 0.01,
-  max_dist = 50000,
-  zeroAsNA = FALSE,
-  extent_x_cut = terra::ext(x)[c(1,2)],
-  extent_y_cut = terra::ext(x)[c(3,4)],
-  na.policy = "omit",
-  na.rm = TRUE,
-  quiet = FALSE,
-  plotit = FALSE, ...) {
+    x,
+    zoi_radius = 100,
+    type = c("circle", "Gauss", "rectangle", "exp_decay",
+             "bartlett", "threshold", "mfilter")[1],
+    output_type = c("cumulative_zoi", "density")[1],
+    zoi_limit = 0.05,
+    zoi_hl_ratio = NULL,
+    half_life = NULL,
+    exp_decay_parms = c(1, 0.01),
+    min_intensity = 0.01,
+    max_dist = 50000,
+    zeroAsNA = FALSE,
+    extent_x_cut = terra::ext(x)[c(1,2)],
+    extent_y_cut = terra::ext(x)[c(3,4)],
+    na.policy = "omit",
+    na.rm = TRUE,
+    quiet = FALSE,
+    plotit = FALSE, ...) {
 
   # check if the input is a terra or raster object
   if(class(x) %in% c("SpatRaster")) {
@@ -468,29 +468,29 @@ calc_zoi_cumulative_r <- function(
 
 # implementation in GRASS
 calc_zoi_cumulative_grass <- function(
-  x,
-  zoi_radius = 100,
-  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
-  module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
-  output_type = c("cumulative_zoi", "density")[1],
-  zoi_limit = 0.05,
-  zoi_hl_ratio = NULL,
-  half_life = NULL,
-  exp_decay_parms = c(1, 0.01),
-  hnorm_decay_parms = c(1, 20),
-  min_intensity = 0.01,
-  max_dist = 50000,
-  divisor = 1,
-  normalize = FALSE,
-  extent_x_cut = NULL,
-  extent_y_cut = NULL,
-  parallel = TRUE,
-  output_map_name = NULL,
-  input_as_region = TRUE,
-  remove_intermediate = TRUE,
-  overwrite = FALSE,
-  quiet = TRUE,
-  ...) {
+    x,
+    zoi_radius = 100,
+    type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
+    module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
+    output_type = c("cumulative_zoi", "density")[1],
+    zoi_limit = 0.05,
+    zoi_hl_ratio = NULL,
+    half_life = NULL,
+    exp_decay_parms = c(1, 0.01),
+    hnorm_decay_parms = c(1, 20),
+    min_intensity = 0.01,
+    max_dist = 50000,
+    divisor = 1,
+    normalize = FALSE,
+    extent_x_cut = NULL,
+    extent_y_cut = NULL,
+    parallel = TRUE,
+    output_map_name = NULL,
+    input_as_region = FALSE,
+    remove_intermediate = TRUE,
+    overwrite = FALSE,
+    quiet = TRUE,
+    ...) {
 
   # flags
   flags <- c()
@@ -591,22 +591,36 @@ calc_zoi_cumulative_grass <- function(
         filter_count <- zoi_radius
         filter_file <- tempfile(paste0("my_filter", filter_count, "_"))
         if(length(zoi_radius) == 1) {
-          filt <- create_filter(r = resolution, zoi_radius = zoi_radius,
-                                type = type, zoi_limit = zoi_limit,
-                                zoi_hl_ratio = zoi_hl_ratio,
-                                half_life = half_life,
-                                max_dist = max_dist,
-                                min_intensity = min_intensity,
-                                normalize = TRUE,
-                                save_txt = TRUE,
-                                save_format = "raw",
-                                save_file = filter_file, ...)
+          filt <- oneimpact::create_filter(r = resolution, zoi_radius = zoi_radius,
+                                           type = type, zoi_limit = zoi_limit,
+                                           zoi_hl_ratio = zoi_hl_ratio,
+                                           half_life = half_life,
+                                           max_dist = max_dist,
+                                           min_intensity = min_intensity,
+                                           normalize = TRUE,
+                                           save_txt = TRUE,
+                                           save_format = "raw",
+                                           save_file = filter_file, ...)
         } else {
-          stop("Currently, the cumulative ZoI using 'r.resamp.filter' is only
-               implemented for the filters 'bartlett', 'rectangle/box', and
-               'gauss'. Please select one of those or change the GRASS GIS
-               module to either 'r.milter' or 'r.neighbors'.")
+          filt <- purrr::map2(zoi_radius, filter_file, function(z, file, ...) {
+            oneimpact::create_filter(r = resolution, zoi_radius = z,
+                          zoi_limit = zoi_limit, type = type,
+                          zoi_hl_ratio = zoi_hl_ratio,
+                          half_life = half_life,
+                          max_dist = max_dist,
+                          min_intensity = min_intensity,
+                          divisor = divisor,
+                          normalize = TRUE,
+                          save_txt = TRUE,
+                          save_format = "raw",
+                          save_file = file, ...)
+          })
         }
+      } else {
+        stop("Currently, the cumulative ZoI using 'r.resamp.filter' is only
+              implemented for the filters 'bartlett', 'rectangle/box', and
+              'gauss'. Please select one of those or change the GRASS GIS
+              module to either 'r.mfilter' or 'r.neighbors'.")
       }
     }
 
