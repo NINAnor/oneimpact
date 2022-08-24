@@ -19,14 +19,19 @@ Description: The package presents a set of tools to assess cumulative impacts
 Depends:
     R (>= 3.3)
 Imports: 
-    dplyr, tibble, purrr, rgrass7, terra, sf, ggplot2, scales
+    dplyr, 
+    tibble, 
+    purrr, 
+    rgrass7, 
+    terra, 
+    sf, 
+    ggplot2, 
+    scales
 Suggests:
     raster,
     landscapetools,
-    NLMR,
     smoothie,
     rasterVis,
-    mobsim,
     knitr,
     rmarkdown
 License: GPL-3
