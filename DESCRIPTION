@@ -33,7 +33,9 @@ Suggests:
     smoothie,
     rasterVis,
     knitr,
-    rmarkdown
+    rmarkdown,
+    mobsim,
+    NLMR
 Remotes:
     MoBiodiv/mobsim
     ropensci/NLMR
