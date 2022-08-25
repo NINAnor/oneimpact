@@ -17,7 +17,7 @@ set_points_sample(
 
 \item{type}{\verb{[character(1)="regular"]\{"regular", "random"\}} Pattern for the creation
 of points is space. Other methods are also accepted, check the \code{type} argument
-for the \link[sf:st_sample]{sf::st_sample} function.}
+for the \code{\link[sf:st_sample]{sf::st_sample()}} function.}
 
 \item{base_polygon}{\verb{[RasterLayer,sfc_POLYGON]} \cr Polygon (from class \code{sf} or \code{sfc})
 inside which the points will be created. If a \code{RasterLayer}, the \code{bbox} of the
@@ -27,12 +27,12 @@ raster is used as a polygon.}
 maximum extent in x and y within which the points should be placed, in the format c(min,max).}
 }
 \value{
-A \code{data.frame} with the (x,y) random coordinates.
+A \code{data.frame} with the (x,y) coordinates of the simulated points.
 }
 \description{
 This function simulates the coordinates of points either regularly or
 randomly  distributed in two dimensions. Other point patterns
-can be also chosen, see the \code{type} argument for the \link[sf:st_sample]{sf::st_sample}
+can be also chosen, see the \code{type} argument for the \code{\link[sf:st_sample]{sf::st_sample()}}
 function. The points are generated within an input polygon or the
 bounding box of an input raster. If no spatial object is used as input,
 The size of the landscape is defined by the \code{extent_x} and \code{extent_y} parameters.

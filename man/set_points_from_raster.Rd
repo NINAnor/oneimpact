@@ -12,7 +12,7 @@ set_points_from_raster(base_raster, n_features = 1000)
 \item{n_features}{\verb{[integer(1)=1000]} \cr Total number of features to spread in space.}
 }
 \value{
-The coordinates (x,y) of the simulated points.
+A \code{data.frame} with the (x,y) coordinates of the simulated points.
 }
 \description{
 This function simulates point patterns in space using the values of
@@ -61,6 +61,10 @@ pts <- set_points_from_raster(r, n_features = 300)
 
 #-----
 # using NLMR
+# install.packages("remotes")
+# remotes::install_github("cran/RandomFieldsUtils")
+# remotes::install_github("cran/RandomFields")
+# remotes::install_github("ropensci/NLMR")
 library(NLMR)
 
 # example NLM

@@ -67,8 +67,8 @@ argument.}
 \value{
 A list with three elements: (1) \code{pts}, the coordinates (x,y) of the simulated points;
 (2) \code{rast}, a binary raster containing the landscape, with 1 where there points and NA elsewhere;
-(3) \code{base_rast}, the base raster used to weigh the simulation of points. If \code{method = "mobsim"},
-\code{base_rast} is \code{NULL}.
+(3) \code{base_rast}, the base raster used to weigh the simulation of points. If \code{method = "mobsim"}
+or \code{"regular"} or \code{"random"}, \code{base_rast} is \code{NULL}.
 }
 \description{
 This function simulates point patterns in space and rasterize them.
@@ -102,9 +102,10 @@ TO IMPROVE: implement rasterization with terra package
 \examples{
 #-----
 # using mobsim
+# install.packages("devtools")
+# devtools::install_github("MoBiodiv/mobsim")
 library(terra)
 library(mobsim)
-library(dplyr)
 
 set.seed(1234)
 
@@ -131,7 +132,7 @@ plot(pts$rast, col = "black")
 
 # raster
 set.seed(12)
-r <- raster::raster(matrix(runif(12),3,4)) \%>\% 
+r <- raster::raster(matrix(runif(12),3,4)) |>
   raster::disaggregate(fact = 10)
 
 # points from raster
@@ -143,6 +144,10 @@ plot(pts$rast, col = "black")
 
 #-----
 # using NLMR
+# install.packages("remotes")
+# remotes::install_github("cran/RandomFieldsUtils")
+# remotes::install_github("cran/RandomFields")
+# remotes::install_github("ropensci/NLMR")
 library(NLMR)
 
 # example NLM
@@ -165,7 +170,7 @@ plot(pts$rast, col = "black")
 
 # points
 ext <- 30000
-pts <- set_points(n_features = 10000, method = "NLMR",
+pts <- set_points(n_features = 1000, method = "NLMR",
                   nlmr_function = "nlm_mpd",
                   roughness = .2,
                   res = 100,

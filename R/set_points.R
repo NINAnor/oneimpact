@@ -7,36 +7,36 @@
 #' with 1 where there are points and NA elsewhere. If created with a raster to define
 #' the weights, this base raster is also returned in the output.
 #'
-#' If `method = "mobsim"`, the function builds upon the function 
+#' If `method = "mobsim"`, the function builds upon the function
 #' [mobsim::sim_thomas_community()] from the [mobsim]
 #' package. Originally the function is intended to simulate positions of multiple
 #' species in the context of species abundance distribution studies, but it fits
 #' well in case of a single species (or point patterns for a single type of feature).
 #' In this case, the points are simulated based on the number of centers/patches of points
 #' and their width.
-#' 
-#' If `method = "raster"`, the function uses an input raster (defined by the argument 
+#'
+#' If `method = "raster"`, the function uses an input raster (defined by the argument
 #' `base_raster`) to define the probabilities of setting a given point in a certain pixel
 #' in space.
-#' 
-#' If `method = "NLMR"`, the function also uses a raster to define the probabilities of 
+#'
+#' If `method = "NLMR"`, the function also uses a raster to define the probabilities of
 #' setting a given point in a certain pixel in space, but this raster is created with
 #' a function from the [NLMR] package. The function name is defined by the argument
-#' `nlmr_function` and its arguments must be defined as additional parameters to 
+#' `nlmr_function` and its arguments must be defined as additional parameters to
 #' `set_points()`.
 #'
 #' TO IMPROVE: implement rasterization with terra package
 #'
 #' @param n_features `[integer(1)=1000]` \cr Total number of features to spread in space.
-#' @param method `[character(1)]{"mobsim", "regular", "random", "raster", "NLMR"}` \cr Method used 
+#' @param method `[character(1)]{"mobsim", "regular", "random", "raster", "NLMR"}` \cr Method used
 #' to simulate points in space.
 #' `mobsim` uses the function [mobsim::sim_thomas_community()] from the [mobsim] package to simulate
 #' points. `raster` uses a base raster map as input to define weights and simulate the random points.
-#' `NLMR` creates a neutral landscape model using [NLMR] package and uses it as an input base raster. 
+#' `NLMR` creates a neutral landscape model using [NLMR] package and uses it as an input base raster.
 #' See `Details` for more information.
 #' @param centers `[integer(1)=1]` \cr Number of centers around which the features will be placed.
 #' Used only if `method = "mobsim"`.
-#' @param width `[numeric(1)=0.05]` \cr Mean distance between each of the features in a cluster 
+#' @param width `[numeric(1)=0.05]` \cr Mean distance between each of the features in a cluster
 #' and the center of the cluster. Used only if `method = "mobsim"`.
 #' @param base_raster `[RasterLayer=NULL]` \cr Base raster to define weights for creating the random points.
 #' Used only if `method = "raster"`.
@@ -44,8 +44,8 @@
 #' the base raster, to be used to define weights for creating the random points.
 #' Used only if `method = "NLMR"`.
 #' @param point_coordinates `[data.frame=NULL]` \cr `data.frame` with (x,y) columns with coordinates
-#' already taken from elsewhere. This option is intended for when the points' coordinates were already 
-#' generated or taken from a real landscape. In this case, no points are simulated and they are 
+#' already taken from elsewhere. This option is intended for when the points' coordinates were already
+#' generated or taken from a real landscape. In this case, no points are simulated and they are
 #' just rasterized (so that distances or other derived variables might be calculated).
 #' @param res `[numeric(1)=0.1]` \cr Resolution of the output raster.
 #' @param extent_x,entent_y `[numeric vector(2)=c(0,1)]` \cr Vector representing the minimum and
@@ -59,15 +59,15 @@
 #'
 #' @returns A list with three elements: (1) `pts`, the coordinates (x,y) of the simulated points;
 #' (2) `rast`, a binary raster containing the landscape, with 1 where there points and NA elsewhere;
-#' (3) `base_rast`, the base raster used to weigh the simulation of points. If `method = "mobsim"`,
-#' `base_rast` is `NULL`.
+#' (3) `base_rast`, the base raster used to weigh the simulation of points. If `method = "mobsim"`
+#' or `"regular"` or `"random"`, `base_rast` is `NULL`.
 #'
 #' @example examples/set_points_example.R
 #'
 #' @export
 
 # function to simulate points in the landscape
-set_points <- function(n_features = 1000, 
+set_points <- function(n_features = 1000,
                        method = c("mobsim", "regular", "random", "raster", "NLMR")[1],
                        centers = 1, width = 0.05,
                        base_raster = NULL,
@@ -93,7 +93,7 @@ set_points <- function(n_features = 1000,
                                           xrange = extent_x, yrange = extent_y)$census[,1:2]
     } else {
       if(method %in% c("NLMR", "raster")) {
-        
+
         # NLMR
         if(method == "NLMR") {
           # simulate points with NLMR
@@ -105,15 +105,15 @@ set_points <- function(n_features = 1000,
           # simulate landscape
           base_raster <- nlm_func(nrow = nrow, ncol = ncol, resolution = res,
                                   ...)
-        } 
-        
+        }
+
         # simulate points
-        pts <- set_points_from_raster(base_raster = base_raster, 
+        pts <- oneimpact::set_points_from_raster(base_raster = base_raster,
                                       n_features = n_features)
       } else {
         # use set_points_sample
-        pts <- set_points_sample(n_features = n_features, type = method,
-                                 extent_x = extent_x, extent_y = extent_y)
+        pts <- oneimpact::set_points_sample(n_features = n_features, type = method,
+                                            extent_x = extent_x, extent_y = extent_y)
       }
     }
   }
@@ -124,7 +124,7 @@ set_points <- function(n_features = 1000,
     extent_x <- bbox(base_raster)[1,]
     extent_y <- bbox(base_raster)[2,]
   }
-  
+
   # raster
   buff <- buffer_around
   if(use_terra) {
@@ -133,8 +133,8 @@ set_points <- function(n_features = 1000,
                      ymin = extent_y[1]-buff, ymax = extent_y[2]+buff,
                      resolution = res, crs = crs)
     # resterize points
-    r_pts <- as.matrix(pts) %>% 
-      terra::vect() %>% 
+    r_pts <- as.matrix(pts) |>
+      terra::vect() |>
       terra::rasterize(r, field = 1)
   } else {
     r <- raster::raster(xmn = extent_x[1]-buff, xmx = extent_x[2]+buff,
@@ -143,7 +143,7 @@ set_points <- function(n_features = 1000,
     # resterize points
     r_pts <- raster::rasterize(pts, r, field = 1)
   }
-  
+
   # return base raster
   if(!return_base_raster) base_raster <- NULL
 

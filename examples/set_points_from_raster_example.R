@@ -29,6 +29,10 @@ pts <- set_points_from_raster(r, n_features = 300)
 
 #-----
 # using NLMR
+# install.packages("remotes")
+# remotes::install_github("cran/RandomFieldsUtils")
+# remotes::install_github("cran/RandomFields")
+# remotes::install_github("ropensci/NLMR")
 library(NLMR)
 
 # example NLM
