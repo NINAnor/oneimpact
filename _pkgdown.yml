@@ -14,8 +14,7 @@ reference:
 - title: "Spatial filters"
   desc: "Creating spatial filters to compute a meaningful zone of influence"
   contents:
-  - create_filter
-  - save_filter
+  - starts_with("filter")
 - title: "Model fitting"
   desc: >
     Functions to fit statistical models and estimate cumulative impacts and
@@ -34,7 +33,7 @@ reference:
     for computing zones of influence
   contents:
   - starts_with("grass")
-  - rescale_raster
+  - starts_with("raster")
 - title: "Support for landscape simulation"
   contents:
   - starts_with("set_points")
