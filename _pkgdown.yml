@@ -26,7 +26,7 @@ reference:
   desc: >
     Functions to help interpreting parameters and visualizing
     cumulative impacts
-  contexts:
+  contents:
   - rescale_coefficients
 - title: "Raster processing ancillary functions"
   desc: >
