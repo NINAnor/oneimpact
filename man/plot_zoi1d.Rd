@@ -8,7 +8,7 @@ plot_zoi1d(
   points,
   radius,
   fun = exp_decay,
-  cumulative = FALSE,
+  zoi_metric = c("nearest", "cumulative")[1],
   range_plot = c(0, 12),
   step = 0.01,
   na.rm = TRUE,
@@ -30,8 +30,9 @@ See \link{zoi_functions} for details.}
 Different functions might represent different shapes for the decay of the ZoI.
 See \link{zoi_functions} for some examples.}
 
-\item{cumulative}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE}, the cumulative ZoI is plotted. If \code{FALSE}
-(default), the ZoI of the nearest feature is plotted.}
+\item{zoi_metric}{\verb{[character(1)="nearest"]\{"nearest", "cumulative"\}} \cr
+Which metric of zone of influence should be plotted. If \code{"nearest"}(default), the ZoI of
+the nearest feature is plotted. If \code{"cumulative"}, the cumulative ZoI is plotted.}
 
 \item{range_plot}{\verb{[numeric(2)=c(0,12)]} \cr A vector c(xmin,xmax) with the x range of
 the ZoI plot.}

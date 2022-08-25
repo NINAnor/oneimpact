@@ -25,8 +25,9 @@
 #' @param fun `[function]` \cr A decay function that represents the Zone of Influence (ZoI).
 #' Different functions might represent different shapes for the decay of the ZoI.
 #' See [zoi_functions] for some examples.
-#' @param cumulative `[logical(1)=FALSE]` \cr If `TRUE`, the cumulative ZoI is plotted. If `FALSE`
-#' (default), the ZoI of the nearest feature is plotted.
+#' @param zoi_metric `[character(1)="nearest"]{"nearest", "cumulative"}` \cr
+#' Which metric of zone of influence should be plotted. If `"nearest"`(default), the ZoI of
+#' the nearest feature is plotted. If `"cumulative"`, the cumulative ZoI is plotted.
 #' @param range_plot `[numeric(2)=c(0,12)]` \cr A vector c(xmin,xmax) with the x range of
 #' the ZoI plot.
 #' @param step `[numeric(1)=0.01]` \cr Size of the step increment used to define the series
@@ -45,7 +46,7 @@
 plot_zoi1d <- function(points,
                        radius,
                        fun = exp_decay,
-                       cumulative = FALSE,
+                       zoi_metric = c("nearest", "cumulative")[1],
                        range_plot = c(0, 12),
                        step = 0.01,
                        na.rm = TRUE,
