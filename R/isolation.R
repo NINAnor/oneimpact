@@ -1,10 +1,10 @@
 #' Isolation and mean isolation of points in space
 #'
 #' Measures of isolation and mean isolation to a set of points in
-#' space. `isolation` creates random points in a landscape and calculates
+#' space. `isolation()` creates random points in a landscape and calculates
 #' the nearest neighbor distance from each of them to another set
-#' of points passed as input, `x`. `mean_isolation` calculates the
-#' average isolation calculated through `isolation`.
+#' of points passed as input, `x`. `mean_isolation()` calculates the
+#' average isolation calculated through `isolation()`.
 #'
 #' So far the function only works for a square landscape. In the future
 #' we can implement that for polygons or rasters with masks or
@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' pts <- set_points(n_features = 100, method = "mobsim", centers = 1, width = 0.1)[[1]]
+#' pts <- set_points(n_features = 100, method = "random", centers = 1, width = 0.1)[[1]]
 #' isolation(pts)
 #' mean_isolation(pts)
 
