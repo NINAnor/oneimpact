@@ -102,8 +102,8 @@ TO IMPROVE: implement rasterization with terra package
 \examples{
 #-----
 # using mobsim
-# install.packages("devtools")
-# devtools::install_github("MoBiodiv/mobsim")
+install.packages("devtools")
+devtools::install_github("MoBiodiv/mobsim")
 library(terra)
 library(mobsim)
 
@@ -144,10 +144,10 @@ plot(pts$rast, col = "black")
 
 #-----
 # using NLMR
-# install.packages("remotes")
-# remotes::install_github("cran/RandomFieldsUtils")
-# remotes::install_github("cran/RandomFields")
-# remotes::install_github("ropensci/NLMR")
+install.packages("remotes")
+remotes::install_github("cran/RandomFieldsUtils")
+remotes::install_github("cran/RandomFields")
+remotes::install_github("ropensci/NLMR")
 library(NLMR)
 
 # example NLM
