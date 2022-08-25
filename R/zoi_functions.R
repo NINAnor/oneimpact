@@ -192,6 +192,8 @@ threshold_decay.numeric <- function(x, radius, constant_influence = 1, origin = 
   ifelse(func(x - origin) < radius, constant_influence, 0)
 }
 
+# possibly have that for RasterLayer as well
+
 #' @name zoi_functions
 #' @export
 threshold_decay.SpatRaster <- function(x, radius, constant_influence = 1, origin = 0, oneside = TRUE) {
@@ -305,24 +307,24 @@ dist_decay <- function(x, radius = NULL,
                        ...) {
 
   if(type == "exp_decay") {
-    return(exp_decay(x = x, radius = radius, zoi_limit = zoi_limit,
-                     origin = origin, oneside = oneside, ...))
+    return(oneimpact::exp_decay(x = x, radius = radius, zoi_limit = zoi_limit,
+                                origin = origin, oneside = oneside, ...))
   }
 
   if(type %in% c("Gauss", "gauss", "Gaussian", "gaussian", "gaussian_decay",
                  "normal", "Normal", "half_norm", "half_norm_decay")) {
-    return(gaussian_decay(x = x, radius = radius, zoi_limit = zoi_limit,
-                          origin = origin, oneside = oneside, ...))
+    return(oneimpact::gaussian_decay(x = x, radius = radius, zoi_limit = zoi_limit,
+                                     origin = origin, oneside = oneside, ...))
   }
 
   if(type %in% c("Bartlett", "bartlett", "bartlett_decay", "linear",
                  "linear_decay", "tent", "tent_decay")) {
-    return(linear_decay(x = x, radius = radius,
-                        origin = origin, oneside = oneside, ...))
+    return(oneimpact::linear_decay(x = x, radius = radius,
+                                   origin = origin, oneside = oneside, ...))
   }
 
   if(type %in% c("threshold", "threshold_decay", "step", "step_decay")) {
-    return(threshold_decay(x = x, radius = radius,
-                           origin = origin, oneside = oneside, ...))
+    return(oneimpact::threshold_decay(x = x, radius = radius,
+                                      origin = origin, oneside = oneside, ...))
   }
 }
