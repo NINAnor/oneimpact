@@ -34,7 +34,10 @@
     <loc>https://ninanor.github.io/oneimpact/reference/calc_zoi_nearest.html</loc>
   </url>
   <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/create_filter.html</loc>
+    <loc>https://ninanor.github.io/oneimpact/reference/filter_create.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/filter_save.html</loc>
   </url>
   <url>
     <loc>https://ninanor.github.io/oneimpact/reference/grass_binarize.html</loc>
@@ -64,13 +67,10 @@
     <loc>https://ninanor.github.io/oneimpact/reference/plot_zoi1d.html</loc>
   </url>
   <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/raster_rescale.html</loc>
+  </url>
+  <url>
     <loc>https://ninanor.github.io/oneimpact/reference/rescale_coefficients.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/rescale_raster.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/save_filter.html</loc>
   </url>
   <url>
     <loc>https://ninanor.github.io/oneimpact/reference/set_points.html</loc>

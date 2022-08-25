@@ -4,7 +4,7 @@ functions to be used in neighborhood analyses for rasters. In the context of
 cumulative impact analysis, they represent the Zone of Influence (ZoI) of each
 infrastructure point/pixel, to be used to calculate the cumulative ZoI.
 It is possible to export these matrices as text files, for use with external
-software such as the r.mfilter module within GRASS GIS."><title>Create filters or kernel matrices for raster neighborhood analyses — create_filter • oneimpact</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create filters or kernel matrices for raster neighborhood analyses — create_filter"><meta property="og:description" content="This function creates matrices of weights following different
+software such as the r.mfilter module within GRASS GIS."><title>Create filters or kernel matrices for raster neighborhood analyses — filter_create • oneimpact</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create filters or kernel matrices for raster neighborhood analyses — filter_create"><meta property="og:description" content="This function creates matrices of weights following different
 functions to be used in neighborhood analyses for rasters. In the context of
 cumulative impact analysis, they represent the Zone of Influence (ZoI) of each
 infrastructure point/pixel, to be used to calculate the cumulative ZoI.
@@ -54,8 +54,8 @@ software such as the r.mfilter module within GRASS GIS."><!-- mathjax --><script
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Create filters or kernel matrices for raster neighborhood analyses</h1>
-      <small class="dont-index">Source: <a href="https://github.com/NINAnor/oneimpact/blob/HEAD/R/create_filter.R" class="external-link"><code>R/create_filter.R</code></a></small>
-      <div class="d-none name"><code>create_filter.Rd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/NINAnor/oneimpact/blob/HEAD/R/filter_create.R" class="external-link"><code>R/filter_create.R</code></a></small>
+      <div class="d-none name"><code>filter_create.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
@@ -69,9 +69,9 @@ software such as the <code>r.mfilter</code> module within GRASS GIS.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_filter</span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">filter_create</span><span class="op">(</span></span>
 <span>  r <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  zoi_radius <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  radius <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp_decay"</span>, <span class="st">"bartlett"</span>, <span class="st">"circle"</span>, <span class="st">"threshold_decay"</span>, <span class="st">"gaussian_decay"</span>,</span>
 <span>    <span class="st">"Gauss"</span>, <span class="st">"rectangle"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
@@ -101,30 +101,30 @@ package or <code>RasterLayer</code>, <code>RasterBrick</code>, or <code>RasterSt
 <code>raster</code> package) from which such resolution can be extracted.</p></dd>
 
 
-<dt>zoi_radius</dt>
+<dt>radius</dt>
 <dd><p><code>[numeric(1)=NULL]</code> <br> Zone of Influence (ZoI) radius,
 in map units (preferentially meters).
 The ZoI radius is the distance, scale, or buffer size around a
 feature up to which we consider there is
-an effect or influence of an infrastructure or variable. In <code>create_filter</code>,
+an effect or influence of an infrastructure or variable. In <code>filter_create</code>,
 the interpretation of the
-zoi_radius differ depending on the shape of the zoi (parameter <code>type</code>):</p><ul><li><p>For the circle neighborhood (<code>type = "circle"</code> or <code>type = "threshold"</code>
-or <code>type = "step"</code>), the <code>zoi_radius</code> corresponds to the radius
+radius differ depending on the shape of the zoi (parameter <code>type</code>):</p><ul><li><p>For the circle neighborhood (<code>type = "circle"</code> or <code>type = "threshold"</code>
+or <code>type = "step"</code>), the <code>radius</code> corresponds to the radius
 (or threshold) of the circle, beyond which the filter is zero.</p></li>
 <li><p>For the rectangular neighborhood (<code>type = "rectangle"</code> or <code>type = "box"</code>),
-the <code>zoi_radius</code> corresponds to half the size of the square size, or
-<code>square size = 2*zoi_radius</code>. For a rectangular filter with different size
+the <code>radius</code> corresponds to half the size of the square size, or
+<code>square size = 2*radius</code>. For a rectangular filter with different size
 of the sides, use <code><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">terra::focal()</a></code> (but
 please note the interpretation of the parameters is different).</p></li>
 <li><p>For the Bartlett neighborhood (<code>type = "bartlett"</code> or
 <code>type = "linear_decay"</code> or <code>type = "tent_decay"</code>),
-the <code>zoi_radius</code> corresponds to the distance beyond which the filter is zero.</p></li>
+the <code>radius</code> corresponds to the distance beyond which the filter is zero.</p></li>
 <li><p>For the exponential decay neighborhood (<code>type = "exp_decay"</code>) and the
 Gaussian decay neighborhood (<code>type = "Gauss"</code> or <code>type = "gaussian_decay"</code>),
-the <code>zoi_radius</code> corresponds to the distance where the exponential decay
+the <code>radius</code> corresponds to the distance where the exponential decay
 function goes below a given limit distance defined by
 <code>zoi_limit</code>. See <code><a href="zoi_functions.html">zoi_functions()</a></code> for details.</p></li>
-<li><p>If <code>zoi_radius = NULL</code>, the exponential or gaussian decay matrices are
+<li><p>If <code>radius = NULL</code>, the exponential or gaussian decay matrices are
 defined based on other parameters -- see below. This option will raise an
 error for the other types of filters.</p></li>
 </ul></dd>
@@ -140,7 +140,7 @@ for a threshold decay ZoI;</p></li>
 for linear decay ZoI;</p></li>
 <li><p><code>"rectangle"</code> or <code>"box"</code> for a rectangular ZoI.
 There might be some correspondence between the weight matrix <code>type</code>
-in <code>create_filter</code> and other similar functions (e.g. <code>type = "rectangle"</code>
+in <code>filter_create</code> and other similar functions (e.g. <code>type = "rectangle"</code>
 and <code>type = "boxcar"</code> in <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code> or
 <code>type = "Gauss"</code> in <code><a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat()</a></code> with parameter
 <code>type = "gauss"</code> n <a href="smoothie::kernel2dmeitsjer">smoothie::kernel2dmeitsjer</a>); however, the
@@ -153,9 +153,9 @@ define these matrices is different between functions.</p></li>
 <dd><p><code>[numeric(1)=0.05]</code> <br> For non-vanishing filters
 (e.g. <code>exp_decay</code>, <code>gaussian_decay</code>), this value is used to set the relationship
 between the ZoI radius and the decay functions:
-<code>zoi_radius</code> is defined as the minimum distance <code>x</code> at which the ZoI assumes values
+<code>radius</code> is defined as the minimum distance <code>x</code> at which the ZoI assumes values
 below <code>zoi_limit</code>. The default is 0.05. This parameter is used only
-if <code>zoi_radius</code> is not <code>NULL</code>.</p></dd>
+if <code>radius</code> is not <code>NULL</code>.</p></dd>
 
 
 <dt>half_life</dt>
@@ -163,19 +163,19 @@ if <code>zoi_radius</code> is not <code>NULL</code>.</p></dd>
 function, in meters. By definition, the half life is
 the distance where the exponential decay function reaches 0.5 of its
 maximum value. For the <code>exp_decay</code> function,
-if the ZoI radius parameter is null (<code>zoi_radius = NULL</code>), the value of the
+if the ZoI radius parameter is null (<code>radius = NULL</code>), the value of the
 exponential half life (<code>half_life = log(2)/lambda</code>) can used to parameterize the
 exponential decay function. See details in <code><a href="zoi_functions.html">zoi_functions()</a></code>.</p></dd>
 
 
 <dt>zoi_hl_ratio</dt>
 <dd><p><code>[numeric(1)=6]</code> <br> For the <code>exp_decay</code> function,
-if both the ZoI radius <code>zoi_radius</code> and <code>zoi_hl_ratio</code> are given and
+if both the ZoI radius <code>radius</code> and <code>zoi_hl_ratio</code> are given and
 <code>half_life</code> is <code>NULL</code>, this value is used
 to set the ZoI radius (and <code>zoi_limit</code> is ignored).
 <code>zoi_hl_ratio</code> is the ratio between the
 ZoI radius value and the half life of the exponential function.
-For instance, if <code>zoi_radius = 1200</code> and <code>zoi_hl_ratio = 6</code>, this means
+For instance, if <code>radius = 1200</code> and <code>zoi_hl_ratio = 6</code>, this means
 <code>half_life</code> is 200. As a consequence, the exponential decay ZoI function
 decreases to 0.5 at distance 200, and the ZoI radius = 1200
 is defined as the distance
@@ -187,7 +187,7 @@ at which the ZoI decreases to 0.5**6 = 0.015625.</p></dd>
 function. It related to the Gaussian decay rate \(\lambda\) as
 <code>lambda = 1/(2*sigma^2)</code>. Only considered to compute the ZoI
 for the <code>gaussian_decay</code> function when the ZoI radius parameter is null
-(<code>zoi_radius = NULL</code>).</p></dd>
+(<code>radius = NULL</code>).</p></dd>
 
 
 <dt>min_intensity</dt>
@@ -243,7 +243,7 @@ If <code>NULL</code>, the current working directory is used.</p></dd>
 
 <dt>save_file</dt>
 <dd><p><code>[character(1)=NULL]</code> <br> Name of the output file, generally a ".txt" file.
-If <code>NULL</code>, a standard filename is created, using the <code>type</code> and <code>zoi_radius</code>. E.g. "filter_bartlett2000.txt".</p></dd>
+If <code>NULL</code>, a standard filename is created, using the <code>type</code> and <code>radius</code>. E.g. "filter_bartlett2000.txt".</p></dd>
 
 
 <dt>parallel</dt>
@@ -278,7 +278,7 @@ even though the function is parameterized with the ZoI radius the size of
 the matrix can go beyond this radius. In this case, the size of the matrix
 \(n\) is defined either by a minimum intensity function value
 (parameter <code>min_intensity</code>) or by a maximum distance for
-the matrix radius (parameter <code>min_dist</code>, which can be set to be the <code>zoi_radius</code>).
+the matrix radius (parameter <code>min_dist</code>, which can be set to be the <code>radius</code>).
 Keeping \(n\) at a reasonable size guarantees that the neighborhood
 analysis using such input weight matrices is computationally feasible.</p>
 <p>Possible future implementation: compare results with
@@ -288,7 +288,7 @@ maybe wrap some options here.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>See <code><a href="zoi_functions.html">zoi_functions()</a></code> for some ZoI function shapes and
-<code><a href="save_filter.html">save_filter()</a></code> for options to save the ZoI matrix as a text file. <br>
+<code><a href="filter_save.html">filter_save()</a></code> for options to save the ZoI matrix as a text file. <br>
 See also <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code>, <code><a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat()</a></code>, and
 <code><a href="https://rdrr.io/pkg/raster/man/focalWeight.html" class="external-link">raster::focalWeight()</a></code> for other functions to create filters or weight matrices. <br>
 See
@@ -311,12 +311,12 @@ GRASS GIS uses of filters in neighborhood analysis.</p></div>
 <span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create exponential filter</span></span></span>
-<span class="r-in"><span><span class="va">filt_exp1000</span> <span class="op">&lt;-</span> <span class="fu">create_filter</span><span class="op">(</span><span class="va">r</span>, zoi_radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span><span class="va">filt_exp1000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                              zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                              type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                              max_dist <span class="op">=</span> <span class="fl">5000</span>,</span></span>
 <span class="r-in"><span>                              normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">filt_exp3000</span> <span class="op">&lt;-</span> <span class="fu">create_filter</span><span class="op">(</span><span class="va">r</span>, zoi_radius <span class="op">=</span> <span class="fl">3000</span>,</span></span>
+<span class="r-in"><span><span class="va">filt_exp3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>,</span></span>
 <span class="r-in"><span>                              zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                              type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                              max_dist <span class="op">=</span> <span class="fl">5000</span>,</span></span>
@@ -330,10 +330,10 @@ GRASS GIS uses of filters in neighborhood analysis.</p></div>
 <span class="r-in"><span><span class="co"># plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">neigh_r_exp1000</span>, <span class="va">neigh_r_exp3000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"original"</span>, <span class="st">"exp filter 1000m"</span>, <span class="st">"exp filter 3000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="create_filter-1.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="filter_create-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create step filter</span></span></span>
-<span class="r-in"><span><span class="va">filt_step3000</span> <span class="op">&lt;-</span> <span class="fu">create_filter</span><span class="op">(</span><span class="va">r</span>, zoi_radius <span class="op">=</span> <span class="fl">3000</span>, type <span class="op">=</span> <span class="st">"step"</span>,</span></span>
+<span class="r-in"><span><span class="va">filt_step3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>, type <span class="op">=</span> <span class="st">"step"</span>,</span></span>
 <span class="r-in"><span>                               normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># use step filter</span></span></span>
 <span class="r-in"><span><span class="va">neigh_r_step3000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_step3000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
@@ -342,37 +342,37 @@ GRASS GIS uses of filters in neighborhood analysis.</p></div>
 <span class="r-in"><span><span class="co"># plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">neigh_r_exp3000</span>, <span class="va">neigh_r_step3000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp filter 3000m"</span>, <span class="st">"step filter 3000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="create_filter-2.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="filter_create-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># plot(app(c(neigh_r_exp3000, neigh_r_step3000), "diff"))</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create bartlett (linear/tent decay) filter</span></span></span>
-<span class="r-in"><span><span class="va">filt_bart3000</span> <span class="op">&lt;-</span> <span class="fu">create_filter</span><span class="op">(</span><span class="va">r</span>, zoi_radius <span class="op">=</span> <span class="fl">3000</span>, type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
+<span class="r-in"><span><span class="va">filt_bart3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>, type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                               normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># use bartlett filter</span></span></span>
 <span class="r-in"><span><span class="va">neigh_r_bart3000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_bart3000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
 <span class="r-in"><span>                                 na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create Gaussian filter - parameterized with zoi</span></span></span>
-<span class="r-in"><span><span class="va">filt_gauss3000</span> <span class="op">&lt;-</span> <span class="fu">create_filter</span><span class="op">(</span><span class="va">r</span>, zoi_radius <span class="op">=</span> <span class="fl">3000</span>,</span></span>
+<span class="r-in"><span><span class="va">filt_gauss3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>,</span></span>
 <span class="r-in"><span>                                type <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
 <span class="r-in"><span>                                zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># use Gaussian filter</span></span></span>
 <span class="r-in"><span><span class="va">neigh_r_gauss3000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_gauss3000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
-<span class="r-in"><span>                                 na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                  na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">neigh_r_exp3000</span>, <span class="va">neigh_r_step3000</span>, <span class="va">neigh_r_bart3000</span>, <span class="va">neigh_r_gauss3000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp filter 3000m"</span>, <span class="st">"step filter 3000m"</span>,</span></span>
 <span class="r-in"><span>              <span class="st">"Bartlett filter 3000m"</span>, <span class="st">"Gaussian filter 3000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="create_filter-3.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="filter_create-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))</span></span></span>
 <span class="r-in"><span><span class="co"># plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Not run</span></span></span>
 <span class="r-in"><span><span class="co"># save outside R for use in GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu">create_filter</span><span class="op">(</span><span class="va">r</span>, zoi_radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                max_dist <span class="op">=</span> <span class="fl">5000</span>,</span></span>
 <span class="r-in"><span>                normalize <span class="op">=</span> <span class="cn">T</span>, save_txt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

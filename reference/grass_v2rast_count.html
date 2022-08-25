@@ -58,7 +58,7 @@
 <span>  <span class="va">x</span>,</span>
 <span>  output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"_count"</span><span class="op">)</span>,</span>
 <span>  column <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  set_region <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  input_as_region <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  align <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  remove_intermediate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -85,8 +85,8 @@ of features in each pixel of the output raster map. If <code>NULL</code>, this c
 a temporary vector, with all values equal 1.</p></dd>
 
 
-<dt>set_region</dt>
-<dd><p><code>[logical(1)=TRUE]</code> <br> Default is TRUE. Whether the GRASS GIS
+<dt>input_as_region</dt>
+<dd><p><code>[logical(1)=FALSE]</code> <br> Default is FALSE. Whether the GRASS GIS
 computational region should be set within the function (to the extent of <code>x</code>) or not.
 If <code>FALSE</code>, the current computational region is used.</p></dd>
 
@@ -155,18 +155,18 @@ computational region to produce the output map.</p></dd>
 <span class="r-in"><span>                                        quiet <span class="op">=</span> <span class="cn">F</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.region --interface-description</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    v.in.region --interface-description</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.region: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: v.in.region: not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rasterize with count, without creating a temporary vector</span></span></span>
 <span class="r-in"><span><span class="va">cabins_count_name</span> <span class="op">&lt;-</span> <span class="fu">grass_v2rast_count</span><span class="op">(</span><span class="va">cabins_vect_name</span>, output <span class="op">=</span> <span class="st">"cabins_count"</span>,</span></span>
 <span class="r-in"><span>                                        column <span class="op">=</span> <span class="st">"value"</span>, quiet <span class="op">=</span> <span class="cn">F</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.region --interface-description</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    v.out.ascii --interface-description</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.region: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: v.out.ascii: not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/gmeta.html" class="external-link">use_sp</a></span><span class="op">(</span><span class="op">)</span></span></span>

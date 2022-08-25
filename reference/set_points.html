@@ -97,9 +97,9 @@ the weights, this base raster is also returned in the output.</p>
 <dt>method</dt>
 <dd><p><code>[character(1)]{"mobsim", "regular", "random", "raster", "NLMR"}</code> <br> Method used
 to simulate points in space.
-<code>mobsim</code> uses the function <code>mobsim::sim_thomas_community()</code> from the mobsim package to simulate
+<code>mobsim</code> uses the function <code><a href="https://rdrr.io/pkg/mobsim/man/sim_thomas_community.html" class="external-link">mobsim::sim_thomas_community()</a></code> from the <a href="https://rdrr.io/pkg/mobsim/man/mobsim.html" class="external-link">mobsim</a> package to simulate
 points. <code>raster</code> uses a base raster map as input to define weights and simulate the random points.
-<code>NLMR</code> creates a neutral landscape model using NLMR package and uses it as an input base raster.
+<code>NLMR</code> creates a neutral landscape model using <a href="https://ropensci.github.io/NLMR/reference/NLMR-package.html" class="external-link">NLMR</a> package and uses it as an input base raster.
 See <code>Details</code> for more information.</p></dd>
 
 
@@ -161,13 +161,15 @@ argument.</p></dd>
 
 <p>A list with three elements: (1) <code>pts</code>, the coordinates (x,y) of the simulated points;
 (2) <code>rast</code>, a binary raster containing the landscape, with 1 where there points and NA elsewhere;
-(3) <code>base_rast</code>, the base raster used to weigh the simulation of points. If <code>method = "mobsim"</code>,
-<code>base_rast</code> is <code>NULL</code>.</p>
+(3) <code>base_rast</code>, the base raster used to weigh the simulation of points. If <code>method = "mobsim"</code></p>
+
+
+<p>or <code>"regular"</code> or <code>"random"</code>, <code>base_rast</code> is <code>NULL</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>If <code>method = "mobsim"</code>, the function builds upon the function
-<code>mobsim::sim_thomas_community()</code> from the mobsim
+<code><a href="https://rdrr.io/pkg/mobsim/man/sim_thomas_community.html" class="external-link">mobsim::sim_thomas_community()</a></code> from the <a href="https://rdrr.io/pkg/mobsim/man/mobsim.html" class="external-link">mobsim</a>
 package. Originally the function is intended to simulate positions of multiple
 species in the context of species abundance distribution studies, but it fits
 well in case of a single species (or point patterns for a single type of feature).
@@ -178,7 +180,7 @@ and their width.</p>
 in space.</p>
 <p>If <code>method = "NLMR"</code>, the function also uses a raster to define the probabilities of
 setting a given point in a certain pixel in space, but this raster is created with
-a function from the NLMR package. The function name is defined by the argument
+a function from the <a href="https://ropensci.github.io/NLMR/reference/NLMR-package.html" class="external-link">NLMR</a> package. The function name is defined by the argument
 <code>nlmr_function</code> and its arguments must be defined as additional parameters to
 <code>set_points()</code>.</p>
 <p>TO IMPROVE: implement rasterization with terra package</p>
@@ -188,10 +190,16 @@ a function from the NLMR package. The function name is defined by the argument
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#-----</span></span></span>
 <span class="r-in"><span><span class="co"># using mobsim</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/home/runner/work/_temp/Library’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (as ‘lib’ is unspecified)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> also installing the dependencies ‘credentials’, ‘zip’, ‘gitcreds’, ‘ini’, ‘httpuv’, ‘xtable’, ‘fontawesome’, ‘sourcetools’, ‘later’, ‘promises’, ‘clipr’, ‘gert’, ‘gh’, ‘rstudioapi’, ‘shiny’, ‘prettyunits’, ‘htmlwidgets’, ‘xopen’, ‘brew’, ‘commonmark’, ‘usethis’, ‘miniUI’, ‘pkgbuild’, ‘profvis’, ‘rcmdcheck’, ‘remotes’, ‘roxygen2’, ‘rversions’, ‘urlchecker’</span>
+<span class="r-in"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"MoBiodiv/mobsim"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using github PAT from envvar GITHUB_PAT</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Skipping install of 'mobsim' from a github remote, the SHA1 (1827aaa9) has not changed since last install.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Use `force = TRUE` to force installation</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mobsim</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(mobsim):</span> there is no package called ‘mobsim’</span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MoBiodiv/mobsim" class="external-link">mobsim</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -201,11 +209,10 @@ a function from the NLMR package. The function name is defined by the argument
 <span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">set_points</span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">1000</span>, centers <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                  width <span class="op">=</span> <span class="va">wd</span>, res <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>                  extent_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘mobsim’</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
+<span class="r-plt img"><img src="set_points-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
+<span class="r-plt img"><img src="set_points-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># one focus of features, with buffer around</span></span></span>
 <span class="r-in"><span><span class="va">wd</span> <span class="op">&lt;-</span> <span class="va">ext</span><span class="op">/</span><span class="fl">20</span></span></span>
@@ -213,75 +220,107 @@ a function from the NLMR package. The function name is defined by the argument
 <span class="r-in"><span>                  width <span class="op">=</span> <span class="va">wd</span>, res <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>                  extent_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  buffer_around <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘mobsim’</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
+<span class="r-plt img"><img src="set_points-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
+<span class="r-plt img"><img src="set_points-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#-----</span></span></span>
 <span class="r-in"><span><span class="co"># using base raster</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># raster</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/disaggregate.html" class="external-link">disaggregate</a></span><span class="op">(</span>fact <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># points from raster</span></span></span>
 <span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">set_points</span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"raster"</span>,</span></span>
 <span class="r-in"><span>                  base_raster <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">base_rast</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-1.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-2.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-3.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-7.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#-----</span></span></span>
 <span class="r-in"><span><span class="co"># using NLMR</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">NLMR</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(NLMR):</span> there is no package called ‘NLMR’</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/home/runner/work/_temp/Library’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (as ‘lib’ is unspecified)</span>
+<span class="r-in"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"cran/RandomFieldsUtils"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using github PAT from envvar GITHUB_PAT</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Downloading GitHub repo cran/RandomFieldsUtils@HEAD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking for file ‘/tmp/RtmpVbkbHn/remotes414f18dd51e5/cran-RandomFieldsUtils-b754335/DESCRIPTION’ ... OK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * preparing ‘RandomFieldsUtils’:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking DESCRIPTION meta-information ... OK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * cleaning src</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * running ‘cleanup’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking for LF line-endings in source and make files and shell scripts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking for empty or unneeded directories</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * building ‘RandomFieldsUtils_1.2.5.tar.gz’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/home/runner/work/_temp/Library’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (as ‘lib’ is unspecified)</span>
+<span class="r-in"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"cran/RandomFields"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using github PAT from envvar GITHUB_PAT</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Downloading GitHub repo cran/RandomFields@HEAD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking for file ‘/tmp/RtmpVbkbHn/remotes414f4e871b8e/cran-RandomFields-41d603e/DESCRIPTION’ ... OK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * preparing ‘RandomFields’:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking DESCRIPTION meta-information ... OK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * cleaning src</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * running ‘cleanup’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking for LF line-endings in source and make files and shell scripts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * checking for empty or unneeded directories</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * looking to see if a ‘data/datalist’ file should be added</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * building ‘RandomFields_3.3.14.tar.gz’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package into ‘/home/runner/work/_temp/Library’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (as ‘lib’ is unspecified)</span>
+<span class="r-in"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ropensci/NLMR"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using github PAT from envvar GITHUB_PAT</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Skipping install of 'NLMR' from a github remote, the SHA1 (f55ff9d7) has not changed since last install.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Use `force = TRUE` to force installation</span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropensci.github.io/NLMR/" class="external-link">NLMR</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example NLM</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ext</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></span>
-<span class="r-in"><span><span class="va">nlm1</span> <span class="op">&lt;-</span> <span class="fu">NLMR</span><span class="fu">::</span><span class="fu">nlm_mpd</span><span class="op">(</span><span class="va">ext</span>, <span class="va">ext</span>, <span class="fl">100</span>, roughness <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘NLMR’</span>
+<span class="r-in"><span><span class="va">nlm1</span> <span class="op">&lt;-</span> <span class="fu">NLMR</span><span class="fu">::</span><span class="fu"><a href="https://ropensci.github.io/NLMR/reference/nlm_mpd.html" class="external-link">nlm_mpd</a></span><span class="op">(</span><span class="va">ext</span>, <span class="va">ext</span>, <span class="fl">100</span>, roughness <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>nlm_mpd changes the dimensions of the RasterLayer if even ncols/nrows are choosen.</span>
 <span class="r-in"><span><span class="va">nlm1</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">nlm1</span><span class="op">[</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in scales::rescale(exp(nlm1[])):</span> object 'nlm1' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nlm1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'nlm1' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># points</span></span></span>
 <span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">set_points</span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">1000</span>, method <span class="op">=</span> <span class="st">"raster"</span>,</span></span>
 <span class="r-in"><span>                  base_raster <span class="op">=</span> <span class="va">nlm1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'res': object 'nlm1' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">base_rast</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-4.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-5.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-9.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-6.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-10.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># OR we can do it directly</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># points</span></span></span>
 <span class="r-in"><span><span class="va">ext</span> <span class="op">&lt;-</span> <span class="fl">30000</span></span></span>
-<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">set_points</span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">10000</span>, method <span class="op">=</span> <span class="st">"NLMR"</span>,</span></span>
+<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">set_points</span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">1000</span>, method <span class="op">=</span> <span class="st">"NLMR"</span>,</span></span>
 <span class="r-in"><span>                  nlmr_function <span class="op">=</span> <span class="st">"nlm_mpd"</span>,</span></span>
 <span class="r-in"><span>                  roughness <span class="op">=</span> <span class="fl">.2</span>,</span></span>
 <span class="r-in"><span>                  res <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>                  extent_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get(nlmr_function):</span> object 'nlm_mpd' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>nlm_mpd changes the dimensions of the RasterLayer if even ncols/nrows are choosen.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">base_rast</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-7.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-11.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-8.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-12.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-9.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-13.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#-----</span></span></span>
 <span class="r-in"><span><span class="co"># using random or regular</span></span></span>
@@ -292,26 +331,26 @@ a function from the NLMR package. The function name is defined by the argument
 <span class="r-in"><span>                  res <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>                  extent_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-10.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-14.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-11.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-15.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">set_points</span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">1000</span>, method <span class="op">=</span> <span class="st">"regular"</span>,</span></span>
 <span class="r-in"><span>                  res <span class="op">=</span> <span class="fl">100</span>,</span></span>
 <span class="r-in"><span>                  extent_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-12.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-16.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-13.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-17.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#-----</span></span></span>
 <span class="r-in"><span><span class="co"># using point coordinates as input</span></span></span>
 <span class="r-in"><span><span class="va">pt_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.7</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu">set_points</span><span class="op">(</span>point_coordinates <span class="op">=</span> <span class="va">pt_input</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-14.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-18.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="set_points-15.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="set_points-19.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

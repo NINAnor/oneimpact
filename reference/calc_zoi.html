@@ -71,11 +71,8 @@ The neighborhood analysis is done with the <code><a href="https://rdrr.io/pkg/te
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_zoi</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  <span class="va">zoi_radius</span>,</span>
-<span>  transform_nearest <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  type_cumulative <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"circle"</span>, <span class="st">"Gauss"</span>, <span class="st">"rectangle"</span>, <span class="st">"mfilter"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>  extent_x_cut <span class="op">=</span> <span class="fu">bbox</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,</span>
-<span>  extent_y_cut <span class="op">=</span> <span class="fu">bbox</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span>,</span>
+<span>  zoi_metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"nearest"</span>, <span class="st">"cumulative"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="st">"GRASS"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -88,8 +85,8 @@ preferentially with value 1 (or any other positive value) where the features
 are located and NA elsewhere. Alternatively, <code>x</code> might be a binary (dummy)
 spatial variable representing the presence of linear or area features, with
 NA/no-data as background.
-<code>x</code> can be a <code>RasterLayer</code> from <a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a> package or a SpatRaster from
-terra package. If <code>where = "GRASS"</code>, <code>x</code> must be a string corresponding
+<code>x</code> can be a <code>RasterLayer</code> from raster package or a <a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a> from
+<a href="https://rdrr.io/pkg/terra/man/terra-package.html" class="external-link">terra</a> package. If <code>where = "GRASS"</code>, <code>x</code> must be a string corresponding
 to the name of the input map within a GRASS GIS location and mapset.
 Maps without NA as background might be prepared as input for <code>calc_zoi_nearest</code>
 through <a href="https://rspatial.org/terra/pkg/4-algebra.html" class="external-link">raster algebra</a> in R
@@ -97,20 +94,16 @@ and e.g. through the use of the module
 <a href="https://grass.osgeo.org/grass80/manuals/r.null.html" class="external-link"><code>r.null</code></a> in GRASS GIS.</p></dd>
 
 
-<dt>zoi_radius</dt>
-<dd><p><code>[numeric(1)]</code> <br> Zone of Influence (ZoI) radius,
-the distance at which the ZoI vanishes or goes below a given minimum limit value
-<code>zoi_limit</code>. See <code><a href="zoi_functions.html">zoi_functions()</a></code> for details. This parameter is
-ignored if <code>type = "euclidean"</code>, <code>type = "log"</code>, or <code>type = "sqrt"</code>.</p></dd>
+<dt>zoi_metric</dt>
+<dd><p><code>[character(1)="all"]{"all", "nearest", "cumulative"}</code> <br>
+Which metric of zone of influence should be computed. Either <code>"all"</code>, <code>"nearest"</code>,
+or <code>"cumulative"</code>.</p></dd>
 
 
-<dt>extent_x_cut</dt>
-<dd><p><code>[numeric vector(2)=c(0,1)]</code> <br> Vector
-representing the minimum and
-maximum extent in x and y for the final output, in the format c(min,max).
-It is intended to keep only a region of interest, for standardizing the
-parameters and region when comparing the resulting ZoI maps with the
-cumulative ZoI, calculated through <code><a href="calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>.</p></dd>
+<dt>where</dt>
+<dd><p><code>[character(1)="R"]{"R", "GRASS"}</code> <br> Where should the
+computation be done? Default is <code>"R"</code>. If <code>where = "GRASS"</code>, the R session
+must be linked to an open GRASS GIS session in a specific location and mapset.</p></dd>
 
 
 <dt>...</dt>
@@ -135,66 +128,15 @@ radius of the circle or width of the rectangle, respectively. See <code><a href=
 details.</p>
 <p>TO IMPROVE2: do the same in communication with GRASS GIS.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="calc_zoi_nearest.html">calc_zoi_nearest()</a></code>, <code><a href="calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mobsim</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(mobsim):</span> there is no package called ‘mobsim’</span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: sp</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># set points</span></span></span>
-<span class="r-in"><span><span class="va">ext</span> <span class="op">&lt;-</span> <span class="fl">30000</span></span></span>
-<span class="r-in"><span><span class="va">wd</span> <span class="op">&lt;-</span> <span class="va">ext</span><span class="op">/</span><span class="fl">20</span></span></span>
-<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_points.html">set_points</a></span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">1000</span>, centers <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                  width <span class="op">=</span> <span class="va">wd</span>, res <span class="op">=</span> <span class="fl">100</span>,</span></span>
-<span class="r-in"><span>                  extent_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                  buffer_around <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘mobsim’</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># calculate distance and densities considering only the initial extent</span></span></span>
-<span class="r-in"><span><span class="va">zoi_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">nearest_cumulative</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi</span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, zoi <span class="op">=</span> <span class="va">zoi_values</span>,</span></span>
-<span class="r-in"><span>                                     type_cumulative <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
-<span class="r-in"><span>                                     extent_x_cut <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y_cut <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi(pts$rast, zoi = zoi_values, type_cumulative = "Gauss",     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext)):</span> could not find function "calc_zoi"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nearest_cumulative</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'nearest_cumulative' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># calculate exp_decay (the rest is equal)</span></span></span>
-<span class="r-in"><span><span class="va">log_dist_dens</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi</span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, type_density <span class="op">=</span> <span class="st">"Gauss"</span>, scale <span class="op">=</span> <span class="va">scales</span>,</span></span>
-<span class="r-in"><span>                                transform_dist <span class="op">=</span> <span class="st">"exp_decay"</span>, half_life <span class="op">=</span> <span class="fl">200</span>,</span></span>
-<span class="r-in"><span>                                extent_x_cut <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y_cut <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi(pts$rast, type_density = "Gauss", scale = scales, transform_dist = "exp_decay",     half_life = 200, extent_x_cut = c(0, ext), extent_y_cut = c(0,         ext)):</span> could not find function "calc_zoi"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">log_dist_dens</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'log_dist_dens' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># set points</span></span></span>
-<span class="r-in"><span><span class="va">ext</span> <span class="op">&lt;-</span> <span class="fl">30000</span></span></span>
-<span class="r-in"><span><span class="va">wd</span> <span class="op">&lt;-</span> <span class="va">ext</span><span class="op">/</span><span class="fl">20</span></span></span>
-<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_points.html">set_points</a></span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">1000</span>, centers <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                  width <span class="op">=</span> <span class="va">wd</span>, res <span class="op">=</span> <span class="fl">100</span>,</span></span>
-<span class="r-in"><span>                  extent_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>, extent_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ext</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                  buffer_around <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘mobsim’</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'pts' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># calculate distance and densities considering only the initial extent</span></span></span>
-<span class="r-in"><span><span class="va">scales</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">dist_dens</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi</span><span class="op">(</span><span class="va">pts</span><span class="op">$</span><span class="va">rast</span>, type_density <span class="op">=</span> <span class="st">"Gauss"</span>, scale <span class="op">=</span> <span class="va">scales</span>, pad <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi(pts$rast, type_density = "Gauss", scale = scales, pad = T):</span> could not find function "calc_zoi"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dist_dens</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'dist_dens' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> terra 1.6.7</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

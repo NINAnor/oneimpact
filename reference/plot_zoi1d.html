@@ -71,9 +71,9 @@ of all infrastructure at each position.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_zoi1d</span><span class="op">(</span></span>
 <span>  <span class="va">points</span>,</span>
-<span>  <span class="va">zoi_radius</span>,</span>
+<span>  <span class="va">radius</span>,</span>
 <span>  fun <span class="op">=</span> <span class="va">exp_decay</span>,</span>
-<span>  cumulative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  zoi_metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nearest"</span>, <span class="st">"cumulative"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  step <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -91,7 +91,7 @@ in 1 dimension
 origin of the ZoI functions).</p></dd>
 
 
-<dt>zoi_radius</dt>
+<dt>radius</dt>
 <dd><p><code>[numeric(1)]</code> <br> Zone of influence (ZoI) radius,
 the distance at which the ZoI vanishes or goes below a given minimum threshold value.
 See <a href="zoi_functions.html">zoi_functions</a> for details.</p></dd>
@@ -103,9 +103,10 @@ Different functions might represent different shapes for the decay of the ZoI.
 See <a href="zoi_functions.html">zoi_functions</a> for some examples.</p></dd>
 
 
-<dt>cumulative</dt>
-<dd><p><code>[logical(1)=FALSE]</code> <br> If <code>TRUE</code>, the cumulative ZoI is plotted. If <code>FALSE</code>
-(default), the ZoI of the nearest feature is plotted.</p></dd>
+<dt>zoi_metric</dt>
+<dd><p><code>[character(1)="nearest"]{"nearest", "cumulative"}</code> <br>
+Which metric of zone of influence should be plotted. If <code>"nearest"</code>(default), the ZoI of
+the nearest feature is plotted. If <code>"cumulative"</code>, the cumulative ZoI is plotted.</p></dd>
 
 
 <dt>range_plot</dt>
@@ -139,7 +140,7 @@ If <code>return_df = TRUE</code>, it returns a list with the <code>ggplot</code>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>In practice, the <code>plot_zoi1d</code> computes the ZoI value for each feature
+    <p>In practice, the <code>plot_zoi1d()</code> computes the ZoI value for each feature
 whose locations in 1 dimension are defined by <code>points</code> and calculates the maximum
 (ZoI of the nearest) or sum (cumulative ZoI) of all values This is done
 for a series of points in 1 dimensional space in the range <code>range_plot</code> (with
@@ -150,22 +151,22 @@ steps defined by <code>step</code>) and finally plotted.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># one point, exponential decay</span></span></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="fl">0</span>, zoi_radius <span class="op">=</span> <span class="fl">3</span>, zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
-<span class="r-in"><span>           fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">3</span>, zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span></span>
+<span class="r-in"><span>           fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-plt img"><img src="plot_zoi1d-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># exponential decay</span></span></span>
 <span class="r-in"><span><span class="va">points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4.5</span>, <span class="fl">7</span>, <span class="fl">7.5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span>
 <span class="r-plt img"><img src="plot_zoi1d-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
@@ -174,14 +175,14 @@ steps defined by <code>step</code>) and finally plotted.</p>
 <span class="r-plt img"><img src="plot_zoi1d-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># threshold</span></span></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">threshold_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">threshold_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span>
 <span class="r-plt img"><img src="plot_zoi1d-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="st">"step_decay"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="st">"step_decay"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
@@ -190,59 +191,40 @@ steps defined by <code>step</code>) and finally plotted.</p>
 <span class="r-plt img"><img src="plot_zoi1d-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># linear</span></span></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">bartlett_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">bartlett_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span>
 <span class="r-plt img"><img src="plot_zoi1d-6.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="st">"linear_decay"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">T</span>,</span></span>
-<span class="r-in"><span>                 return_df <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="st">"linear_decay"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $influence_plot</span>
 <span class="r-plt img"><img src="plot_zoi1d-7.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $influence_df</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,201 × 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        x     y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  0    1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  0.01 0.997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  0.02 0.993</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  0.03 0.99 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  0.04 0.987</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  0.05 0.983</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  0.06 0.98 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  0.07 0.977</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  0.08 0.973</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  0.09 0.97 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1,191 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># gaussian</span></span></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span>
 <span class="r-plt img"><img src="plot_zoi1d-8.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, zoi <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="st">"half_norm_decay"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, cumulative <span class="op">=</span> <span class="cn">T</span>,</span></span>
-<span class="r-in"><span>                 return_df <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_zoi1d</span><span class="op">(</span><span class="va">points</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="st">"half_norm_decay"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>, zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span>,</span></span>
+<span class="r-in"><span>           return_df <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New names:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $influence_plot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $zoi_plot</span>
 <span class="r-plt img"><img src="plot_zoi1d-9.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $influence_df</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $zoi_df</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,201 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        x     y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>

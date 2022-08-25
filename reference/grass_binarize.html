@@ -85,7 +85,9 @@ within this GRASS GIS mapset.</p>
 <span>  null <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  setnull <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bin_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  input_as_region <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -157,6 +159,11 @@ and a documentation of raster algebra with <a href="https://rdrr.io/pkg/terra/ma
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># libraries</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://grass.osgeo.org/" class="external-link">rgrass7</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘raster’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:dplyr’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     select</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -186,17 +193,17 @@ and a documentation of raster algebra with <a href="https://rdrr.io/pkg/terra/ma
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.region --interface-description</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    r.mapcalc.simple --interface-description</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.region: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.mapcalc.simple: not found</span>
 <span class="r-in"><span><span class="co"># map with 0, 1</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin2_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">name_var</span>, output <span class="op">=</span> <span class="st">"cabins_bin2"</span>,</span></span>
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, null <span class="op">=</span> <span class="fl">0</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.region --interface-description</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    g.copy --interface-description</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.region: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.copy: not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin1_2</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">readRAST</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_bin2_name</span>, <span class="va">cabins_bin1_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
