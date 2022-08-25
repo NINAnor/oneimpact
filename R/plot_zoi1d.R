@@ -7,7 +7,7 @@
 #' infrastructure at each position. The cumulative ZoI corresponds to the sum of the ZoI
 #' of all infrastructure at each position.
 #'
-#' In practice, the `plot_zoi1d` computes the ZoI value for each feature
+#' In practice, the `plot_zoi1d()` computes the ZoI value for each feature
 #' whose locations in 1 dimension are defined by `points` and calculates the maximum
 #' (ZoI of the nearest) or sum (cumulative ZoI) of all values This is done
 #' for a series of points in 1 dimensional space in the range `range_plot` (with
@@ -19,7 +19,7 @@
 #' in 1 dimension
 #' (more broadly, the location of sources of disturbance or spatial variables, or the point of
 #' origin of the ZoI functions).
-#' @param zoi_radius `[numeric(1)]` \cr Zone of influence (ZoI) radius,
+#' @param radius `[numeric(1)]` \cr Zone of influence (ZoI) radius,
 #' the distance at which the ZoI vanishes or goes below a given minimum threshold value.
 #' See [zoi_functions] for details.
 #' @param fun `[function]` \cr A decay function that represents the Zone of Influence (ZoI).
@@ -43,7 +43,7 @@
 #'
 #' @export
 plot_zoi1d <- function(points,
-                       zoi_radius,
+                       radius,
                        fun = exp_decay,
                        cumulative = FALSE,
                        range_plot = c(0, 12),
@@ -54,13 +54,13 @@ plot_zoi1d <- function(points,
 
   # if function is a character
   if(is.character(fun)) {
-    fun <- get(fun)
+    fun <- get(fun, asNamespace("oneimpact"))
   }
 
   # create x
   x <- seq(range_plot[1], range_plot[2], step)
   # apply function to each point
-  dat_y <- purrr::map_dfc(points, function(z) fun(x = x, zoi_radius = zoi_radius, origin = z, oneside = FALSE, ...))
+  dat_y <- purrr::map_dfc(points, function(z) fun(x = x, radius = radius, origin = z, oneside = FALSE, ...))
 
   # should functions accumulate or not?
   if(cumulative) y <- apply(dat_y, 1, sum, na.rm = na.rm) else
@@ -79,7 +79,7 @@ plot_zoi1d <- function(points,
   if (isTRUE(return_df)) {
     return(list(influence_plot = g1, influence_df = dat))
   } else {
-    return(g1)
+    return(suppressWarnings(print(g1)))
   }
 
 }

@@ -1,4 +1,4 @@
-#' Save kernel/filter matrix to use in r.mfilter within GRASS GIS
+#' Save kernel/filter matrix to use outside R
 #'
 #' This function saves a matrix with weights (filter or kernel matrix) in an external text file.
 #' It can save either the raw matrix
@@ -11,9 +11,12 @@
 #' If a divisor is specified, the sum is divided by this divisor." See details
 #' [here](https://grass.osgeo.org/grass78/manuals/r.mfilter.html).
 #'
-#' @param filt `[matrix]` \cr Filter or weight matrix, such as one created by [oneimpact::create_filter] or [terra::focalMat].
-#' @param zoi_radius `[numeric(1)]` \cr Radius of the Zone of Influence (ZoI) of the matrix, in meters.
-#' @param type `[character(1)]` Function for the kernel or filter matrix (see `type` parameter for [oneimpact::create_filter]).
+#' @param filt `[matrix]` \cr Filter or weight matrix, such as one created by
+#' [oneimpact::create_filter()] or [terra::focalMat()].
+#' @param radius `[numeric(1)]` \cr Radius of the Zone of Influence (ZoI) of
+#' the matrix, in meters.
+#' @param type `[character(1)]` Function for the kernel or filter matrix
+#' (see `type` parameter for [oneimpact::create_filter()]).
 #' @param save_format `[character(1)="GRASS_rmfilter"]{"GRASS_rmfilter", "raw"}` \cr
 #' Format in which the function should be saved. Currently, either of the two options:
 #' - GRASS GIS format for the module `r.mfilter`
@@ -22,7 +25,7 @@
 #' @param save_folder `[character(1)=NULL]` \cr Path to the folder where the matrix file should be written.
 #' If `NULL`, the current working directory is used.
 #' @param save_file `[character(1)=NULL]` \cr Name of the output file, generally a ".txt" file.
-#' If `NULL`, a standard filename is created, using the `type` and `zoi_radius`. E.g. "filter_bartlett2000.txt".
+#' If `NULL`, a standard filename is created, using the `type` and `radius`. E.g. "filter_bartlett2000.txt".
 #' @param normalize `[logical(1)=FALSE]` \cr Whether the matrix should be normalized (sum of all cells is 1 if
 #' `normalize = TRUE`) or kept as it is (default, `normalize = FALSE`).
 #' @param divisor `[numeric(1)=1]` \cr By default, 1. This is the divisor of the neighborhood
@@ -40,16 +43,17 @@
 #'
 #' @return None. The funcion only saves the input matrix as an external file.
 #'
-#' @seealso [r.mfilter](https://grass.osgeo.org/grass78/manuals/r.mfilter.html)
+#' @seealso GRASS module [r.mfilter](https://grass.osgeo.org/grass78/manuals/r.mfilter.html)
 #'
 #' @examples
-#' my_filter <- create_filter(r = 100, type = "bartlett", zoi_radius = 1000, round = 4)
-#' save_filter(my_filter, zoi_radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
+#' my_filter <- create_filter(r = 100, type = "bartlett", radius = 1000, round = 4)
+#' save_filter(my_filter, radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
+#' save_filter(my_filter, radius = 1000, type = "bartlett", save_format = "raw")
 #'
 #' @export
 save_filter <- function(
   filt,
-  zoi_radius,
+  radius,
   type,
   save_format = c("GRASS_rmfilter", "raw")[1],
   save_folder = NULL,
@@ -69,7 +73,7 @@ save_filter <- function(
 
   # output file name
   if(is.null(save_file)) {
-    save_file <- paste0("filter_", type, zoi_radius, ".txt")
+    save_file <- paste0("filter_", type, radius, ".txt")
   }
   if(is.null(save_folder)) {
     file_out <- save_file
@@ -82,7 +86,7 @@ save_filter <- function(
 
   # r.mfilter preamble
   if(save_format == "GRASS_rmfilter") {
-    writeLines(paste0("TITLE filter ", type, " ", zoi_radius, "m"), con = con, sep = "\n", useBytes = FALSE)
+    writeLines(paste0("TITLE filter ", type, " ", radius, "m"), con = con, sep = "\n", useBytes = FALSE)
     writeLines(paste0("MATRIX ", dim(filt)[2]), con = con, sep = "\n", useBytes = FALSE)
   }
 
