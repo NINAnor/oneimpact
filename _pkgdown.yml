@@ -22,6 +22,12 @@ reference:
     zones of influence
   contents:
   - starts_with("multifit")
+- title: "Visualization"
+  desc: >
+    Functions to help interpreting parameters and visualizing
+    cumulative impacts
+  contexts:
+  - rescale_coefficients
 - title: "Raster processing ancillary functions"
   desc: >
     GRASS GIS ancillary functions to process rasters and prepare inputs
