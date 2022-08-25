@@ -1,4 +1,27 @@
 url: https://ninanor.github.io/oneimpact/
 template:
   bootstrap: 5
-
+reference:
+- title: "Zone of influence (ZoI) functions"
+  desc: "Functions to represent the zone of influence"
+  contents:
+  - ends_with("decay")
+  - plot_zoi1d
+- title: "Compute zones of influence (ZoI)"
+  desc: "Functions to compute the zone of influence for raster maps"
+  contents:
+  - starts_with("calc_zoi")
+- title: "Spatial filters"
+  desc: "Creating spatial filters to compute a meaningful zone of influence"
+  contents:
+  - create_filter
+  - save_filter
+- title: "R-GRASS ancillary functions"
+  desc: >
+    GRASS GIS ancillary functions to process rasters and prepare inputs
+    for computing zones of influence
+  contents:
+  - starts_with("grass")
+- title: "Support for landscape simulation"
+  contents:
+  - set_points
