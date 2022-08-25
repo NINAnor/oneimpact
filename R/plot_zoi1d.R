@@ -64,7 +64,7 @@ plot_zoi1d <- function(points,
   dat_y <- purrr::map_dfc(points, function(z) fun(x = x, radius = radius, origin = z, oneside = FALSE, ...))
 
   # should functions accumulate or not?
-  if(cumulative) y <- apply(dat_y, 1, sum, na.rm = na.rm) else
+  if(zoi_metric == "cumulative") y <- apply(dat_y, 1, sum, na.rm = na.rm) else
     y <- apply(dat_y, 1, max, na.rm = na.rm)
 
   # tibble
@@ -78,7 +78,7 @@ plot_zoi1d <- function(points,
 
   # return plot (and maybe df)
   if (isTRUE(return_df)) {
-    return(list(influence_plot = g1, influence_df = dat))
+    return(list(zoi_plot = g1, zoi_df = dat))
   } else {
     return(suppressWarnings(print(g1)))
   }

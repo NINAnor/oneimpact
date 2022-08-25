@@ -5,7 +5,7 @@ plot_zoi1d(0, radius = 3, zoi_limit = 0.05,
 # exponential decay
 points <- c(0, 4.5, 7, 7.5)
 plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12), zoi_metric = "nearest")
-plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12), zoi_metric = TRUE)
+plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12), zoi_metric = "cumulative")
 
 # threshold
 plot_zoi1d(points, radius = 3, fun = threshold_decay, range_plot = c(0, 12), zoi_metric = "nearest")
