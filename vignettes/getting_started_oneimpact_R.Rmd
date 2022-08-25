@@ -74,7 +74,7 @@ The `oneimpact` package has two main functions to calculate zones of influence,
 the functions `calc_zoi_nearest()` and `calc_zoi_cumulative()`. Alternatively the
 function `calc_zoi()` can calculate both ZoI metrics in the same run. 
 These functions' main arguments are the `type`, which defines the shape of the 
-spatial decay of the ZoI, and `zoi_radius`, which defines how far the influence
+spatial decay of the ZoI, and `radius`, which defines how far the influence
 expands in space (or how fast it decreases with distance). 
 
 Both functions can be run in R environment (R Core Team, 2021) and in GRASS GIS 
@@ -110,15 +110,15 @@ or weight matrices for use in the computation of the cumulative ZoI ("Create fil
 
 <center>
 
-| Type of function | Function | Description |
-|---|----|------------|
-| ZoI functions | `threshold_decay()` \ `step_decay()` \ `linear_decay()` \ `bartlett_decay()` \ `tent_decay()` \ `exp_decay()` \ `gaussian_decay()` \ `half_norm_decay()` | These functions compute Zone of Influence (ZoI) decay values.  The functions with different shapes represent multiple ways the ZoI  of an infrastructure or disturbance might affect a given process in  space, and the ZoI radius (parameter `zoi_radius`) controls how far this effect  reaches. The rate of decay of the different ZoI functions is parameterized  based on the ZoI radius – e.g the slope of `linear_decay()` is defined so that the function decreases to zero at the ZoI radius. These functions can  be used to transform arrays of (Euclidean) distance values (in one dimension)  or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. |
-| ZoI functions | `plot_zoi1d()` | This function plots the zone of influence functions in 1 dimensional space, for illustration purposes. When there is more than one value for `points` (the location of infrastructure or sources of disturbance), either the ZoI of the nearest feature or the cumulative ZoI can be plotted. The ZoI of the nearest feature corresponds to the maximum ZoI value from all infrastructure at each position. The cumulative ZoI corresponds to the sum of the ZoI of all infrastructure at each position. |
-| Compute ZoI | `calc_zoi_nearest()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the zone of influence from the neareast feature of that type of infrastructure. Zones of influence are defined by functions that decay with  the distance from each infrastructure and their rate of decay is controlled by the ZoI radius (parameter `zoi_radius`), which defines  how far the influence of an infrastructure feature goes. By default, the Gaussian decay ZoI is calculated, but other  decay functions might be used (parameter `type`). The `calc_zoi_nearest()` function might also return the Euclidean distance to the nearest feature or a transformation from it (e.g. log- and sqrt-distance from the nearest feature). |
-| Compute ZoI | `calc_zoi_cumulative()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the cumulative zone of influence or the density of features in space. The process is done through a moving window/neighborhood analysis. The ZoI or weight matrix is defined from zone of influence  functions, which might follow different shapes (parameter `type`) and cover an area according to the ZoI radius (parameter `zoi_radius`). |
-| Compute ZoI | `calc_zoi()`  | This function takes in a raster with locations or counts of infrastructure and calculates a raster with either or both zone of influence metrics: the ZoI of the nearest feature and the cumulative ZoI. |
-| Create filters | `create_filter()` | This function creates matrices of weights following different functions to be used in neighborhood analyses for rasters. In the context of cumulative impact analysis, they represent the Zone of Influence (ZoI) of each infrastructure point/pixel, to be used to calculate the cumulative ZoI or density of features. |
-| Create filters | `save_filter()` | This function saves a matrix with weights (filter or kernel matrix) in an external text file. It can save either the raw matrix or save a file using the standards for running the [`r.mfilter`](https://grass.osgeo.org/grass82/manuals/r.mfilter.html) algorithm within GRASS GIS. |
+| Type of function | Function | Description | Input | Output |
+|---|----|------------|---|---|
+| ZoI functions | `dist_decay()` \ `threshold_decay()` \ `step_decay()` \ `linear_decay()` \ `bartlett_decay()` \ `tent_decay()` \ `exp_decay()` \ `gaussian_decay()` \ `half_norm_decay()` | These functions compute Zone of Influence (ZoI) decay values. The shape of the zone of influence might be changed through the argument `type` in the genetic function `dist_decay()`, or through calling the other specific functions. The functions with different shapes represent multiple ways the ZoI of an infrastructure or disturbance might affect a given process in space, and the ZoI radius (parameter `radius`) controls how far this effect reaches. The rate of decay of the different ZoI functions is parameterized based on the ZoI radius – e.g the slope of `linear_decay()` is defined so that the function decreases to zero at the ZoI radius. These functions can  be used to transform arrays of (Euclidean) distance values (in one dimension)  or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. | Vector of distance values or raster of (Euclidean) distance from sources of disturbance, ZoI shape and radius | Vector or raster of ZoI values |
+| ZoI functions | `plot_zoi1d()` | This function plots the zone of influence functions in 1 dimensional space, for illustration purposes. When there is more than one value for `points` (the location of infrastructure or sources of disturbance), either the ZoI of the nearest feature or the cumulative ZoI can be plotted. The ZoI of the nearest feature corresponds to the maximum ZoI value from all infrastructure at each position. The cumulative ZoI corresponds to the sum of the ZoI of all infrastructure at each position. | 
+| Compute ZoI | `calc_zoi_nearest()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the zone of influence from the neareast feature of that type of infrastructure. Zones of influence are defined by functions that decay with  the distance from each infrastructure and their rate of decay is controlled by the ZoI radius (parameter `radius`), which defines  how far the influence of an infrastructure feature goes. By default, the Gaussian decay ZoI is calculated, but other  decay functions might be used (parameter `type`). The `calc_zoi_nearest()` function might also return the Euclidean distance to the nearest feature or a transformation from it (e.g. log- and sqrt-distance from the nearest feature). | Raster(s) with location of disturbance sources | Raster(s) of ZoI of the nearest feature | 
+| Compute ZoI | `calc_zoi_cumulative()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the cumulative zone of influence or the density of features in space. The process is done through a moving window/neighborhood analysis. The ZoI or weight matrix is defined from zone of influence  functions, which might follow different shapes (parameter `type`) and cover an area according to the ZoI radius (parameter `radius`). | Raster(s) with location of disturbance sources | Raster(s) of the cumulative ZoI of multiple features |
+| Compute ZoI | `calc_zoi()` | This function takes in a raster with locations or counts of infrastructure and calculates a raster with either or both zone of influence metrics: the ZoI of the nearest feature and the cumulative ZoI. | Raster(s) with location of disturbance sources | Raster(s) with either the ZoI of the nearest feature or the cumulative ZoI, or both |
+| Create filters | `filter_create()` | This function creates matrices of weights following different functions to be used in neighborhood analyses for rasters. In the context of cumulative impact analysis, they represent the Zone of Influence (ZoI) of each infrastructure point/pixel, to be used to calculate the cumulative ZoI or density of features. | Reference raster, ZoI shape and radius | Weight matrix |
+| Create filters | `filter_save()` | This function saves a matrix with weights (filter or kernel matrix) in an external text file. It can save either the raw matrix or save a file using the standards for running the [`r.mfilter`](https://grass.osgeo.org/grass82/manuals/r.mfilter.html) algorithm within GRASS GIS. | Matrix of weights | Text file (no output within R) |
 
 </center>
 
@@ -130,7 +130,7 @@ for different ZoI shapes and radii, but in the latter they are used to create
 weight matrices as input for the neighborhood analysis. The function already
 has built-in choices for the ZoI functions that determine the weight matrix.
 These and other weight matrices might be created through the function 
-`create_filter()`.
+`filter_create()`.
 The function `calc_zoi_cumulative()` computes the neighborhood analysis 
 through the `terra::focal()` function in R or through one 
 of the modules in GRASS GIS: [`r.mfilter`](https://grass.osgeo.org/grass82/manuals/r.mfilter.html), [`r.resamp.filter`](https://grass.osgeo.org/grass82/manuals/r.resamp.filter.html), or [`r.neighbors`](https://grass.osgeo.org/grass82/manuals/r.neighbors.html). 
@@ -167,8 +167,8 @@ computed using the `threshold_decay()` or the `step_decay()` functions:
 
 ```{r threshold}
 # threshold ZoI with radius = 10
-threshold_decay(5, zoi_radius = 10) # within the radius
-threshold_decay(10, zoi_radius = 10) # at or beyond the radius
+threshold_decay(5, radius = 10) # within the radius
+threshold_decay(10, radius = 10) # at or beyond the radius
 ```
 
 To visualize the function shape in 1 dimension space, we make use of the function
@@ -177,7 +177,7 @@ and the distance to it increases for both sides in the x axis:
 
 ```{r plot_threshold, message=FALSE, error=FALSE, warning=FALSE, fig.cap="Illustration of a threshold decay ZoI with ZoI radius = 10."}
 # threshold ZoI with radius = 10
-plot_zoi1d(points = 0, zoi_radius = 10, fun = threshold_decay, range_plot = c(-20, 20))
+plot_zoi1d(points = 0, radius = 10, fun = threshold_decay, range_plot = c(-20, 20))
 ```
 
 
@@ -191,8 +191,8 @@ Here we show the use of the function:
 
 ```{r linear}
 # linear decay ZoI with radius = 10
-linear_decay(5, zoi_radius = 10) # within the radius
-linear_decay(10, zoi_radius = 10) # at or beyond the radius
+linear_decay(5, radius = 10) # within the radius
+linear_decay(10, radius = 10) # at or beyond the radius
 ```
 
 We again visualize the function shape in 1 dimension space using the function
@@ -200,7 +200,7 @@ We again visualize the function shape in 1 dimension space using the function
 
 ```{r plot_linear, message=FALSE, error=FALSE, warning=FALSE, fig.cap="Illustration of a linear decay ZoI with ZoI radius = 10."}
 # threshold ZoI with radius = 10
-plot_zoi1d(points = 0, zoi_radius = 10, fun = linear_decay, range_plot = c(-20, 20))
+plot_zoi1d(points = 0, radius = 10, fun = linear_decay, range_plot = c(-20, 20))
 ```
 
 ### Functions that do not vanish with distance
@@ -222,35 +222,35 @@ The exponential decay might be calculated using the `exp_decay()` function:
 
 ```{r exp}
 # exponential decay ZoI with radius = 10
-exp_decay(5, zoi_radius = 10) # within the radius
-exp_decay(10, zoi_radius = 10) # at the radius
-exp_decay(15, zoi_radius = 10) # beyond the radius
+exp_decay(5, radius = 10) # within the radius
+exp_decay(10, radius = 10) # at the radius
+exp_decay(15, radius = 10) # beyond the radius
 ```
 
-As it is possible to see, an exponential decay ZoI with `zoi_radius = 10` does
+As it is possible to see, an exponential decay ZoI with `radius = 10` does
 not imply the function is null beyond the ZoI radius, but that it goes below
 the `zoi_limit`. By default, `zoi_limit = 0.05`, but this value might be changed by
 the user (e.g. to 0.01 or other small value). Changing `zoi_limit` changes the
 interpretation of the ZoI radius parameter, though:
 
 ```{r exp_2}
-# changing zoi_limit changes the interpretation of zoi_radius
-exp_decay(5, zoi_radius = 10, zoi_limit = 0.01) # within the radius
-exp_decay(10, zoi_radius = 10, zoi_limit = 0.01) # at the radius
-exp_decay(15, zoi_radius = 10, zoi_limit = 0.01) # beyond the radius
+# changing zoi_limit changes the interpretation of radius
+exp_decay(5, radius = 10, zoi_limit = 0.01) # within the radius
+exp_decay(10, radius = 10, zoi_limit = 0.01) # at the radius
+exp_decay(15, radius = 10, zoi_limit = 0.01) # beyond the radius
 ```
 
 We visualize the function shape in 1 dimension space:
 
 ```{r plot_exp, message=FALSE, error=FALSE, warning=FALSE, fig.cap="Illustration of an exponential decay ZoI with ZoI radius = 10 and ZoI limit = 0.05."}
 # threshold ZoI with radius = 10
-plot_zoi1d(points = 0, zoi_radius = 10, fun = exp_decay, range_plot = c(-20, 20)) +
+plot_zoi1d(points = 0, radius = 10, fun = exp_decay, range_plot = c(-20, 20)) +
   geom_hline(yintercept = 0.05, linetype = 2, color = "grey") +
   geom_vline(xintercept = c(-10, 10), linetype = 2, color = "grey")
 ```
 
 We add to the plot a horizontal dashed line at `zoi_limit = 0.05` and vertical dashed
-lines at `x = 10` and `x = -10` (since `zoi_radius = 10`), to show that the ZoI radius
+lines at `x = 10` and `x = -10` (since `radius = 10`), to show that the ZoI radius
 represent the distance where the ZoI reaches `zoi_limit`.
 
 #### Gaussian decay function
@@ -262,16 +262,16 @@ The Gaussian decay might be calculated using the `gaussian_decay()` and
 
 ```{r gauss}
 # Gaussian decay ZoI with radius = 10
-gaussian_decay(5, zoi_radius = 10) # within the radius
-gaussian_decay(10, zoi_radius = 10) # at or beyond the radius
-gaussian_decay(15, zoi_radius = 10) # at or beyond the radius
+gaussian_decay(5, radius = 10) # within the radius
+gaussian_decay(10, radius = 10) # at or beyond the radius
+gaussian_decay(15, radius = 10) # at or beyond the radius
 ```
 
 We visualize the function shape in 1 dimension space:
 
 ```{r plot_gauss, message=FALSE, error=FALSE, warning=FALSE, fig.cap="Illustration of a Gaussian decay ZoI with ZoI radius = 10 and ZoI limit = 0.05."}
 # threshold ZoI with radius = 10
-plot_zoi1d(points = 0, zoi_radius = 10, fun = gaussian_decay, range_plot = c(-20, 20)) +
+plot_zoi1d(points = 0, radius = 10, fun = gaussian_decay, range_plot = c(-20, 20)) +
   geom_hline(yintercept = 0.05, linetype = 2, color = "grey") +
   geom_vline(xintercept = c(-10, 10), linetype = 2, color = "grey")
 ```
@@ -291,13 +291,13 @@ To exemplify their difference, we illustrate them using a Gaussian decay ZoI
 in 1 dimension space using the `plot_zoi1d()` function.
 We set four sources of disturbance
 (e.g. houses) located at `x = 0`, `x = 2`, `x = 8`, and `x = 12`, and set the
-the ZoI radius of each feature as `zoi_radius = 3`. We start by plotting 
-the ZoI of the nearest feature alone by setting `cumulative = FALSE`:
+the ZoI radius of each feature as `radius = 3`. We start by plotting 
+the ZoI of the nearest feature alone by setting `zoi_metric = "nearest"`:
 
 ```{r zoi_metrics_near}
 disturbance_locations <- c(0, 2, 8, 12)
-plot_zoi1d(points = disturbance_locations, zoi_radius = 3, fun = gaussian_decay,
-           cumulative = FALSE, range_plot = c(-10, 20)) +
+plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
+           zoi_metric = "nearest", range_plot = c(-10, 20)) +
   labs(x = "Space") +
   geom_vline(xintercept = disturbance_locations, linetype = 2, color = "grey")
 ```
@@ -308,11 +308,11 @@ The location of the disturbance sources is shown by the vertical dashed lines. N
 the maximum value for the ZoI of the nearest feature is 1.
 
 Now we do the same but considering that the ZoI of each feature accumulates. We do it by
-setting `cumulative = TRUE` in `plot_zoi1d()`:
+setting `zoi_metric = "cumulative"` in `plot_zoi1d()`:
 
 ```{r zoi_metrics_cum}
-plot_zoi1d(points = disturbance_locations, zoi_radius = 3, fun = gaussian_decay,
-           cumulative = TRUE, range_plot = c(-10, 20)) +
+plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
+           zoi_metric = "cumulative", range_plot = c(-10, 20)) +
   labs(x = "Space") +
   geom_vline(xintercept = disturbance_locations, linetype = 2, color = "grey")
 ```
@@ -383,7 +383,7 @@ $\verb|where = "R"|$).
 
 ```{r calc_zoi_near, fig.cap="Zone of influence of the nearest feature for private cabins, using a Gaussian ZoI with radius = 1000 m."}
 # calculate ZoI
-cabins_nearest <- calc_zoi_nearest(cabins_rast, zoi_radius = 1000, type = "Gauss")
+cabins_nearest <- calc_zoi_nearest(cabins_rast, radius = 1000, type = "Gauss")
 # plot
 plot(cabins_nearest)
 ```
@@ -409,7 +409,7 @@ shaped ZoI with radius = 1000 m.
 
 ```{r calc_zoi_cum, fig.cap="Cumulative zone of influence of multiple features for private cabins, using a Gaussian ZoI with radius = 1000 m."}
 # calculate ZoI
-cabins_cumul <- calc_zoi_cumulative(cabins_rast, zoi_radius = 1000, type = "gaussian_decay",
+cabins_cumul <- calc_zoi_cumulative(cabins_rast, radius = 1000, type = "gaussian_decay",
                                     zeroAsNA = TRUE)
 # plot
 plot(cabins_cumul)
@@ -418,7 +418,7 @@ plot(cabins_cumul)
 Notice that the output map differs considerably from the ZoI of the nearest
 feature only. Here the shape of the ZoI might also be changed through the
 parameter `type`, using the functions presented above. Alternatively, a customized
-weight matrix might be defined by the user and used as the `zoi_radius` parameter,
+weight matrix might be defined by the user and used as the `radius` parameter,
 in case which the user must set $\verb|type = "mfilter"|$. Other functions to define
 weight matrices might be set e.g. through `terra::focalMat()` (Hijmans, 2022) or
 `smoothie::kernel2dmeitsjer()` (Gilleland, 2013) functions. Notice, however, that these
@@ -491,10 +491,10 @@ vary the ZoI radius from 500 m to 1500 m.
 # radii
 radii <- c(500, 1000, 1500)
 # exp decay ZoI - nearest
-zoi_exp_nearest <- calc_zoi_nearest(cabins_rast, zoi_radius = radii,
+zoi_exp_nearest <- calc_zoi_nearest(cabins_rast, radius = radii,
                                     type = "exp_decay")
 # exp decay ZoI - cumulative
-zoi_exp_cumul <- calc_zoi_cumulative(cabins_rast, zoi_radius = radii,
+zoi_exp_cumul <- calc_zoi_cumulative(cabins_rast, radius = radii,
                                      type = "exp_decay", zeroAsNA = TRUE)
 ```
 
