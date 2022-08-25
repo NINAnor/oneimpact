@@ -1,15 +1,17 @@
 # Running calc_zoi_cumulative through GRASS GIS
 library(rgrass7)
 library(terra)
-library(dplyr)
 
 # Load raster data
 f <- system.file("raster/cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # connect to grass gis 7.8 and create grass location
+# For linux or within OSGeo4W shell
 grassdir <- system("grass78 --config path", intern = T)
-grassdir <- "C:\\Programs\\GRASS GIS 7.8"
+# If you used the standalone installer in Windows
+# grassdir <- "C:\\Programs\\GRASS GIS 7.8" # Correct if the path is different
+
 gisDB <- "." # create location and mapset in the working directory
 loc <- "ETRS_33N/" # name of the location
 ms <- "PERMANENT" # name of the mapset
@@ -131,7 +133,7 @@ if(FALSE) {
                                            where = "GRASS",
                                            module = "r.resamp.filter",
                                            overwrite = T, quiet = F)
-  rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") %>%
+  rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
     plot()
 }
 
