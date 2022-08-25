@@ -34,6 +34,9 @@ Suggests:
     rasterVis,
     knitr,
     rmarkdown
+Remotes:
+    MoBiodiv/mobsim
+    ropensci/NLMR
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
