@@ -47,9 +47,182 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="zone-of-influence-zoi-functions">Zone of influence (ZoI) functions<a class="anchor" aria-label="anchor" href="#zone-of-influence-zoi-functions"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to represent the zone of influence</p>
+
+      
+    </div><div id="" class="section level2">
       
       
+      
+
+      <dl><dt>
+          
+          <code><a href="zoi_functions.html">exp_decay()</a></code> <code><a href="zoi_functions.html">threshold_decay()</a></code> <code><a href="zoi_functions.html">step_decay()</a></code> <code><a href="zoi_functions.html">bartlett_decay()</a></code> <code><a href="zoi_functions.html">tent_decay()</a></code> <code><a href="zoi_functions.html">linear_decay()</a></code> <code><a href="zoi_functions.html">gaussian_decay()</a></code> <code><a href="zoi_functions.html">half_norm_decay()</a></code> <code><a href="zoi_functions.html">dist_decay()</a></code> 
+        </dt>
+        <dd>Zone of Influence (ZoI) functions</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_zoi1d.html">plot_zoi1d()</a></code> 
+        </dt>
+        <dd>Plot nearest and cumulative zone of influence function in 1 dimension</dd>
+      </dl></div><div class="section level2">
+      <h2 id="compute-zones-of-influence-zoi-">Compute zones of influence (ZoI)<a class="anchor" aria-label="anchor" href="#compute-zones-of-influence-zoi-"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to compute the zone of influence for raster maps</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="calc_zoi.html">calc_zoi()</a></code> 
+        </dt>
+        <dd>Calculates the zone of influence from the nearest feature
+and the cumulative zone of influence of multiple features</dd>
+      </dl><dl><dt>
+          
+          <code><a href="calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> 
+        </dt>
+        <dd>Calculate the cumulative zone of influence of multiple features</dd>
+      </dl><dl><dt>
+          
+          <code><a href="calc_zoi_nearest.html">calc_zoi_nearest()</a></code> 
+        </dt>
+        <dd>Calculate the zone of influence from the nearest feature</dd>
+      </dl></div><div class="section level2">
+      <h2 id="spatial-filters">Spatial filters<a class="anchor" aria-label="anchor" href="#spatial-filters"></a></h2>
+      
+      <p class="section-desc"></p><p>Creating spatial filters to compute a meaningful zone of influence</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="create_filter.html">create_filter()</a></code> 
+        </dt>
+        <dd>Create filters or kernel matrices for raster neighborhood analyses</dd>
+      </dl><dl><dt>
+          
+          <code><a href="save_filter.html">save_filter()</a></code> 
+        </dt>
+        <dd>Save kernel/filter matrix to use in r.mfilter within GRASS GIS</dd>
+      </dl></div><div class="section level2">
+      <h2 id="model-fitting">Model fitting<a class="anchor" aria-label="anchor" href="#model-fitting"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to fit statistical models and estimate cumulative impacts and zones of influence</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="multifit_multiscale.html">multifit_multiscale()</a></code> 
+        </dt>
+        <dd>Evaluation of multiple covariate effects at multiple scales</dd>
+      </dl><dl><dt>
+          
+          <code><a href="multifit_single.html">multifit_single()</a></code> 
+        </dt>
+        <dd>Evaluation of single covariate effects at multiple scales or zones of influence (ZoI)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="multifit_single_multivar.html">multifit_single_multivar()</a></code> 
+        </dt>
+        <dd>Evaluation of single covariate effects at multiple scales for multiple covariates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to help interpreting parameters and visualizing cumulative impacts</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="rescale_coefficients.html">rescale_coefficients()</a></code> 
+        </dt>
+        <dd>Rescale standardized coefficients back to their original range after model fitting</dd>
+      </dl></div><div class="section level2">
+      <h2 id="raster-processing-ancillary-functions">Raster processing ancillary functions<a class="anchor" aria-label="anchor" href="#raster-processing-ancillary-functions"></a></h2>
+      
+      <p class="section-desc"></p><p>GRASS GIS ancillary functions to process rasters and prepare inputs for computing zones of influence</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="grass_binarize.html">grass_binarize()</a></code> 
+        </dt>
+        <dd>Binarize continuous raster maps</dd>
+      </dl><dl><dt>
+          
+          <code><a href="grass_find_layer.html">grass_find_layer()</a></code> 
+        </dt>
+        <dd>Find layers within GRASS GIS with multiple patterns</dd>
+      </dl><dl><dt>
+          
+          <code><a href="grass_v2rast_count.html">grass_v2rast_count()</a></code> 
+        </dt>
+        <dd>Rasterizes a vector counting the number of features in each pixel</dd>
+      </dl><dl><dt>
+          
+          <code><a href="rescale_raster.html">rescale_raster()</a></code> 
+        </dt>
+        <dd>Rescale raster values</dd>
+      </dl></div><div class="section level2">
+      <h2 id="support-for-landscape-simulation">Support for landscape simulation<a class="anchor" aria-label="anchor" href="#support-for-landscape-simulation"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="set_points.html">set_points()</a></code> 
+        </dt>
+        <dd>Simulate points in a landscape</dd>
+      </dl><dl><dt>
+          
+          <code><a href="set_points_from_raster.html">set_points_from_raster()</a></code> 
+        </dt>
+        <dd>Simulate points using input raster as weights</dd>
+      </dl><dl><dt>
+          
+          <code><a href="set_points_sample.html">set_points_sample()</a></code> 
+        </dt>
+        <dd>Simulate regular or random points in 2D</dd>
+      </dl><dl><dt>
+          
+          <code><a href="isolation.html">isolation()</a></code> <code><a href="isolation.html">mean_isolation()</a></code> 
+        </dt>
+        <dd>Isolation and mean isolation in space</dd>
+      </dl></div><div class="section level2">
+      <h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a></h2>
+      
+      <p class="section-desc"></p><p>Datasets for testing the ZoI approach</p>
 
       
     </div><div id="" class="section level2">
@@ -74,112 +247,12 @@
         <dd>Cabins vector data</dd>
       </dl><dl><dt>
           
-          <code><a href="calc_zoi.html">calc_zoi()</a></code> 
-        </dt>
-        <dd>Calculates the zone of influence from the nearest feature
-and the cumulative zone of influence of multiple features</dd>
-      </dl><dl><dt>
-          
-          <code><a href="calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> 
-        </dt>
-        <dd>Calculate the cumulative zone of influence of multiple features</dd>
-      </dl><dl><dt>
-          
-          <code><a href="calc_zoi_nearest.html">calc_zoi_nearest()</a></code> 
-        </dt>
-        <dd>Calculate the zone of influence from the nearest feature</dd>
-      </dl><dl><dt>
-          
-          <code><a href="create_filter.html">create_filter()</a></code> 
-        </dt>
-        <dd>Create filters or kernel matrices for raster neighborhood analyses</dd>
-      </dl><dl><dt>
-          
-          <code><a href="grass_binarize.html">grass_binarize()</a></code> 
-        </dt>
-        <dd>Binarize continuous raster maps</dd>
-      </dl><dl><dt>
-          
-          <code><a href="grass_find_layer.html">grass_find_layer()</a></code> 
-        </dt>
-        <dd>Find layers within GRASS GIS with multiple patterns</dd>
-      </dl><dl><dt>
-          
-          <code><a href="grass_v2rast_count.html">grass_v2rast_count()</a></code> 
-        </dt>
-        <dd>Rasterizes a vector counting the number of features in each pixel</dd>
-      </dl><dl><dt>
-          
-          <code><a href="isolation.html">isolation()</a></code> <code><a href="isolation.html">mean_isolation()</a></code> 
-        </dt>
-        <dd>Isolation and mean isolation in space</dd>
-      </dl><dl><dt>
-          
-          <code><a href="multifit_multiscale.html">multifit_multiscale()</a></code> 
-        </dt>
-        <dd>Evaluation of multiple covariate effects at multiple scales</dd>
-      </dl><dl><dt>
-          
-          <code><a href="multifit_single.html">multifit_single()</a></code> 
-        </dt>
-        <dd>Evaluation of single covariate effects at multiple scales or zones of influence (ZoI)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="multifit_single_multivar.html">multifit_single_multivar()</a></code> 
-        </dt>
-        <dd>Evaluation of single covariate effects at multiple scales for multiple covariates</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_zoi1d.html">plot_zoi1d()</a></code> 
-        </dt>
-        <dd>Plot nearest and cumulative zone of influence function in 1 dimension</dd>
-      </dl><dl><dt>
-          
-          <code><a href="rescale_coefficients.html">rescale_coefficients()</a></code> 
-        </dt>
-        <dd>Rescale standardized coefficients back to their original range after model fitting</dd>
-      </dl><dl><dt>
-          
-          <code><a href="rescale_raster.html">rescale_raster()</a></code> 
-        </dt>
-        <dd>Rescale raster values</dd>
-      </dl><dl><dt>
-          
-          <code><a href="save_filter.html">save_filter()</a></code> 
-        </dt>
-        <dd>Save kernel/filter matrix to use in r.mfilter within GRASS GIS</dd>
-      </dl><dl><dt>
-          
-          <code><a href="set_points.html">set_points()</a></code> 
-        </dt>
-        <dd>Simulate points in a landscape</dd>
-      </dl><dl><dt>
-          
-          <code><a href="set_points_from_raster.html">set_points_from_raster()</a></code> 
-        </dt>
-        <dd>Simulate points using input raster as weights</dd>
-      </dl><dl><dt>
-          
-          <code><a href="set_points_sample.html">set_points_sample()</a></code> 
-        </dt>
-        <dd>Simulate regular or random points in 2D</dd>
-      </dl><dl><dt>
-          
-          <code><a href="simulate_dist_dens.html">simulate_dist_dens()</a></code> 
-        </dt>
-        <dd>Simulate landscapes with features and calculate distance and densities of features</dd>
-      </dl><dl><dt>
-          
           <code><a href="study_area.gpkg.html">study_area.gpkg</a></code> 
         </dt>
         <dd>Study area: a polygon vector data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="zoi_functions.html">exp_decay()</a></code> <code><a href="zoi_functions.html">threshold_decay()</a></code> <code><a href="zoi_functions.html">step_decay()</a></code> <code><a href="zoi_functions.html">bartlett_decay()</a></code> <code><a href="zoi_functions.html">tent_decay()</a></code> <code><a href="zoi_functions.html">linear_decay()</a></code> <code><a href="zoi_functions.html">gaussian_decay()</a></code> <code><a href="zoi_functions.html">half_norm_decay()</a></code> <code><a href="zoi_functions.html">dist_decay()</a></code> 
-        </dt>
-        <dd>Zone of Influence (ZoI) functions</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

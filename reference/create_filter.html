@@ -96,7 +96,7 @@ software such as the <code>r.mfilter</code> module within GRASS GIS.</p>
     <dl><dt>r</dt>
 <dd><p><code>[numeric,SpatRaster,RasterLayer]</code> <br> Either a numeric value
 corresponding to the resolution (pixel size) that each pixel in the filter matrix
-should correspond to; or a raster object (<code>SpatRaster</code> from the <code>terra</code>
+should correspond to; or a raster object (<code>SpatRaster</code> from the <a href="https://rdrr.io/pkg/terra/man/terra-package.html" class="external-link">terra</a>
 package or <code>RasterLayer</code>, <code>RasterBrick</code>, or <code>RasterStack</code> from the
 <code>raster</code> package) from which such resolution can be extracted.</p></dd>
 
@@ -114,7 +114,7 @@ or <code>type = "step"</code>), the <code>zoi_radius</code> corresponds to the r
 <li><p>For the rectangular neighborhood (<code>type = "rectangle"</code> or <code>type = "box"</code>),
 the <code>zoi_radius</code> corresponds to half the size of the square size, or
 <code>square size = 2*zoi_radius</code>. For a rectangular filter with different size
-of the sides, use <a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">terra::focal</a> (but
+of the sides, use <code><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">terra::focal()</a></code> (but
 please note the interpretation of the parameters is different).</p></li>
 <li><p>For the Bartlett neighborhood (<code>type = "bartlett"</code> or
 <code>type = "linear_decay"</code> or <code>type = "tent_decay"</code>),
@@ -123,7 +123,7 @@ the <code>zoi_radius</code> corresponds to the distance beyond which the filter 
 Gaussian decay neighborhood (<code>type = "Gauss"</code> or <code>type = "gaussian_decay"</code>),
 the <code>zoi_radius</code> corresponds to the distance where the exponential decay
 function goes below a given limit distance defined by
-<code>zoi_limit</code>. See <a href="zoi_functions.html">zoi_functions</a> for details.</p></li>
+<code>zoi_limit</code>. See <code><a href="zoi_functions.html">zoi_functions()</a></code> for details.</p></li>
 <li><p>If <code>zoi_radius = NULL</code>, the exponential or gaussian decay matrices are
 defined based on other parameters -- see below. This option will raise an
 error for the other types of filters.</p></li>
@@ -141,9 +141,9 @@ for linear decay ZoI;</p></li>
 <li><p><code>"rectangle"</code> or <code>"box"</code> for a rectangular ZoI.
 There might be some correspondence between the weight matrix <code>type</code>
 in <code>create_filter</code> and other similar functions (e.g. <code>type = "rectangle"</code>
-and <code>type = "boxcar"</code> in <a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer</a> or
-<code>type = "Gauss"</code> in <a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat</a> with parameter
-<code>type = "gauss"</code> n <a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer</a>); however, the
+and <code>type = "boxcar"</code> in <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code> or
+<code>type = "Gauss"</code> in <code><a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat()</a></code> with parameter
+<code>type = "gauss"</code> n <a href="smoothie::kernel2dmeitsjer">smoothie::kernel2dmeitsjer</a>); however, the
 interpretation of the parameters used to
 define these matrices is different between functions.</p></li>
 </ul></dd>
@@ -165,7 +165,7 @@ the distance where the exponential decay function reaches 0.5 of its
 maximum value. For the <code>exp_decay</code> function,
 if the ZoI radius parameter is null (<code>zoi_radius = NULL</code>), the value of the
 exponential half life (<code>half_life = log(2)/lambda</code>) can used to parameterize the
-exponential decay function. See details in <a href="zoi_functions.html">zoi_functions</a>.</p></dd>
+exponential decay function. See details in <code><a href="zoi_functions.html">zoi_functions()</a></code>.</p></dd>
 
 
 <dt>zoi_hl_ratio</dt>
@@ -215,7 +215,7 @@ in the n x n neighborhood around the center cell by the corresponding matrix val
 If a divisor is specified, the sum is divided by this divisor." <br>
 If the divisor is zero, "then the divisor is computed for each cell as the sum of the MATRIX values where
 the corresponding input cell is non-null." In other words, the output map will be rescaled to the
-interval 0,1. If <code>normalize = TRUE</code>, the divisor is set to <code>n*n</code>.</p></dd>
+interval $0,1$. If <code>normalize = TRUE</code>, the divisor is set to <code>n*n</code>.</p></dd>
 
 
 <dt>round_vals</dt>
@@ -282,15 +282,15 @@ the matrix radius (parameter <code>min_dist</code>, which can be set to be the <
 Keeping \(n\) at a reasonable size guarantees that the neighborhood
 analysis using such input weight matrices is computationally feasible.</p>
 <p>Possible future implementation: compare results with
-<a href="https://rdrr.io/pkg/smoothie/man/kernel2dsmooth.html" class="external-link">smoothie::kernel2dsmooth</a> and <a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer</a>,
+<code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dsmooth.html" class="external-link">smoothie::kernel2dsmooth()</a></code> and <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code>,
 maybe wrap some options here.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>See <a href="zoi_functions.html">zoi_functions</a> for some ZoI function shapes and
-<a href="save_filter.html">save_filter</a> for options to save the ZoI matrix as a text file. <br>
-See also <a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer</a>, <a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat</a>, and
-<a href="https://rdrr.io/pkg/raster/man/focalWeight.html" class="external-link">raster::focalWeight</a> for other functions to create filters or weight matrices. <br>
+    <div class="dont-index"><p>See <code><a href="zoi_functions.html">zoi_functions()</a></code> for some ZoI function shapes and
+<code><a href="save_filter.html">save_filter()</a></code> for options to save the ZoI matrix as a text file. <br>
+See also <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code>, <code><a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat()</a></code>, and
+<code><a href="https://rdrr.io/pkg/raster/man/focalWeight.html" class="external-link">raster::focalWeight()</a></code> for other functions to create filters or weight matrices. <br>
 See
 <a href="https://grass.osgeo.org/grass80/manuals/r.mfilter.html" class="external-link">r.mfilter</a>,
 <a href="https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html" class="external-link">r.resamp.filter</a>, and

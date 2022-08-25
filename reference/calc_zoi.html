@@ -100,7 +100,7 @@ and e.g. through the use of the module
 <dt>zoi_radius</dt>
 <dd><p><code>[numeric(1)]</code> <br> Zone of Influence (ZoI) radius,
 the distance at which the ZoI vanishes or goes below a given minimum limit value
-<code>zoi_limit</code>. See <a href="zoi_functions.html">zoi_functions</a> for details. This parameter is
+<code>zoi_limit</code>. See <code><a href="zoi_functions.html">zoi_functions()</a></code> for details. This parameter is
 ignored if <code>type = "euclidean"</code>, <code>type = "log"</code>, or <code>type = "sqrt"</code>.</p></dd>
 
 
@@ -110,12 +110,12 @@ representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max).
 It is intended to keep only a region of interest, for standardizing the
 parameters and region when comparing the resulting ZoI maps with the
-cumulative ZoI, calculated through <a href="calc_zoi_cumulative.html">calc_zoi_cumulative</a>.</p></dd>
+cumulative ZoI, calculated through <code><a href="calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>.</p></dd>
 
 
 <dt>...</dt>
 <dd><p><br> Adittional parameters passed to <code><a href="https://rdrr.io/pkg/terra/man/distance.html" class="external-link">terra::distance()</a></code>
-or to the ZoI functions (see <a href="zoi_functions.html">zoi_functions</a>) when the
+or to the ZoI functions (see <code><a href="zoi_functions.html">zoi_functions()</a></code>) when the
 calculations are performed in R.
 No additional parameters implemented for computation in GRASS GIS.</p></dd>
 
