@@ -46,24 +46,24 @@ plot(cabins_bin, col = c("lightyellow", "black"),
 
 # Exponential decay
 exp_name <- calc_zoi_cumulative(x = cabins_bin_g,
-                                zoi_radius = 1000, zoi_limit = 0.01,
+                                radius = 1000, zoi_limit = 0.01,
                                 type = "exp_decay",
                                 where = "GRASS",
                                 overwrite = T, quiet = F)
 # Bartlett decay
-barlett_name <- calc_zoi_cumulative(x = cabins_bin_g, zoi_radius = 1000,
+barlett_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
                                     type = "bartlett",
                                     where = "GRASS",
                                     overwrite = T, quiet = F)
 # Gaussian decay
 gauss_name <- calc_zoi_cumulative(x = cabins_bin_g,
-                                  zoi_radius = 1000, zoi_limit = 0.01,
+                                  radius = 1000, zoi_limit = 0.01,
                                   type = "Gauss",
                                   where = "GRASS",
                                   overwrite = T, quiet = F)
 
 # Threshold decay (circle, step)
-threshold_name <- calc_zoi_cumulative(x = cabins_bin_g, zoi_radius = 1000,
+threshold_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
                                       type = "threshold",
                                       where = "GRASS",
                                       overwrite = T, quiet = F)
@@ -80,7 +80,7 @@ terra::plot(cabins_zoi_cumulative, main = title_plot)
 #---
 # calculate density vs cumulative ZoI
 exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
-                                  zoi_radius = 1000, zoi_limit = 0.01,
+                                  radius = 1000, zoi_limit = 0.01,
                                   type = "exp_decay", output_type = "density",
                                   where = "GRASS",
                                   overwrite = T, quiet = F)
@@ -95,7 +95,7 @@ terra::plot(c(cabins_zoi_cumulative[[1]], cabins_density),
 
 # rectangle
 rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
-                                             zoi_radius = 1000,
+                                             radius = 1000,
                                              type = "box",
                                              output_type = "density",
                                              where = "GRASS",
@@ -106,7 +106,7 @@ rgrass7::read_RAST(rectangle_resamp_filt, return_format = "terra") %>%
 
 # bartlett
 bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
-                                            zoi_radius = 1000,
+                                            radius = 1000,
                                             type = "bartlett",
                                             output_type = "cumulative_zoi",
                                             where = "GRASS",
@@ -118,7 +118,7 @@ rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") %>%
 # Gaussian - to be implemented!
 if(FALSE) {
   gauss_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
-                                           zoi_radius = "1000,3000",
+                                           radius = "1000,3000",
                                            type = "gauss,box",
                                            output_type = "cumulative_zoi",
                                            where = "GRASS",

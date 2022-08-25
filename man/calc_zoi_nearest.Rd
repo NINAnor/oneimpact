@@ -280,10 +280,10 @@ exp_d1 <- calc_zoi_nearest(pts$rast, type = "exp_decay",
 plot(exp_d1)
 
 # calculate exponential decay zone of influence using
-# zoi_radius and zoi_limit (default)
+# radius and zoi_limit (default)
 radius2 <- 1000 # zoi = 1000m
 zoi_limit2 <- 0.05 # here zoi is the distance where the function reaches 0.05
-exp_d2 <- calc_zoi_nearest(pts$rast, type = "exp_decay", zoi_radius = radius2,
+exp_d2 <- calc_zoi_nearest(pts$rast, type = "exp_decay", radius = radius2,
                            zoi_limit = zoi_limit2)
 plot(exp_d2)
 # buffer
@@ -320,10 +320,10 @@ legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
        col = c("red", "black"), lwd = 1.1)
 
 # calculate exponential decay zone of influence using
-# zoi_radius parameter and zoi_hl_ratio
-zoi_radius4 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
+# radius parameter and zoi_hl_ratio
+radius4 <- 4000 # intensity gets down to 1/16 = 0.06 for zoi = 4000m, half_life = 1000m
 zoi_hl_ratio4 <- 6 # default
-exp_d4 <- calc_zoi_nearest(pts$rast, type = "exp_decay", zoi_radius = zoi_radius4,
+exp_d4 <- calc_zoi_nearest(pts$rast, type = "exp_decay", radius = radius4,
                            zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
@@ -331,19 +331,19 @@ pts_shp <- pts$pts \%>\%
   sf::st_as_sf(coords = c(1,2))
 # half_life = 1000m
 pts_shp \%>\%
-  sf::st_buffer(dist = zoi_radius4/zoi_hl_ratio4) \%>\%
+  sf::st_buffer(dist = radius4/zoi_hl_ratio4) \%>\%
   sf::st_union() \%>\%
   plot(add = T, border = "red")
 # zoi = 4000m
 pts_shp \%>\%
-  sf::st_buffer(dist = zoi_radius4) \%>\%
+  sf::st_buffer(dist = radius4) \%>\%
   sf::st_union() \%>\%
   plot(add = T, border = "black", )
 legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
        col = c("red", "black"), lwd = 1.1)
 
 # bartlett influence, ZOI = 2000m
-bart_d <- calc_zoi_nearest(pts$rast, type = "bartlett", zoi_radius = 2000)
+bart_d <- calc_zoi_nearest(pts$rast, type = "bartlett", radius = 2000)
 plot(bart_d)
 
 # buffer 2000m
@@ -359,7 +359,7 @@ d <- calc_zoi_nearest(pts$rast, type = "threshold", zoi = 2000)
 plot(d)
 
 # Gaussian decay influence
-g_d <- calc_zoi_nearest(pts$rast, type = "Gauss", zoi_radius = 2000)
+g_d <- calc_zoi_nearest(pts$rast, type = "Gauss", radius = 2000)
 plot(g_d)
 
 # buffer 2000m
@@ -421,21 +421,21 @@ log_name <- calc_zoi_nearest(cabins_g, type = "log", log_base = 10,
                              where = "GRASS", quiet = T, overwrite = T)
 # Exponential decay ZoI=1000m
 expdecay_name <- calc_zoi_nearest(cabins_g, type = "exp_decay",
-                                  zoi_radius = 1000,
+                                  radius = 1000,
                                   where = "GRASS", quiet = T, overwrite = T)
 # Bartlett decay ZoI=1000m
 bartlett_name <- calc_zoi_nearest(cabins_g, type = "bartlett",
-                                  zoi_radius = 1000,
+                                  radius = 1000,
                                   where = "GRASS", quiet = T, overwrite = T)
 
 # Threshold influence ZoI = 1000m
 threshold_name <- calc_zoi_nearest(cabins_g, type = "threshold",
-                                   zoi_radius = 1000,
+                                   radius = 1000,
                                    where = "GRASS", quiet = T, overwrite = T)
 
 # Gaussian influence ZoI = 1000m
 gaussian_name <- calc_zoi_nearest(cabins_g, type = "Gauss",
-                                  zoi_radius = 1000,
+                                  radius = 1000,
                                   where = "GRASS", quiet = T, overwrite = T)
 
 

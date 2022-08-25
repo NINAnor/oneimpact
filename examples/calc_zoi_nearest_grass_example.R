@@ -48,21 +48,21 @@ log_name <- calc_zoi_nearest(cabins_g, type = "log", log_base = 10,
                              where = "GRASS", quiet = T, overwrite = T)
 # Exponential decay ZoI=1000m
 expdecay_name <- calc_zoi_nearest(cabins_g, type = "exp_decay",
-                                  zoi_radius = 1000,
+                                  radius = 1000,
                                   where = "GRASS", quiet = T, overwrite = T)
 # Bartlett decay ZoI=1000m
 bartlett_name <- calc_zoi_nearest(cabins_g, type = "bartlett",
-                                  zoi_radius = 1000,
+                                  radius = 1000,
                                   where = "GRASS", quiet = T, overwrite = T)
 
 # Threshold influence ZoI = 1000m
 threshold_name <- calc_zoi_nearest(cabins_g, type = "threshold",
-                                   zoi_radius = 1000,
+                                   radius = 1000,
                                    where = "GRASS", quiet = T, overwrite = T)
 
 # Gaussian influence ZoI = 1000m
 gaussian_name <- calc_zoi_nearest(cabins_g, type = "Gauss",
-                                  zoi_radius = 1000,
+                                  radius = 1000,
                                   where = "GRASS", quiet = T, overwrite = T)
 
 

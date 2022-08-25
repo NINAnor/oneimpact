@@ -18,19 +18,19 @@ plot(pts$rast)
 # calculate cumulative zone of influence for multiple influence radii,
 # using a Gaussian filter
 zoi_values <- c(250, 500, 1000, 2500, 5000)
-cumzoi_gauss <- calc_zoi_cumulative(pts$rast, type = "Gauss", zoi_radius = zoi_values,
+cumzoi_gauss <- calc_zoi_cumulative(pts$rast, type = "Gauss", radius = zoi_values,
                                     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_gauss)
 
 # calculate cumulative zone of influence for multiple influence radii,
 # using a circle neighborhood
-cumzoi_circle <- calc_zoi_cumulative(pts$rast, type = "circle", zoi_radius = zoi_values,
+cumzoi_circle <- calc_zoi_cumulative(pts$rast, type = "circle", radius = zoi_values,
                                      extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_circle)
 
 # calculate cumulative zone of influence for multiple influence radii,
 # using an exponential decay neighborhood
-cumzoi_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", zoi_radius = zoi_values,
+cumzoi_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", radius = zoi_values,
                                   extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_exp)
 
@@ -42,14 +42,14 @@ plot(c(cumzoi_gauss[[3]], cumzoi_circle[[3]], cumzoi_exp[[3]]),
 
 # calculate cumulative influence for a single zone of influence
 # using a user-defined filter
-my_filter <- create_filter(pts$rast, zoi_radius = 1000, type = "rectangle")
-cumzoi_user <- calc_zoi_cumulative(pts$rast, type = "mfilter", zoi_radius = my_filter,
+my_filter <- create_filter(pts$rast, radius = 1000, type = "rectangle")
+cumzoi_user <- calc_zoi_cumulative(pts$rast, type = "mfilter", radius = my_filter,
                                    extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_user,
      main = "User-defined rectangular filter")
 
 # calculate density with 1000m radius using an exp_decay neighborhood
-density_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", zoi_radius = 1000,
+density_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", radius = 1000,
                                    output_type = "density",
                                    extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 # compare

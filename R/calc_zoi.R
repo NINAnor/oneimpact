@@ -17,51 +17,63 @@
 #'
 #' @inheritParams calc_zoi_nearest
 #' @inheritParams calc_zoi_cumulative
+#' @param zoi_metric `[character(1)="all"]{"all", "nearest", "cumulative"}` \cr
+#' Which metric of zone of influence should be computed. Either `"all"`, `"nearest"`,
+#' or `"cumulative"`.
 #'
 #' @returns A RasterBrick with de distance to the nearest feature and the densities for all scales selected.
 #'
-#' @example examples/calc_zoi_example.R
+#' @seealso [oneimpact::calc_zoi_nearest()], [oneimpact::calc_zoi_cumulative()]
 #'
+#' @example examples/calc_zoi_example.R
 
 # function to calculate dist and density
 calc_zoi <- function(x,
-                     zoi_radius,
-                     transform_nearest = NULL,
-                     type_cumulative = c("circle", "Gauss", "rectangle", "mfilter")[1],
-                     extent_x_cut = bbox(x)[1,],
-                     extent_y_cut = bbox(x)[2,],
+                     zoi_metric = c("all", "nearest", "cumulative")[1],
+                     where = c("R", "GRASS")[1],
                      ...) {
 
   # check if the input is a terra or raster object
-  if(class(x) %in% c("SpatRaster")) {
-    use_terra <- TRUE
-  } else {
-    if(class(x) %in% c("RasterLayer", "RasterBrick", "RasterStack")) {
-      use_terra <- FALSE
+  if(where == "R")
+    if(class(x) %in% c("SpatRaster")) {
+      use_terra <- TRUE
     } else {
-      classes <- c("SpatRaster", "RasterLayer", "RasterBrick", "RasterStack")
-      stop(paste0("Please make sure x is an object of one of these classes: ",
-                  paste(classes, collapse = ","), "."))
+      if(class(x) %in% c("RasterLayer", "RasterBrick", "RasterStack")) {
+        use_terra <- FALSE
+      } else {
+        classes <- c("SpatRaster", "RasterLayer", "RasterBrick", "RasterStack")
+        stop(paste0("Please make sure x is an object of one of these classes: ",
+                    paste(classes, collapse = ","), "."))
+      }
     }
-  }
 
   # nearest influence
-  nearest_r <- calc_zoi_nearest(x = x, zoi_radius = zoi_radius,
-                                transform = transform_nearest,
-                                extent_x_cut = extent_x_cut,
-                                extent_y_cut = extent_y_cut,
-                                ...)
+  if(zoi_metric %in% c("all", "near", "nearest", "dist", "distance")) {
+    nearest_r <- calc_zoi_nearest(x = x,
+                                  ...)
+  }
 
   # cumulative influence
-  cumulative_r <- calc_zoi_cumulative(x = x, zoi_radius = zoi_radius,
-                                      type = type_cumulative,
-                                      extent_x_cut = extent_x_cut,
-                                      extent_y_cut = extent_y_cut,
-                                      ...)
+  if(zoi_metric %in% c("all", "cum", "cumulative", "density")) {
+    cumulative_r <- calc_zoi_cumulative(x = x,
+                                        ...)
+  }
 
   # stack
-  if(use_terra) r_stk <- do.call(c, list(nearest_r, cumulative_r)) else
-    r_stk <- raster::stack(nearest_r, cumulative_r)
+  if(zoi_metric == "all") {
+    if(where == "R") {
+      if(use_terra) r_stk <- do.call(c, list(nearest_r, cumulative_r)) else
+        r_stk <- raster::stack(nearest_r, cumulative_r)
+    } else {
+      r_stk <- do.call(c, list(nearest_r, cumulative_r))
+    }
+  } else {
+    if(zoi_metric %in% c("near", "nearest", "dist", "distance")) {
+      r_stk <- nearest_r
+    } else {
+      r_stk <- cumulative_r
+    }
+  }
 
   r_stk
 }

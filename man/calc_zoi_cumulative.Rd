@@ -6,7 +6,7 @@
 \usage{
 calc_zoi_cumulative(
   x,
-  zoi_radius = 100,
+  radius = 100,
   type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
     "mfilter")[1],
   where = c("R", "GRASS")[1],
@@ -44,18 +44,18 @@ to be used as input for \code{calc_zoi_cumulative()} through
 in GRASS GIS, or through common raster algebra in both
 environments.}
 
-\item{zoi_radius}{\verb{[numeric(1)=100]} \cr Radius or scale of the moving
+\item{radius}{\verb{[numeric(1)=100]} \cr Radius or scale of the moving
 window for neighborhood analysis, used to calculate the cumulative zoi and
 density. It can be a single value or a vector of values, in which case
 several cumulative ZoI or density maps (one for each radius) are created.
-For \code{type = "circle"}, the \code{zoi_radius} corresponds to the radius of the
-circle filter. For \code{type = "Gauss"} and \code{type = "exp_decay"}, \code{zoi_radius}
+For \code{type = "circle"}, the \code{radius} corresponds to the radius of the
+circle filter. For \code{type = "Gauss"} and \code{type = "exp_decay"}, \code{radius}
 corresponds to the distance where the Gaussian or exponential decay function
-decrease or a small \code{zoi_limit} value. If \code{type = "bartlett"}, \code{zoi_radius}
+decrease or a small \code{zoi_limit} value. If \code{type = "bartlett"}, \code{radius}
 is the distance at which the filter reaches zero, after a linear decay
-from the central pixel. If \code{type = "rectangle"}, \code{zoi_radius}
+from the central pixel. If \code{type = "rectangle"}, \code{radius}
 corresponds to half the size of the side of a square filter.
-If \code{type = "mfilter"}, zoi_radius is not a numeric value but a matrix itself,
+If \code{type = "mfilter"}, radius is not a numeric value but a matrix itself,
 defined by the user. See description in the details.}
 
 \item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter"\}} \cr
@@ -80,9 +80,9 @@ in the outmap map generally lower than 1.}
 \item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr For non-vanishing functions
 (e.g. \code{exp_decay}, \code{gaussian_decay}), this value is used to set the relationship
 between the ZoI radius and the decay functions:
-\code{zoi_radius} is defined as the minimum distance at which the ZoI assumes values
+\code{radius} is defined as the minimum distance at which the ZoI assumes values
 below \code{zoi_limit}. The default is 0.05. This parameter is used only
-if \code{zoi_radius} is not \code{NULL}.}
+if \code{radius} is not \code{NULL}.}
 
 \item{min_intensity}{\verb{[numeric(1)=0.01]} \cr Minimum intensity of the
 exponential and Gaussian decay functions to
@@ -118,7 +118,7 @@ the calculation? Only used when \code{where = "R"}.}
 \item{output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map. Only
 used when \code{where = "GRASS"}. If \code{NULL} (default), a standard name is created
 based on the name of the input map \code{x}, the ZoI shape \code{type}, and the ZoI
-radius \code{zoi_radius}.}
+radius \code{radius}.}
 
 \item{input_as_region}{\verb{[logical(1)=TRUE]} \cr Should the input map \code{x} be
 used to redefine the working GRASS region before cumulative ZoI calculation?
@@ -146,7 +146,7 @@ cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
 (creating values in the output map which might go well beyond 1), the
 density of features uses a normalized ZoI/weight matrix (with all values
 summing 1), what created values smaller than one in the output map.
-if multiple \code{zoi_radius} values are given, a \code{RasterBrick} or multi-layer
+if multiple \code{radius} values are given, a \code{RasterBrick} or multi-layer
 \code{SpatRaster}, with the cumulative ZoI or density maps for each ZoI radius. \cr
 If the computation is done in GRASS GIS, the output is name of
 the output raster map within the GRASS GIS location and mapset of the
@@ -158,7 +158,7 @@ current session. The user can retrieve these maps to R using
 This function takes in a raster with locations or counts of
 infrastructure
 and calculates a raster (or set of rasters, in case there is more the one
-value for \code{zoi_radius}) representing the cumulative zone of influence (ZoI)
+value for \code{radius}) representing the cumulative zone of influence (ZoI)
 or density of features in space. The process is done through a spatial
 filter/moving window/neighborhood analysis. The ZoI or weight matrix is
 defined from zone of influence functions, which might follow different shapes
@@ -197,29 +197,29 @@ are:
 \itemize{
 \item circular/threshold matrix: the circular filter (\code{type = "circle"} or
 \code{type = "threshold"} or \code{type = "step"}) is a matrix with constant weights
-in which the parameter \code{zoi_radius} corresponds to the radius of the circle
+in which the parameter \code{radius} corresponds to the radius of the circle
 centered on the central pixel. It is similar to a circular buffer matrix.
 \item Gaussian matrix: the Gaussian filter (\code{type = "Gauss"} or \code{type = "gauss"}
 or \code{type = "gaussian_decay"}) is a matrix with weights following a Gaussian
 or Normal decay. The Gaussian curve is 1 at the central cell and
-is parameterized on the \code{zoi_radius} and
+is parameterized on the \code{radius} and
 the \code{zoi_limit}, which controls how fast the curve decreases with distance.
 See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item Exponential decay matrix: the exponential decay filter
 (\code{type = "exp_decay"}) is a matrix with weights following an exponential
 decay curve, with value 1 in the central cell and
-parameterized on the \code{zoi_radius} and the \code{zoi_limit}.
+parameterized on the \code{radius} and the \code{zoi_limit}.
 See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item Rectangular matrix: the rectangular filter (\code{type = "rectangle"}
 or \code{type = "box"}) is
 a weight matrix whose shape is a square of dimensions \eqn{n} x \eqn{n},
-with \eqn{n = 2 * zoi_radius}.
+with \eqn{n = 2 * radius}.
 \item Bartlett or linear decay matrix: the Bartlett, linear, or tent decay filter
 (\code{type = "bartlett"} or \code{type = "linear_decay"} or \code{type = "tent_decay"})
 is a weight matrix whose value is 1 in the central cell and whose weights
-decrease linearly up to zero at a distance equals \code{zoi_radius}.
+decrease linearly up to zero at a distance equals \code{radius}.
 See \code{\link[=zoi_functions]{zoi_functions()}} for details.
-\item user-customized filter: if \code{type = "mfilter"}, \code{zoi_radius} is not
+\item user-customized filter: if \code{type = "mfilter"}, \code{radius} is not
 numeric but should be a user-defined matrix of weights. Examples are ones
 created through \code{\link[=filter_create]{filter_create()}}, \code{\link[terra:focalMat]{terra::focalMat()}},
 \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, or matrices created by hand.
@@ -252,9 +252,9 @@ in terms of a balance between flexibility in the choice of the ZoI shape
 and computation efficiency.
 The only inconvenient of \code{r.mfilter} is that it
 creates an edge effect with no information in the outer cells of a raster
-(the number of cells correspond to \code{zoi_radius} or half the size of the weight
+(the number of cells correspond to \code{radius} or half the size of the weight
 matrix), so if it is used the users should add a buffer area
-\eqn{ge zoi_radius} around the input raster map, to avoid such edge effects.
+\eqn{ge radius} around the input raster map, to avoid such edge effects.
 See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 \item \code{r.neighbors} is considerably slower than the other algorithms (from 10 to
 100 times), but allow the a flexible choice of the ZoI shape. Contrary to
@@ -287,19 +287,19 @@ plot(pts$rast)
 # calculate cumulative zone of influence for multiple influence radii,
 # using a Gaussian filter
 zoi_values <- c(250, 500, 1000, 2500, 5000)
-cumzoi_gauss <- calc_zoi_cumulative(pts$rast, type = "Gauss", zoi_radius = zoi_values,
+cumzoi_gauss <- calc_zoi_cumulative(pts$rast, type = "Gauss", radius = zoi_values,
                                     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_gauss)
 
 # calculate cumulative zone of influence for multiple influence radii,
 # using a circle neighborhood
-cumzoi_circle <- calc_zoi_cumulative(pts$rast, type = "circle", zoi_radius = zoi_values,
+cumzoi_circle <- calc_zoi_cumulative(pts$rast, type = "circle", radius = zoi_values,
                                      extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_circle)
 
 # calculate cumulative zone of influence for multiple influence radii,
 # using an exponential decay neighborhood
-cumzoi_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", zoi_radius = zoi_values,
+cumzoi_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", radius = zoi_values,
                                   extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_exp)
 
@@ -311,14 +311,14 @@ plot(c(cumzoi_gauss[[3]], cumzoi_circle[[3]], cumzoi_exp[[3]]),
 
 # calculate cumulative influence for a single zone of influence
 # using a user-defined filter
-my_filter <- create_filter(pts$rast, zoi_radius = 1000, type = "rectangle")
-cumzoi_user <- calc_zoi_cumulative(pts$rast, type = "mfilter", zoi_radius = my_filter,
+my_filter <- create_filter(pts$rast, radius = 1000, type = "rectangle")
+cumzoi_user <- calc_zoi_cumulative(pts$rast, type = "mfilter", radius = my_filter,
                                    extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 plot(cumzoi_user,
      main = "User-defined rectangular filter")
 
 # calculate density with 1000m radius using an exp_decay neighborhood
-density_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", zoi_radius = 1000,
+density_exp <- calc_zoi_cumulative(pts$rast, type = "exp_decay", radius = 1000,
                                    output_type = "density",
                                    extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
 # compare
@@ -375,24 +375,24 @@ plot(cabins_bin, col = c("lightyellow", "black"),
 
 # Exponential decay
 exp_name <- calc_zoi_cumulative(x = cabins_bin_g,
-                                zoi_radius = 1000, zoi_limit = 0.01,
+                                radius = 1000, zoi_limit = 0.01,
                                 type = "exp_decay",
                                 where = "GRASS",
                                 overwrite = T, quiet = F)
 # Bartlett decay
-barlett_name <- calc_zoi_cumulative(x = cabins_bin_g, zoi_radius = 1000,
+barlett_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
                                     type = "bartlett",
                                     where = "GRASS",
                                     overwrite = T, quiet = F)
 # Gaussian decay
 gauss_name <- calc_zoi_cumulative(x = cabins_bin_g,
-                                  zoi_radius = 1000, zoi_limit = 0.01,
+                                  radius = 1000, zoi_limit = 0.01,
                                   type = "Gauss",
                                   where = "GRASS",
                                   overwrite = T, quiet = F)
 
 # Threshold decay (circle, step)
-threshold_name <- calc_zoi_cumulative(x = cabins_bin_g, zoi_radius = 1000,
+threshold_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
                                       type = "threshold",
                                       where = "GRASS",
                                       overwrite = T, quiet = F)
@@ -409,7 +409,7 @@ terra::plot(cabins_zoi_cumulative, main = title_plot)
 #---
 # calculate density vs cumulative ZoI
 exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
-                                  zoi_radius = 1000, zoi_limit = 0.01,
+                                  radius = 1000, zoi_limit = 0.01,
                                   type = "exp_decay", output_type = "density",
                                   where = "GRASS",
                                   overwrite = T, quiet = F)
@@ -424,7 +424,7 @@ terra::plot(c(cabins_zoi_cumulative[[1]], cabins_density),
 
 # rectangle
 rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
-                                             zoi_radius = 1000,
+                                             radius = 1000,
                                              type = "box",
                                              output_type = "density",
                                              where = "GRASS",
@@ -435,7 +435,7 @@ rgrass7::read_RAST(rectangle_resamp_filt, return_format = "terra") \%>\%
 
 # bartlett
 bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
-                                            zoi_radius = 1000,
+                                            radius = 1000,
                                             type = "bartlett",
                                             output_type = "cumulative_zoi",
                                             where = "GRASS",
@@ -447,7 +447,7 @@ rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") \%>\%
 # Gaussian - to be implemented!
 if(FALSE) {
   gauss_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
-                                           zoi_radius = "1000,3000",
+                                           radius = "1000,3000",
                                            type = "gauss,box",
                                            output_type = "cumulative_zoi",
                                            where = "GRASS",

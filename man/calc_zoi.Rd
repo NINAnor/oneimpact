@@ -7,11 +7,8 @@ and the cumulative zone of influence of multiple features}
 \usage{
 calc_zoi(
   x,
-  zoi_radius,
-  transform_nearest = NULL,
-  type_cumulative = c("circle", "Gauss", "rectangle", "mfilter")[1],
-  extent_x_cut = bbox(x)[1, ],
-  extent_y_cut = bbox(x)[2, ],
+  zoi_metric = c("all", "nearest", "cumulative")[1],
+  where = c("R", "GRASS")[1],
   ...
 )
 }
@@ -29,26 +26,13 @@ through \href{https://rspatial.org/terra/pkg/4-algebra.html}{raster algebra} in 
 and e.g. through the use of the module
 \href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}} in GRASS GIS.}
 
-\item{zoi_radius}{\verb{[numeric(1)=100]} \cr Radius or scale of the moving
-window for neighborhood analysis, used to calculate the cumulative zoi and
-density. It can be a single value or a vector of values, in which case
-several cumulative ZoI or density maps (one for each radius) are created.
-For \code{type = "circle"}, the \code{zoi_radius} corresponds to the radius of the
-circle filter. For \code{type = "Gauss"} and \code{type = "exp_decay"}, \code{zoi_radius}
-corresponds to the distance where the Gaussian or exponential decay function
-decrease or a small \code{zoi_limit} value. If \code{type = "bartlett"}, \code{zoi_radius}
-is the distance at which the filter reaches zero, after a linear decay
-from the central pixel. If \code{type = "rectangle"}, \code{zoi_radius}
-corresponds to half the size of the side of a square filter.
-If \code{type = "mfilter"}, zoi_radius is not a numeric value but a matrix itself,
-defined by the user. See description in the details.}
+\item{zoi_metric}{\verb{[character(1)="all"]\{"all", "nearest", "cumulative"\}} \cr
+Which metric of zone of influence should be computed. Either \code{"all"}, \code{"nearest"},
+or \code{"cumulative"}.}
 
-\item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector
-representing the minimum and
-maximum extent in x and y for the final output, in the format c(min,max).
-It is intended to keep only a region of interest, for standardizing the
-parameters and region when comparing the resulting ZoI maps with the
-cumulative ZoI, calculated through \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}.}
+\item{where}{\verb{[character(1)="R"]\{"R", "GRASS"\}} \cr Where should the
+computation be done? Default is \code{"R"}. If \code{where = "GRASS"}, the R session
+must be linked to an open GRASS GIS session in a specific location and mapset.}
 
 \item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}}
 or to the ZoI functions (see \code{\link[=zoi_functions]{zoi_functions()}}) when the
@@ -75,47 +59,8 @@ details.
 TO IMPROVE2: do the same in communication with GRASS GIS.
 }
 \examples{
-library(mobsim)
-library(raster)
-
-set.seed(1234)
-
-# set points
-ext <- 30000
-wd <- ext/20
-pts <- set_points(n_features = 1000, centers = 1,
-                  width = wd, res = 100,
-                  extent_x = c(0, ext), extent_y = c(0, ext),
-                  buffer_around = 10000)
-plot(pts$pts)
-plot(pts$rast)
-
-# calculate distance and densities considering only the initial extent
-zoi_values <- c(250, 500, 1000, 2500, 5000)/2
-nearest_cumulative <- calc_zoi(pts$rast, zoi = zoi_values,
-                                     type_cumulative = "Gauss",
-                                     extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
-plot(nearest_cumulative)
-
-# calculate exp_decay (the rest is equal)
-log_dist_dens <- calc_zoi(pts$rast, type_density = "Gauss", scale = scales,
-                                transform_dist = "exp_decay", half_life = 200,
-                                extent_x_cut = c(0, ext), extent_y_cut = c(0, ext))
-plot(log_dist_dens)
-
-
-# set points
-ext <- 30000
-wd <- ext/20
-pts <- set_points(n_features = 1000, centers = 1,
-                  width = wd, res = 100,
-                  extent_x = c(0, ext), extent_y = c(0, ext),
-                  buffer_around = 0)
-plot(pts$pts)
-plot(pts$rast)
-
-# calculate distance and densities considering only the initial extent
-scales <- c(250, 500, 1000, 2500, 5000)/2
-dist_dens <- calc_zoi(pts$rast, type_density = "Gauss", scale = scales, pad = T)
-plot(dist_dens)
+library(terra)
+}
+\seealso{
+\code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}}, \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}
 }

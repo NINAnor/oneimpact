@@ -3,7 +3,7 @@
 #' @description This function takes in a raster with locations or counts of
 #' infrastructure
 #' and calculates a raster (or set of rasters, in case there is more the one
-#' value for `zoi_radius`) representing the cumulative zone of influence (ZoI)
+#' value for `radius`) representing the cumulative zone of influence (ZoI)
 #' or density of features in space. The process is done through a spatial
 #' filter/moving window/neighborhood analysis. The ZoI or weight matrix is
 #' defined from zone of influence functions, which might follow different shapes
@@ -43,29 +43,29 @@
 #' are:
 #' - circular/threshold matrix: the circular filter (`type = "circle"` or
 #' `type = "threshold"` or `type = "step"`) is a matrix with constant weights
-#' in which the parameter `zoi_radius` corresponds to the radius of the circle
+#' in which the parameter `radius` corresponds to the radius of the circle
 #' centered on the central pixel. It is similar to a circular buffer matrix.
 #' - Gaussian matrix: the Gaussian filter (`type = "Gauss"` or `type = "gauss"`
 #' or `type = "gaussian_decay"`) is a matrix with weights following a Gaussian
 #' or Normal decay. The Gaussian curve is 1 at the central cell and
-#' is parameterized on the `zoi_radius` and
+#' is parameterized on the `radius` and
 #' the `zoi_limit`, which controls how fast the curve decreases with distance.
 #' See [oneimpact::zoi_functions()] for details.
 #' - Exponential decay matrix: the exponential decay filter
 #' (`type = "exp_decay"`) is a matrix with weights following an exponential
 #' decay curve, with value 1 in the central cell and
-#' parameterized on the `zoi_radius` and the `zoi_limit`.
+#' parameterized on the `radius` and the `zoi_limit`.
 #' See [oneimpact::zoi_functions()] for details.
 #' - Rectangular matrix: the rectangular filter (`type = "rectangle"`
 #' or `type = "box"`) is
 #' a weight matrix whose shape is a square of dimensions \eqn{n} x \eqn{n},
-#' with \eqn{n = 2 * zoi_radius}.
+#' with \eqn{n = 2 * radius}.
 #' - Bartlett or linear decay matrix: the Bartlett, linear, or tent decay filter
 #' (`type = "bartlett"` or `type = "linear_decay"` or `type = "tent_decay"`)
 #' is a weight matrix whose value is 1 in the central cell and whose weights
-#' decrease linearly up to zero at a distance equals `zoi_radius`.
+#' decrease linearly up to zero at a distance equals `radius`.
 #' See [oneimpact::zoi_functions()] for details.
-#' - user-customized filter: if `type = "mfilter"`, `zoi_radius` is not
+#' - user-customized filter: if `type = "mfilter"`, `radius` is not
 #' numeric but should be a user-defined matrix of weights. Examples are ones
 #' created through [oneimpact::filter_create()], [terra::focalMat()],
 #' [smoothie::kernel2dmeitsjer()], or matrices created by hand.
@@ -95,9 +95,9 @@
 #' and computation efficiency.
 #' The only inconvenient of `r.mfilter` is that it
 #' creates an edge effect with no information in the outer cells of a raster
-#' (the number of cells correspond to `zoi_radius` or half the size of the weight
+#' (the number of cells correspond to `radius` or half the size of the weight
 #' matrix), so if it is used the users should add a buffer area
-#' \eqn{ge zoi_radius} around the input raster map, to avoid such edge effects.
+#' \eqn{ge radius} around the input raster map, to avoid such edge effects.
 #' See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 #' - `r.neighbors` is considerably slower than the other algorithms (from 10 to
 #' 100 times), but allow the a flexible choice of the ZoI shape. Contrary to
@@ -124,26 +124,26 @@
 #' "exp_decay", "bartlett", "threshold", "step", "mfilter"}` \cr
 #' Type of filter used to calculate the cumulative ZoI or density. See details.
 #'
-#' @param zoi_radius `[numeric(1)=100]` \cr Radius or scale of the moving
+#' @param radius `[numeric(1)=100]` \cr Radius or scale of the moving
 #' window for neighborhood analysis, used to calculate the cumulative zoi and
 #' density. It can be a single value or a vector of values, in which case
 #' several cumulative ZoI or density maps (one for each radius) are created.
-#' For `type = "circle"`, the `zoi_radius` corresponds to the radius of the
-#' circle filter. For `type = "Gauss"` and `type = "exp_decay"`, `zoi_radius`
+#' For `type = "circle"`, the `radius` corresponds to the radius of the
+#' circle filter. For `type = "Gauss"` and `type = "exp_decay"`, `radius`
 #' corresponds to the distance where the Gaussian or exponential decay function
-#' decrease or a small `zoi_limit` value. If `type = "bartlett"`, `zoi_radius`
+#' decrease or a small `zoi_limit` value. If `type = "bartlett"`, `radius`
 #' is the distance at which the filter reaches zero, after a linear decay
-#' from the central pixel. If `type = "rectangle"`, `zoi_radius`
+#' from the central pixel. If `type = "rectangle"`, `radius`
 #' corresponds to half the size of the side of a square filter.
-#' If `type = "mfilter"`, zoi_radius is not a numeric value but a matrix itself,
+#' If `type = "mfilter"`, radius is not a numeric value but a matrix itself,
 #' defined by the user. See description in the details.
 #'
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing functions
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
 #' between the ZoI radius and the decay functions:
-#' `zoi_radius` is defined as the minimum distance at which the ZoI assumes values
+#' `radius` is defined as the minimum distance at which the ZoI assumes values
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
-#' if `zoi_radius` is not `NULL`.
+#' if `radius` is not `NULL`.
 #'
 #' @param output_type `[character(1)="cumulative_zoi"]{"cumulative_zoi",
 #' "density"}` \cr If `output_type = "cumulative_zoi"` (default), the ZoI weight
@@ -201,7 +201,7 @@
 #' @param output_map_name `[character(1)=NULL]` \cr Name of the output map. Only
 #' used when `where = "GRASS"`. If `NULL` (default), a standard name is created
 #' based on the name of the input map `x`, the ZoI shape `type`, and the ZoI
-#' radius `zoi_radius`.
+#' radius `radius`.
 #' @param input_as_region `[logical(1)=TRUE]` \cr Should the input map `x` be
 #' used to redefine the working GRASS region before cumulative ZoI calculation?
 #' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
@@ -221,7 +221,7 @@
 #' (creating values in the output map which might go well beyond 1), the
 #' density of features uses a normalized ZoI/weight matrix (with all values
 #' summing 1), what created values smaller than one in the output map.
-#' if multiple `zoi_radius` values are given, a `RasterBrick` or multi-layer
+#' if multiple `radius` values are given, a `RasterBrick` or multi-layer
 #' `SpatRaster`, with the cumulative ZoI or density maps for each ZoI radius. \cr
 #' If the computation is done in GRASS GIS, the output is name of
 #' the output raster map within the GRASS GIS location and mapset of the
@@ -246,7 +246,7 @@
 #'
 #' @export
 calc_zoi_cumulative <- function(x,
-                                zoi_radius = 100,
+                                radius = 100,
                                 type = c("circle", "Gauss", "rectangle", "exp_decay",
                                          "bartlett", "threshold", "mfilter")[1],
                                 where = c("R", "GRASS")[1],
@@ -273,7 +273,7 @@ calc_zoi_cumulative <- function(x,
     if(is.null(extent_y_cut)) extent_y_cut <- terra::ext(x)[c(3,4)]
 
     zoi_cumulative <- calc_zoi_cumulative_r(x,
-                                            zoi_radius = zoi_radius,
+                                            radius = radius,
                                             type = type,
                                             output_type = output_type,
                                             zoi_limit = zoi_limit,
@@ -293,7 +293,7 @@ calc_zoi_cumulative <- function(x,
     # Run in GRASS GIS
     if(where %in% c("GRASS", "grass", "GRASS GIS", "grass gis")) {
       zoi_cumulative <- calc_zoi_cumulative_grass(x = x,
-                                                  zoi_radius = zoi_radius,
+                                                  radius = radius,
                                                   type = type,
                                                   output_type = output_type,
                                                   module = module,
@@ -320,7 +320,7 @@ calc_zoi_cumulative <- function(x,
 # implementation in R
 calc_zoi_cumulative_r <- function(
     x,
-    zoi_radius = 100,
+    radius = 100,
     type = c("circle", "Gauss", "rectangle", "exp_decay",
              "bartlett", "threshold", "mfilter")[1],
     output_type = c("cumulative_zoi", "density")[1],
@@ -374,8 +374,8 @@ calc_zoi_cumulative_r <- function(
 
   # define filters
   if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "rectangle", "Gauss")) {
-    if(length(zoi_radius) == 1) {
-      filt <- oneimpact::filter_create(r0, zoi_radius = zoi_radius,
+    if(length(radius) == 1) {
+      filt <- oneimpact::filter_create(r0, radius = radius,
                                        type = type, zoi_limit = zoi_limit,
                                        zoi_hl_ratio = zoi_hl_ratio,
                                        half_life = half_life,
@@ -383,8 +383,8 @@ calc_zoi_cumulative_r <- function(
                                        min_intensity = min_intensity,
                                        normalize = normalize, ...)
     } else {
-      filt <- purrr::map(zoi_radius, function(z, ...) {
-        oneimpact::filter_create(r0, zoi_radius = z, type = type,
+      filt <- purrr::map(radius, function(z, ...) {
+        oneimpact::filter_create(r0, radius = z, type = type,
                                  zoi_limit = zoi_limit,
                                  zoi_hl_ratio = zoi_hl_ratio,
                                  half_life = half_life,
@@ -396,7 +396,7 @@ calc_zoi_cumulative_r <- function(
   }
 
   if(type == "mfilter") {
-    filt <- zoi_radius
+    filt <- radius
   }
 
   # those methods were put above with the filter_create function
@@ -406,13 +406,13 @@ calc_zoi_cumulative_r <- function(
   # if(type %in% c("Gauss")) {
   #
   #   # if(type %in% c("threshold", "step")) type <- "circle"
-  #   # if(type == "rectangle") zoi_radius = 2*zoi_radius # for this case d is the side of the square
+  #   # if(type == "rectangle") radius = 2*radius # for this case d is the side of the square
   #
-  #   if(length(zoi_radius) == 1) {
-  #     filt <- terra::focalMat(r0, d = zoi_radius, type = type)
+  #   if(length(radius) == 1) {
+  #     filt <- terra::focalMat(r0, d = radius, type = type)
   #     if(!normalize) filt <- filt/max(filt, na.rm = T)
   #   } else {
-  #     filt <- purrr::map(zoi_radius, function(z) {
+  #     filt <- purrr::map(radius, function(z) {
   #       ft <- terra::focalMat(r0, d = z, type = type)
   #       if(!normalize) ft <- ft/max(ft, na.rm = T)
   #       ft
@@ -424,7 +424,7 @@ calc_zoi_cumulative_r <- function(
   if(type == "mfilter") {
     # more than one matrix
     if("list" %in% class(filt)) {
-      cuminf <- purrr::map2(filt, 1:length(zoi_radius), function(f, z) {
+      cuminf <- purrr::map2(filt, 1:length(radius), function(f, z) {
         if(!quiet) print(paste0("Calculating for ZoI n. ", z, "..."))
         terra::focal(r0, w = f, na.policy = na.policy, na.rm = na.rm, ...)
       })
@@ -435,10 +435,10 @@ calc_zoi_cumulative_r <- function(
       cumulative_r <- terra::focal(r0, w = filt, na.policy = na.policy, na.rm = na.rm, ...)
     }
   } else {
-    if(length(zoi_radius) == 1) {
+    if(length(radius) == 1) {
       cumulative_r <- terra::focal(r0, w = filt, na.policy = na.policy, na.rm = na.rm, ...)
     } else {
-      cuminf <- purrr::map2(filt, zoi_radius, function(f, z) {
+      cuminf <- purrr::map2(filt, radius, function(f, z) {
         if(!quiet) print(paste0("Calculating for ZoI = ", z, "..."))
         terra::focal(r0, w = f, na.policy = na.policy, na.rm = na.rm, ...)
       })
@@ -449,10 +449,10 @@ calc_zoi_cumulative_r <- function(
 
   # rename cumulative zoi layer
   if(type == "mfilter") {
-    if(!is.list(zoi_radius)) name <- "zoi_cumulative" else
-      name <- paste0("zoi_cumulative", 1:length(zoi_radius))
+    if(!is.list(radius)) name <- "zoi_cumulative" else
+      name <- paste0("zoi_cumulative", 1:length(radius))
   } else {
-    name <- paste0("zoi_cumulative_", type, zoi_radius)
+    name <- paste0("zoi_cumulative_", type, radius)
   }
 
   names(cumulative_r) <- name
@@ -469,7 +469,7 @@ calc_zoi_cumulative_r <- function(
 # implementation in GRASS
 calc_zoi_cumulative_grass <- function(
     x,
-    zoi_radius = 100,
+    radius = 100,
     type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
     module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
     output_type = c("cumulative_zoi", "density")[1],
@@ -588,10 +588,10 @@ calc_zoi_cumulative_grass <- function(
       # r.resamp.filter
 
       if(types[1] %in% c("bartlett", "box", "gauss")) {
-        filter_count <- zoi_radius
+        filter_count <- radius
         filter_file <- tempfile(paste0("my_filter", filter_count, "_"))
-        if(length(zoi_radius) == 1) {
-          filt <- oneimpact::filter_create(r = resolution, zoi_radius = zoi_radius,
+        if(length(radius) == 1) {
+          filt <- oneimpact::filter_create(r = resolution, radius = radius,
                                            type = type, zoi_limit = zoi_limit,
                                            zoi_hl_ratio = zoi_hl_ratio,
                                            half_life = half_life,
@@ -602,8 +602,8 @@ calc_zoi_cumulative_grass <- function(
                                            save_format = "raw",
                                            save_file = filter_file, ...)
         } else {
-          filt <- purrr::map2(zoi_radius, filter_file, function(z, file, ...) {
-            oneimpact::filter_create(r = resolution, zoi_radius = z,
+          filt <- purrr::map2(radius, filter_file, function(z, file, ...) {
+            oneimpact::filter_create(r = resolution, radius = z,
                                      zoi_limit = zoi_limit, type = type,
                                      zoi_hl_ratio = zoi_hl_ratio,
                                      half_life = half_life,
@@ -627,16 +627,16 @@ calc_zoi_cumulative_grass <- function(
     # set parameters for neighborhood analysis
 
     # only one matrix
-    if(length(zoi_radius) == 1) {
+    if(length(radius) == 1) {
       out_names <- out_map
-      out_names <- paste0(out_names, zoi_radius)
+      out_names <- paste0(out_names, radius)
       filters <- paste(types, collapse = ",")
       parms <- list(input = input_bin, output = out_names, filter = filters,
-                    radius = zoi_radius)
+                    radius = radius)
     } else {
       # several matrices or zoi values
-      if(length(zoi_radius) > 1) {
-        parms <- purrr::map(zoi_radius, function(x)
+      if(length(radius) > 1) {
+        parms <- purrr::map(radius, function(x)
           list(input = input_bin, output = paste0(out_map, x),
                filter = paste(types, collapse = ","), radius = x))
         out_names <- purrr::map(parms, ~ .$output) %>% unlist()
@@ -644,12 +644,12 @@ calc_zoi_cumulative_grass <- function(
     }
 
     # run neighborhood analysis
-    if(length(zoi_radius) > 1) {
+    if(length(radius) > 1) {
 
       # loop for matrices or zoi values
-      for(i in seq_along(zoi_radius)) {
+      for(i in seq_along(radius)) {
         parm <- parms[[i]]
-        z <- zoi_radius[[i]]
+        z <- radius[[i]]
 
         # change names for creating density map first, in case the
         # final output is the cumulative ZoI
@@ -693,7 +693,7 @@ calc_zoi_cumulative_grass <- function(
 
       # for only one matrix/zoi value
       parm <- parms
-      z <- zoi_radius
+      z <- radius
 
       # change names for creating density map first, in case the
       # final output is the cumulative ZoI
@@ -745,11 +745,11 @@ calc_zoi_cumulative_grass <- function(
 
     # define filters
     if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "step", "rectangle", "Gauss")) {
-      filter_count <- zoi_radius
+      filter_count <- radius
       filter_file <- tempfile(paste0("my_filter", filter_count, "_"))
-      if(length(zoi_radius) == 1) {
+      if(length(radius) == 1) {
         filt <- oneimpact::filter_create(r = resolution,
-                                         zoi_radius = zoi_radius,
+                                         radius = radius,
                                          type = type, zoi_limit = zoi_limit,
                                          zoi_hl_ratio = zoi_hl_ratio,
                                          half_life = half_life,
@@ -759,8 +759,8 @@ calc_zoi_cumulative_grass <- function(
                                          normalize = normalize, save_txt = TRUE,
                                          save_file = filter_file, ...)
       } else {
-        filt <- purrr::map2(zoi_radius, filter_file, function(z, file, ...) {
-          oneimpact::filter_create(r = resolution, zoi_radius = z,
+        filt <- purrr::map2(radius, filter_file, function(z, file, ...) {
+          oneimpact::filter_create(r = resolution, radius = z,
                                    zoi_limit = zoi_limit, type = type,
                                    zoi_hl_ratio = zoi_hl_ratio,
                                    half_life = half_life,
@@ -779,7 +779,7 @@ calc_zoi_cumulative_grass <- function(
       # Filters pre-defined for "mfilter"
       if(type == "mfilter") {
         # set
-        filt <- zoi_radius
+        filt <- radius
         # normalize if not already normalized, and if they should be
         if(normalize) {
           # only one matrix
@@ -801,7 +801,7 @@ calc_zoi_cumulative_grass <- function(
         filter_count <- 1
         filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
         # save matrix outside R for use within GRASS GIS
-        oneimpact::filter_save(filt, zoi_radius = "", type = type,
+        oneimpact::filter_save(filt, radius = "", type = type,
                                divisor = divisor,
                                save_format = c("GRASS_rmfilter"),
                                save_file = filter_file,
@@ -814,7 +814,7 @@ calc_zoi_cumulative_grass <- function(
           filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
           # save matrices outside R for use within GRASS GIS
           purrr::map2(filt, filter_file, function(f, file, ...) {
-            oneimpact::filter_save(f, zoi_radius = "", type = type,
+            oneimpact::filter_save(f, radius = "", type = type,
                                    divisor = divisor,
                                    save_format = c("GRASS_rmfilter"),
                                    save_file = file,
@@ -830,7 +830,7 @@ calc_zoi_cumulative_grass <- function(
     # only one matrix
     if(is.matrix(filt)) {
       out_names <- out_map
-      if(type != "mfilter") out_names <- paste0(out_names, zoi_radius)
+      if(type != "mfilter") out_names <- paste0(out_names, radius)
       parms <- list(input = input_bin, output = out_names, filter = filter_file)
     } else {
       # several matrices or zoi values
