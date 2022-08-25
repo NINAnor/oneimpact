@@ -31,10 +31,10 @@ nearest neighbor distance from all random positions to the points in
 }
 \description{
 Measures of isolation and mean isolation to a set of points in
-space. \code{isolation} creates random points in a landscape and calculates
+space. \code{isolation()} creates random points in a landscape and calculates
 the nearest neighbor distance from each of them to another set
-of points passed as input, \code{x}. \code{mean_isolation} calculates the
-average isolation calculated through \code{isolation}.
+of points passed as input, \code{x}. \code{mean_isolation()} calculates the
+average isolation calculated through \code{isolation()}.
 }
 \details{
 So far the function only works for a square landscape. In the future
@@ -42,7 +42,7 @@ we can implement that for polygons or rasters with masks or
 null cells if necessary, in an approach similar to set_points_sample.
 }
 \examples{
-pts <- set_points(n_features = 100, method = "mobsim", centers = 1, width = 0.1)[[1]]
+pts <- set_points(n_features = 100, method = "random", centers = 1, width = 0.1)[[1]]
 isolation(pts)
 mean_isolation(pts)
 }

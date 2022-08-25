@@ -6,7 +6,7 @@
 \usage{
 calc_zoi_nearest(
   x,
-  zoi_radius = NULL,
+  radius = NULL,
   type = c("Gauss", "exp_decay", "bartlett", "half_norm", "threshold", "step",
     "euclidean", "log", "sqrt")[1],
   where = c("R", "GRASS")[1],
@@ -47,7 +47,7 @@ through \href{https://rspatial.org/terra/pkg/4-algebra.html}{raster algebra} in 
 and e.g. through the use of the module
 \href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}} in GRASS GIS.}
 
-\item{zoi_radius}{\verb{[numeric(1)]} \cr Zone of Influence (ZoI) radius,
+\item{radius}{\verb{[numeric(1)]} \cr Zone of Influence (ZoI) radius,
 the distance at which the ZoI vanishes or goes below a given minimum limit value
 \code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details. This parameter is
 ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
@@ -61,10 +61,10 @@ parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} fo
 \code{N_0 * exp(-lambda * euclidean_distance)}. \code{N_0} and \code{lambda} are
 parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item If \code{bartlett}, \code{linear_decay}, or \code{tent_decay}, the ZoI follows a
-linear decay shape within the ZoI radius (\code{zoi_radius}).
+linear decay shape within the ZoI radius (\code{radius}).
 \item If \code{threshold} or \code{step}, a constant influence is consider within the
-zone of influence radius (\code{zoi_radius}). All pixels closer than
-\code{zoi_radius} to infrastructure are considered as "under the influence" of
+zone of influence radius (\code{radius}). All pixels closer than
+\code{radius} to infrastructure are considered as "under the influence" of
 the nearest feature, with a constant influence value defined by the
 \code{constant_influence} parameter, and all other pixels are assumed to have
 zero influence.
@@ -93,13 +93,13 @@ must be linked to an open GRASS GIS session in a specific location and mapset.}
 \item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr For non-vanishing functions
 (e.g. \code{exp_decay}, \code{gaussian_decay}), this value is used to set the relationship
 between the ZoI radius and the decay functions:
-\code{zoi_radius} is defined as the minimum distance at which the ZoI assumes values
+\code{radius} is defined as the minimum distance at which the ZoI assumes values
 below \code{zoi_limit}. The default is 0.05. This parameter is used only
-if \code{zoi_radius} is not \code{NULL}.}
+if \code{radius} is not \code{NULL}.}
 
 \item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr Parameters (\code{N_0}, \code{lambda})
 for the exponential decay ZoI, if \code{type = exp_decay}. The value of \code{lambda}
-defined here is used only if \code{zoi_radius = NULL} and \code{half_life = NULL},
+defined here is used only if \code{radius = NULL} and \code{half_life = NULL},
 otherwise one of these parameters is used to determine \code{lambda}.
 By default, \code{N_0} is defined as 1, which means the ZoI is 1 where the
 infrastructure feature is located, and it decreases as the Euclidean distance
@@ -108,7 +108,7 @@ from it increases.}
 \item{hnorm_decay_parms}{\verb{[numeric(2)=c(1,20)]} \cr Parameters (\code{N_0}, \code{sigma})
 for the half-normal decay ZoI, if \code{type = Gauss} or \code{type = half_normal}.
 The value of \code{sigma} defined here is used to define the decay rate \code{lambda}
-only if \code{zoi_radius = NULL} and \code{half_life = NULL}, otherwise one of these
+only if \code{radius = NULL} and \code{half_life = NULL}, otherwise one of these
 parameters is used to determine \code{lambda}. By default, \code{N_0} is defined as 1,
 which means the ZoI is 1 where the infrastructure feature is located,
 and it decreases as the Euclidean distance from it increases.}
@@ -116,7 +116,7 @@ and it decreases as the Euclidean distance from it increases.}
 \item{constant_influence}{\verb{[numeric(1)=1]} \cr Constant value of the
 ZoI of the nearest feature if \code{type = "threshold"} or \code{type = "step"}.
 Default is 1. In this case, all pixels closer to any
-infrastructure than the \code{zoi_radius} are classified with this constant value.}
+infrastructure than the \code{radius} are classified with this constant value.}
 
 \item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to the Euclidean
 distance before transforming it, to avoid \code{-Inf}/\code{Inf} values
@@ -140,8 +140,8 @@ the calculation? Only used when \code{where = "R"}.}
 \item{output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map name,
 to be used only within GRASS (if \code{where = "GRASS"}). By default, this is \code{NULL}
 and the output map names are a concatenation of the input map name
-(e.g. "map_houses") and the decay function and zoi_radius used
-(e.g. for \code{type = "exp_decay"} and \code{zoi_radius = 1000}, the name would be
+(e.g. "map_houses") and the decay function and radius used
+(e.g. for \code{type = "exp_decay"} and \code{radius = 1000}, the name would be
 "map_houses_exp_decay_1000").
 This parameter is ignored when the calculations are performed in R
 (\code{where = "R"}).}
@@ -184,7 +184,7 @@ No additional parameters implemented for computation in GRASS GIS.}
 If the calculations are performed in R (\code{where = "R"}), the function
 returns a \code{RasterLayer} (or \code{SpatRaster}, according to the class of the input
 object) with the zone of influence of the nearest feature. If multiple values
-of \code{zoi_radius} are providade, a stack of rasters is returned.
+of \code{radius} are providade, a stack of rasters is returned.
 If the calculations are performed in GRASS GIS (\code{where = "GRASS"}),
 the maps are kept only within the GRASS GIS location/mapset and the function
 returns the name of the calculated maps. \cr
@@ -197,11 +197,11 @@ current session. The user can retrieve these maps to R using
 \description{
 This function takes in a raster with locations or counts of
 infrastructure and calculates a raster (or set of rasters, in case there is
-more the one value for \code{zoi_radius}) representing the zone of influence (ZoI)
+more the one value for \code{radius}) representing the zone of influence (ZoI)
 from the neareast feature of that type of infrastructure. Zones of influence
 are defined by functions that decay with the Euclidean distance from each
 infrastructure and their rate of decay is controlled by the ZoI radius
-(\code{zoi_radius}), which defines how far the influence of an infrastructure
+(\code{radius}), which defines how far the influence of an infrastructure
 feature goes. By default, the Gaussian decay ZoI is calculated, but other
 decay functions might be used (see \code{\link[=zoi_functions]{zoi_functions()}} for examples).
 The function might also return the Euclidean distance to the nearest feature

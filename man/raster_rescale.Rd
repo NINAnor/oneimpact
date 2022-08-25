@@ -34,8 +34,8 @@ ci <- calc_zoi_cumulative(cabins, zoi_radius = 1000, type = "exp_decay",
 plot(c(ni, ci))
 
 # rescale
-plot(rescale_raster(ci)) # rescale to [0,1]
-plot(rescale_raster(c(ni, ci))) # rescale both to [0,1]
-plot(rescale_raster(c(ni, ci), to = c(0, 100))) # rescale to [0,100]
-plot(rescale_raster(c(ni, ci), from = c(0, 50))) # rescale to [0,1] from [0,50]
+plot(raster_rescale(ci)) # rescale to [0,1]
+plot(raster_rescale(c(ni, ci))) # rescale both to [0,1]
+plot(raster_rescale(c(ni, ci), to = c(0, 100))) # rescale to [0,100]
+plot(raster_rescale(c(ni, ci), from = c(0, 50))) # rescale to [0,1] from [0,50]
 }

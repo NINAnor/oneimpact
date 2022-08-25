@@ -271,7 +271,7 @@ if(FALSE) {
 }
 \seealso{
 See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes and
-\code{\link[=save_filter]{save_filter()}} for options to save the ZoI matrix as a text file. \cr
+\code{\link[=filter_save]{filter_save()}} for options to save the ZoI matrix as a text file. \cr
 See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
 \code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
 See

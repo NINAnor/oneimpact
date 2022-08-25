@@ -6,7 +6,7 @@
 \usage{
 plot_zoi1d(
   points,
-  zoi_radius,
+  radius,
   fun = exp_decay,
   cumulative = FALSE,
   range_plot = c(0, 12),
@@ -22,7 +22,7 @@ in 1 dimension
 (more broadly, the location of sources of disturbance or spatial variables, or the point of
 origin of the ZoI functions).}
 
-\item{zoi_radius}{\verb{[numeric(1)]} \cr Zone of influence (ZoI) radius,
+\item{radius}{\verb{[numeric(1)]} \cr Zone of influence (ZoI) radius,
 the distance at which the ZoI vanishes or goes below a given minimum threshold value.
 See \link{zoi_functions} for details.}
 
@@ -58,7 +58,7 @@ infrastructure at each position. The cumulative ZoI corresponds to the sum of th
 of all infrastructure at each position.
 }
 \details{
-In practice, the \code{plot_zoi1d} computes the ZoI value for each feature
+In practice, the \code{plot_zoi1d()} computes the ZoI value for each feature
 whose locations in 1 dimension are defined by \code{points} and calculates the maximum
 (ZoI of the nearest) or sum (cumulative ZoI) of all values This is done
 for a series of points in 1 dimensional space in the range \code{range_plot} (with
@@ -68,25 +68,25 @@ To add: options for normalization, prob etc.
 }
 \examples{
 # one point, exponential decay
-plot_zoi1d(0, zoi_radius = 3, zoi_limit = 0.05,
+plot_zoi1d(0, radius = 3, zoi_limit = 0.05,
            fun = exp_decay, range_plot = c(0, 5), cumulative = FALSE)
 
 # exponential decay
 points <- c(0, 4.5, 7, 7.5)
-plot_zoi1d(points, zoi = 3, fun = exp_decay, range_plot = c(0, 12), cumulative = FALSE)
-plot_zoi1d(points, zoi = 3, fun = exp_decay, range_plot = c(0, 12), cumulative = TRUE)
+plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12), cumulative = FALSE)
+plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12), cumulative = TRUE)
 
 # threshold
-plot_zoi1d(points, zoi = 3, fun = threshold_decay, range_plot = c(0, 12), cumulative = F)
-plot_zoi1d(points, zoi = 3, fun = "step_decay", range_plot = c(0, 12), cumulative = T)
+plot_zoi1d(points, radius = 3, fun = threshold_decay, range_plot = c(0, 12), cumulative = F)
+plot_zoi1d(points, radius = 3, fun = "step_decay", range_plot = c(0, 12), cumulative = T)
 
 # linear
-plot_zoi1d(points, zoi = 3, fun = bartlett_decay, range_plot = c(0, 12), cumulative = F)
-plot_zoi1d(points, zoi = 3, fun = "linear_decay", range_plot = c(0, 12), cumulative = T,
+plot_zoi1d(points, radius = 3, fun = bartlett_decay, range_plot = c(0, 12), cumulative = F)
+plot_zoi1d(points, radius = 3, fun = "linear_decay", range_plot = c(0, 12), cumulative = T,
                  return_df = T)
 
 # gaussian
-plot_zoi1d(points, zoi = 3, fun = gaussian_decay, range_plot = c(0, 12), cumulative = F)
-plot_zoi1d(points, zoi = 3, fun = "half_norm_decay", range_plot = c(0, 12), cumulative = T,
+plot_zoi1d(points, radius = 3, fun = gaussian_decay, range_plot = c(0, 12), cumulative = F)
+plot_zoi1d(points, radius = 3, fun = "half_norm_decay", range_plot = c(0, 12), cumulative = T,
                  return_df = T)
 }

@@ -29,10 +29,19 @@ through \href{https://rspatial.org/terra/pkg/4-algebra.html}{raster algebra} in 
 and e.g. through the use of the module
 \href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}} in GRASS GIS.}
 
-\item{zoi_radius}{\verb{[numeric(1)]} \cr Zone of Influence (ZoI) radius,
-the distance at which the ZoI vanishes or goes below a given minimum limit value
-\code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details. This parameter is
-ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
+\item{zoi_radius}{\verb{[numeric(1)=100]} \cr Radius or scale of the moving
+window for neighborhood analysis, used to calculate the cumulative zoi and
+density. It can be a single value or a vector of values, in which case
+several cumulative ZoI or density maps (one for each radius) are created.
+For \code{type = "circle"}, the \code{zoi_radius} corresponds to the radius of the
+circle filter. For \code{type = "Gauss"} and \code{type = "exp_decay"}, \code{zoi_radius}
+corresponds to the distance where the Gaussian or exponential decay function
+decrease or a small \code{zoi_limit} value. If \code{type = "bartlett"}, \code{zoi_radius}
+is the distance at which the filter reaches zero, after a linear decay
+from the central pixel. If \code{type = "rectangle"}, \code{zoi_radius}
+corresponds to half the size of the side of a square filter.
+If \code{type = "mfilter"}, zoi_radius is not a numeric value but a matrix itself,
+defined by the user. See description in the details.}
 
 \item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector
 representing the minimum and

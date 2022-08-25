@@ -47,21 +47,21 @@
 #'
 #' @examples
 #' my_filter <- create_filter(r = 100, type = "bartlett", radius = 1000, round = 4)
-#' save_filter(my_filter, radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
-#' save_filter(my_filter, radius = 1000, type = "bartlett", save_format = "raw")
+#' filter_save(my_filter, radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
+#' filter_save(my_filter, radius = 1000, type = "bartlett", save_format = "raw")
 #'
 #' @export
-save_filter <- function(
-  filt,
-  radius,
-  type,
-  save_format = c("GRASS_rmfilter", "raw")[1],
-  save_folder = NULL,
-  save_file = NULL,
-  divisor = 1,
-  normalize = FALSE,
-  parallel = TRUE,
-  separator = " ") {
+filter_save <- function(
+    filt,
+    radius,
+    type,
+    save_format = c("GRASS_rmfilter", "raw")[1],
+    save_folder = NULL,
+    save_file = NULL,
+    divisor = 1,
+    normalize = FALSE,
+    parallel = TRUE,
+    separator = " ") {
 
   # define the divisor
   DIV <- divisor

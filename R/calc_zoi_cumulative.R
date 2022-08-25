@@ -801,12 +801,12 @@ calc_zoi_cumulative_grass <- function(
         filter_count <- 1
         filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
         # save matrix outside R for use within GRASS GIS
-        save_filter(filt, zoi_radius = "", type = type,
-                    divisor = divisor,
-                    save_format = c("GRASS_rmfilter"),
-                    save_file = filter_file,
-                    parallel = parallel,
-                    separator = " ")
+        oneimpact::filter_save(filt, zoi_radius = "", type = type,
+                               divisor = divisor,
+                               save_format = c("GRASS_rmfilter"),
+                               save_file = filter_file,
+                               parallel = parallel,
+                               separator = " ")
       } else {
         # for multiple matrices
         if(is.list(filt)) {
@@ -814,12 +814,12 @@ calc_zoi_cumulative_grass <- function(
           filter_file <- tempfile(paste0("my_filter_", type, filter_count, "_"))
           # save matrices outside R for use within GRASS GIS
           purrr::map2(filt, filter_file, function(f, file, ...) {
-            save_filter(f, zoi_radius = "", type = type,
-                        divisor = divisor,
-                        save_format = c("GRASS_rmfilter"),
-                        save_file = file,
-                        parallel = parallel,
-                        separator = " ")
+            oneimpact::filter_save(f, zoi_radius = "", type = type,
+                                   divisor = divisor,
+                                   save_format = c("GRASS_rmfilter"),
+                                   save_file = file,
+                                   parallel = parallel,
+                                   separator = " ")
           })
         }
       }

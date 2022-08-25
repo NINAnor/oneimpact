@@ -151,7 +151,7 @@
 #' @example examples/create_filter_example.R
 #'
 #' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes and
-#' [oneimpact::save_filter()] for options to save the ZoI matrix as a text file. \cr
+#' [oneimpact::filter_save()] for options to save the ZoI matrix as a text file. \cr
 #' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
 #' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
 #' See
@@ -268,16 +268,16 @@ create_filter <- function(r = 100,
 
   # round decimals
   if(!is.null(round_vals))
-     if(round_vals >= 0) dist_mat <- round(dist_mat, round_vals)
+    if(round_vals >= 0) dist_mat <- round(dist_mat, round_vals)
   # image(dist_mat)
   # plot(terra::rast(dist_mat))
 
   if(save_txt) {
     # save matrix outside R for use within GRASS GIS
-    save_filter(filt = dist_mat, zoi_radius = zoi_radius, type = type,
-                save_format = save_format, save_folder = save_folder,
-                save_file = save_file, parallel = parallel,
-                divisor = divisor, separator = " ")
+    oneimpact::filter_save(filt = dist_mat, zoi_radius = zoi_radius, type = type,
+                           save_format = save_format, save_folder = save_folder,
+                           save_file = save_file, parallel = parallel,
+                           divisor = divisor, separator = " ")
 
   }
 
