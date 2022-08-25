@@ -28,8 +28,7 @@
 #' pts2 <- set_points_sample(100, type = "random")
 #' plot(pts2)
 #'
-#' library(terra)
-#' library(stars)
+#' library(raster)
 #' x <- rast(system.file("external/test.grd", package="raster"))
 #' pts3 <- set_points_sample(100, base_polygon = x)
 #' plot(pts3)
@@ -44,14 +43,14 @@ set_points_sample <- function(n_features = 1000,
   if(is.null(base_polygon)) {
     # Assumes a square/rectangular shape and creates a polygon
     coord <- expand.grid(x = extent_x, y = extent_y)
-    coord <- rbind(coord[1:2,], coord[4,], coord[3,], coord[1,]) %>% as.matrix()
+    coord <- as.matrix(rbind(coord[1:2,], coord[4,], coord[3,], coord[1,]))
     pol <- sf::st_polygon(list(coord))
 
   } else {
     # Creates bbox around a raster
     if(class(base_polygon) %in% c(paste0("Raster", c("Layer", "Stack", "Brick")), "SpatRaster") ) {
-      pol <- base_polygon %>%
-        sf::st_bbox() %>%
+      pol <- base_polygon |>
+        sf::st_bbox() |>
         sf::st_as_sfc()
     } else {
       pol <- base_polygon
