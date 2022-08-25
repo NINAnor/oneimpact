@@ -13,10 +13,10 @@
 #' @return A raster object (or collection of rasters) with values rescaled to
 #' a given range (e.g. to the interval [0,1]).
 #'
-#' @example examples/rescale_raster_example.R
+#' @example examples/raster_rescale_example.R
 #'
 #' @export
-rescale_raster <- function(x, to = c(0, 1), from = NULL) {
+raster_rescale <- function(x, to = c(0, 1), from = NULL) {
 
   # if original miximum and maximum are not given,
   # get them from the layers
@@ -29,12 +29,10 @@ rescale_raster <- function(x, to = c(0, 1), from = NULL) {
   }
 
   # rescale
-  x_out <- purrr::pmap(
-    list(terra::split(x, 1:nlyr(x)), mins, maxs),
-    function(a, b, c) {
-      values(a) <- scales::rescale(values(a), to = to, from = c(b, c))
-      a
-    })
+  x_out <- mapply(function(a, b, c) {
+    values(a) <- scales::rescale(values(a), to = to, from = c(b, c))
+    a
+  }, a = terra::split(x, 1:nlyr(x)), b = mins, c = maxs)
 
   # combine SpatRasters
   x_out <- do.call(c, x_out)
