@@ -3,7 +3,7 @@
 \name{isolation}
 \alias{isolation}
 \alias{mean_isolation}
-\title{Isolation and mean isolation in space}
+\title{Isolation and mean isolation of points in space}
 \usage{
 isolation(x, n_rand = 100, ext = c(0, 1, 0, 1), lonlat = FALSE)
 
@@ -21,7 +21,7 @@ random positions should be created c(x or ymin, x or ymax).}
 
 \item{lonlat}{\verb{[logical(1)=FALSE]} \cr Whether the distance between points
 should be calculated in an WGS ellipsoid (\code{lonlat = TRUE}) or on a
-plane (\code{lonlat = FALSE}). See \link[raster:pointDistance]{raster::pointDistance} for more details.}
+plane (\code{lonlat = FALSE}). See \code{\link[raster:pointDistance]{raster::pointDistance()}} for more details.}
 }
 \value{
 \code{isolation()} returns the distance from each random point to
