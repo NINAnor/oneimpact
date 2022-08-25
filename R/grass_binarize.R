@@ -53,7 +53,9 @@ grass_binarize <- function(x,
                            null = NULL,
                            setnull = NULL,
                            bin_values = c(0, 1),
+                           input_as_region = FALSE,
                            quiet = TRUE,
+                           verbose = FALSE,
                            overwrite = FALSE, ...) {
 
   # Check function arguments ----
@@ -66,7 +68,7 @@ grass_binarize <- function(x,
 
   # flags for g.region
   flags_region <- c("a")
-  if(!quiet) flags_region <- c(flags_region, "p")
+  if(verbose) flags_region <- c(flags_region, "p")
 
   # output names
   out_name <- output
@@ -75,7 +77,14 @@ grass_binarize <- function(x,
   for(i in 1:length(breaks)) {
 
     # region
-    rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
+    if(input_as_region) {
+      if(verbose) {
+        msg  <- "Important: the GRASS GIS computational is being reset to the extent of the input map `x`."
+        rgrass7::execGRASS("g.message", message = msg)
+      }
+
+      rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
+    }
 
     # nulls
     if(!(is.null(null) & is.null(setnull))) {

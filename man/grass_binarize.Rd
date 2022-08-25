@@ -11,7 +11,9 @@ grass_binarize(
   null = NULL,
   setnull = NULL,
   bin_values = c(0, 1),
+  input_as_region = FALSE,
   quiet = TRUE,
+  verbose = FALSE,
   overwrite = FALSE,
   ...
 )

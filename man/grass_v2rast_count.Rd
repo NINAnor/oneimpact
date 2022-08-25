@@ -8,7 +8,7 @@ grass_v2rast_count(
   x,
   output = paste0(x, "_count"),
   column = NULL,
-  set_region = TRUE,
+  input_as_region = FALSE,
   align = NULL,
   remove_intermediate = TRUE,
   quiet = TRUE,
@@ -27,7 +27,7 @@ in the input vector \code{x} that corresponds to the column to be summed to coun
 of features in each pixel of the output raster map. If \code{NULL}, this column is created in
 a temporary vector, with all values equal 1.}
 
-\item{set_region}{\verb{[logical(1)=TRUE]} \cr Default is TRUE. Whether the GRASS GIS
+\item{input_as_region}{\verb{[logical(1)=FALSE]} \cr Default is FALSE. Whether the GRASS GIS
 computational region should be set within the function (to the extent of \code{x}) or not.
 If \code{FALSE}, the current computational region is used.}
 

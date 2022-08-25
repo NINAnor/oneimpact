@@ -8,7 +8,7 @@
 #' in the input vector `x` that corresponds to the column to be summed to count the number
 #' of features in each pixel of the output raster map. If `NULL`, this column is created in
 #' a temporary vector, with all values equal 1.
-#' @param set_region `[logical(1)=TRUE]` \cr Default is TRUE. Whether the GRASS GIS
+#' @param input_as_region `[logical(1)=FALSE]` \cr Default is FALSE. Whether the GRASS GIS
 #' computational region should be set within the function (to the extent of `x`) or not.
 #' If `FALSE`, the current computational region is used.
 #' @param align `[character(1)=NULL]` \cr Name of a raster map with which to align the
@@ -20,7 +20,7 @@
 grass_v2rast_count <- function(x,
                                output = paste0(x, "_count"),
                                column = NULL,
-                               set_region = TRUE,
+                               input_as_region = FALSE,
                                align = NULL,
                                remove_intermediate = TRUE,
                                quiet = TRUE,
@@ -43,11 +43,17 @@ grass_v2rast_count <- function(x,
 
   #--- region ---
   # region
-  if(set_region)
+  if(input_as_region) {
+    if(verbose) {
+      msg  <- "Important: the GRASS GIS computational is being reset to the extent of the input map `x`."
+      rgrass7::execGRASS("g.message", message = msg)
+    }
+
     if(is.null(align)) {
       rgrass7::execGRASS("g.region", vector = x, flags = flags_region)
     } else
       rgrass7::execGRASS("g.region", vector = x, align = align, flags = flags_region)
+  }
 
   #--- procedures ---
   # If no column is given, the vector is copied only for the computational region and

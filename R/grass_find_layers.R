@@ -26,15 +26,13 @@ grass_find_layer <- function(list_patterns,
   if(is.null(layers_grass))
     layers_grass <- rgrass7::execGRASS("g.list", type = type,
                                        pattern = pattern,
-                                       mapset = mapset) %>%
-      attr(., "resOut")
+                                       mapset = mapset, intern = TRUE)
 
   # apply all filters according to the patterns
   layers_grass_filt <- layers_grass
   for(i in 1:length(list_patterns)) {
     patt <- list_patterns[[i]]
-    layers_grass_filt <- layers_grass_filt %>%
-      grep(pattern = patt, value = T)
+    layers_grass_filt <- grep(pattern = patt, layers_grass_filt, value = T)
   }
 
   # return filtered layer
