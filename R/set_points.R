@@ -109,7 +109,7 @@ set_points <- function(n_features = 1000,
 
         # simulate points
         pts <- oneimpact::set_points_from_raster(base_raster = base_raster,
-                                      n_features = n_features)
+                                                 n_features = n_features)
       } else {
         # use set_points_sample
         pts <- oneimpact::set_points_sample(n_features = n_features, type = method,
@@ -120,9 +120,9 @@ set_points <- function(n_features = 1000,
 
   # extent and res for method "raster"
   if(method == "raster") {
-    res = terra::res(base_raster)[1]
-    extent_x <- bbox(base_raster)[1,]
-    extent_y <- bbox(base_raster)[2,]
+    res <- terra::res(base_raster)[1]
+    extent_x <- terra::ext(base_raster)[1:2]
+    extent_y <- terra::ext(base_raster)[3:4]
   }
 
   # raster
