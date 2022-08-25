@@ -16,12 +16,26 @@ reference:
   contents:
   - create_filter
   - save_filter
-- title: "R-GRASS ancillary functions"
+- title: "Model fitting"
+  desc: >
+    Functions to fit statistical models and estimate cumulative impacts and
+    zones of influence
+  contents:
+  - starts_with("multifit")
+- title: "Raster processing ancillary functions"
   desc: >
     GRASS GIS ancillary functions to process rasters and prepare inputs
     for computing zones of influence
   contents:
   - starts_with("grass")
+  - rescale_raster
 - title: "Support for landscape simulation"
   contents:
-  - set_points
+  - starts_with("set_points")
+  - isolation
+- title: "Datasets"
+  desc: "Datasets for testing the ZoI approach"
+  contents:
+  - ends_with("tif")
+  - ends_with("gpkg")
+
