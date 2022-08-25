@@ -37,7 +37,7 @@ Suggests:
     mobsim,
     NLMR
 Remotes:
-    MoBiodiv/mobsim
+    MoBiodiv/mobsim,
     ropensci/NLMR
 License: GPL-3
 Encoding: UTF-8
