@@ -98,7 +98,7 @@ set_points <- function(n_features = 1000,
         if(method == "NLMR") {
           # simulate points with NLMR
           # get function
-          nlm_func <- get(nlmr_function)
+          nlm_func <- get(nlmr_function, asNamespace("NLMR"))
           # get nrow and ncol
           ncol = round(abs(diff(extent_x))/res)
           nrow = round(abs(diff(extent_y))/res)
