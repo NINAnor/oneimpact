@@ -19,13 +19,13 @@ filter_save(
 }
 \arguments{
 \item{filt}{\verb{[matrix]} \cr Filter or weight matrix, such as one created by
-\code{\link[=create_filter]{create_filter()}} or \code{\link[terra:focalMat]{terra::focalMat()}}.}
+\code{\link[=filter_create]{filter_create()}} or \code{\link[terra:focalMat]{terra::focalMat()}}.}
 
 \item{radius}{\verb{[numeric(1)]} \cr Radius of the Zone of Influence (ZoI) of
 the matrix, in meters.}
 
 \item{type}{\verb{[character(1)]} Function for the kernel or filter matrix
-(see \code{type} parameter for \code{\link[=create_filter]{create_filter()}}).}
+(see \code{type} parameter for \code{\link[=filter_create]{filter_create()}}).}
 
 \item{save_format}{\verb{[character(1)="GRASS_rmfilter"]\{"GRASS_rmfilter", "raw"\}} \cr
 Format in which the function should be saved. Currently, either of the two options:
@@ -76,7 +76,7 @@ If a divisor is specified, the sum is divided by this divisor." See details
 \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{here}.
 }
 \examples{
-my_filter <- create_filter(r = 100, type = "bartlett", radius = 1000, round = 4)
+my_filter <- filter_create(r = 100, type = "bartlett", radius = 1000, round = 4)
 filter_save(my_filter, radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
 filter_save(my_filter, radius = 1000, type = "bartlett", save_format = "raw")
 

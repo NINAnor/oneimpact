@@ -12,11 +12,11 @@
 #' [here](https://grass.osgeo.org/grass78/manuals/r.mfilter.html).
 #'
 #' @param filt `[matrix]` \cr Filter or weight matrix, such as one created by
-#' [oneimpact::create_filter()] or [terra::focalMat()].
+#' [oneimpact::filter_create()] or [terra::focalMat()].
 #' @param radius `[numeric(1)]` \cr Radius of the Zone of Influence (ZoI) of
 #' the matrix, in meters.
 #' @param type `[character(1)]` Function for the kernel or filter matrix
-#' (see `type` parameter for [oneimpact::create_filter()]).
+#' (see `type` parameter for [oneimpact::filter_create()]).
 #' @param save_format `[character(1)="GRASS_rmfilter"]{"GRASS_rmfilter", "raw"}` \cr
 #' Format in which the function should be saved. Currently, either of the two options:
 #' - GRASS GIS format for the module `r.mfilter`
@@ -46,7 +46,7 @@
 #' @seealso GRASS module [r.mfilter](https://grass.osgeo.org/grass78/manuals/r.mfilter.html)
 #'
 #' @examples
-#' my_filter <- create_filter(r = 100, type = "bartlett", radius = 1000, round = 4)
+#' my_filter <- filter_create(r = 100, type = "bartlett", radius = 1000, round = 4)
 #' filter_save(my_filter, radius = 1000, type = "bartlett", save_format = "GRASS_rmfilter")
 #' filter_save(my_filter, radius = 1000, type = "bartlett", save_format = "raw")
 #'

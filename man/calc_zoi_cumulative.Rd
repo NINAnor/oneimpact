@@ -87,12 +87,12 @@ if \code{zoi_radius} is not \code{NULL}.}
 \item{min_intensity}{\verb{[numeric(1)=0.01]} \cr Minimum intensity of the
 exponential and Gaussian decay functions to
 define the radius of the window that define the filter. See
-\code{\link[=create_filter]{create_filter()}} for details.}
+\code{\link[=filter_create]{filter_create()}} for details.}
 
 \item{max_dist}{\verb{[numeric(1)=50000]} \cr Maximum size (in meters) to
 define the radius of the window that defines the filter. Only
 applicable for exponential and Gaussian decay functions. See
-\code{\link[=create_filter]{create_filter()}} for details.}
+\code{\link[=filter_create]{filter_create()}} for details.}
 
 \item{zeroAsNA}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE} treats cells that are
 \code{NA} as if they were zero.}
@@ -136,7 +136,7 @@ it be overwritten? Only used when \code{where = "GRASS"}.}
 \item{quiet}{\verb{[logical(1)=TRUE]} \cr Should GRASS GIS messages be ommited
 from the prompt along the computation? Only used when \code{where = "GRASS"}.}
 
-\item{...}{Other arguments to be used within \code{\link[=create_filter]{create_filter()}}
+\item{...}{Other arguments to be used within \code{\link[=filter_create]{filter_create()}}
 or \code{\link[terra:focal]{terra::focal()}}.}
 }
 \value{
@@ -221,7 +221,7 @@ decrease linearly up to zero at a distance equals \code{zoi_radius}.
 See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item user-customized filter: if \code{type = "mfilter"}, \code{zoi_radius} is not
 numeric but should be a user-defined matrix of weights. Examples are ones
-created through \code{\link[=create_filter]{create_filter()}}, \code{\link[terra:focalMat]{terra::focalMat()}},
+created through \code{\link[=filter_create]{filter_create()}}, \code{\link[terra:focalMat]{terra::focalMat()}},
 \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, or matrices created by hand.
 }
 
@@ -465,7 +465,7 @@ to_remove_rast <- unique(c(all_names, exp_name_d,
 }
 \seealso{
 See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes and
-\code{\link[=create_filter]{create_filter()}} for options to create weight matrices. \cr
+\code{\link[=filter_create]{filter_create()}} for options to create weight matrices. \cr
 See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
 \code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
 See

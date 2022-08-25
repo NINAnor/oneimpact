@@ -67,7 +67,7 @@
 #' See [oneimpact::zoi_functions()] for details.
 #' - user-customized filter: if `type = "mfilter"`, `zoi_radius` is not
 #' numeric but should be a user-defined matrix of weights. Examples are ones
-#' created through [oneimpact::create_filter()], [terra::focalMat()],
+#' created through [oneimpact::filter_create()], [terra::focalMat()],
 #' [smoothie::kernel2dmeitsjer()], or matrices created by hand.
 #'
 #' Weight matrices might differ from the expected decay function depending on
@@ -166,11 +166,11 @@
 #' @param min_intensity `[numeric(1)=0.01]` \cr Minimum intensity of the
 #' exponential and Gaussian decay functions to
 #' define the radius of the window that define the filter. See
-#' [oneimpact::create_filter()] for details.
+#' [oneimpact::filter_create()] for details.
 #' @param max_dist `[numeric(1)=50000]` \cr Maximum size (in meters) to
 #' define the radius of the window that defines the filter. Only
 #' applicable for exponential and Gaussian decay functions. See
-#' [oneimpact::create_filter()] for details.
+#' [oneimpact::filter_create()] for details.
 #'
 #' @param zeroAsNA `[logical(1)=FALSE]` \cr If `TRUE` treats cells that are
 #' `NA` as if they were zero.
@@ -195,7 +195,7 @@
 #' through the [terra::focal()] function. Only used when `where = "R"`.
 #' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along
 #' the calculation? Only used when `where = "R"`.
-#' @param ... Other arguments to be used within [oneimpact::create_filter()]
+#' @param ... Other arguments to be used within [oneimpact::filter_create()]
 #' or [terra::focal()].
 #'
 #' @param output_map_name `[character(1)=NULL]` \cr Name of the output map. Only
@@ -230,7 +230,7 @@
 #' `r.out.gdal` module, for instance.
 #'
 #' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes and
-#' [oneimpact::create_filter()] for options to create weight matrices. \cr
+#' [oneimpact::filter_create()] for options to create weight matrices. \cr
 #' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
 #' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
 #' See
@@ -375,22 +375,22 @@ calc_zoi_cumulative_r <- function(
   # define filters
   if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "rectangle", "Gauss")) {
     if(length(zoi_radius) == 1) {
-      filt <- create_filter(r0, zoi_radius = zoi_radius,
-                            type = type, zoi_limit = zoi_limit,
-                            zoi_hl_ratio = zoi_hl_ratio,
-                            half_life = half_life,
-                            max_dist = max_dist,
-                            min_intensity = min_intensity,
-                            normalize = normalize, ...)
+      filt <- oneimpact::filter_create(r0, zoi_radius = zoi_radius,
+                                       type = type, zoi_limit = zoi_limit,
+                                       zoi_hl_ratio = zoi_hl_ratio,
+                                       half_life = half_life,
+                                       max_dist = max_dist,
+                                       min_intensity = min_intensity,
+                                       normalize = normalize, ...)
     } else {
       filt <- purrr::map(zoi_radius, function(z, ...) {
-        create_filter(r0, zoi_radius = z, type = type,
-                      zoi_limit = zoi_limit,
-                      zoi_hl_ratio = zoi_hl_ratio,
-                      half_life = half_life,
-                      max_dist = max_dist,
-                      min_intensity = min_intensity,
-                      normalize = normalize, ...)
+        oneimpact::filter_create(r0, zoi_radius = z, type = type,
+                                 zoi_limit = zoi_limit,
+                                 zoi_hl_ratio = zoi_hl_ratio,
+                                 half_life = half_life,
+                                 max_dist = max_dist,
+                                 min_intensity = min_intensity,
+                                 normalize = normalize, ...)
       })
     }
   }
@@ -399,7 +399,7 @@ calc_zoi_cumulative_r <- function(
     filt <- zoi_radius
   }
 
-  # those methods were put above with the create_filter function
+  # those methods were put above with the filter_create function
   # type = c("circle", "rectangle", "threshold", "step")
   # only Gauss is kept here, so far
   # if(type %in% c("circle", "Gauss", "rectangle", "threshold", "step")) {
@@ -591,7 +591,7 @@ calc_zoi_cumulative_grass <- function(
         filter_count <- zoi_radius
         filter_file <- tempfile(paste0("my_filter", filter_count, "_"))
         if(length(zoi_radius) == 1) {
-          filt <- oneimpact::create_filter(r = resolution, zoi_radius = zoi_radius,
+          filt <- oneimpact::filter_create(r = resolution, zoi_radius = zoi_radius,
                                            type = type, zoi_limit = zoi_limit,
                                            zoi_hl_ratio = zoi_hl_ratio,
                                            half_life = half_life,
@@ -603,7 +603,7 @@ calc_zoi_cumulative_grass <- function(
                                            save_file = filter_file, ...)
         } else {
           filt <- purrr::map2(zoi_radius, filter_file, function(z, file, ...) {
-            oneimpact::create_filter(r = resolution, zoi_radius = z,
+            oneimpact::filter_create(r = resolution, zoi_radius = z,
                                      zoi_limit = zoi_limit, type = type,
                                      zoi_hl_ratio = zoi_hl_ratio,
                                      half_life = half_life,
@@ -748,7 +748,7 @@ calc_zoi_cumulative_grass <- function(
       filter_count <- zoi_radius
       filter_file <- tempfile(paste0("my_filter", filter_count, "_"))
       if(length(zoi_radius) == 1) {
-        filt <- oneimpact::create_filter(r = resolution,
+        filt <- oneimpact::filter_create(r = resolution,
                                          zoi_radius = zoi_radius,
                                          type = type, zoi_limit = zoi_limit,
                                          zoi_hl_ratio = zoi_hl_ratio,
@@ -760,7 +760,7 @@ calc_zoi_cumulative_grass <- function(
                                          save_file = filter_file, ...)
       } else {
         filt <- purrr::map2(zoi_radius, filter_file, function(z, file, ...) {
-          oneimpact::create_filter(r = resolution, zoi_radius = z,
+          oneimpact::filter_create(r = resolution, zoi_radius = z,
                                    zoi_limit = zoi_limit, type = type,
                                    zoi_hl_ratio = zoi_hl_ratio,
                                    half_life = half_life,
@@ -773,7 +773,7 @@ calc_zoi_cumulative_grass <- function(
       }
     }
 
-    # In these cases the matrix is not defined by create_filter
+    # In these cases the matrix is not defined by filter_create
     if(type %in% c("mfilter")) {
 
       # Filters pre-defined for "mfilter"
