@@ -9,6 +9,7 @@ cabins <- terra::rast(f)
 
 # connect to grass gis 7.8 and create grass location
 grassdir <- system("grass78 --config path", intern = T)
+grassdir <- "C:\\Programs\\GRASS GIS 7.8"
 gisDB <- "." # create location and mapset in the working directory
 loc <- "ETRS_33N/" # name of the location
 ms <- "PERMANENT" # name of the mapset
@@ -34,15 +35,21 @@ terra::plot(cabins, col = "black",
 rgrass7::execGRASS("g.region", raster = cabins_g,
                    flags = "p")
 
+#---
+# Guarantee input map is binary (zeros as background)
+
 # Input map name within GRASS GIS - binary map
 cabins_bin_g <- grass_binarize(cabins_g, breaks = 1, output = "cabins_example_bin",
-                                    null = 0, overwrite = TRUE)
+                               null = 0, overwrite = TRUE)
 
 # check input
 cabins_bin <- rgrass7::read_RAST("cabins_example_bin", return_format = "terra", NODATA = 255)
 
 plot(cabins_bin, col = c("lightyellow", "black"),
      main = "Binarized map of cabins")
+
+#---
+# Using 'r.mfilter' algorithm (default)
 
 # Exponential decay
 exp_name <- calc_zoi_cumulative(x = cabins_bin_g,
@@ -101,7 +108,7 @@ rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                              where = "GRASS",
                                              module = "r.resamp.filter",
                                              overwrite = T, quiet = F)
-rgrass7::read_RAST(rectangle_resamp_filt, return_format = "terra") %>%
+rgrass7::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
   plot(main = "Rectangle ZoI 1000m")
 
 # bartlett
@@ -112,7 +119,7 @@ bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                             where = "GRASS",
                                             module = "r.resamp.filter",
                                             overwrite = T, quiet = F)
-rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") %>%
+rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
   plot(main = "Bartlett ZoI 1000m")
 
 # Gaussian - to be implemented!
