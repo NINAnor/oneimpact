@@ -31,7 +31,7 @@ and e.g. through the use of the module
 
 \item{zoi_radius}{\verb{[numeric(1)]} \cr Zone of Influence (ZoI) radius,
 the distance at which the ZoI vanishes or goes below a given minimum limit value
-\code{zoi_limit}. See \link{zoi_functions} for details. This parameter is
+\code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details. This parameter is
 ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
 
 \item{extent_x_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector
@@ -39,10 +39,10 @@ representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max).
 It is intended to keep only a region of interest, for standardizing the
 parameters and region when comparing the resulting ZoI maps with the
-cumulative ZoI, calculated through \link{calc_zoi_cumulative}.}
+cumulative ZoI, calculated through \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}.}
 
 \item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}}
-or to the ZoI functions (see \link{zoi_functions}) when the
+or to the ZoI functions (see \code{\link[=zoi_functions]{zoi_functions()}}) when the
 calculations are performed in R.
 No additional parameters implemented for computation in GRASS GIS.}
 }

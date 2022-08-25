@@ -8,10 +8,10 @@
 #' filter/moving window/neighborhood analysis. The ZoI or weight matrix is
 #' defined from zone of influence functions, which might follow different shapes
 #' and cover an area according to the ZoI radius. For more details, see
-#' [oneimpact::zoi_functions].
+#' [oneimpact::zoi_functions()].
 #'
 #' The procedure might be computed in both R and GRASS GIS. In R, the
-#' neighborhood analysis is done with the [terra::focal] function. In GRASS,
+#' neighborhood analysis is done with the [terra::focal()] function. In GRASS,
 #' different modules might be used for the computation: `r.resamp.filter`,
 #' `r.mfilter`, or `r.neighbors`. See details for their differences. In GRASS, it
 #' requires an active connection between the R session and a GRASS GIS
@@ -23,7 +23,7 @@
 #' loaded in a GRASS GIS location and mapset, and the function returns
 #' only the name of the output map. This map is stored in the the GRASS GIS
 #' location/mapset, and might be retrieved to R through the
-#' [rgrass7::read_RAST] function or exported outside GRASS using the
+#' [rgrass7::read_RAST()] function or exported outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
 #' @details # Details
@@ -50,12 +50,12 @@
 #' or Normal decay. The Gaussian curve is 1 at the central cell and
 #' is parameterized on the `zoi_radius` and
 #' the `zoi_limit`, which controls how fast the curve decreases with distance.
-#' See [oneimpact::zoi_functions] for details.
+#' See [oneimpact::zoi_functions()] for details.
 #' - Exponential decay matrix: the exponential decay filter
 #' (`type = "exp_decay"`) is a matrix with weights following an exponential
 #' decay curve, with value 1 in the central cell and
 #' parameterized on the `zoi_radius` and the `zoi_limit`.
-#' See [oneimpact::zoi_functions] for details.
+#' See [oneimpact::zoi_functions()] for details.
 #' - Rectangular matrix: the rectangular filter (`type = "rectangle"`
 #' or `type = "box"`) is
 #' a weight matrix whose shape is a square of dimensions \eqn{n} x \eqn{n},
@@ -64,11 +64,11 @@
 #' (`type = "bartlett"` or `type = "linear_decay"` or `type = "tent_decay"`)
 #' is a weight matrix whose value is 1 in the central cell and whose weights
 #' decrease linearly up to zero at a distance equals `zoi_radius`.
-#' See [oneimpact::zoi_functions] for details.
+#' See [oneimpact::zoi_functions()] for details.
 #' - user-customized filter: if `type = "mfilter"`, `zoi_radius` is not
 #' numeric but should be a user-defined matrix of weights. Examples are ones
-#' created through [oneimpact::create_filter], [terra::focalMat],
-#' [smoothie::kernel2dmeitsjer], or matrices created by hand.
+#' created through [oneimpact::create_filter()], [terra::focalMat()],
+#' [smoothie::kernel2dmeitsjer()], or matrices created by hand.
 #'
 #' Weight matrices might differ from the expected decay function depending on
 #' the intended resolution - the finer the resolution, the more detailed and
@@ -115,8 +115,8 @@
 #' [terra] package. If `where = "GRASS"`, `x` must be a string corresponding
 #' to the name of the input map within a GRASS GIS location and mapset.
 #' Continuous or discrete raster maps with multiple categories can be binarized
-#' to be used as input for `calc_zoi_cumulative` through
-#' [landscapetools::util_binarize] in R or [oneimpact::util_binarize_grass]
+#' to be used as input for `calc_zoi_cumulative()` through
+#' [landscapetools::util_binarize()] in R or [oneimpact::grass_binarize()]
 #' in GRASS GIS, or through common raster algebra in both
 #' environments.
 #'
@@ -166,11 +166,11 @@
 #' @param min_intensity `[numeric(1)=0.01]` \cr Minimum intensity of the
 #' exponential and Gaussian decay functions to
 #' define the radius of the window that define the filter. See
-#' [oneimpact::create_filter] for details.
+#' [oneimpact::create_filter()] for details.
 #' @param max_dist `[numeric(1)=50000]` \cr Maximum size (in meters) to
 #' define the radius of the window that defines the filter. Only
 #' applicable for exponential and Gaussian decay functions. See
-#' [oneimpact::create_filter] for details.
+#' [oneimpact::create_filter()] for details.
 #'
 #' @param zeroAsNA `[logical(1)=FALSE]` \cr If `TRUE` treats cells that are
 #' `NA` as if they were zero.
@@ -188,15 +188,15 @@
 #' (compute for all cells), "only" (only for cells that are NA) or "omit"
 #' (skip cells that are NA). Note that the value of this argument does not
 #' affect which cells around each focal cell are included in the computations
-#' (use na.rm=TRUE to ignore cells that are NA for that). See [terra::focal]
+#' (use na.rm=TRUE to ignore cells that are NA for that). See [terra::focal()]
 #' for details. Only used when `where = "R"`.
 #' @param na.rm `[logical(1)=FALSE]` \cr Should missing values be removed for
 #' filtering calculations? Option for the neighborhood analysis performed
-#' through the [terra::focal] function. Only used when `where = "R"`.
+#' through the [terra::focal()] function. Only used when `where = "R"`.
 #' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along
 #' the calculation? Only used when `where = "R"`.
-#' @param ... Other arguments to be used within [oneimpact::create_filter]
-#' or [terra::focal].
+#' @param ... Other arguments to be used within [oneimpact::create_filter()]
+#' or [terra::focal()].
 #'
 #' @param output_map_name `[character(1)=NULL]` \cr Name of the output map. Only
 #' used when `where = "GRASS"`. If `NULL` (default), a standard name is created
@@ -215,7 +215,7 @@
 #' @param quiet `[logical(1)=TRUE]` \cr Should GRASS GIS messages be ommited
 #' from the prompt along the computation? Only used when `where = "GRASS"`.
 #'
-#' @returns A [RasterLayer] or [SpatRaster] (according to the input `x` map)
+#' @returns A `RasterLayer` or [SpatRaster] (according to the input `x` map)
 #' with the cumulative zone of influence or density of features. While the
 #' cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
 #' (creating values in the output map which might go well beyond 1), the
@@ -226,19 +226,19 @@
 #' If the computation is done in GRASS GIS, the output is name of
 #' the output raster map within the GRASS GIS location and mapset of the
 #' current session. The user can retrieve these maps to R using
-#' [rgrass7::read_RAST] or export them outside GRASS using the
+#' [rgrass7::read_RAST()] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
-#' @seealso See [oneimpact::zoi_functions] for some ZoI function shapes and
-#' [oneimpact::create_filter] for options to create weight matrices. \cr
-#' See also [smoothie::kernel2dmeitsjer], [terra::focalMat], and
-#' [raster::focalWeight] for other functions to create filters or weight matrices. \cr
+#' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes and
+#' [oneimpact::create_filter()] for options to create weight matrices. \cr
+#' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
+#' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
 #' See
 #' [r.mfilter](https://grass.osgeo.org/grass80/manuals/r.mfilter.html),
 #' [r.resamp.filter](https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html), and
 #' [r.neighbors](https://grass.osgeo.org/grass80/manuals/r.neighbors.html) for
 #' GRASS GIS implementations of neighborhood analysis.\cr
-#' See [oneimpact::calc_zoi_nearest] for the computation of the zone of influence
+#' See [oneimpact::calc_zoi_nearest()] for the computation of the zone of influence
 #' of the nearest feature only.
 #'
 #' @example examples/calc_zoi_cumulative_example.R

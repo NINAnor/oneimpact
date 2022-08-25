@@ -24,12 +24,12 @@
 #' analysis using such input weight matrices is computationally feasible.
 #'
 #' Possible future implementation: compare results with
-#' [smoothie::kernel2dsmooth] and [smoothie::kernel2dmeitsjer],
+#' [smoothie::kernel2dsmooth()] and [smoothie::kernel2dmeitsjer()],
 #' maybe wrap some options here.
 #'
 #' @param r `[numeric,SpatRaster,RasterLayer]` \cr Either a numeric value
 #' corresponding to the resolution (pixel size) that each pixel in the filter matrix
-#' should correspond to; or a raster object (`SpatRaster` from the `terra`
+#' should correspond to; or a raster object (`SpatRaster` from the [terra]
 #' package or `RasterLayer`, `RasterBrick`, or `RasterStack` from the
 #' `raster` package) from which such resolution can be extracted.
 #'
@@ -46,7 +46,7 @@
 #' - For the rectangular neighborhood (`type = "rectangle"` or `type = "box"`),
 #' the `zoi_radius` corresponds to half the size of the square size, or
 #' `square size = 2*zoi_radius`. For a rectangular filter with different size
-#' of the sides, use [terra::focal] (but
+#' of the sides, use [terra::focal()] (but
 #' please note the interpretation of the parameters is different).
 #' - For the Bartlett neighborhood (`type = "bartlett"` or
 #' `type = "linear_decay"` or `type = "tent_decay"`),
@@ -55,7 +55,7 @@
 #' Gaussian decay neighborhood (`type = "Gauss"` or `type = "gaussian_decay"`),
 #' the `zoi_radius` corresponds to the distance where the exponential decay
 #' function goes below a given limit distance defined by
-#' `zoi_limit`. See [oneimpact::zoi_functions] for details.
+#' `zoi_limit`. See [oneimpact::zoi_functions()] for details.
 #' - If `zoi_radius = NULL`, the exponential or gaussian decay matrices are
 #' defined based on other parameters -- see below. This option will raise an
 #' error for the other types of filters.
@@ -79,9 +79,9 @@
 #' - `"rectangle"` or `"box"` for a rectangular ZoI.
 #' There might be some correspondence between the weight matrix `type`
 #' in `create_filter` and other similar functions (e.g. `type = "rectangle"`
-#' and `type = "boxcar"` in [smoothie::kernel2dmeitsjer] or
-#' `type = "Gauss"` in [terra::focalMat] with parameter
-#' `type = "gauss"` n [smoothie::kernel2dmeitsjer]); however, the
+#' and `type = "boxcar"` in [smoothie::kernel2dmeitsjer()] or
+#' `type = "Gauss"` in [terra::focalMat()] with parameter
+#' `type = "gauss"` n [smoothie::kernel2dmeitsjer]()); however, the
 #' interpretation of the parameters used to
 #' define these matrices is different between functions.
 #'
@@ -91,7 +91,7 @@
 #'  maximum value. For the `exp_decay` function,
 #'  if the ZoI radius parameter is null (`zoi_radius = NULL`), the value of the
 #'  exponential half life (`half_life = log(2)/lambda`) can used to parameterize the
-#'  exponential decay function. See details in [oneimpact::zoi_functions].
+#'  exponential decay function. See details in [oneimpact::zoi_functions()].
 #' @param zoi_hl_ratio `[numeric(1)=6]` \cr For the `exp_decay` function,
 #' if both the ZoI radius `zoi_radius` and `zoi_hl_ratio` are given and
 #' `half_life` is `NULL`, this value is used
@@ -138,7 +138,7 @@
 #' If a divisor is specified, the sum is divided by this divisor." \cr
 #' If the divisor is zero, "then the divisor is computed for each cell as the sum of the MATRIX values where
 #' the corresponding input cell is non-null." In other words, the output map will be rescaled to the
-#' interval [0,1]. If `normalize = TRUE`, the divisor is set to `n*n`.
+#' interval $[0,1]$. If `normalize = TRUE`, the divisor is set to `n*n`.
 #' @param parallel `[logical(1)=TRUE]` \cr Whether the computation should be paralelized or not (details in
 #' the documentation of the [`r.mfilter`](https://grass.osgeo.org/grass78/manuals/r.mfilter.html) module).
 #' @param separator `[character(1)=" "]` \cr Separator between values of the matrix, within each line. Default is
@@ -150,10 +150,10 @@
 #'
 #' @example examples/create_filter_example.R
 #'
-#' @seealso See [oneimpact::zoi_functions] for some ZoI function shapes and
-#' [oneimpact::save_filter] for options to save the ZoI matrix as a text file. \cr
-#' See also [smoothie::kernel2dmeitsjer], [terra::focalMat], and
-#' [raster::focalWeight] for other functions to create filters or weight matrices. \cr
+#' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes and
+#' [oneimpact::save_filter()] for options to save the ZoI matrix as a text file. \cr
+#' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
+#' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
 #' See
 #' [r.mfilter](https://grass.osgeo.org/grass80/manuals/r.mfilter.html),
 #' [r.resamp.filter](https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html), and

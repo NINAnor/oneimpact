@@ -49,17 +49,17 @@ and e.g. through the use of the module
 
 \item{zoi_radius}{\verb{[numeric(1)]} \cr Zone of Influence (ZoI) radius,
 the distance at which the ZoI vanishes or goes below a given minimum limit value
-\code{zoi_limit}. See \link{zoi_functions} for details. This parameter is
+\code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details. This parameter is
 ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
 
 \item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "threshold", "step", "euclidean", "log","sqrt"\}} \cr
 \itemize{
 \item If \code{Gauss} or \code{half_norm}, the ZoI follows a half-normal shape: \cr
 \code{N_0 * exp(-lambda * (euclidean_distance^2))}. \code{N_0} and \code{lambda} are
-parameters to be defined -- see \link{zoi_functions} for details.
+parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item If \code{exp_decay}, the ZoI follows an exponential decay shape: \cr
 \code{N_0 * exp(-lambda * euclidean_distance)}. \code{N_0} and \code{lambda} are
-parameters to be defined -- see \link{zoi_functions} for details.
+parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item If \code{bartlett}, \code{linear_decay}, or \code{tent_decay}, the ZoI follows a
 linear decay shape within the ZoI radius (\code{zoi_radius}).
 \item If \code{threshold} or \code{step}, a constant influence is consider within the
@@ -132,7 +132,7 @@ representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max).
 It is intended to keep only a region of interest, for standardizing the
 parameters and region when comparing the resulting ZoI maps with the
-cumulative ZoI, calculated through \link{calc_zoi_cumulative}.}
+cumulative ZoI, calculated through \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}.}
 
 \item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along
 the calculation? Only used when \code{where = "R"}.}
@@ -176,7 +176,7 @@ name \code{output_map_name} in the working GRASS GIS location and mapset, should
 it be overwritten? Only used when \code{where = "GRASS"}.}
 
 \item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}}
-or to the ZoI functions (see \link{zoi_functions}) when the
+or to the ZoI functions (see \code{\link[=zoi_functions]{zoi_functions()}}) when the
 calculations are performed in R.
 No additional parameters implemented for computation in GRASS GIS.}
 }
@@ -203,7 +203,7 @@ are defined by functions that decay with the Euclidean distance from each
 infrastructure and their rate of decay is controlled by the ZoI radius
 (\code{zoi_radius}), which defines how far the influence of an infrastructure
 feature goes. By default, the Gaussian decay ZoI is calculated, but other
-decay functions might be used (see \link{zoi_funtions} for examples).
+decay functions might be used (see \code{\link[=zoi_functions]{zoi_functions()}} for examples).
 The function might also return the Euclidean distance to the nearest feature
 or a transformation from it (e.g. log- and sqrt-distance from the nearest
 feature).
@@ -218,13 +218,13 @@ are done within GRASS GIS, the input is the name of a raster map already
 loaded in a GRASS GIS location and mapset, and the function returns
 only the name of the output map. This map is stored in the the GRASS GIS
 location/mapset, and might be retrieved to R through the
-\link[rgrass7:read_RAST]{rgrass7::read_RAST} function or exported outside GRASS using the
+\code{\link[rgrass7:read_RAST]{rgrass7::read_RAST()}} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \details{
 In practice, the function first calculated the Euclidean distance from each
 pixel to the nearest feature and then transforms it according to the ZoI
-functions. In R, \code{calc_zoi_nearest} makes use of the \link[terra:distance]{terra::distance}
+functions. In R, \code{calc_zoi_nearest} makes use of the \code{\link[terra:distance]{terra::distance()}}
 function and the following procedures are made through raster algebra.
 In GRASS, the module
 \href{https://grass.osgeo.org/grass78/manuals/r.grow.distance.html}{\code{r.grow.distance}}
@@ -457,12 +457,12 @@ to_remove_rast <- c(all_names)
 # rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
 }
 \seealso{
-See \link{zoi_functions} for some ZoI function shapes. \cr
-See also \link[terra:distance]{terra::distance} for details on the calculation of the distance
+See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes. \cr
+See also \code{\link[terra:distance]{terra::distance()}} for details on the calculation of the distance
 to the nearest future in R. \cr
 See
 \href{https://grass.osgeo.org/grass80/manuals/r.mfilter.html}{r.grow.distance},
 for details on the calculation of the distance to the nearest future in GRASS. \cr
-See \link{calc_zoi_cumulative} for the computation of the cumulative
+See \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}} for the computation of the cumulative
 zone of influence and density of multiple features.
 }

@@ -28,7 +28,7 @@ create_filter(
 \arguments{
 \item{r}{\verb{[numeric,SpatRaster,RasterLayer]} \cr Either a numeric value
 corresponding to the resolution (pixel size) that each pixel in the filter matrix
-should correspond to; or a raster object (\code{SpatRaster} from the \code{terra}
+should correspond to; or a raster object (\code{SpatRaster} from the \link{terra}
 package or \code{RasterLayer}, \code{RasterBrick}, or \code{RasterStack} from the
 \code{raster} package) from which such resolution can be extracted.}
 
@@ -46,7 +46,7 @@ or \code{type = "step"}), the \code{zoi_radius} corresponds to the radius
 \item For the rectangular neighborhood (\code{type = "rectangle"} or \code{type = "box"}),
 the \code{zoi_radius} corresponds to half the size of the square size, or
 \verb{square size = 2*zoi_radius}. For a rectangular filter with different size
-of the sides, use \link[terra:focal]{terra::focal} (but
+of the sides, use \code{\link[terra:focal]{terra::focal()}} (but
 please note the interpretation of the parameters is different).
 \item For the Bartlett neighborhood (\code{type = "bartlett"} or
 \code{type = "linear_decay"} or \code{type = "tent_decay"}),
@@ -55,7 +55,7 @@ the \code{zoi_radius} corresponds to the distance beyond which the filter is zer
 Gaussian decay neighborhood (\code{type = "Gauss"} or \code{type = "gaussian_decay"}),
 the \code{zoi_radius} corresponds to the distance where the exponential decay
 function goes below a given limit distance defined by
-\code{zoi_limit}. See \link{zoi_functions} for details.
+\code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item If \code{zoi_radius = NULL}, the exponential or gaussian decay matrices are
 defined based on other parameters -- see below. This option will raise an
 error for the other types of filters.
@@ -73,9 +73,9 @@ for linear decay ZoI;
 \item \code{"rectangle"} or \code{"box"} for a rectangular ZoI.
 There might be some correspondence between the weight matrix \code{type}
 in \code{create_filter} and other similar functions (e.g. \code{type = "rectangle"}
-and \code{type = "boxcar"} in \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer} or
-\code{type = "Gauss"} in \link[terra:focalMat]{terra::focalMat} with parameter
-\code{type = "gauss"} n \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer}); however, the
+and \code{type = "boxcar"} in \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}} or
+\code{type = "Gauss"} in \code{\link[terra:focalMat]{terra::focalMat()}} with parameter
+\code{type = "gauss"} n \url{smoothie::kernel2dmeitsjer}); however, the
 interpretation of the parameters used to
 define these matrices is different between functions.
 }}
@@ -93,7 +93,7 @@ the distance where the exponential decay function reaches 0.5 of its
 maximum value. For the \code{exp_decay} function,
 if the ZoI radius parameter is null (\code{zoi_radius = NULL}), the value of the
 exponential half life (\code{half_life = log(2)/lambda}) can used to parameterize the
-exponential decay function. See details in \link{zoi_functions}.}
+exponential decay function. See details in \code{\link[=zoi_functions]{zoi_functions()}}.}
 
 \item{zoi_hl_ratio}{\verb{[numeric(1)=6]} \cr For the \code{exp_decay} function,
 if both the ZoI radius \code{zoi_radius} and \code{zoi_hl_ratio} are given and
@@ -131,7 +131,7 @@ in the n x n neighborhood around the center cell by the corresponding matrix val
 If a divisor is specified, the sum is divided by this divisor." \cr
 If the divisor is zero, "then the divisor is computed for each cell as the sum of the MATRIX values where
 the corresponding input cell is non-null." In other words, the output map will be rescaled to the
-interval \link{0,1}. If \code{normalize = TRUE}, the divisor is set to \code{n*n}.}
+interval $\link{0,1}$. If \code{normalize = TRUE}, the divisor is set to \code{n*n}.}
 
 \item{round_vals}{\verb{[numeric(1)=NULL]} \cr Number of digits for rounding the weights
 in the output matrix. If \code{NULL} (default), weights are not rounded.}
@@ -190,7 +190,7 @@ Keeping \eqn{n} at a reasonable size guarantees that the neighborhood
 analysis using such input weight matrices is computationally feasible.
 
 Possible future implementation: compare results with
-\link[smoothie:kernel2dsmooth]{smoothie::kernel2dsmooth} and \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer},
+\code{\link[smoothie:kernel2dsmooth]{smoothie::kernel2dsmooth()}} and \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}},
 maybe wrap some options here.
 }
 \examples{
@@ -270,10 +270,10 @@ if(FALSE) {
 }
 }
 \seealso{
-See \link{zoi_functions} for some ZoI function shapes and
-\link{save_filter} for options to save the ZoI matrix as a text file. \cr
-See also \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer}, \link[terra:focalMat]{terra::focalMat}, and
-\link[raster:focalWeight]{raster::focalWeight} for other functions to create filters or weight matrices. \cr
+See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes and
+\code{\link[=save_filter]{save_filter()}} for options to save the ZoI matrix as a text file. \cr
+See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
+\code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
 See
 \href{https://grass.osgeo.org/grass80/manuals/r.mfilter.html}{r.mfilter},
 \href{https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html}{r.resamp.filter}, and

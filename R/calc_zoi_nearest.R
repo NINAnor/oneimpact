@@ -9,7 +9,7 @@
 #' infrastructure and their rate of decay is controlled by the ZoI radius
 #' (`zoi_radius`), which defines how far the influence of an infrastructure
 #' feature goes. By default, the Gaussian decay ZoI is calculated, but other
-#' decay functions might be used (see [oneimpact::zoi_funtions] for examples).
+#' decay functions might be used (see [oneimpact::zoi_functions()] for examples).
 #' The function might also return the Euclidean distance to the nearest feature
 #' or a transformation from it (e.g. log- and sqrt-distance from the nearest
 #' feature).
@@ -24,13 +24,13 @@
 #' loaded in a GRASS GIS location and mapset, and the function returns
 #' only the name of the output map. This map is stored in the the GRASS GIS
 #' location/mapset, and might be retrieved to R through the
-#' [rgrass7::read_RAST] function or exported outside GRASS using the
+#' [rgrass7::read_RAST()] function or exported outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
 #' @details
 #' In practice, the function first calculated the Euclidean distance from each
 #' pixel to the nearest feature and then transforms it according to the ZoI
-#' functions. In R, `calc_zoi_nearest` makes use of the [terra::distance]
+#' functions. In R, `calc_zoi_nearest` makes use of the [terra::distance()]
 #' function and the following procedures are made through raster algebra.
 #' In GRASS, the module
 #' [`r.grow.distance`](https://grass.osgeo.org/grass78/manuals/r.grow.distance.html)
@@ -64,7 +64,7 @@
 #'
 #' @param zoi_radius `[numeric(1)]` \cr Zone of Influence (ZoI) radius,
 #' the distance at which the ZoI vanishes or goes below a given minimum limit value
-#' `zoi_limit`. See [oneimpact::zoi_functions] for details. This parameter is
+#' `zoi_limit`. See [oneimpact::zoi_functions()] for details. This parameter is
 #' ignored if `type = "euclidean"`, `type = "log"`, or `type = "sqrt"`.
 #'
 #' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
@@ -72,10 +72,10 @@
 #' \itemize{
 #'   \item If `Gauss` or `half_norm`, the ZoI follows a half-normal shape: \cr
 #'   `N_0 * exp(-lambda * (euclidean_distance^2))`. `N_0` and `lambda` are
-#'   parameters to be defined -- see [oneimpact::zoi_functions] for details.
+#'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
 #'   \item If `exp_decay`, the ZoI follows an exponential decay shape: \cr
 #'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
-#'   parameters to be defined -- see [oneimpact::zoi_functions] for details.
+#'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
 #'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZoI follows a
 #'   linear decay shape within the ZoI radius (`zoi_radius`).
 #'   \item If `threshold` or `step`, a constant influence is consider within the
@@ -148,7 +148,7 @@
 #' maximum extent in x and y for the final output, in the format c(min,max).
 #' It is intended to keep only a region of interest, for standardizing the
 #' parameters and region when comparing the resulting ZoI maps with the
-#' cumulative ZoI, calculated through [oneimpact::calc_zoi_cumulative].
+#' cumulative ZoI, calculated through [oneimpact::calc_zoi_cumulative()].
 #'
 #' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along
 #' the calculation? Only used when `where = "R"`.
@@ -187,7 +187,7 @@
 #' from the prompt along the computation? Only used when `where = "GRASS"`.
 #'
 #' @param ... \cr Adittional parameters passed to [terra::distance()]
-#' or to the ZoI functions (see [oneimpact::zoi_functions]) when the
+#' or to the ZoI functions (see [oneimpact::zoi_functions()]) when the
 #' calculations are performed in R.
 #' No additional parameters implemented for computation in GRASS GIS.
 #'
@@ -204,13 +204,13 @@
 #' [rgrass7::read_RAST] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
-#' @seealso See [oneimpact::zoi_functions] for some ZoI function shapes. \cr
-#' See also [terra::distance] for details on the calculation of the distance
+#' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes. \cr
+#' See also [terra::distance()] for details on the calculation of the distance
 #' to the nearest future in R. \cr
 #' See
 #' [r.grow.distance](https://grass.osgeo.org/grass80/manuals/r.mfilter.html),
 #' for details on the calculation of the distance to the nearest future in GRASS. \cr
-#' See [oneimpact::calc_zoi_cumulative] for the computation of the cumulative
+#' See [oneimpact::calc_zoi_cumulative()] for the computation of the cumulative
 #' zone of influence and density of multiple features.
 #'
 #' @example examples/calc_zoi_nearest_example.R

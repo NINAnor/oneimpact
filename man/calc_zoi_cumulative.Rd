@@ -39,8 +39,8 @@ the presence of linear or area features.
 \link{terra} package. If \code{where = "GRASS"}, \code{x} must be a string corresponding
 to the name of the input map within a GRASS GIS location and mapset.
 Continuous or discrete raster maps with multiple categories can be binarized
-to be used as input for \code{calc_zoi_cumulative} through
-\link[landscapetools:util_binarize]{landscapetools::util_binarize} in R or \link{util_binarize_grass}
+to be used as input for \code{calc_zoi_cumulative()} through
+\code{\link[landscapetools:util_binarize]{landscapetools::util_binarize()}} in R or \code{\link[=grass_binarize]{grass_binarize()}}
 in GRASS GIS, or through common raster algebra in both
 environments.}
 
@@ -87,12 +87,12 @@ if \code{zoi_radius} is not \code{NULL}.}
 \item{min_intensity}{\verb{[numeric(1)=0.01]} \cr Minimum intensity of the
 exponential and Gaussian decay functions to
 define the radius of the window that define the filter. See
-\link{create_filter} for details.}
+\code{\link[=create_filter]{create_filter()}} for details.}
 
 \item{max_dist}{\verb{[numeric(1)=50000]} \cr Maximum size (in meters) to
 define the radius of the window that defines the filter. Only
 applicable for exponential and Gaussian decay functions. See
-\link{create_filter} for details.}
+\code{\link[=create_filter]{create_filter()}} for details.}
 
 \item{zeroAsNA}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE} treats cells that are
 \code{NA} as if they were zero.}
@@ -106,11 +106,11 @@ especially useful for example in the use of the \code{r.mfilter} algorithm in
 GRASS, in which the edges of the region are excluded from the computation.
 The default is to keep the same extent of the input raster.}
 
-\item{na.policy}{\verb{[character(1)="omit"] \\cr Can be used to determine the cells of }x\verb{for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are NA) or "omit" (skip cells that are NA). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use na.rm=TRUE to ignore cells that are NA for that). See [terra::focal] for details. Only used when}where = "R"`.}
+\item{na.policy}{\verb{[character(1)="omit"] \\cr Can be used to determine the cells of }x\verb{for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are NA) or "omit" (skip cells that are NA). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use na.rm=TRUE to ignore cells that are NA for that). See [terra::focal()] for details. Only used when}where = "R"`.}
 
 \item{na.rm}{\verb{[logical(1)=FALSE]} \cr Should missing values be removed for
 filtering calculations? Option for the neighborhood analysis performed
-through the \link[terra:focal]{terra::focal} function. Only used when \code{where = "R"}.}
+through the \code{\link[terra:focal]{terra::focal()}} function. Only used when \code{where = "R"}.}
 
 \item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along
 the calculation? Only used when \code{where = "R"}.}
@@ -136,11 +136,11 @@ it be overwritten? Only used when \code{where = "GRASS"}.}
 \item{quiet}{\verb{[logical(1)=TRUE]} \cr Should GRASS GIS messages be ommited
 from the prompt along the computation? Only used when \code{where = "GRASS"}.}
 
-\item{...}{Other arguments to be used within \link{create_filter}
-or \link[terra:focal]{terra::focal}.}
+\item{...}{Other arguments to be used within \code{\link[=create_filter]{create_filter()}}
+or \code{\link[terra:focal]{terra::focal()}}.}
 }
 \value{
-A \link{RasterLayer} or \link{SpatRaster} (according to the input \code{x} map)
+A \code{RasterLayer} or \link{SpatRaster} (according to the input \code{x} map)
 with the cumulative zone of influence or density of features. While the
 cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
 (creating values in the output map which might go well beyond 1), the
@@ -151,7 +151,7 @@ if multiple \code{zoi_radius} values are given, a \code{RasterBrick} or multi-la
 If the computation is done in GRASS GIS, the output is name of
 the output raster map within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-\link[rgrass7:read_RAST]{rgrass7::read_RAST} or export them outside GRASS using the
+\code{\link[rgrass7:read_RAST]{rgrass7::read_RAST()}} or export them outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \description{
@@ -163,10 +163,10 @@ or density of features in space. The process is done through a spatial
 filter/moving window/neighborhood analysis. The ZoI or weight matrix is
 defined from zone of influence functions, which might follow different shapes
 and cover an area according to the ZoI radius. For more details, see
-\link{zoi_functions}.
+\code{\link[=zoi_functions]{zoi_functions()}}.
 
 The procedure might be computed in both R and GRASS GIS. In R, the
-neighborhood analysis is done with the \link[terra:focal]{terra::focal} function. In GRASS,
+neighborhood analysis is done with the \code{\link[terra:focal]{terra::focal()}} function. In GRASS,
 different modules might be used for the computation: \code{r.resamp.filter},
 \code{r.mfilter}, or \code{r.neighbors}. See details for their differences. In GRASS, it
 requires an active connection between the R session and a GRASS GIS
@@ -178,7 +178,7 @@ are done within GRASS GIS, the input is the name of a raster map already
 loaded in a GRASS GIS location and mapset, and the function returns
 only the name of the output map. This map is stored in the the GRASS GIS
 location/mapset, and might be retrieved to R through the
-\link[rgrass7:read_RAST]{rgrass7::read_RAST} function or exported outside GRASS using the
+\code{\link[rgrass7:read_RAST]{rgrass7::read_RAST()}} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \section{Details}{
@@ -204,12 +204,12 @@ or \code{type = "gaussian_decay"}) is a matrix with weights following a Gaussian
 or Normal decay. The Gaussian curve is 1 at the central cell and
 is parameterized on the \code{zoi_radius} and
 the \code{zoi_limit}, which controls how fast the curve decreases with distance.
-See \link{zoi_functions} for details.
+See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item Exponential decay matrix: the exponential decay filter
 (\code{type = "exp_decay"}) is a matrix with weights following an exponential
 decay curve, with value 1 in the central cell and
 parameterized on the \code{zoi_radius} and the \code{zoi_limit}.
-See \link{zoi_functions} for details.
+See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item Rectangular matrix: the rectangular filter (\code{type = "rectangle"}
 or \code{type = "box"}) is
 a weight matrix whose shape is a square of dimensions \eqn{n} x \eqn{n},
@@ -218,11 +218,11 @@ with \eqn{n = 2 * zoi_radius}.
 (\code{type = "bartlett"} or \code{type = "linear_decay"} or \code{type = "tent_decay"})
 is a weight matrix whose value is 1 in the central cell and whose weights
 decrease linearly up to zero at a distance equals \code{zoi_radius}.
-See \link{zoi_functions} for details.
+See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item user-customized filter: if \code{type = "mfilter"}, \code{zoi_radius} is not
 numeric but should be a user-defined matrix of weights. Examples are ones
-created through \link{create_filter}, \link[terra:focalMat]{terra::focalMat},
-\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer}, or matrices created by hand.
+created through \code{\link[=create_filter]{create_filter()}}, \code{\link[terra:focalMat]{terra::focalMat()}},
+\code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, or matrices created by hand.
 }
 
 Weight matrices might differ from the expected decay function depending on
@@ -464,15 +464,15 @@ to_remove_rast <- unique(c(all_names, exp_name_d,
 # rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
 }
 \seealso{
-See \link{zoi_functions} for some ZoI function shapes and
-\link{create_filter} for options to create weight matrices. \cr
-See also \link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer}, \link[terra:focalMat]{terra::focalMat}, and
-\link[raster:focalWeight]{raster::focalWeight} for other functions to create filters or weight matrices. \cr
+See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes and
+\code{\link[=create_filter]{create_filter()}} for options to create weight matrices. \cr
+See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
+\code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
 See
 \href{https://grass.osgeo.org/grass80/manuals/r.mfilter.html}{r.mfilter},
 \href{https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html}{r.resamp.filter}, and
 \href{https://grass.osgeo.org/grass80/manuals/r.neighbors.html}{r.neighbors} for
 GRASS GIS implementations of neighborhood analysis.\cr
-See \link{calc_zoi_nearest} for the computation of the zone of influence
+See \code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}} for the computation of the zone of influence
 of the nearest feature only.
 }
