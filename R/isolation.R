@@ -1,4 +1,4 @@
-#' Isolation and mean isolation in space
+#' Isolation and mean isolation of points in space
 #'
 #' Measures of isolation and mean isolation to a set of points in
 #' space. `isolation` creates random points in a landscape and calculates
@@ -18,7 +18,7 @@
 #' random positions should be created c(x or ymin, x or ymax).
 #' @param lonlat `[logical(1)=FALSE]` \cr Whether the distance between points
 #' should be calculated in an WGS ellipsoid (`lonlat = TRUE`) or on a
-#' plane (`lonlat = FALSE`). See [raster::pointDistance] for more details.
+#' plane (`lonlat = FALSE`). See [raster::pointDistance()] for more details.
 #'
 #' @return `isolation()` returns the distance from each random point to
 #' the nearest neighbor point in `x`. `mean_isolation()` returns the average
