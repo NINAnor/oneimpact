@@ -3,11 +3,11 @@
 #' @description
 #' This function takes in a raster with locations or counts of
 #' infrastructure and calculates a raster (or set of rasters, in case there is
-#' more the one value for `zoi_radius`) representing the zone of influence (ZoI)
+#' more the one value for `radius`) representing the zone of influence (ZoI)
 #' from the neareast feature of that type of infrastructure. Zones of influence
 #' are defined by functions that decay with the Euclidean distance from each
 #' infrastructure and their rate of decay is controlled by the ZoI radius
-#' (`zoi_radius`), which defines how far the influence of an infrastructure
+#' (`radius`), which defines how far the influence of an infrastructure
 #' feature goes. By default, the Gaussian decay ZoI is calculated, but other
 #' decay functions might be used (see [oneimpact::zoi_functions()] for examples).
 #' The function might also return the Euclidean distance to the nearest feature
@@ -62,7 +62,7 @@
 #' and e.g. through the use of the module
 #' [`r.null`](https://grass.osgeo.org/grass80/manuals/r.null.html) in GRASS GIS.
 #'
-#' @param zoi_radius `[numeric(1)]` \cr Zone of Influence (ZoI) radius,
+#' @param radius `[numeric(1)]` \cr Zone of Influence (ZoI) radius,
 #' the distance at which the ZoI vanishes or goes below a given minimum limit value
 #' `zoi_limit`. See [oneimpact::zoi_functions()] for details. This parameter is
 #' ignored if `type = "euclidean"`, `type = "log"`, or `type = "sqrt"`.
@@ -77,10 +77,10 @@
 #'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
 #'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
 #'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZoI follows a
-#'   linear decay shape within the ZoI radius (`zoi_radius`).
+#'   linear decay shape within the ZoI radius (`radius`).
 #'   \item If `threshold` or `step`, a constant influence is consider within the
-#'   zone of influence radius (`zoi_radius`). All pixels closer than
-#'   `zoi_radius` to infrastructure are considered as "under the influence" of
+#'   zone of influence radius (`radius`). All pixels closer than
+#'   `radius` to infrastructure are considered as "under the influence" of
 #'   the nearest feature, with a constant influence value defined by the
 #'   `constant_influence` parameter, and all other pixels are assumed to have
 #'   zero influence.
@@ -109,13 +109,13 @@
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing functions
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
 #' between the ZoI radius and the decay functions:
-#' `zoi_radius` is defined as the minimum distance at which the ZoI assumes values
+#' `radius` is defined as the minimum distance at which the ZoI assumes values
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
-#' if `zoi_radius` is not `NULL`.
+#' if `radius` is not `NULL`.
 #'
 #' @param exp_decay_parms `[numeric(2)=c(1,0.01)]` \cr Parameters (`N_0`, `lambda`)
 #' for the exponential decay ZoI, if `type = exp_decay`. The value of `lambda`
-#' defined here is used only if `zoi_radius = NULL` and `half_life = NULL`,
+#' defined here is used only if `radius = NULL` and `half_life = NULL`,
 #' otherwise one of these parameters is used to determine `lambda`.
 #' By default, `N_0` is defined as 1, which means the ZoI is 1 where the
 #' infrastructure feature is located, and it decreases as the Euclidean distance
@@ -124,7 +124,7 @@
 #' @param hnorm_decay_parms `[numeric(2)=c(1,20)]` \cr Parameters (`N_0`, `sigma`)
 #' for the half-normal decay ZoI, if `type = Gauss` or `type = half_normal`.
 #' The value of `sigma` defined here is used to define the decay rate `lambda`
-#' only if `zoi_radius = NULL` and `half_life = NULL`, otherwise one of these
+#' only if `radius = NULL` and `half_life = NULL`, otherwise one of these
 #' parameters is used to determine `lambda`. By default, `N_0` is defined as 1,
 #' which means the ZoI is 1 where the infrastructure feature is located,
 #' and it decreases as the Euclidean distance from it increases.
@@ -138,7 +138,7 @@
 #' @param constant_influence `[numeric(1)=1]` \cr Constant value of the
 #' ZoI of the nearest feature if `type = "threshold"` or `type = "step"`.
 #' Default is 1. In this case, all pixels closer to any
-#' infrastructure than the `zoi_radius` are classified with this constant value.
+#' infrastructure than the `radius` are classified with this constant value.
 #'
 #' @param zeroAsNA `[logical(1)=FALSE]` \cr If `TRUE` treats cells that are
 #' zero as if they were `NA`.
@@ -156,8 +156,8 @@
 #' @param output_map_name `[character(1)=NULL]` \cr Name of the output map name,
 #' to be used only within GRASS (if `where = "GRASS"`). By default, this is `NULL`
 #' and the output map names are a concatenation of the input map name
-#' (e.g. "map_houses") and the decay function and zoi_radius used
-#' (e.g. for `type = "exp_decay"` and `zoi_radius = 1000`, the name would be
+#' (e.g. "map_houses") and the decay function and radius used
+#' (e.g. for `type = "exp_decay"` and `radius = 1000`, the name would be
 #' "map_houses_exp_decay_1000").
 #' This parameter is ignored when the calculations are performed in R
 #' (`where = "R"`).
@@ -194,7 +194,7 @@
 #' @returns If the calculations are performed in R (`where = "R"`), the function
 #' returns a `RasterLayer` (or `SpatRaster`, according to the class of the input
 #' object) with the zone of influence of the nearest feature. If multiple values
-#' of `zoi_radius` are providade, a stack of rasters is returned.
+#' of `radius` are providade, a stack of rasters is returned.
 #' If the calculations are performed in GRASS GIS (`where = "GRASS"`),
 #' the maps are kept only within the GRASS GIS location/mapset and the function
 #' returns the name of the calculated maps. \cr
@@ -219,7 +219,7 @@
 #' @export
 calc_zoi_nearest <- function(
   x,
-  zoi_radius = NULL,
+  radius = NULL,
   type = c("Gauss", "exp_decay", "bartlett", "half_norm", "threshold", "step",
            "euclidean", "log", "sqrt")[1],
   where = c("R", "GRASS")[1],
@@ -252,7 +252,7 @@ calc_zoi_nearest <- function(
     if(is.null(extent_y_cut)) extent_y_cut <- terra::ext(x)[c(3,4)]
 
     zoi_nearest <- calc_zoi_nearest_r(x = x,
-                                      zoi_radius = zoi_radius,
+                                      radius = radius,
                                       type = type,
                                       log_base = log_base,
                                       zoi_limit = zoi_limit,
@@ -273,7 +273,7 @@ calc_zoi_nearest <- function(
     # Run in GRASS GIS
     if(where %in% c("GRASS", "grass", "GRASS GIS", "grass gis")) {
       zoi_nearest <- calc_zoi_nearest_grass(x = x,
-                                            zoi_radius = zoi_radius,
+                                            radius = radius,
                                             type = type,
                                             log_base = log_base,
                                             zoi_limit = zoi_limit,
@@ -302,7 +302,7 @@ calc_zoi_nearest <- function(
 # implementation in R
 calc_zoi_nearest_r <- function(
   x,
-  zoi_radius = NULL,
+  radius = NULL,
   type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
   log_base = exp(1),
   zoi_limit = 0.05,
@@ -361,7 +361,7 @@ calc_zoi_nearest_r <- function(
       if(type == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
         if(type == "exp_decay") {
           dist_r <- exp_decay(x = dist_r,
-                              zoi_radius = zoi_radius,
+                              radius = radius,
                               exp_decay_parms = exp_decay_parms,
                               zoi_limit = zoi_limit,
                               half_life = half_life,
@@ -370,14 +370,14 @@ calc_zoi_nearest_r <- function(
           if(type %in% c("bartlett", "Bartlett", "bartlett_decay",
                          "linear_decay", "tent_decay")) {
             dist_r <- linear_decay(dist_r,
-                                   zoi_radius = zoi_radius,
+                                   radius = radius,
                                    intercept = intercept)
 
           } else
             if(type %in% c("Gauss", "half_norm", "gauss",
                            "gaussian_decay", "normal_decay")) {
               dist_r <- gaussian_decay(x = dist_r,
-                                       zoi_radius = zoi_radius,
+                                       radius = radius,
                                        hnorm_decay_parms = hnorm_decay_parms,
                                        zoi_limit = zoi_limit,
                                        sigma = sigma)
@@ -385,7 +385,7 @@ calc_zoi_nearest_r <- function(
               if(type %in% c("threshold", "step",
                              "threshold_decay", "step_decay")) {
                 dist_r <- threshold_decay(x = dist_r,
-                                          zoi_radius = zoi_radius,
+                                          radius = radius,
                                           constant_influence = constant_influence)
 
               } else
@@ -394,10 +394,10 @@ calc_zoi_nearest_r <- function(
 
   # rename nearest influence layer, including transformation
   name <- paste0("zoi_nearest", "_", type)
-  # and the zoi_radius
+  # and the radius
   zoi_methods <- c("exp_decay", "bartlett", "Gauss",
                    "half_norm", "threshold", "step")
-  if(type %in% zoi_methods) name <- paste0(name, zoi_radius)
+  if(type %in% zoi_methods) name <- paste0(name, radius)
   names(dist_r) <- name
 
   # should the result be plotted?
@@ -413,7 +413,7 @@ calc_zoi_nearest_r <- function(
 # implementation in GRASS
 calc_zoi_nearest_grass <- function(
   x,
-  zoi_radius = NULL,
+  radius = NULL,
   type = c("Gauss", "exp_decay", "bartlett", "half_norm", "threshold", "step",
            "euclidean", "log", "sqrt")[1],
   log_base = exp(1),
@@ -520,19 +520,19 @@ calc_zoi_nearest_grass <- function(
     if(type == "exp_decay") {
 
       # define lambda depending on the input parameter
-      # if zoi_radius is given, it is used
-      if(!is.null(zoi_radius)) {
+      # if radius is given, it is used
+      if(!is.null(radius)) {
         # if zoi_hl_ratio is null, use zoi_limit
         if(is.null(zoi_hl_ratio)) {
-          lambda <- log(1/zoi_limit) / zoi_radius
+          lambda <- log(1/zoi_limit) / radius
         } else {
           # if zoi_hl_ratio is given, calculate lambda
-          half_life <- zoi_radius/zoi_hl_ratio
+          half_life <- radius/zoi_hl_ratio
           lambda <- log(2)/half_life
         }
 
       } else {
-        # if zoi_radius is not given:
+        # if radius is not given:
         # and half life is given
         if(!is.null(half_life)) {
           lambda <- log(2)/half_life
@@ -560,16 +560,16 @@ calc_zoi_nearest_grass <- function(
       # message
       out_message <- "Calculating Bartlett influence..."
       # expression
-      expression_influence <- sprintf("if(A <= %f, 1 - (1/%f) * A, 0)", zoi_radius, zoi_radius)
+      expression_influence <- sprintf("if(A <= %f, 1 - (1/%f) * A, 0)", radius, radius)
 
     }
 
     if(type %in% c("Gauss", "half_norm", "gauss",
                    "gaussian_decay", "normal_decay")) {
-      # define zoi_radius or half life, depending on which is given as input
+      # define radius or half life, depending on which is given as input
 
-      if(!is.null(zoi_radius)) {
-        lambda = log(1/zoi_limit) / (zoi_radius**2)
+      if(!is.null(radius)) {
+        lambda = log(1/zoi_limit) / (radius**2)
       } else {
         if(!is.null(sigma)) {
           lambda = 1/(2*sigma**2)
@@ -596,7 +596,7 @@ calc_zoi_nearest_grass <- function(
       # message
       out_message <- "Calculating threshold influence..."
       # expression
-      expression_influence <- sprintf("if(A < %f, %f, 0)", zoi_radius, constant_influence)
+      expression_influence <- sprintf("if(A < %f, %f, 0)", radius, constant_influence)
 
     }
 
@@ -606,10 +606,10 @@ calc_zoi_nearest_grass <- function(
     else {
       # otherwise, name it according to the method
       out_influence <- paste0(x, "_zoi_nearest_", type)
-      # and maybe the zoi_radius
+      # and maybe the radius
       zoi_methods <- c("exp_decay", "bartlett", "Gauss",
                        "half_norm", "threshold", "step")
-      if(type %in% zoi_methods) out_influence <- paste0(out_influence, zoi_radius)
+      if(type %in% zoi_methods) out_influence <- paste0(out_influence, radius)
     }
 
     # print message
