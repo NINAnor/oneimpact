@@ -2,8 +2,8 @@ pandoc: 2.7.3
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
-  getting_started_oneimpact_R: getting_started_oneimpact_R.html
-last_built: 2022-08-26T08:07Z
+  oneimpact: oneimpact.html
+last_built: 2022-08-26T09:00Z
 urls:
   reference: https://ninanor.github.io/oneimpact/reference
   article: https://ninanor.github.io/oneimpact/articles
