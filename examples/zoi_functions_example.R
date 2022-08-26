@@ -1,4 +1,7 @@
 # test the zone of influence functions
+# here we use ggplot() to illustrate the functions, to make the figures more
+# widely reproducible
+# to ease the plots, use the function plot_zoi1d()
 library(ggplot2)
 
 # generic dist_decay function
