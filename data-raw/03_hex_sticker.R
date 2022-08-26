@@ -1,11 +1,11 @@
-install.packages("hexSticker")
-
+# install.packages("hexSticker")
 library(hexSticker)
-setwd("C:/Users/bernardo.brandao/OneDrive - NINA/presentations/Apr_2022_GIS_group_NINA")
 
-imgurl <- "oneimpact_logo.jpg"
-sticker(imgurl, package="oneimpact",
-        p_size=20, p_color = "black", p_x = 1, p_y = 1.5,
-        s_x=.95, s_y=.95, s_width=.85,
+# logo
+imgurl <- "data-raw/oneimpact_logo.jpg"
+# create sticker
+sticker(imgurl, package = "oneimpact",
+        p_size=20, p_color = "black", p_x = 1, p_y = 1.55,
+        s_x=1, s_y=.95, s_width=.79,
         h_fill = "white",
-        filename="oneimpact_hex_test.png")
+        filename="man/figures/oneimpact_hex_logo.png")
