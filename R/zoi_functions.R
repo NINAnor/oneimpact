@@ -135,12 +135,65 @@
 #' are considered symmetrically and their transformation is always positive.
 #' In general, this parameter does not make sense for raster objects.
 #'
+#' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
+#' "linear", "tent", "threshold", "step"}` \cr Type or shape of the decay distance.
+#' \itemize{
+#'   \item If `Gauss` or `half_norm`, the ZoI follows a half-normal shape: \cr
+#'   `N_0 * exp(-lambda * (euclidean_distance^2))`. `N_0` and `lambda` are
+#'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
+#'   \item If `exp_decay`, the ZoI follows an exponential decay shape: \cr
+#'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
+#'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
+#'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZoI follows a
+#'   linear decay shape within the ZoI radius (`radius`).
+#'   \item If `threshold` or `step`, a constant influence is consider within the
+#'   zone of influence radius (`radius`). All pixels closer than
+#'   `radius` to infrastructure are considered as "under the influence" of
+#'   the nearest feature, with a constant influence value defined by the
+#'   `constant_influence` parameter, and all other pixels are assumed to have
+#'   zero influence.
+#' }
+#'
 #' @return The ZoI values for a given array of x values, or a raster
 #' object delimiting the ZoI if x corresponds to the distance from
 #' infrastructure or disturbance sources in 2 dimensional space.
 #'
 #' @example examples/zoi_functions_example.R
 #'
+#' @rdname zoi_functions
+#' @export
+dist_decay <- function(x, radius = NULL,
+                       type = c("exp_decay", "gaussian_decay", "linear_decay",
+                                "threshold_decay")[1],
+                       zoi_limit = 0.05,
+                       origin = 0,
+                       oneside = TRUE,
+                       ...) {
+
+  if(type %in% c("exp_decay", "exp", "exponential")) {
+    return(oneimpact::exp_decay(x = x, radius = radius, zoi_limit = zoi_limit,
+                                origin = origin, oneside = oneside, ...))
+  }
+
+  if(type %in% c("Gauss", "gauss", "Gaussian", "gaussian", "gaussian_decay",
+                 "normal", "Normal", "half_norm", "half_norm_decay")) {
+    return(oneimpact::gaussian_decay(x = x, radius = radius, zoi_limit = zoi_limit,
+                                     origin = origin, oneside = oneside, ...))
+  }
+
+  if(type %in% c("Bartlett", "bartlett", "bartlett_decay", "linear",
+                 "linear_decay", "tent", "tent_decay")) {
+    return(oneimpact::linear_decay(x = x, radius = radius,
+                                   origin = origin, oneside = oneside, ...))
+  }
+
+  if(type %in% c("threshold", "threshold_decay", "step", "step_decay")) {
+    return(oneimpact::threshold_decay(x = x, radius = radius,
+                                      origin = origin, oneside = oneside, ...))
+  }
+}
+
+
 #' @rdname zoi_functions
 #' @export
 exp_decay <- function(x, radius = NULL,
@@ -276,55 +329,3 @@ gaussian_decay <- function(x, radius = NULL,
 #' @rdname zoi_functions
 #' @export
 half_norm_decay <- gaussian_decay
-
-#' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
-#' "linear", "tent", "threshold", "step"}` \cr Type or shape of the decay distance.
-#' \itemize{
-#'   \item If `Gauss` or `half_norm`, the ZoI follows a half-normal shape: \cr
-#'   `N_0 * exp(-lambda * (euclidean_distance^2))`. `N_0` and `lambda` are
-#'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
-#'   \item If `exp_decay`, the ZoI follows an exponential decay shape: \cr
-#'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
-#'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
-#'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZoI follows a
-#'   linear decay shape within the ZoI radius (`radius`).
-#'   \item If `threshold` or `step`, a constant influence is consider within the
-#'   zone of influence radius (`radius`). All pixels closer than
-#'   `radius` to infrastructure are considered as "under the influence" of
-#'   the nearest feature, with a constant influence value defined by the
-#'   `constant_influence` parameter, and all other pixels are assumed to have
-#'   zero influence.
-#' }
-#'
-#' @rdname zoi_functions
-#' @export
-dist_decay <- function(x, radius = NULL,
-                       type = c("exp_decay", "gaussian_decay", "linear_decay",
-                                "threshold_decay")[1],
-                       zoi_limit = 0.05,
-                       origin = 0,
-                       oneside = TRUE,
-                       ...) {
-
-  if(type == "exp_decay") {
-    return(oneimpact::exp_decay(x = x, radius = radius, zoi_limit = zoi_limit,
-                                origin = origin, oneside = oneside, ...))
-  }
-
-  if(type %in% c("Gauss", "gauss", "Gaussian", "gaussian", "gaussian_decay",
-                 "normal", "Normal", "half_norm", "half_norm_decay")) {
-    return(oneimpact::gaussian_decay(x = x, radius = radius, zoi_limit = zoi_limit,
-                                     origin = origin, oneside = oneside, ...))
-  }
-
-  if(type %in% c("Bartlett", "bartlett", "bartlett_decay", "linear",
-                 "linear_decay", "tent", "tent_decay")) {
-    return(oneimpact::linear_decay(x = x, radius = radius,
-                                   origin = origin, oneside = oneside, ...))
-  }
-
-  if(type %in% c("threshold", "threshold_decay", "step", "step_decay")) {
-    return(oneimpact::threshold_decay(x = x, radius = radius,
-                                      origin = origin, oneside = oneside, ...))
-  }
-}

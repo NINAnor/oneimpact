@@ -1,6 +1,11 @@
+# test the zone of influence functions
 library(ggplot2)
 
-# test influence functions
+# generic dist_decay function
+dist_decay(500, radius = 1000, type = "exp_decay")
+dist_decay(500, radius = 1000, type = "gaussian_decay")
+dist_decay(500, radius = 1000, type = "linear_decay")
+dist_decay(500, radius = 1000, type = "step_decay")
 
 # exponential decay
 exp_decay(10, radius = 30)
@@ -87,12 +92,6 @@ f1 +
   stat_function(fun = gaussian_decay, args = list(radius = 20, zoi_limit = 0.05), linetype = 4) +
   labs(x = "Distance", y = "Zone of Influence") +
   theme_bw()
-
-# generic dist_decay function
-dist_decay(500, radius = 1000, type = "exp_decay")
-dist_decay(500, radius = 1000, type = "gaussian_decay")
-dist_decay(500, radius = 1000, type = "linear_decay")
-dist_decay(500, radius = 1000, type = "step_decay")
 
 #---
 # applying dist_decay functions for rasters

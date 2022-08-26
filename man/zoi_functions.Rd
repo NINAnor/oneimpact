@@ -2,6 +2,7 @@
 % Please edit documentation in R/zoi_functions.R
 \name{zoi_functions}
 \alias{zoi_functions}
+\alias{dist_decay}
 \alias{exp_decay}
 \alias{threshold_decay}
 \alias{threshold_decay.numeric}
@@ -14,9 +15,18 @@
 \alias{linear_decay}
 \alias{gaussian_decay}
 \alias{half_norm_decay}
-\alias{dist_decay}
 \title{Zone of Influence (ZoI) functions}
 \usage{
+dist_decay(
+  x,
+  radius = NULL,
+  type = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
+  zoi_limit = 0.05,
+  origin = 0,
+  oneside = TRUE,
+  ...
+)
+
 exp_decay(
   x,
   radius = NULL,
@@ -65,16 +75,6 @@ half_norm_decay(
   origin = 0,
   ...
 )
-
-dist_decay(
-  x,
-  radius = NULL,
-  type = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
-  zoi_limit = 0.05,
-  origin = 0,
-  oneside = TRUE,
-  ...
-)
 }
 \arguments{
 \item{x}{\verb{[numeric,SpatRaster,RasterLayer]} \cr Euclidean distance from an infrastructure, source
@@ -87,12 +87,23 @@ but preferably it should be a distance measured in meters, to ease interpretatio
 the distance at which the ZoI vanishes or goes below a given minimum limit value
 \code{zoi_limit}. See details.}
 
-\item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr For the \code{exp_decay} function,
-these are the exponential decay parameters c(N, lambda), where N is the maximum
-value of the function (at \code{x = 0})
-and lambda is the decay parameter of the exponential function.
-The value for \code{lambda} is only considered to draw the exponential decay function
-if both \code{radius = NULL} and \code{half_life = NULL}.}
+\item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "linear", "tent", "threshold", "step"\}} \cr Type or shape of the decay distance.
+\itemize{
+\item If \code{Gauss} or \code{half_norm}, the ZoI follows a half-normal shape: \cr
+\code{N_0 * exp(-lambda * (euclidean_distance^2))}. \code{N_0} and \code{lambda} are
+parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
+\item If \code{exp_decay}, the ZoI follows an exponential decay shape: \cr
+\code{N_0 * exp(-lambda * euclidean_distance)}. \code{N_0} and \code{lambda} are
+parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
+\item If \code{bartlett}, \code{linear_decay}, or \code{tent_decay}, the ZoI follows a
+linear decay shape within the ZoI radius (\code{radius}).
+\item If \code{threshold} or \code{step}, a constant influence is consider within the
+zone of influence radius (\code{radius}). All pixels closer than
+\code{radius} to infrastructure are considered as "under the influence" of
+the nearest feature, with a constant influence value defined by the
+\code{constant_influence} parameter, and all other pixels are assumed to have
+zero influence.
+}}
 
 \item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr For non-vanishing functions
 (e.g. \code{exp_decay}, \code{gaussian_decay}), this value is used to set the relationship
@@ -104,6 +115,17 @@ if \code{radius} is not \code{NULL}.}
 \item{origin}{\verb{[numeric(1)=0]} \cr In which position (in 1 dimension) is located
 the infrastructure or source of disturbance? Default is zero. For raster objects,
 this parameter should be ignored.}
+
+\item{oneside}{\verb{[logical(1)=TRUE]} \cr If \code{FALSE}, negative distance values
+are considered symmetrically and their transformation is always positive.
+In general, this parameter does not make sense for raster objects.}
+
+\item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr For the \code{exp_decay} function,
+these are the exponential decay parameters c(N, lambda), where N is the maximum
+value of the function (at \code{x = 0})
+and lambda is the decay parameter of the exponential function.
+The value for \code{lambda} is only considered to draw the exponential decay function
+if both \code{radius = NULL} and \code{half_life = NULL}.}
 
 \item{half_life}{\verb{[numeric(1)=NULL]} \cr Half life of the exponential decay
 function, in meters. By definition, the half life is
@@ -125,10 +147,6 @@ decreases to 0.5 at distance 200, and the ZoI radius = 1200
 is defined as the distance
 at which the ZoI decreases to 0.5**6 = 0.015625.}
 
-\item{oneside}{\verb{[logical(1)=TRUE]} \cr If \code{FALSE}, negative distance values
-are considered symmetrically and their transformation is always positive.
-In general, this parameter does not make sense for raster objects.}
-
 \item{constant_influence}{\verb{[numeric(1)=1]} \cr Constant value of the
 threshold (or step) function within the Zone of Influence. Default is 1.}
 
@@ -147,24 +165,6 @@ function. It related to the Gaussian decay rate \eqn{\lambda} as
 \code{lambda = 1/(2*sigma^2)}. Only considered to compute the ZoI
 for the \code{gaussian_decay} function when the ZoI radius parameter is null
 (\code{radius = NULL}).}
-
-\item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "linear", "tent", "threshold", "step"\}} \cr Type or shape of the decay distance.
-\itemize{
-\item If \code{Gauss} or \code{half_norm}, the ZoI follows a half-normal shape: \cr
-\code{N_0 * exp(-lambda * (euclidean_distance^2))}. \code{N_0} and \code{lambda} are
-parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
-\item If \code{exp_decay}, the ZoI follows an exponential decay shape: \cr
-\code{N_0 * exp(-lambda * euclidean_distance)}. \code{N_0} and \code{lambda} are
-parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
-\item If \code{bartlett}, \code{linear_decay}, or \code{tent_decay}, the ZoI follows a
-linear decay shape within the ZoI radius (\code{radius}).
-\item If \code{threshold} or \code{step}, a constant influence is consider within the
-zone of influence radius (\code{radius}). All pixels closer than
-\code{radius} to infrastructure are considered as "under the influence" of
-the nearest feature, with a constant influence value defined by the
-\code{constant_influence} parameter, and all other pixels are assumed to have
-zero influence.
-}}
 }
 \value{
 The ZoI values for a given array of x values, or a raster
@@ -258,9 +258,14 @@ for the \code{gaussian_decay} and the \code{exp_decay} functions.
 }
 
 \examples{
+# test the zone of influence functions
 library(ggplot2)
 
-# test influence functions
+# generic dist_decay function
+dist_decay(500, radius = 1000, type = "exp_decay")
+dist_decay(500, radius = 1000, type = "gaussian_decay")
+dist_decay(500, radius = 1000, type = "linear_decay")
+dist_decay(500, radius = 1000, type = "step_decay")
 
 # exponential decay
 exp_decay(10, radius = 30)
@@ -347,12 +352,6 @@ f1 +
   stat_function(fun = gaussian_decay, args = list(radius = 20, zoi_limit = 0.05), linetype = 4) +
   labs(x = "Distance", y = "Zone of Influence") +
   theme_bw()
-
-# generic dist_decay function
-dist_decay(500, radius = 1000, type = "exp_decay")
-dist_decay(500, radius = 1000, type = "gaussian_decay")
-dist_decay(500, radius = 1000, type = "linear_decay")
-dist_decay(500, radius = 1000, type = "step_decay")
 
 #---
 # applying dist_decay functions for rasters
