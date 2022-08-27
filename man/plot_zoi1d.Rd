@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_zoi1d.R
 \name{plot_zoi1d}
 \alias{plot_zoi1d}
-\title{Plot nearest and cumulative zone of influence function in 1 dimension}
+\title{Plot the functions for the nearest and cumulative zone of influence in 1 dimension}
 \usage{
 plot_zoi1d(
   points,
@@ -51,19 +51,19 @@ If \code{return_df = TRUE}, it returns a list with the \code{ggplot} object and 
 with values for \code{x} (position in 1d space) and \code{y} (ZoI value).
 }
 \description{
-Plots the zone of influence (ZoI) functions in 1 dimensional space, for illustration.
+Plots the functions to represent the zone of influence (ZoI) in 1 dimensional space, for illustration.
 When there is more than one value for \code{points} (the location of infrastructure
-or sources of disturbance), either the ZoI of the nearest feature or the
-cumulative ZoI can be plotted. The ZoI of the nearest feature corresponds to the maximum ZoI value from all
+or sources of disturbance), two metrics might be plotted: the ZoI of the nearest feature or the
+cumulative ZoI. The ZoI of the nearest feature corresponds to the maximum ZoI value from all
 infrastructure at each position. The cumulative ZoI corresponds to the sum of the ZoI
 of all infrastructure at each position.
 }
 \details{
 In practice, the \code{plot_zoi1d()} computes the ZoI value for each feature
 whose locations in 1 dimension are defined by \code{points} and calculates the maximum
-(ZoI of the nearest) or sum (cumulative ZoI) of all values This is done
+(ZoI of the nearest) or sum (cumulative ZoI) of all values. This is done
 for a series of points in 1 dimensional space in the range \code{range_plot} (with
-steps defined by \code{step}) and finally plotted.
+steps defined by \code{step}) and plotted.
 
 To add: options for normalization, prob etc.
 }
@@ -74,19 +74,26 @@ plot_zoi1d(0, radius = 3, zoi_limit = 0.05,
 
 # exponential decay
 points <- c(0, 4.5, 7, 7.5)
-plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12), zoi_metric = "nearest")
-plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12), zoi_metric = "cumulative")
+plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12),
+           zoi_metric = "nearest")
+plot_zoi1d(points, radius = 3, fun = exp_decay, range_plot = c(0, 12),
+           zoi_metric = "cumulative")
 
 # threshold
-plot_zoi1d(points, radius = 3, fun = threshold_decay, range_plot = c(0, 12), zoi_metric = "nearest")
-plot_zoi1d(points, radius = 3, fun = "step_decay", range_plot = c(0, 12), zoi_metric = "cumulative")
+plot_zoi1d(points, radius = 3, fun = threshold_decay, range_plot = c(0, 12),
+           zoi_metric = "nearest")
+plot_zoi1d(points, radius = 3, fun = "step_decay", range_plot = c(0, 12),
+           zoi_metric = "cumulative")
 
 # linear
-plot_zoi1d(points, radius = 3, fun = bartlett_decay, range_plot = c(0, 12), zoi_metric = "nearest")
-plot_zoi1d(points, radius = 3, fun = "linear_decay", range_plot = c(0, 12), zoi_metric = "cumulative")
+plot_zoi1d(points, radius = 3, fun = bartlett_decay, range_plot = c(0, 12),
+           zoi_metric = "nearest")
+plot_zoi1d(points, radius = 3, fun = "linear_decay", range_plot = c(0, 12),
+           zoi_metric = "cumulative")
 
 # gaussian
-plot_zoi1d(points, radius = 3, fun = gaussian_decay, range_plot = c(0, 12), zoi_metric = "nearest")
-plot_zoi1d(points, radius = 3, fun = "half_norm_decay", range_plot = c(0, 12), zoi_metric = "cumulative",
-           return_df = T)
+plot_zoi1d(points, radius = 3, fun = gaussian_decay, range_plot = c(0, 12),
+           zoi_metric = "nearest")
+plot_zoi1d(points, radius = 3, fun = "half_norm_decay", range_plot = c(0, 12),
+           zoi_metric = "cumulative", return_df = TRUE) # also return the data.frame
 }

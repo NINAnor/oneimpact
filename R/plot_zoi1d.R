@@ -1,17 +1,17 @@
-#' Plot nearest and cumulative zone of influence function in 1 dimension
+#' Plot the functions for the nearest and cumulative zone of influence in 1 dimension
 #'
-#' Plots the zone of influence (ZoI) functions in 1 dimensional space, for illustration.
+#' Plots the functions to represent the zone of influence (ZoI) in 1 dimensional space, for illustration.
 #' When there is more than one value for `points` (the location of infrastructure
-#' or sources of disturbance), either the ZoI of the nearest feature or the
-#' cumulative ZoI can be plotted. The ZoI of the nearest feature corresponds to the maximum ZoI value from all
+#' or sources of disturbance), two metrics might be plotted: the ZoI of the nearest feature or the
+#' cumulative ZoI. The ZoI of the nearest feature corresponds to the maximum ZoI value from all
 #' infrastructure at each position. The cumulative ZoI corresponds to the sum of the ZoI
 #' of all infrastructure at each position.
 #'
 #' In practice, the `plot_zoi1d()` computes the ZoI value for each feature
 #' whose locations in 1 dimension are defined by `points` and calculates the maximum
-#' (ZoI of the nearest) or sum (cumulative ZoI) of all values This is done
+#' (ZoI of the nearest) or sum (cumulative ZoI) of all values. This is done
 #' for a series of points in 1 dimensional space in the range `range_plot` (with
-#' steps defined by `step`) and finally plotted.
+#' steps defined by `step`) and plotted.
 #'
 #' To add: options for normalization, prob etc.
 #'
