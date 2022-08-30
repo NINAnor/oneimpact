@@ -3,7 +3,7 @@ pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   oneimpact: oneimpact.html
-last_built: 2022-08-30T12:14Z
+last_built: 2022-08-30T12:28Z
 urls:
   reference: https://ninanor.github.io/oneimpact/reference
   article: https://ninanor.github.io/oneimpact/articles
