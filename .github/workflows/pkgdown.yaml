@@ -26,6 +26,11 @@ jobs:
           extra-packages: pkgdown
           needs: website
 
+      - name: Install GRASS GIS and other dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq grass grass-dev grass-doc wget
+
       - name: Deploy package
         run: |
           git config --local user.name "$GITHUB_ACTOR"
