@@ -1,3 +1,10 @@
+library(usethis)
+
+#----------
+# build package
+usethis::use_citation()
+
+#----------
 # build pkgdown website
 
 # Run once to configure package to use pkgdown
