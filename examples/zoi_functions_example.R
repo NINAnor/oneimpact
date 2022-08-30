@@ -91,8 +91,8 @@ f1 +
   theme_bw()
 
 # generic dist_decay function
-dist_decay(500, radius = 1000, type = "exp_decay")
-dist_decay(500, radius = 1000, type = "gaussian_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "exp_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "gaussian_decay")
 dist_decay(500, radius = 1000, type = "linear_decay")
 dist_decay(500, radius = 1000, type = "step_decay")
 
