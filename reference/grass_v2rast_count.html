@@ -105,7 +105,6 @@ computational region to produce the output map.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># connect to grass gis 7.8</span></span></span>
 <span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass78 --config path"</span>, intern <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in system("grass78 --config path", intern = T):</span> error in running command</span>
 <span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"/data/grass"</span></span></span>
 <span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span></span></span>
 <span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"u_bb_cuminf"</span></span></span>
@@ -115,7 +114,12 @@ computational region to produce the output map.</p></dd>
 <span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
 <span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
 <span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in file.exists(gisBase):</span> object 'grassdir' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass', reason 'Permission denied'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N', reason 'No such file or directory'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N//PERMANENT', reason 'No such file or directory'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N//u_bb_cuminf', reason 'No such file or directory'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>running command 'g.version' had status 1</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (gv == "sh: line 1: g.version: command not found") {    compatible &lt;- as.logical(NA)    attr(compatible, "message") &lt;- gv    return(compatible)}:</span> argument is of length zero</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># input region</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/gmeta.html" class="external-link">use_sf</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -131,11 +135,11 @@ computational region to produce the output map.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># set region</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html" class="external-link">execGRASS</a></span><span class="op">(</span><span class="st">"g.region"</span>, vector <span class="op">=</span> <span class="va">test_region_name</span>, res <span class="op">=</span> <span class="st">"100"</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.region --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.region: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("g.region", vector = test_region_name, res = "100",     flags = c("p")):</span> The command:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> g.region -p vector=region_test_oneimpact_pkg res=100</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> access: No such file or directory</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># input vector</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/cabins_vect.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -150,20 +154,18 @@ computational region to produce the output map.</p></dd>
 <span class="r-in"><span><span class="co"># rasterize with count, creating a new temp_vector</span></span></span>
 <span class="r-in"><span><span class="va">cabins_count_name</span> <span class="op">&lt;-</span> <span class="fu">grass_v2rast_count</span><span class="op">(</span><span class="va">cabins_vect_name</span>, output <span class="op">=</span> <span class="st">"cabins_count"</span>,</span></span>
 <span class="r-in"><span>                                        quiet <span class="op">=</span> <span class="cn">F</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span>    v.in.region --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: v.in.region: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    access: No such file or directoryERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rasterize with count, without creating a temporary vector</span></span></span>
 <span class="r-in"><span><span class="va">cabins_count_name</span> <span class="op">&lt;-</span> <span class="fu">grass_v2rast_count</span><span class="op">(</span><span class="va">cabins_vect_name</span>, output <span class="op">=</span> <span class="st">"cabins_count"</span>,</span></span>
 <span class="r-in"><span>                                        column <span class="op">=</span> <span class="st">"value"</span>, quiet <span class="op">=</span> <span class="cn">F</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span>    v.out.ascii --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: v.out.ascii: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    access: No such file or directoryERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/gmeta.html" class="external-link">use_sp</a></span><span class="op">(</span><span class="op">)</span></span></span>

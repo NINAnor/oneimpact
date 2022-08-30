@@ -1,0 +1,7 @@
+name: unknown
+datum: etrs89
+ellps: grs80
+proj: utm
+zone: 33
+towgs84: 0,0,0,0,0,0,0
+no_defs: defined

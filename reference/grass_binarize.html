@@ -166,7 +166,6 @@ and a documentation of raster algebra with <a href="https://rdrr.io/pkg/terra/ma
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># connect to grass gis 7.8</span></span></span>
 <span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass78 --config path"</span>, intern <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in system("grass78 --config path", intern = T):</span> error in running command</span>
 <span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"/data/grass"</span></span></span>
 <span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span></span></span>
 <span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"u_bb_cuminf"</span></span></span>
@@ -176,7 +175,12 @@ and a documentation of raster algebra with <a href="https://rdrr.io/pkg/terra/ma
 <span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
 <span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
 <span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in file.exists(gisBase):</span> object 'grassdir' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass', reason 'Permission denied'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N', reason 'No such file or directory'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N//PERMANENT', reason 'No such file or directory'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N//u_bb_cuminf', reason 'No such file or directory'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>running command 'g.version' had status 1</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (gv == "sh: line 1: g.version: command not found") {    compatible &lt;- as.logical(NA)    attr(compatible, "message") &lt;- gv    return(compatible)}:</span> argument is of length zero</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># input map (not binarized)</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/gmeta.html" class="external-link">use_sp</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -188,19 +192,19 @@ and a documentation of raster algebra with <a href="https://rdrr.io/pkg/terra/ma
 <span class="r-in"><span><span class="co"># map with only 1</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin1_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">name_var</span>, output <span class="op">=</span> <span class="st">"cabins_bin1"</span>,</span></span>
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.mapcalc.simple --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.mapcalc.simple: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("r.mapcalc.simple", expression = expr, a = x,     output = out, flags = flags):</span> The command:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> r.mapcalc.simple --quiet --overwrite expression="if(A &gt;= 1.000000, 1, 0)" a=private_cabins_sub output=cabins_bin1</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> access: No such file or directory</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
 <span class="r-in"><span><span class="co"># map with 0, 1</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin2_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">name_var</span>, output <span class="op">=</span> <span class="st">"cabins_bin2"</span>,</span></span>
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, null <span class="op">=</span> <span class="fl">0</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.copy --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.copy: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("g.copy", parameters = list(raster = paste0(x,     ",", inter_map)), flags = flags):</span> The command:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> g.copy --quiet --overwrite raster=private_cabins_sub,inter_map</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> access: No such file or directory</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin1_2</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">readRAST</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_bin2_name</span>, <span class="va">cabins_bin1_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>

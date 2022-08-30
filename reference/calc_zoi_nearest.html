@@ -559,7 +559,6 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># connect to grass gis 7.8 and create grass location</span></span></span>
 <span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass78 --config path"</span>, intern <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in system("grass78 --config path", intern = T):</span> error in running command</span>
 <span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"."</span> <span class="co"># create location and mapset in the working directory</span></span></span>
 <span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span> <span class="co"># name of the location</span></span></span>
 <span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"PERMANENT"</span> <span class="co"># name of the mapset</span></span></span>
@@ -570,18 +569,55 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
 <span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
 <span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in file.exists(gisBase):</span> object 'grassdir' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gisdbase    . </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> location    ETRS_33N/ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mapset      PERMANENT </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rows        361 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> columns     478 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> north       6658900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> south       6622800 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> west        146900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> east        194700 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nsres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ewres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection  +proj=utm +no_defs +zone=33 +a=6378137 +rf=298.257222101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +towgs84=0,0,0,0,0,0,0 +type=crs +to_meter=1 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># define map name within GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="va">cabins_g</span> <span class="op">&lt;-</span> <span class="st">"cabins_example"</span></span></span>
 <span class="r-in"><span><span class="co"># add file to GRASS GIS mapset</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="st">"overwrite"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.in.gdal --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.in.gdal: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in execGRASS("r.in.gdal", flags = flags, input = tf, output = vname):</span> The command:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> r.in.gdal --overwrite input=/home/runner/work/_temp/Library/oneimpact/raster/cabins.tif output=cabins_example</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> WARNING: Raster map &lt;cabins_example&gt; already exists and will be overwritten</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: Projection of dataset does not appear to match current location.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        Location PROJ_INFO is:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        name: unknown</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        datum: etrs89</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        ellps: grs80</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        proj: utm</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        zone: 33</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        towgs84: 0,0,0,0,0,0,0</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        no_defs: defined</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        Dataset PROJ_INFO is:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        name: unknown</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        datum: etrs89</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        ellps: grs80</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        proj: utm</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        zone: 33</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        towgs84: 0,0,0,0,0,0,0</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        no_defs: defined</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        ERROR: proj</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        In case of no significant differences in the projection definitions,</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        use the -o flag to ignore them and use current location definition.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        Consider generating a new location from the input dataset using the</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>        'location' parameter.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check</span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span>, col <span class="op">=</span> <span class="st">"black"</span>,</span></span>
@@ -592,11 +628,19 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span><span class="co"># define region in GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html" class="external-link">execGRASS</a></span><span class="op">(</span><span class="st">"g.region"</span>, raster <span class="op">=</span> <span class="va">cabins_g</span>,</span></span>
 <span class="r-in"><span>                   flags <span class="op">=</span> <span class="st">"p"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.region --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.region: not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection: 99 (unknown)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> zone:       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> datum:      etrs89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ellipsoid:  grs80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> north:      6658900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> south:      6622800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> west:       146900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> east:       194700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nsres:      100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ewres:      100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rows:       361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cols:       478</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cells:      172558</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Input map name within GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="va">cabins_g</span></span></span>
@@ -606,70 +650,49 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span><span class="va">euclidean_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"euclidean"</span>,</span></span>
 <span class="r-in"><span>                                   where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                   quiet <span class="op">=</span> <span class="cn">T</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.grow.distance --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.grow.distance: not found</span>
 <span class="r-in"><span><span class="co"># Log</span></span></span>
 <span class="r-in"><span><span class="va">log_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"log"</span>, log_base <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span>                             where <span class="op">=</span> <span class="st">"GRASS"</span>, quiet <span class="op">=</span> <span class="cn">T</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.grow.distance --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.grow.distance: not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span><span class="co"># Exponential decay ZoI=1000m</span></span></span>
 <span class="r-in"><span><span class="va">expdecay_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>, quiet <span class="op">=</span> <span class="cn">T</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.grow.distance --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.grow.distance: not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span><span class="co"># Bartlett decay ZoI=1000m</span></span></span>
 <span class="r-in"><span><span class="va">bartlett_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>, quiet <span class="op">=</span> <span class="cn">T</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.grow.distance --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.grow.distance: not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Threshold influence ZoI = 1000m</span></span></span>
 <span class="r-in"><span><span class="va">threshold_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"threshold"</span>,</span></span>
 <span class="r-in"><span>                                   radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                   where <span class="op">=</span> <span class="st">"GRASS"</span>, quiet <span class="op">=</span> <span class="cn">T</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.grow.distance --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.grow.distance: not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Gaussian influence ZoI = 1000m</span></span></span>
 <span class="r-in"><span><span class="va">gaussian_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>, quiet <span class="op">=</span> <span class="cn">T</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.grow.distance --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.grow.distance: not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">all_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">euclidean_name</span>, <span class="va">log_name</span>, <span class="va">expdecay_name</span>,</span></span>
 <span class="r-in"><span>                <span class="va">bartlett_name</span>, <span class="va">threshold_name</span>, <span class="va">gaussian_name</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'euclidean_name' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cabins_example_zoi_nearest_euclidean"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "cabins_example_zoi_nearest_log"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "cabins_example_zoi_nearest_exp_decay1000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "cabins_example_zoi_nearest_bartlett1000" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "cabins_example_zoi_nearest_threshold1000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "cabins_example_zoi_nearest_Gauss1000"    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
 <span class="r-in"><span><span class="va">cabins_zoi_nearest</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">all_names</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    r.out.gdal --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: r.out.gdal: not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in execGRASS("r.info", flags = "r", map = vname[i], intern = TRUE,     ignore.stderr = ignore.stderr):</span> The command:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> r.info -r map=cabins_example_zoi_nearest_euclidean</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: Raster map &lt;cabins_example_zoi_nearest_euclidean&gt; not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Euclidean distance"</span>, <span class="st">"Log distance (base 10)"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Exponential ZoI 1000m"</span>, <span class="st">"Bartlett ZoI 1000m"</span>,</span></span>
@@ -681,7 +704,6 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span><span class="va">to_remove_vect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">test_region_name</span>, <span class="va">cabins_vect_name</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'test_region_name' not found</span>
 <span class="r-in"><span><span class="va">to_remove_rast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">all_names</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'all_names' not found</span>
 <span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")</span></span></span>
 <span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")</span></span></span>
 </code></pre></div>
