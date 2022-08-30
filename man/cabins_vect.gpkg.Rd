@@ -18,10 +18,10 @@ file presents the following columns:
 }
 \description{
 Dataset containing the location of tourist private cabins is Southern
-Norway, within the study area for the \link{oneimpact} package.
+Norway, within the study area for the \code{oneimpact} package.
 It corresponds to some specific building types (object_type = "Bygning",
 byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
-The map was cut for the study area presented in the \link{oneimpact} package.
+The map was cut for the study area presented in the \code{oneimpact} package.
 }
 \examples{
 (s <- system.file("vector/cabins_vect.gpkg", package = "oneimpact"))

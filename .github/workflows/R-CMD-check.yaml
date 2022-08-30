@@ -43,4 +43,18 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - name: Install R dependencies not on CRAN
+        run: |
+          install.packages('remotes')
+          remotes::install_github("cran/RandomFieldsUtils")
+          remotes::install_github("cran/RandomFields")
+          remotes::install_github("ropensci/NLMR")
+          remotes::install_github("MoBiodiv/mobsim")
+        shell: Rscript {0}
+
+      - name: Install GRASS GIS and other dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq grass grass-dev grass-doc wget
+
       - uses: r-lib/actions/check-r-package@v1

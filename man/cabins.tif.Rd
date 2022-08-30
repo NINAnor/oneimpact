@@ -19,7 +19,7 @@ It corresponds to some specific building types (object_type = "Bygning",
 byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
 The original data consisted of point vector data and were rasterized with 100m r
 esolution, for the purpose of illustration here. The raster was cut for the
-study area presented in the \link{oneimpact} package.
+study area presented in the \code{oneimpact} package.
 }
 \examples{
 (f <- system.file("raster/cabins.tif", package = "oneimpact"))

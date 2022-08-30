@@ -93,8 +93,8 @@ f1 +
 # generic dist_decay function
 oneimpact::dist_decay(500, radius = 1000, type = "exp_decay")
 oneimpact::dist_decay(500, radius = 1000, type = "gaussian_decay")
-dist_decay(500, radius = 1000, type = "linear_decay")
-dist_decay(500, radius = 1000, type = "step_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "linear_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "step_decay")
 
 #---
 # applying dist_decay functions for rasters
@@ -106,5 +106,5 @@ cabins <- terra::rast(f)
 cabins_dist <- calc_zoi_nearest(cabins, type = "euclidean")
 
 # transform Euclidean in distance decay
-plot(dist_decay(cabins_dist, radius = 1000, type = "exp_decay"))
-plot(dist_decay(cabins_dist, radius = 1000, type = "tent_decay"))
+plot(oneimpact::dist_decay(cabins_dist, radius = 1000, type = "exp_decay"))
+plot(oneimpact::dist_decay(cabins_dist, radius = 1000, type = "tent_decay"))

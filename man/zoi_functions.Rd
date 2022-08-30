@@ -174,11 +174,10 @@ infrastructure or disturbance sources in 2 dimensions space.
 }
 \description{
 Computes the decay functions that represent the Zone of
-Influence (ZoI). The functions might assume different shapes
-(parameter \code{type}) to represent multiple ways
-the ZoI of an infrastructure or disturbance affects a
-given process in space, and the ZoI radius (parameter \code{radius})
-controls how far this effect reaches. The rate
+Influence (ZoI). The functions' radius (parameter \code{radius})
+controls how far the zone of influence of an infrastructure or disturbance reaches,
+and the functions' shape (parameter \code{type}) represent represent how the ZoI
+decays in space. Given a function shape (\code{type}) is chosen, the rate
 of decay of the different ZoI functions is parameterized based on
 the ZoI radius -- e.g the slope of \code{\link[=linear_decay]{linear_decay()}} is defined
 so that the function decreases to zero at the ZoI radius.
@@ -415,8 +414,8 @@ f1 +
 # generic dist_decay function
 oneimpact::dist_decay(500, radius = 1000, type = "exp_decay")
 oneimpact::dist_decay(500, radius = 1000, type = "gaussian_decay")
-dist_decay(500, radius = 1000, type = "linear_decay")
-dist_decay(500, radius = 1000, type = "step_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "linear_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "step_decay")
 
 #---
 # applying dist_decay functions for rasters
@@ -428,6 +427,6 @@ cabins <- terra::rast(f)
 cabins_dist <- calc_zoi_nearest(cabins, type = "euclidean")
 
 # transform Euclidean in distance decay
-plot(dist_decay(cabins_dist, radius = 1000, type = "exp_decay"))
-plot(dist_decay(cabins_dist, radius = 1000, type = "tent_decay"))
+plot(oneimpact::dist_decay(cabins_dist, radius = 1000, type = "exp_decay"))
+plot(oneimpact::dist_decay(cabins_dist, radius = 1000, type = "tent_decay"))
 }

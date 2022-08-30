@@ -321,7 +321,7 @@ cabins <- terra::rast(f)
 
 # connect to grass gis 7.8 and create grass location
 # For linux or within OSGeo4W shell
-grassdir <- system("grass78 --config path", intern = T)
+grassdir <- system("grass78 --config path", intern = TRUE)
 # If you used the standalone installer in Windows
 # grassdir <- "C:\\Programs\\GRASS GIS 7.8" # Correct if the path is different
 

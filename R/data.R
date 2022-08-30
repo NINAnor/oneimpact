@@ -17,10 +17,10 @@ NULL
 #' Cabins vector data
 #'
 #' Dataset containing the location of tourist private cabins is Southern
-#' Norway, within the study area for the [oneimpact] package.
+#' Norway, within the study area for the `oneimpact` package.
 #' It corresponds to some specific building types (object_type = "Bygning",
 #' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
-#' The map was cut for the study area presented in the [oneimpact] package.
+#' The map was cut for the study area presented in the `oneimpact` package.
 #'
 #' @name cabins_vect.gpkg
 #'
@@ -49,7 +49,7 @@ NULL
 #' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
 #' The original data consisted of point vector data and were rasterized with 100m r
 #' esolution, for the purpose of illustration here. The raster was cut for the
-#' study area presented in the [oneimpact] package.
+#' study area presented in the `oneimpact` package.
 #'
 #' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 #' \itemize{
@@ -73,7 +73,7 @@ NULL
 #' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
 #' The original data consisted of point vector data and were rasterized with 100m
 #' resolution by counting the number of cabins in each pixel. The raster
-#' was cut for the study area presented in the [oneimpact] package.
+#' was cut for the study area presented in the `oneimpact` package.
 #'
 #' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 #'

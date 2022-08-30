@@ -3,11 +3,10 @@
 #' @title Zone of Influence (ZoI) functions
 #'
 #' @description Computes the decay functions that represent the Zone of
-#' Influence (ZoI). The functions might assume different shapes
-#' (parameter `type`) to represent multiple ways
-#' the ZoI of an infrastructure or disturbance affects a
-#' given process in space, and the ZoI radius (parameter `radius`)
-#' controls how far this effect reaches. The rate
+#' Influence (ZoI). The functions' radius (parameter `radius`)
+#' controls how far the zone of influence of an infrastructure or disturbance reaches,
+#' and the functions' shape (parameter `type`) represent represent how the ZoI
+#' decays in space. Given a function shape (`type`) is chosen, the rate
 #' of decay of the different ZoI functions is parameterized based on
 #' the ZoI radius -- e.g the slope of [oneimpact::linear_decay()] is defined
 #' so that the function decreases to zero at the ZoI radius.
@@ -250,7 +249,7 @@ threshold_decay.numeric <- function(x, radius, constant_influence = 1, origin = 
 #' @export
 threshold_decay.SpatRaster <- function(x, radius, constant_influence = 1, origin = 0, oneside = TRUE) {
   if(oneside) func <- identity else func <- abs
-  ifel(func(x - origin) < radius, constant_influence, 0)
+  terra::ifel(func(x - origin) < radius, constant_influence, 0)
 }
 
 #' @rdname zoi_functions
@@ -279,7 +278,7 @@ bartlett_decay.numeric <- function(x, radius, intercept = 1, origin = 0, oneside
 bartlett_decay.SpatRaster <- function(x, radius, intercept = 1, origin = 0, oneside = TRUE) {
   if(oneside) func <- identity else func <- abs
   beta = -intercept/radius
-  ifel(func(x - origin) < radius, intercept + beta * func(x - origin), 0)
+  terra::ifel(func(x - origin) < radius, intercept + beta * func(x - origin), 0)
 }
 
 #' @rdname zoi_functions
