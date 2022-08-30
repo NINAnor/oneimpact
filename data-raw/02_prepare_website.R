@@ -16,6 +16,9 @@ pkgdown::build_site()
 # publish
 usethis::use_pkgdown_github_pages()
 
+# setup CI R-CMD-check
+usethis::use_github_action_check_standard()
+
 #-----------
 # Update articles
 pkgdown::build_articles()

@@ -1,5 +1,9 @@
 # oneimpact <img src="man/figures/oneimpact_hex_logo.png" align="right" alt="" width="150" />
 
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/NINAnor/oneimpact/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/oneimpact/actions)
+<!-- badges: end -->
+
 `oneimpact` provides tools for the assessment of cumulative impacts from multiple infrastructure and land use modification in ecological studies.
 The tools use R interface but the main calculations might be run in both R and GRASS GIS. The tools available so far are:
 
