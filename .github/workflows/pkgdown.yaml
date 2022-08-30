@@ -26,7 +26,7 @@ jobs:
           extra-packages: pkgdown
           needs: website
 
-      - name: Query dependencies
+      - name: Install R dependencies not on CRAN
         run: |
           install.packages('remotes')
           remotes::install_github("cran/RandomFieldsUtils")
