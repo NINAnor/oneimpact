@@ -137,7 +137,7 @@ Default is \code{intercept = 1}.}
 functions, \code{lambda} is the decay parameter of the Gaussian or exponential decay
 function. Notice that the interpretation of \code{lambda} is different depending on the
 the function -- see details for definitions.
-Gaussian decay function, the value for \code{lambda} is only considered if both
+For the Gaussian decay function, the value for \code{lambda} is only considered if both
 \code{radius = NULL} and \code{sigma = NULL}. For the exponential decay function,
 the value for \code{lambda} is only considered if both \code{radius = NULL} and \code{half_life = NULL}.}
 

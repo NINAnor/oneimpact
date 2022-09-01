@@ -14,17 +14,22 @@ calc_zoi(
 }
 \arguments{
 \item{x}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features,
-preferentially with value 1 (or any other positive value) where the features
+preferentially with positive value where the features
 are located and NA elsewhere. Alternatively, \code{x} might be a binary (dummy)
 spatial variable representing the presence of linear or area features, with
 NA/no-data as background.
 \code{x} can be a \code{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
 \link{terra} package. If \code{where = "GRASS"}, \code{x} must be a string corresponding
 to the name of the input map within a GRASS GIS location and mapset.
-Maps without NA as background might be prepared as input for \code{calc_zoi_nearest}
-through \href{https://rspatial.org/terra/pkg/4-algebra.html}{raster algebra} in R
+
+The input raster \code{x} should have positive values in the pixels where infrastructure
+are located and NA/no-data in all other places. In R it is also possible to have zeros
+as the background and set \code{zeroAsNA = TRUE} for the computation of the ZoI of the
+nearest feature.
+In GRASS, maps without NA as background might be prepared as input for \code{calc_zoi_nearest()}
+through \href{https://grass.osgeo.org/grass78/manuals/r.mapcalc.html}{raster algebra}
 and e.g. through the use of the module
-\href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}} in GRASS GIS.}
+\href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}}.}
 
 \item{zoi_metric}{\verb{[character(1)="all"]\{"all", "nearest", "cumulative"\}} \cr
 Which metric of zone of influence should be computed. Either \code{"all"}, \code{"nearest"},

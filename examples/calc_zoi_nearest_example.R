@@ -1,7 +1,6 @@
 # Running calc_zoi_nearest through R
 library(mobsim)
 library(terra)
-library(dplyr)
 library(sf)
 
 set.seed(1234)
@@ -30,7 +29,7 @@ plot(sqrt_d)
 # calculate exponential decay zone of influence
 # using exp_decay_parms parameter
 exp_d1 <- calc_zoi_nearest(pts$rast, type = "exp_decay",
-                           exp_decay_parms = c(1, 0.001))
+                           intercept = 1, lambda = 0.001)
 plot(exp_d1)
 
 # calculate exponential decay zone of influence using
@@ -41,12 +40,12 @@ exp_d2 <- calc_zoi_nearest(pts$rast, type = "exp_decay", radius = radius2,
                            zoi_limit = zoi_limit2)
 plot(exp_d2)
 # buffer
-pts_shp <- pts$pts %>%
+pts_shp <- pts$pts |>
   sf::st_as_sf(coords = c(1,2))
 # zoi = 1000m
-pts_shp %>%
-  sf::st_buffer(dist = radius2) %>%
-  sf::st_union() %>%
+pts_shp |>
+  sf::st_buffer(dist = radius2) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("ZoI radius"), col = c("black"), lwd = 1.1)
 
@@ -58,17 +57,17 @@ exp_d4 <- calc_zoi_nearest(pts$rast, type = "exp_decay", half_life = half_life3,
                            zoi_hl_ratio = zoi_hl_ratio3)
 plot(exp_d4)
 # buffer
-pts_shp <- pts$pts %>%
+pts_shp <- pts$pts |>
   sf::st_as_sf(coords = c(1,2))
 # half_life = 250m
-pts_shp %>%
-  sf::st_buffer(dist = half_life3) %>%
-  sf::st_union() %>%
+pts_shp |>
+  sf::st_buffer(dist = half_life3) |>
+  sf::st_union() |>
   plot(add = T, border = "red")
 # zoi = 1000m
-pts_shp %>%
-  sf::st_buffer(dist = half_life3*zoi_hl_ratio3) %>%
-  sf::st_union() %>%
+pts_shp |>
+  sf::st_buffer(dist = half_life3*zoi_hl_ratio3) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
        col = c("red", "black"), lwd = 1.1)
@@ -81,17 +80,17 @@ exp_d4 <- calc_zoi_nearest(pts$rast, type = "exp_decay", radius = radius4,
                            zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
-pts_shp <- pts$pts %>%
+pts_shp <- pts$pts |>
   sf::st_as_sf(coords = c(1,2))
 # half_life = 1000m
-pts_shp %>%
-  sf::st_buffer(dist = radius4/zoi_hl_ratio4) %>%
-  sf::st_union() %>%
+pts_shp |>
+  sf::st_buffer(dist = radius4/zoi_hl_ratio4) |>
+  sf::st_union() |>
   plot(add = T, border = "red")
 # zoi = 4000m
-pts_shp %>%
-  sf::st_buffer(dist = radius4) %>%
-  sf::st_union() %>%
+pts_shp |>
+  sf::st_buffer(dist = radius4) |>
+  sf::st_union() |>
   plot(add = T, border = "black", )
 legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
        col = c("red", "black"), lwd = 1.1)
@@ -101,15 +100,15 @@ bart_d <- calc_zoi_nearest(pts$rast, type = "bartlett", radius = 2000)
 plot(bart_d)
 
 # buffer 2000m
-pts_shp %>%
-  sf::st_buffer(dist = 2000) %>%
-  sf::st_union() %>%
+pts_shp |>
+  sf::st_buffer(dist = 2000) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("Bartlett ZoI 2000m"),
        col = c("black"), lwd = 1.1)
 
 # calculate threshold influence
-d <- calc_zoi_nearest(pts$rast, type = "threshold", zoi = 2000)
+d <- calc_zoi_nearest(pts$rast, type = "threshold", radius = 2000)
 plot(d)
 
 # Gaussian decay influence
@@ -117,9 +116,9 @@ g_d <- calc_zoi_nearest(pts$rast, type = "Gauss", radius = 2000)
 plot(g_d)
 
 # buffer 2000m
-pts_shp %>%
-  sf::st_buffer(dist = 2000) %>%
-  sf::st_union() %>%
+pts_shp |>
+  sf::st_buffer(dist = 2000) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("Gaussian ZoI 2000m"),
        col = c("black"), lwd = 1.1)

@@ -177,6 +177,15 @@
 #'   assumed to have zero influence.
 #' }
 #'
+#' @param intercept `[numeric(1)=1]` \cr Maximum value of the ZoI function at
+#' when the distance from disturbance sources is zero (`x = 0`).
+#' For the `threshold_decay` and `step_decay` functions, `intercept` is
+#' the constant value of the Zone of Influence within the ZoI `radius`.
+#' For the other ZoI functions, `intercept`
+#' is the value of the functions at the origin (where the sources of disturbance
+#' are located, i.e. `x = 0`).
+#' Default is `intercept = 1`.
+#'
 #' @param origin `[numeric(1)=0]` \cr In which position (in 1 dimension) is located
 #' the infrastructure or source of disturbance? Default is zero. For raster objects,
 #' this parameter should be ignored.
@@ -225,15 +234,6 @@ dist_decay <- function(x, radius = NULL,
   }
 }
 
-#' @param intercept `[numeric(1)=1]` \cr Maximum value of the ZoI function at
-#' when the distance from disturbance sources is zero (`x = 0`).
-#' For the `threshold_decay` and `step_decay` functions, `intercept` is
-#' the constant value of the Zone of Influence within the ZoI `radius`.
-#' For the other ZoI functions, `intercept`
-#' is the value of the functions at the origin (where the sources of disturbance
-#' are located, i.e. `x = 0`).
-#' Default is `intercept = 1`.
-#'
 #' @rdname zoi_functions
 #' @export
 threshold_decay <- function(x, radius, intercept = 1, origin = 0, oneside = TRUE) {
@@ -300,7 +300,7 @@ linear_decay <- bartlett_decay
 #' functions, `lambda` is the decay parameter of the Gaussian or exponential decay
 #' function. Notice that the interpretation of `lambda` is different depending on the
 #' the function -- see details for definitions.
-#' Gaussian decay function, the value for `lambda` is only considered if both
+#' For the Gaussian decay function, the value for `lambda` is only considered if both
 #' `radius = NULL` and `sigma = NULL`. For the exponential decay function,
 #' the value for `lambda` is only considered if both `radius = NULL` and `half_life = NULL`.
 #'

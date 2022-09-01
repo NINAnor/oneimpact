@@ -10,44 +10,44 @@ calc_zoi_nearest(
   type = c("Gauss", "exp_decay", "bartlett", "half_norm", "threshold", "step",
     "euclidean", "log", "sqrt")[1],
   where = c("R", "GRASS")[1],
-  log_base = exp(1),
-  zoi_limit = 0.05,
-  zoi_hl_ratio = NULL,
-  half_life = NULL,
-  exp_decay_parms = c(1, 0.01),
-  hnorm_decay_parms = c(1, 20),
   intercept = 1,
-  constant_influence = 1,
+  zoi_limit = 0.05,
+  lambda = NULL,
+  log_base = exp(1),
   dist_offset = 0,
   zeroAsNA = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
-  plotit = FALSE,
-  output_map_name = NULL,
-  metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
-  input_as_region = FALSE,
-  remove_intermediate = TRUE,
-  print_expression = FALSE,
-  quiet = TRUE,
-  overwrite = FALSE,
+  g_output_map_name = NULL,
+  g_dist_metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
+  g_input_as_region = FALSE,
+  g_remove_intermediate = TRUE,
+  g_print_expression = FALSE,
+  g_verbose = FALSE,
+  g_overwrite = FALSE,
   ...
 )
 }
 \arguments{
 \item{x}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features,
-preferentially with value 1 (or any other positive value) where the features
+preferentially with positive value where the features
 are located and NA elsewhere. Alternatively, \code{x} might be a binary (dummy)
 spatial variable representing the presence of linear or area features, with
 NA/no-data as background.
 \code{x} can be a \code{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
 \link{terra} package. If \code{where = "GRASS"}, \code{x} must be a string corresponding
 to the name of the input map within a GRASS GIS location and mapset.
-Maps without NA as background might be prepared as input for \code{calc_zoi_nearest}
-through \href{https://rspatial.org/terra/pkg/4-algebra.html}{raster algebra} in R
-and e.g. through the use of the module
-\href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}} in GRASS GIS.}
 
-\item{radius}{\verb{[numeric(1)]} \cr Zone of Influence (ZoI) radius,
+The input raster \code{x} should have positive values in the pixels where infrastructure
+are located and NA/no-data in all other places. In R it is also possible to have zeros
+as the background and set \code{zeroAsNA = TRUE} for the computation of the ZoI of the
+nearest feature.
+In GRASS, maps without NA as background might be prepared as input for \code{calc_zoi_nearest()}
+through \href{https://grass.osgeo.org/grass78/manuals/r.mapcalc.html}{raster algebra}
+and e.g. through the use of the module
+\href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}}.}
+
+\item{radius}{\verb{[numeric(1)]} \cr Radius of the zone of influence (ZoI),
 the distance at which the ZoI vanishes or goes below a given minimum limit value
 \code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details. This parameter is
 ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
@@ -55,18 +55,18 @@ ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt
 \item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "threshold", "step", "euclidean", "log","sqrt"\}} \cr
 \itemize{
 \item If \code{Gauss} or \code{half_norm}, the ZoI follows a half-normal shape: \cr
-\code{N_0 * exp(-lambda * (euclidean_distance^2))}. \code{N_0} and \code{lambda} are
+\code{intercept * exp(-lambda * (euclidean_distance^2))}. \code{intercept} and \code{lambda} are
 parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item If \code{exp_decay}, the ZoI follows an exponential decay shape: \cr
-\code{N_0 * exp(-lambda * euclidean_distance)}. \code{N_0} and \code{lambda} are
+\code{intercept * exp(-lambda * euclidean_distance)}. \code{intercept} and \code{lambda} are
 parameters to be defined -- see \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item If \code{bartlett}, \code{linear_decay}, or \code{tent_decay}, the ZoI follows a
 linear decay shape within the ZoI radius (\code{radius}).
-\item If \code{threshold} or \code{step}, a constant influence is consider within the
+\item If \code{threshold} or \code{step}, a constant influence is considered within the
 zone of influence radius (\code{radius}). All pixels closer than
 \code{radius} to infrastructure are considered as "under the influence" of
 the nearest feature, with a constant influence value defined by the
-\code{constant_influence} parameter, and all other pixels are assumed to have
+\code{intercept} parameter, and all other pixels are assumed to have
 zero influence.
 \item If \code{euclidean}, the function returns the Euclidean distance as a
 proxy for the ZoI, even though a proper zone of influence is not defined
@@ -88,7 +88,15 @@ generic user-defined ZoI function as input).}
 computation be done? Default is \code{"R"}. If \code{where = "GRASS"}, the R session
 must be linked to an open GRASS GIS session in a specific location and mapset.}
 
-\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{type = log}.}
+\item{intercept}{\verb{[numeric(1)=1]} \cr Maximum value of the ZoI functions at
+when the distance from disturbance sources is zero (\code{x = 0}).
+For the \code{threshold_decay} and \code{step_decay} functions, \code{intercept} is
+the constant value of the Zone of Influence within the ZoI \code{radius}.
+For the other ZoI functions, \code{intercept}
+is the value of the functions at the origin (where the sources of disturbance
+are located, i.e. \code{x = 0}).
+Default is \code{intercept = 1}. This parameter is
+ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
 
 \item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr For non-vanishing functions
 (e.g. \code{exp_decay}, \code{gaussian_decay}), this value is used to set the relationship
@@ -97,56 +105,43 @@ between the ZoI radius and the decay functions:
 below \code{zoi_limit}. The default is 0.05. This parameter is used only
 if \code{radius} is not \code{NULL}.}
 
-\item{exp_decay_parms}{\verb{[numeric(2)=c(1,0.01)]} \cr Parameters (\code{N_0}, \code{lambda})
-for the exponential decay ZoI, if \code{type = exp_decay}. The value of \code{lambda}
-defined here is used only if \code{radius = NULL} and \code{half_life = NULL},
-otherwise one of these parameters is used to determine \code{lambda}.
-By default, \code{N_0} is defined as 1, which means the ZoI is 1 where the
-infrastructure feature is located, and it decreases as the Euclidean distance
-from it increases.}
+\item{lambda}{\verb{[numeric(2)=NULL]} \cr For the Gaussian and exponential decay
+functions (\code{type = "Gauss"} and \code{type = "exp_decay"}), \code{lambda} is the decay
+parameter of the function. Notice that the interpretation of \code{lambda} is different depending on the
+the function -- see \code{\link[=zoi_functions]{zoi_functions()}} for definitions.
+For the Gaussian decay function, the value for \code{lambda} is only considered if both
+\code{radius = NULL} and \code{sigma = NULL}. For the exponential decay function,
+the value for \code{lambda} is only considered if both \code{radius = NULL} and \code{half_life = NULL}.}
 
-\item{hnorm_decay_parms}{\verb{[numeric(2)=c(1,20)]} \cr Parameters (\code{N_0}, \code{sigma})
-for the half-normal decay ZoI, if \code{type = Gauss} or \code{type = half_normal}.
-The value of \code{sigma} defined here is used to define the decay rate \code{lambda}
-only if \code{radius = NULL} and \code{half_life = NULL}, otherwise one of these
-parameters is used to determine \code{lambda}. By default, \code{N_0} is defined as 1,
-which means the ZoI is 1 where the infrastructure feature is located,
-and it decreases as the Euclidean distance from it increases.}
+\item{log_base}{\verb{[numeric(1)=exp(1)]} \cr Base of the logarithm, if \code{type = log}.}
 
-\item{constant_influence}{\verb{[numeric(1)=1]} \cr Constant value of the
-ZoI of the nearest feature if \code{type = "threshold"} or \code{type = "step"}.
-Default is 1. In this case, all pixels closer to any
-infrastructure than the \code{radius} are classified with this constant value.}
-
-\item{dist_offset}{\verb{[numeric(1)=1]} \cr Number to add to the Euclidean
+\item{dist_offset}{\verb{[numeric(1)=0]} \cr Number to add to the Euclidean
 distance before transforming it, to avoid \code{-Inf}/\code{Inf} values
 (e.g. in the case of log transformation). It should be a very small value
 compared to the range of values of Euclidean distance, not to influence any
 further analyses.}
 
 \item{zeroAsNA}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE} treats cells that are
-zero as if they were \code{NA}.}
+zero as if they were \code{NA}. Only used for computations in R (\code{where = R}).}
 
-\item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector
+\item{extent_x_cut, entent_y_cut}{\verb{[numeric vector(2)=NULL]} \cr Vector
 representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max).
 It is intended to keep only a region of interest, for standardizing the
 parameters and region when comparing the resulting ZoI maps with the
-cumulative ZoI, calculated through \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}.}
+cumulative ZoI, calculated through \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}.
+If \code{NULL} (default), this parameter is ignored.}
 
-\item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along
-the calculation? Only used when \code{where = "R"}.}
-
-\item{output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map name,
+\item{g_output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map name,
 to be used only within GRASS (if \code{where = "GRASS"}). By default, this is \code{NULL}
 and the output map names are a concatenation of the input map name
-(e.g. "map_houses") and the decay function and radius used
+(e.g. \code{"map_houses"}) and the decay function and radius used
 (e.g. for \code{type = "exp_decay"} and \code{radius = 1000}, the name would be
-"map_houses_exp_decay_1000").
+\code{"map_houses_exp_decay1000"}).
 This parameter is ignored when the calculations are performed in R
 (\code{where = "R"}).}
 
-\item{metric}{\verb{[character(1)="euclidean"]\{"euclidean", "geodesic", "squared", "maximum", "manhattan"\}} \cr
+\item{g_dist_metric}{\verb{[character(1)="euclidean"]\{"euclidean", "geodesic", "squared", "maximum", "manhattan"\}} \cr
 If the calculations are perfomed within GRASS GIS, this is the \code{metric}
 argument to calculate the distance
 from the infrastructure features with the module \code{r.grow.distance}.
@@ -155,24 +150,27 @@ More information at the GRASS GIS documentation for
 This parameter is ignored when the calculations are performed in R
 (\code{where = "R"}).}
 
-\item{input_as_region}{\verb{[logical(1)=FALSE]} \cr Should the input map \code{x} be
-used to redefine the working GRASS region before cumulative ZoI calculation?
+\item{g_input_as_region}{\verb{[logical(1)=FALSE]} \cr Should the input map \code{x} be
+used to redefine the working region in GRASS before the ZoI calculation?
 If \code{TRUE}, \code{x} is used to define the region with \code{g.region}. If \code{FALSE},
-the region previously defined in the GRASS GIS session is used for computation.}
+the region previously defined in the GRASS GIS session is used for computation.
+Default is \code{FALSE}. This parameter is ignored when the calculations are performed in R
+(\code{where = "R"}).}
 
-\item{remove_intermediate}{\verb{[logical(1)=TRUE]} \cr Should the intermediate
+\item{g_remove_intermediate}{\verb{[logical(1)=TRUE]} \cr Should the intermediate
 maps created for computing the output map be excluded in the end of the
 process? Only used when \code{where = "GRASS"}.}
 
-\item{print_expression}{\verb{[logical(1)=FALSE]} \cr Should the expression for
-transforming the raster of distance should be printed in the prompt?
-Only used when \code{where = "GRASS"} for debugging the result of \code{r.mapcalc}.}
+\item{g_print_expression}{\verb{[logical(1)=FALSE]} \cr Should the expression for
+transforming the raster of distance into ZoI values should be printed in the prompt?
+Only used when \code{where = "GRASS"} and \code{g_verbose = TRUE} for debugging the
+result of \code{r.mapcalc}.}
 
-\item{quiet}{\verb{[logical(1)=TRUE]} \cr Should GRASS GIS messages be ommited
-from the prompt along the computation? Only used when \code{where = "GRASS"}.}
+\item{g_verbose}{\verb{[logical(1)=FALSE]} \cr Should GRASS GIS messages be shown
+in the prompt along the computation? Only used when \code{where = "GRASS"}.}
 
-\item{overwrite}{\verb{[logical(1)=FALSE]} \cr If the a map already exists with the
-name \code{output_map_name} in the working GRASS GIS location and mapset, should
+\item{g_overwrite}{\verb{[logical(1)=FALSE]} \cr If the a map already exists with the
+name \code{g_output_map_name} in the working GRASS GIS location and mapset, should
 it be overwritten? Only used when \code{where = "GRASS"}.}
 
 \item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}}
@@ -184,7 +182,7 @@ No additional parameters implemented for computation in GRASS GIS.}
 If the calculations are performed in R (\code{where = "R"}), the function
 returns a \code{RasterLayer} (or \code{SpatRaster}, according to the class of the input
 object) with the zone of influence of the nearest feature. If multiple values
-of \code{radius} are providade, a stack of rasters is returned.
+of \code{radius} are provided, a stack of rasters is returned.
 If the calculations are performed in GRASS GIS (\code{where = "GRASS"}),
 the maps are kept only within the GRASS GIS location/mapset and the function
 returns the name of the calculated maps. \cr
@@ -199,12 +197,12 @@ This function takes in a raster with locations or counts of
 infrastructure and calculates a raster (or set of rasters, in case there is
 more the one value for \code{radius}) representing the zone of influence (ZoI)
 from the neareast feature of that type of infrastructure. Zones of influence
-are defined by functions that decay with the Euclidean distance from each
+are defined by functions that decay with the distance from each
 infrastructure and their rate of decay is controlled by the ZoI radius
 (\code{radius}), which defines how far the influence of an infrastructure
 feature goes. By default, the Gaussian decay ZoI is calculated, but other
-decay functions might be used (see \code{\link[=zoi_functions]{zoi_functions()}} for examples).
-The function might also return the Euclidean distance to the nearest feature
+decay shapes might be used (see \code{\link[=zoi_functions]{zoi_functions()}} for examples).
+The function might also return the distance to the nearest feature
 or a transformation from it (e.g. log- and sqrt-distance from the nearest
 feature).
 
@@ -216,15 +214,15 @@ If the calculations are done in R, the input is a (set of) raster map(s)
 and the function returns another (set of) raster map(s). If the calculations
 are done within GRASS GIS, the input is the name of a raster map already
 loaded in a GRASS GIS location and mapset, and the function returns
-only the name of the output map. This map is stored in the the GRASS GIS
+only the name of the output map. This map is stored in the GRASS GIS
 location/mapset, and might be retrieved to R through the
 \code{\link[rgrass7:readRAST]{rgrass7::read_RAST()}} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \details{
-In practice, the function first calculated the Euclidean distance from each
+In practice, the function \code{calc_zoi_nearest()} first calculates the distance from each
 pixel to the nearest feature and then transforms it according to the ZoI
-functions. In R, \code{calc_zoi_nearest} makes use of the \code{\link[terra:distance]{terra::distance()}}
+functions. In R, \code{calc_zoi_nearest()} makes use of the \code{\link[terra:distance]{terra::distance()}}
 function and the following procedures are made through raster algebra.
 In GRASS, the module
 \href{https://grass.osgeo.org/grass78/manuals/r.grow.distance.html}{\code{r.grow.distance}}
@@ -247,7 +245,6 @@ and zones of influence are based on distance to infrastructure measured in meter
 # Running calc_zoi_nearest through R
 library(mobsim)
 library(terra)
-library(dplyr)
 library(sf)
 
 set.seed(1234)
@@ -276,7 +273,7 @@ plot(sqrt_d)
 # calculate exponential decay zone of influence
 # using exp_decay_parms parameter
 exp_d1 <- calc_zoi_nearest(pts$rast, type = "exp_decay",
-                           exp_decay_parms = c(1, 0.001))
+                           intercept = 1, lambda = 0.001)
 plot(exp_d1)
 
 # calculate exponential decay zone of influence using
@@ -287,12 +284,12 @@ exp_d2 <- calc_zoi_nearest(pts$rast, type = "exp_decay", radius = radius2,
                            zoi_limit = zoi_limit2)
 plot(exp_d2)
 # buffer
-pts_shp <- pts$pts \%>\%
+pts_shp <- pts$pts |>
   sf::st_as_sf(coords = c(1,2))
 # zoi = 1000m
-pts_shp \%>\%
-  sf::st_buffer(dist = radius2) \%>\%
-  sf::st_union() \%>\%
+pts_shp |>
+  sf::st_buffer(dist = radius2) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("ZoI radius"), col = c("black"), lwd = 1.1)
 
@@ -304,17 +301,17 @@ exp_d4 <- calc_zoi_nearest(pts$rast, type = "exp_decay", half_life = half_life3,
                            zoi_hl_ratio = zoi_hl_ratio3)
 plot(exp_d4)
 # buffer
-pts_shp <- pts$pts \%>\%
+pts_shp <- pts$pts |>
   sf::st_as_sf(coords = c(1,2))
 # half_life = 250m
-pts_shp \%>\%
-  sf::st_buffer(dist = half_life3) \%>\%
-  sf::st_union() \%>\%
+pts_shp |>
+  sf::st_buffer(dist = half_life3) |>
+  sf::st_union() |>
   plot(add = T, border = "red")
 # zoi = 1000m
-pts_shp \%>\%
-  sf::st_buffer(dist = half_life3*zoi_hl_ratio3) \%>\%
-  sf::st_union() \%>\%
+pts_shp |>
+  sf::st_buffer(dist = half_life3*zoi_hl_ratio3) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
        col = c("red", "black"), lwd = 1.1)
@@ -327,17 +324,17 @@ exp_d4 <- calc_zoi_nearest(pts$rast, type = "exp_decay", radius = radius4,
                            zoi_hl_ratio = zoi_hl_ratio4)
 plot(exp_d4)
 # buffer
-pts_shp <- pts$pts \%>\%
+pts_shp <- pts$pts |>
   sf::st_as_sf(coords = c(1,2))
 # half_life = 1000m
-pts_shp \%>\%
-  sf::st_buffer(dist = radius4/zoi_hl_ratio4) \%>\%
-  sf::st_union() \%>\%
+pts_shp |>
+  sf::st_buffer(dist = radius4/zoi_hl_ratio4) |>
+  sf::st_union() |>
   plot(add = T, border = "red")
 # zoi = 4000m
-pts_shp \%>\%
-  sf::st_buffer(dist = radius4) \%>\%
-  sf::st_union() \%>\%
+pts_shp |>
+  sf::st_buffer(dist = radius4) |>
+  sf::st_union() |>
   plot(add = T, border = "black", )
 legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
        col = c("red", "black"), lwd = 1.1)
@@ -347,15 +344,15 @@ bart_d <- calc_zoi_nearest(pts$rast, type = "bartlett", radius = 2000)
 plot(bart_d)
 
 # buffer 2000m
-pts_shp \%>\%
-  sf::st_buffer(dist = 2000) \%>\%
-  sf::st_union() \%>\%
+pts_shp |>
+  sf::st_buffer(dist = 2000) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("Bartlett ZoI 2000m"),
        col = c("black"), lwd = 1.1)
 
 # calculate threshold influence
-d <- calc_zoi_nearest(pts$rast, type = "threshold", zoi = 2000)
+d <- calc_zoi_nearest(pts$rast, type = "threshold", radius = 2000)
 plot(d)
 
 # Gaussian decay influence
@@ -363,9 +360,9 @@ g_d <- calc_zoi_nearest(pts$rast, type = "Gauss", radius = 2000)
 plot(g_d)
 
 # buffer 2000m
-pts_shp \%>\%
-  sf::st_buffer(dist = 2000) \%>\%
-  sf::st_union() \%>\%
+pts_shp |>
+  sf::st_buffer(dist = 2000) |>
+  sf::st_union() |>
   plot(add = T, border = "black")
 legend("bottomright", legend = c("Gaussian ZoI 2000m"),
        col = c("black"), lwd = 1.1)
@@ -375,30 +372,32 @@ legend("bottomright", legend = c("Gaussian ZoI 2000m"),
 library(rgrass7)
 library(terra)
 library(sp)
-library(dplyr)
 
 # Load raster data
 f <- system.file("raster/cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # connect to grass gis 7.8 and create grass location
-grassdir <- system("grass78 --config path", intern = T)
+# For linux or within OSGeo4W shell
+grassdir <- system("grass78 --config path", intern = TRUE)
+# If you used the standalone installer in Windows
+# grassdir <- "C:\\Programs\\GRASS GIS 7.8" # Correct if the path is different
+
 gisDB <- "." # create location and mapset in the working directory
 loc <- "ETRS_33N/" # name of the location
 ms <- "PERMANENT" # name of the mapset
 rgrass7::initGRASS(gisBase = grassdir,
                    SG = cabins, # use map to define location projection
                    home = tempdir(),
-                   override = T,
+                   override = TRUE,
                    gisDbase = gisDB,
                    location = loc,
                    mapset = ms)
 
-
 # define map name within GRASS GIS
 cabins_g <- "cabins_example"
 # add file to GRASS GIS mapset
-rgrass7::write_RAST(cabins, cabins_g, flags = "overwrite")
+rgrass7::write_RAST(cabins, cabins_g, flags = c("g_overwrite", "o"))
 
 # check
 terra::plot(cabins, col = "black",
@@ -412,32 +411,36 @@ rgrass7::execGRASS("g.region", raster = cabins_g,
 # Input map name within GRASS GIS
 cabins_g
 
-# Euclidean
-euclidean_name <- calc_zoi_nearest(cabins_g, type = "euclidean",
-                                   where = "GRASS",
-                                   quiet = T, overwrite = T)
-# Log
-log_name <- calc_zoi_nearest(cabins_g, type = "log", log_base = 10,
-                             where = "GRASS", quiet = T, overwrite = T)
 # Exponential decay ZoI=1000m
 expdecay_name <- calc_zoi_nearest(cabins_g, type = "exp_decay",
                                   radius = 1000,
-                                  where = "GRASS", quiet = T, overwrite = T)
+                                  where = "GRASS",
+                                  g_verbose = FALSE, g_overwrite = TRUE)
+
 # Bartlett decay ZoI=1000m
 bartlett_name <- calc_zoi_nearest(cabins_g, type = "bartlett",
                                   radius = 1000,
-                                  where = "GRASS", quiet = T, overwrite = T)
+                                  where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
 
 # Threshold influence ZoI = 1000m
 threshold_name <- calc_zoi_nearest(cabins_g, type = "threshold",
                                    radius = 1000,
-                                   where = "GRASS", quiet = T, overwrite = T)
+                                   where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
 
 # Gaussian influence ZoI = 1000m
 gaussian_name <- calc_zoi_nearest(cabins_g, type = "Gauss",
                                   radius = 1000,
-                                  where = "GRASS", quiet = T, overwrite = T)
+                                  where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
 
+# Log-distance
+log_name <- calc_zoi_nearest(cabins_g, type = "log", log_base = 10,
+                             where = "GRASS",
+                             g_verbose = FALSE, g_overwrite = TRUE)
+
+# Euclidean
+euclidean_name <- calc_zoi_nearest(cabins_g, type = "euclidean",
+                                   where = "GRASS",
+                                   g_verbose = FALSE, g_overwrite = TRUE)
 
 (all_names <- c(euclidean_name, log_name, expdecay_name,
                 bartlett_name, threshold_name, gaussian_name))
@@ -451,10 +454,8 @@ title_plot <- c("Euclidean distance", "Log distance (base 10)",
 terra::plot(cabins_zoi_nearest, main = title_plot)
 
 # remove rasters created
-to_remove_vect <- c(test_region_name, cabins_vect_name)
 to_remove_rast <- c(all_names)
-# rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")
-# rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
+rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
 }
 \seealso{
 See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes. \cr

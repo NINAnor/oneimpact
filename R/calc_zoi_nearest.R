@@ -5,12 +5,12 @@
 #' infrastructure and calculates a raster (or set of rasters, in case there is
 #' more the one value for `radius`) representing the zone of influence (ZoI)
 #' from the neareast feature of that type of infrastructure. Zones of influence
-#' are defined by functions that decay with the Euclidean distance from each
+#' are defined by functions that decay with the distance from each
 #' infrastructure and their rate of decay is controlled by the ZoI radius
 #' (`radius`), which defines how far the influence of an infrastructure
 #' feature goes. By default, the Gaussian decay ZoI is calculated, but other
-#' decay functions might be used (see [oneimpact::zoi_functions()] for examples).
-#' The function might also return the Euclidean distance to the nearest feature
+#' decay shapes might be used (see [oneimpact::zoi_functions()] for examples).
+#' The function might also return the distance to the nearest feature
 #' or a transformation from it (e.g. log- and sqrt-distance from the nearest
 #' feature).
 #'
@@ -22,15 +22,15 @@
 #' and the function returns another (set of) raster map(s). If the calculations
 #' are done within GRASS GIS, the input is the name of a raster map already
 #' loaded in a GRASS GIS location and mapset, and the function returns
-#' only the name of the output map. This map is stored in the the GRASS GIS
+#' only the name of the output map. This map is stored in the GRASS GIS
 #' location/mapset, and might be retrieved to R through the
 #' [rgrass7::read_RAST()] function or exported outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
 #' @details
-#' In practice, the function first calculated the Euclidean distance from each
+#' In practice, the function `calc_zoi_nearest()` first calculates the distance from each
 #' pixel to the nearest feature and then transforms it according to the ZoI
-#' functions. In R, `calc_zoi_nearest` makes use of the [terra::distance()]
+#' functions. In R, `calc_zoi_nearest()` makes use of the [terra::distance()]
 #' function and the following procedures are made through raster algebra.
 #' In GRASS, the module
 #' [`r.grow.distance`](https://grass.osgeo.org/grass78/manuals/r.grow.distance.html)
@@ -50,19 +50,24 @@
 #' and zones of influence are based on distance to infrastructure measured in meters.
 #'
 #' @param x `[RasterLayer,SpatRaster]` \cr Raster representing locations of features,
-#' preferentially with value 1 (or any other positive value) where the features
+#' preferentially with positive value where the features
 #' are located and NA elsewhere. Alternatively, `x` might be a binary (dummy)
 #' spatial variable representing the presence of linear or area features, with
 #' NA/no-data as background.
 #' `x` can be a `RasterLayer` from [raster] package or a [SpatRaster] from
 #' [terra] package. If `where = "GRASS"`, `x` must be a string corresponding
 #' to the name of the input map within a GRASS GIS location and mapset.
-#' Maps without NA as background might be prepared as input for `calc_zoi_nearest`
-#' through [raster algebra](https://rspatial.org/terra/pkg/4-algebra.html) in R
-#' and e.g. through the use of the module
-#' [`r.null`](https://grass.osgeo.org/grass80/manuals/r.null.html) in GRASS GIS.
 #'
-#' @param radius `[numeric(1)]` \cr Zone of Influence (ZoI) radius,
+#' The input raster `x` should have positive values in the pixels where infrastructure
+#' are located and NA/no-data in all other places. In R it is also possible to have zeros
+#' as the background and set `zeroAsNA = TRUE` for the computation of the ZoI of the
+#' nearest feature.
+#' In GRASS, maps without NA as background might be prepared as input for `calc_zoi_nearest()`
+#' through [raster algebra](https://grass.osgeo.org/grass78/manuals/r.mapcalc.html)
+#' and e.g. through the use of the module
+#' [`r.null`](https://grass.osgeo.org/grass80/manuals/r.null.html).
+#'
+#' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZoI),
 #' the distance at which the ZoI vanishes or goes below a given minimum limit value
 #' `zoi_limit`. See [oneimpact::zoi_functions()] for details. This parameter is
 #' ignored if `type = "euclidean"`, `type = "log"`, or `type = "sqrt"`.
@@ -71,18 +76,18 @@
 #' "threshold", "step", "euclidean", "log","sqrt"}` \cr
 #' \itemize{
 #'   \item If `Gauss` or `half_norm`, the ZoI follows a half-normal shape: \cr
-#'   `N_0 * exp(-lambda * (euclidean_distance^2))`. `N_0` and `lambda` are
+#'   `intercept * exp(-lambda * (euclidean_distance^2))`. `intercept` and `lambda` are
 #'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
 #'   \item If `exp_decay`, the ZoI follows an exponential decay shape: \cr
-#'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
+#'   `intercept * exp(-lambda * euclidean_distance)`. `intercept` and `lambda` are
 #'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
 #'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZoI follows a
 #'   linear decay shape within the ZoI radius (`radius`).
-#'   \item If `threshold` or `step`, a constant influence is consider within the
+#'   \item If `threshold` or `step`, a constant influence is considered within the
 #'   zone of influence radius (`radius`). All pixels closer than
 #'   `radius` to infrastructure are considered as "under the influence" of
 #'   the nearest feature, with a constant influence value defined by the
-#'   `constant_influence` parameter, and all other pixels are assumed to have
+#'   `intercept` parameter, and all other pixels are assumed to have
 #'   zero influence.
 #'   \item If `euclidean`, the function returns the Euclidean distance as a
 #'   proxy for the ZoI, even though a proper zone of influence is not defined
@@ -104,7 +109,15 @@
 #' computation be done? Default is `"R"`. If `where = "GRASS"`, the R session
 #' must be linked to an open GRASS GIS session in a specific location and mapset.
 #'
-#' @param log_base `[numeric(1)=exp(1)]` \cr Base of the logarithm, if `type = log`.
+#' @param intercept `[numeric(1)=1]` \cr Maximum value of the ZoI functions at
+#' when the distance from disturbance sources is zero (`x = 0`).
+#' For the `threshold_decay` and `step_decay` functions, `intercept` is
+#' the constant value of the Zone of Influence within the ZoI `radius`.
+#' For the other ZoI functions, `intercept`
+#' is the value of the functions at the origin (where the sources of disturbance
+#' are located, i.e. `x = 0`).
+#' Default is `intercept = 1`. This parameter is
+#' ignored if `type = "euclidean"`, `type = "log"`, or `type = "sqrt"`.
 #'
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing functions
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
@@ -113,55 +126,43 @@
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
 #' if `radius` is not `NULL`.
 #'
-#' @param exp_decay_parms `[numeric(2)=c(1,0.01)]` \cr Parameters (`N_0`, `lambda`)
-#' for the exponential decay ZoI, if `type = exp_decay`. The value of `lambda`
-#' defined here is used only if `radius = NULL` and `half_life = NULL`,
-#' otherwise one of these parameters is used to determine `lambda`.
-#' By default, `N_0` is defined as 1, which means the ZoI is 1 where the
-#' infrastructure feature is located, and it decreases as the Euclidean distance
-#' from it increases.
+#' @param lambda `[numeric(2)=NULL]` \cr For the Gaussian and exponential decay
+#' functions (`type = "Gauss"` and `type = "exp_decay"`), `lambda` is the decay
+#' parameter of the function. Notice that the interpretation of `lambda` is different depending on the
+#' the function -- see [oneimpact::zoi_functions()] for definitions.
+#' For the Gaussian decay function, the value for `lambda` is only considered if both
+#' `radius = NULL` and `sigma = NULL`. For the exponential decay function,
+#' the value for `lambda` is only considered if both `radius = NULL` and `half_life = NULL`.
+#
+#' @param log_base `[numeric(1)=exp(1)]` \cr Base of the logarithm, if `type = log`.
 #'
-#' @param hnorm_decay_parms `[numeric(2)=c(1,20)]` \cr Parameters (`N_0`, `sigma`)
-#' for the half-normal decay ZoI, if `type = Gauss` or `type = half_normal`.
-#' The value of `sigma` defined here is used to define the decay rate `lambda`
-#' only if `radius = NULL` and `half_life = NULL`, otherwise one of these
-#' parameters is used to determine `lambda`. By default, `N_0` is defined as 1,
-#' which means the ZoI is 1 where the infrastructure feature is located,
-#' and it decreases as the Euclidean distance from it increases.
-#'
-#' @param dist_offset `[numeric(1)=1]` \cr Number to add to the Euclidean
+#' @param dist_offset `[numeric(1)=0]` \cr Number to add to the Euclidean
 #' distance before transforming it, to avoid `-Inf`/`Inf` values
 #' (e.g. in the case of log transformation). It should be a very small value
 #' compared to the range of values of Euclidean distance, not to influence any
 #' further analyses.
 #'
-#' @param constant_influence `[numeric(1)=1]` \cr Constant value of the
-#' ZoI of the nearest feature if `type = "threshold"` or `type = "step"`.
-#' Default is 1. In this case, all pixels closer to any
-#' infrastructure than the `radius` are classified with this constant value.
-#'
 #' @param zeroAsNA `[logical(1)=FALSE]` \cr If `TRUE` treats cells that are
-#' zero as if they were `NA`.
+#' zero as if they were `NA`. Only used for computations in R (`where = R`).
 #'
-#' @param extent_x_cut,entent_y_cut `[numeric vector(2)=c(0,1)]` \cr Vector
+#' @param extent_x_cut,entent_y_cut `[numeric vector(2)=NULL]` \cr Vector
 #' representing the minimum and
 #' maximum extent in x and y for the final output, in the format c(min,max).
 #' It is intended to keep only a region of interest, for standardizing the
 #' parameters and region when comparing the resulting ZoI maps with the
 #' cumulative ZoI, calculated through [oneimpact::calc_zoi_cumulative()].
+#' If `NULL` (default), this parameter is ignored.
 #'
-#' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along
-#' the calculation? Only used when `where = "R"`.
-#'
-#' @param output_map_name `[character(1)=NULL]` \cr Name of the output map name,
+#' @param g_output_map_name `[character(1)=NULL]` \cr Name of the output map name,
 #' to be used only within GRASS (if `where = "GRASS"`). By default, this is `NULL`
 #' and the output map names are a concatenation of the input map name
-#' (e.g. "map_houses") and the decay function and radius used
+#' (e.g. `"map_houses"`) and the decay function and radius used
 #' (e.g. for `type = "exp_decay"` and `radius = 1000`, the name would be
-#' "map_houses_exp_decay_1000").
+#' `"map_houses_exp_decay1000"`).
 #' This parameter is ignored when the calculations are performed in R
 #' (`where = "R"`).
-#' @param metric `[character(1)="euclidean"]{"euclidean", "geodesic",
+#'
+#' @param g_dist_metric `[character(1)="euclidean"]{"euclidean", "geodesic",
 #' "squared", "maximum", "manhattan"}` \cr
 #' If the calculations are perfomed within GRASS GIS, this is the `metric`
 #' argument to calculate the distance
@@ -170,21 +171,29 @@
 #' [this function](https://grass.osgeo.org/grass80/manuals/r.grow.distance.html).
 #' This parameter is ignored when the calculations are performed in R
 #' (`where = "R"`).
-#' @param input_as_region `[logical(1)=FALSE]` \cr Should the input map `x` be
-#' used to redefine the working GRASS region before cumulative ZoI calculation?
+#'
+#' @param g_input_as_region `[logical(1)=FALSE]` \cr Should the input map `x` be
+#' used to redefine the working region in GRASS before the ZoI calculation?
 #' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
 #' the region previously defined in the GRASS GIS session is used for computation.
-#' @param remove_intermediate `[logical(1)=TRUE]` \cr Should the intermediate
+#' Default is `FALSE`. This parameter is ignored when the calculations are performed in R
+#' (`where = "R"`).
+#'
+#' @param g_remove_intermediate `[logical(1)=TRUE]` \cr Should the intermediate
 #' maps created for computing the output map be excluded in the end of the
 #' process? Only used when `where = "GRASS"`.
-#' @param print_expression `[logical(1)=FALSE]` \cr Should the expression for
-#' transforming the raster of distance should be printed in the prompt?
-#' Only used when `where = "GRASS"` for debugging the result of `r.mapcalc`.
-#' @param overwrite `[logical(1)=FALSE]` \cr If the a map already exists with the
-#' name `output_map_name` in the working GRASS GIS location and mapset, should
+#'
+#' @param g_print_expression `[logical(1)=FALSE]` \cr Should the expression for
+#' transforming the raster of distance into ZoI values should be printed in the prompt?
+#' Only used when `where = "GRASS"` and `g_verbose = TRUE` for debugging the
+#' result of `r.mapcalc`.
+#'
+#' @param g_overwrite `[logical(1)=FALSE]` \cr If the a map already exists with the
+#' name `g_output_map_name` in the working GRASS GIS location and mapset, should
 #' it be overwritten? Only used when `where = "GRASS"`.
-#' @param quiet `[logical(1)=TRUE]` \cr Should GRASS GIS messages be ommited
-#' from the prompt along the computation? Only used when `where = "GRASS"`.
+#'
+#' @param g_verbose `[logical(1)=FALSE]` \cr Should GRASS GIS messages be shown
+#' in the prompt along the computation? Only used when `where = "GRASS"`.
 #'
 #' @param ... \cr Adittional parameters passed to [terra::distance()]
 #' or to the ZoI functions (see [oneimpact::zoi_functions()]) when the
@@ -194,7 +203,7 @@
 #' @returns If the calculations are performed in R (`where = "R"`), the function
 #' returns a `RasterLayer` (or `SpatRaster`, according to the class of the input
 #' object) with the zone of influence of the nearest feature. If multiple values
-#' of `radius` are providade, a stack of rasters is returned.
+#' of `radius` are provided, a stack of rasters is returned.
 #' If the calculations are performed in GRASS GIS (`where = "GRASS"`),
 #' the maps are kept only within the GRASS GIS location/mapset and the function
 #' returns the name of the calculated maps. \cr
@@ -223,25 +232,21 @@ calc_zoi_nearest <- function(
   type = c("Gauss", "exp_decay", "bartlett", "half_norm", "threshold", "step",
            "euclidean", "log", "sqrt")[1],
   where = c("R", "GRASS")[1],
-  log_base = exp(1),
-  zoi_limit = 0.05,
-  zoi_hl_ratio = NULL,
-  half_life = NULL,
-  exp_decay_parms = c(1, 0.01),
-  hnorm_decay_parms = c(1, 20),
   intercept = 1,
-  constant_influence = 1,
+  zoi_limit = 0.05,
+  lambda = NULL,
+  log_base = exp(1),
   dist_offset = 0,
   zeroAsNA = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
-  plotit = FALSE,
-  output_map_name = NULL,
-  metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
-  input_as_region = FALSE,
-  remove_intermediate = TRUE,
-  print_expression = FALSE,
-  quiet = TRUE, overwrite = FALSE,
+  g_output_map_name = NULL,
+  g_dist_metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
+  g_input_as_region = FALSE,
+  g_remove_intermediate = TRUE,
+  g_print_expression = FALSE,
+  g_verbose = FALSE,
+  g_overwrite = FALSE,
   ...) {
 
   # intercept and constant influence could be only one parameter
@@ -254,18 +259,15 @@ calc_zoi_nearest <- function(
     zoi_nearest <- calc_zoi_nearest_r(x = x,
                                       radius = radius,
                                       type = type,
-                                      log_base = log_base,
-                                      zoi_limit = zoi_limit,
-                                      exp_decay_parms = exp_decay_parms,
-                                      hnorm_decay_parms = hnorm_decay_parms,
-                                      sigma = sigma,
                                       intercept = intercept,
-                                      constant_influence = constant_influence,
+                                      zoi_limit = zoi_limit,
+                                      lambda = lambda,
+                                      log_base = log_base,
                                       dist_offset = dist_offset,
                                       zeroAsNA = zeroAsNA,
                                       extent_x_cut = extent_x_cut,
                                       extent_y_cut = extent_y_cut,
-                                      plotit = plotit, ...)
+                                      ...)
 
     return(zoi_nearest)
   } else {
@@ -275,22 +277,20 @@ calc_zoi_nearest <- function(
       zoi_nearest <- calc_zoi_nearest_grass(x = x,
                                             radius = radius,
                                             type = type,
-                                            log_base = log_base,
-                                            zoi_limit = zoi_limit,
-                                            exp_decay_parms = exp_decay_parms,
-                                            hnorm_decay_parms = hnorm_decay_parms,
                                             intercept = intercept,
-                                            constant_influence = constant_influence,
+                                            zoi_limit = zoi_limit,
+                                            lambda = lambda,
+                                            log_base = log_base,
                                             dist_offset = dist_offset,
                                             extent_x_cut = extent_x_cut,
                                             extent_y_cut = extent_y_cut,
-                                            output_map_name = output_map_name,
-                                            metric = metric,
-                                            input_as_region = input_as_region,
-                                            remove_intermediate = remove_intermediate,
-                                            print_expression = print_expression,
-                                            quiet = quiet,
-                                            overwrite = overwrite,
+                                            g_output_map_name = g_output_map_name,
+                                            g_dist_metric = g_dist_metric,
+                                            g_input_as_region = g_input_as_region,
+                                            g_remove_intermediate = g_remove_intermediate,
+                                            g_print_expression = g_print_expression,
+                                            g_verbose = g_verbose,
+                                            g_overwrite = g_overwrite,
                                             ...)
 
       return(zoi_nearest)
@@ -304,20 +304,18 @@ calc_zoi_nearest_r <- function(
   x,
   radius = NULL,
   type = c("euclidean", "log", "sqrt", "exp_decay", "bartlett", "Gauss", "half_norm", "threshold", "step")[1],
-  log_base = exp(1),
+  intercept = 1,
   zoi_limit = 0.05,
   zoi_hl_ratio = NULL,
   half_life = NULL,
-  exp_decay_parms = c(1, 0.01),
-  hnorm_decay_parms = c(1, 20),
+  lambda = NULL,
   sigma = NULL,
-  intercept = 1,
-  constant_influence = 1,
+  log_base = exp(1),
   dist_offset = 0,
   zeroAsNA = FALSE,
   extent_x_cut = terra::ext(x)[c(1,2)],
   extent_y_cut = terra::ext(x)[c(3,4)],
-  plotit = FALSE, ...) {
+  ...) {
 
   # check if the input is a terra or raster object
   if(class(x) %in% c("SpatRaster")) {
@@ -362,7 +360,8 @@ calc_zoi_nearest_r <- function(
         if(type == "exp_decay") {
           dist_r <- exp_decay(x = dist_r,
                               radius = radius,
-                              exp_decay_parms = exp_decay_parms,
+                              intercept = intercept,
+                              lambda = lambda,
                               zoi_limit = zoi_limit,
                               half_life = half_life,
                               zoi_hl_ratio = zoi_hl_ratio)
@@ -378,7 +377,8 @@ calc_zoi_nearest_r <- function(
                            "gaussian_decay", "normal_decay")) {
               dist_r <- gaussian_decay(x = dist_r,
                                        radius = radius,
-                                       hnorm_decay_parms = hnorm_decay_parms,
+                                       intercept = intercept,
+                                       lambda = lambda,
                                        zoi_limit = zoi_limit,
                                        sigma = sigma)
             } else {
@@ -386,7 +386,7 @@ calc_zoi_nearest_r <- function(
                              "threshold_decay", "step_decay")) {
                 dist_r <- threshold_decay(x = dist_r,
                                           radius = radius,
-                                          constant_influence = constant_influence)
+                                          intercept = intercept)
 
               } else
                 stop("You should select an appropriate transformation method ('type' parameter) for the influence.")
@@ -399,9 +399,6 @@ calc_zoi_nearest_r <- function(
                    "half_norm", "threshold", "step")
   if(type %in% zoi_methods) name <- paste0(name, radius)
   names(dist_r) <- name
-
-  # should the result be plotted?
-  if(plotit) plot(dist_r)
 
   # # return cropped distance layer
   if(use_terra) {
@@ -416,24 +413,22 @@ calc_zoi_nearest_grass <- function(
   radius = NULL,
   type = c("Gauss", "exp_decay", "bartlett", "half_norm", "threshold", "step",
            "euclidean", "log", "sqrt")[1],
-  log_base = exp(1),
+  intercept = 1,
   zoi_limit = 0.05,
   zoi_hl_ratio = NULL,
   half_life = NULL,
-  exp_decay_parms = c(1, 0.01),
-  hnorm_decay_parms = c(1, 20),
+  lambda = NULL,
   sigma = NULL,
-  intercept = 1,
-  constant_influence = 1,
+  log_base = exp(1),
   dist_offset = 1,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
-  output_map_name = NULL,
-  metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
-  input_as_region = FALSE,
-  remove_intermediate = TRUE,
-  print_expression = FALSE,
-  quiet = FALSE, overwrite = FALSE,
+  g_output_map_name = NULL,
+  g_dist_metric = c("euclidean", "geodesic", "squared", "maximum", "manhattan")[1],
+  g_input_as_region = FALSE,
+  g_remove_intermediate = TRUE,
+  g_print_expression = FALSE,
+  g_verbose = FALSE, g_overwrite = FALSE,
   ...) {
 
   # check if the transformation is valid
@@ -447,15 +442,15 @@ calc_zoi_nearest_grass <- function(
 
   # flags
   flags <- c()
-  if(quiet) flags <- c(flags, "quiet")
-  if(overwrite) flags <- c(flags, "overwrite")
+  if(!g_verbose) flags <- c(flags, "quiet")
+  if(g_overwrite) flags <- c(flags, "overwrite")
 
   # flags for g.region
   flags_region <- c("a")
-  if(!quiet) flags_region <- c(flags_region, "p")
+  if(g_verbose) flags_region <- c(flags_region, "p")
 
   # intermediate maps to remove
-  if(remove_intermediate) to_remove <- c()
+  if(g_remove_intermediate) to_remove <- c()
 
   # 1. check if there is already a connection with GRASS GIS
   # 2. check if the map is already in GRASS GIS mapset, or if it should be
@@ -469,13 +464,13 @@ calc_zoi_nearest_grass <- function(
   # if there is not transformation
   if(type == "euclidean") {
     # if the user provides an output map name, overwrite it
-    if(!is.null(output_map_name)) out_euclidean <- output_map_name
+    if(!is.null(g_output_map_name)) out_euclidean <- g_output_map_name
     # if no transformation, the output influence is the euclidean distance
     out_influence <- out_euclidean
   }
 
   # region
-  if(input_as_region)
+  if(g_input_as_region)
     rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
   if(!is.null(extent_x_cut))
     rgrass7::execGRASS("g.region", w = extent_x_cut[1], e = extent_x_cut[2],
@@ -485,13 +480,13 @@ calc_zoi_nearest_grass <- function(
                        align = x, flags = flags_region)
 
   # print message
-  if(!quiet) rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...")
+  if(g_verbose) rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...")
   # calculate
   rgrass7::execGRASS("r.grow.distance", input = x, distance = out_euclidean,
-                     metric = metric, flags = flags)
+                     metric = g_dist_metric, flags = flags)
   # check if it should be deleted afterwards
   # check if the layer already exists first; if not, remove it in the end.
-  if(remove_intermediate)
+  if(g_remove_intermediate)
     if(type != "euclidean") to_remove <- c(to_remove, out_euclidean)
 
   # transform distance
@@ -538,7 +533,7 @@ calc_zoi_nearest_grass <- function(
           lambda <- log(2)/half_life
         } else {
           # otherwise take it from the parameters
-          lambda <- exp_decay_parms[2]
+          lambda <- lambda
         }
       }
 
@@ -546,15 +541,15 @@ calc_zoi_nearest_grass <- function(
       # message
       out_message <- "Calculating exponential decay influence..."
       # expression
-      # expression_influence <- sprintf("%f * exp(-%f * A)", exp_decay_parms[1], lambda)
+      # expression_influence <- sprintf("%f * exp(-%f * A)", intercept, lambda)
       # alternative parameterization with inv_lambda
       inv_lambda <- 1/lambda
-      expression_influence <- sprintf("%f * exp(- (1/%f) * A)", exp_decay_parms[1], inv_lambda)
+      expression_influence <- sprintf("%f * exp(- (1/%f) * A)", intercept, inv_lambda)
 
     }
 
     if(type %in% c("bartlett", "Bartlett", "bartlett_decay",
-                    "linear_decay", "tent_decay")) {
+                   "linear_decay", "tent_decay")) {
 
       # betlett (tent-shaped or linear decay) influence
       # message
@@ -574,7 +569,7 @@ calc_zoi_nearest_grass <- function(
         if(!is.null(sigma)) {
           lambda = 1/(2*sigma**2)
         } else {
-          lambda <- hnorm_decay_parms[2]
+          lambda <- lambda
         }
 
       }
@@ -583,10 +578,10 @@ calc_zoi_nearest_grass <- function(
       # message
       out_message <- "Calculating half-normal decay influence..."
       # expression
-      # expression_influence <- sprintf("%f * exp(-%f * pow(A, 2))", hnorm_decay_parms[1], lambda)
+      # expression_influence <- sprintf("%f * exp(-%f * pow(A, 2))", intercept, lambda)
       # alternative parameteization with inv_lambda
       inv_lambda <- 1/lambda
-      expression_influence <- sprintf("%f * exp(- (1/%f) * pow(A, 2))", hnorm_decay_parms[1], inv_lambda)
+      expression_influence <- sprintf("%f * exp(- (1/%f) * pow(A, 2))", intercept, inv_lambda)
 
     }
 
@@ -596,13 +591,13 @@ calc_zoi_nearest_grass <- function(
       # message
       out_message <- "Calculating threshold influence..."
       # expression
-      expression_influence <- sprintf("if(A < %f, %f, 0)", radius, constant_influence)
+      expression_influence <- sprintf("if(A < %f, %f, 0)", radius, intercept)
 
     }
 
     # if the user provides an output map name, use it
-    if(!is.null(output_map_name))
-      out_influence <- output_map_name
+    if(!is.null(g_output_map_name))
+      out_influence <- g_output_map_name
     else {
       # otherwise, name it according to the method
       out_influence <- paste0(x, "_zoi_nearest_", type)
@@ -613,14 +608,15 @@ calc_zoi_nearest_grass <- function(
     }
 
     # print message
-    if(!quiet) rgrass7::execGRASS("g.message", message = out_message)
+    if(g_verbose) rgrass7::execGRASS("g.message", message = out_message)
     # set region
-    if(input_as_region)
+    if(g_input_as_region)
       rgrass7::execGRASS("g.region", raster = out_euclidean, flags = flags_region)
 
     # compute ZoI
     for(ii in seq_along(expression_influence)) {
-      if(print_expression) print(expression_influence[ii])
+
+      if(g_print_expression) rgrass7::execGRASS("g.message", message = expression_influence[ii])
       rgrass7::execGRASS("r.mapcalc.simple", expression = expression_influence[ii],
                          a = out_euclidean, output = out_influence[ii], flags = flags)
     }
@@ -628,8 +624,8 @@ calc_zoi_nearest_grass <- function(
   }
 
   # remove intermediate maps
-  remove_flags = ifelse(quiet, c("f", "quiet"), "f")
-  if(remove_intermediate)
+  remove_flags = ifelse(g_verbose, "f", c("f", "quiet"))
+  if(g_remove_intermediate)
     if(length(to_remove) > 0)
       rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
                          flags = remove_flags)
