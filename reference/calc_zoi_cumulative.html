@@ -488,7 +488,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/initGRASS.html" class="external-link">initGRASS</a></span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
 <span class="r-in"><span>                   SG <span class="op">=</span> <span class="va">cabins</span>, <span class="co"># use map to define location projection</span></span></span>
 <span class="r-in"><span>                   home <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                   override <span class="op">=</span> <span class="cn">T</span>,</span></span>
+<span class="r-in"><span>                   override <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
 <span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
 <span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
@@ -553,7 +553,7 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file5171381d9755.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file52163bdb7830.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lightyellow"</span>, <span class="st">"black"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Binarized map of cabins"</span><span class="op">)</span></span></span>
@@ -567,7 +567,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                radius <span class="op">=</span> <span class="fl">1000</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                                where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
-<span class="r-in"><span>                                overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape exp_decay..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_exp_decay1000&gt;</span>
@@ -575,7 +575,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="va">barlett_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                    type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                                    where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
-<span class="r-in"><span>                                    overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                    overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape bartlett..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_bartlett1000&gt;</span>
@@ -584,7 +584,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
-<span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape Gauss..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_Gauss1000&gt;</span>
@@ -593,7 +593,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="va">threshold_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                      type <span class="op">=</span> <span class="st">"threshold"</span>,</span></span>
 <span class="r-in"><span>                                      where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
-<span class="r-in"><span>                                      overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                      overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape threshold..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_threshold1000&gt;</span>
@@ -611,25 +611,25 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file5171692d7096.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file52164843d5f8.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file51715c58bf75.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file5216436d5d81.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file517110bb819b.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file52167678d9ce.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file51716b616bde.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file521636d67e9b.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Exponential decay 1000m"</span>, <span class="st">"Bartlett decay 1000m"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Gaussian decay 1000m"</span>, <span class="st">"Threshold decay 1000m"</span><span class="op">)</span></span></span>
@@ -642,7 +642,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"exp_decay"</span>, output_type <span class="op">=</span> <span class="st">"density"</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
-<span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating density for 1000, shape exp_decay..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_density_exp_decay1000&gt;</span>
@@ -653,7 +653,7 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file51717508f7f9.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file5216274f0e2e.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_zoi_cumulative</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">cabins_density</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>            main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZoI"</span>, <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -669,7 +669,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                             output_type <span class="op">=</span> <span class="st">"density"</span>,</span></span>
 <span class="r-in"><span>                                             where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                             module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
-<span class="r-in"><span>                                             overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                             overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating density for 1000, shape box..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">rectangle_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -679,7 +679,7 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file51716c01a855.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file521630bd48fe.grd&gt; created.</span>
 <span class="r-plt img"><img src="calc_zoi_cumulative-11.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># bartlett</span></span></span>
@@ -689,7 +689,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                            output_type <span class="op">=</span> <span class="st">"cumulative_zoi"</span>,</span></span>
 <span class="r-in"><span>                                            where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                            module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
-<span class="r-in"><span>                                            overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                            overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape bartlett..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Rescaling from density to cumulative ZoI..."</span>
@@ -702,7 +702,7 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpMD9jzG/file51712c039041.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file52165aa9d773.grd&gt; created.</span>
 <span class="r-plt img"><img src="calc_zoi_cumulative-12.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Gaussian - to be implemented!</span></span></span>
@@ -713,7 +713,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                           output_type <span class="op">=</span> <span class="st">"cumulative_zoi"</span>,</span></span>
 <span class="r-in"><span>                                           where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                           module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
-<span class="r-in"><span>                                           overwrite <span class="op">=</span> <span class="cn">T</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                           overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

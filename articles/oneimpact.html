@@ -309,12 +309,7 @@ Illustration of a Gaussian decay ZoI with ZoI radius = 10 and ZoI limit = 0.05.
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="va">disturbance_locations</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>,</span>
 <span>           zoi_metric <span class="op">=</span> <span class="st">"nearest"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Space"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; New names:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/zoi_metrics_near-1.png" width="700"><img src="oneimpact_files/figure-html/zoi_metrics_near-2.png" width="700"></p>
 <!-- fig.cap="Metric of ZoI of the neareast feature for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZoI with radius = 3." -->
 <p>The location of the disturbance sources is shown by the vertical dashed lines. Notice that the the maximum value for the ZoI of the nearest feature is 1.</p>
@@ -323,12 +318,7 @@ Illustration of a Gaussian decay ZoI with ZoI radius = 10 and ZoI limit = 0.05.
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="va">disturbance_locations</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>,</span>
 <span>           zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Space"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; New names:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...1`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...2`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...3`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `` -&gt; `...4`</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/zoi_metrics_cum-1.png" width="700"><img src="oneimpact_files/figure-html/zoi_metrics_cum-2.png" width="700"></p>
 <!-- fig.cap="Metric of cumulative ZoI for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZoI with radius = 3."} -->
 <p>Notice that the the maximum value for the cumulative ZoI of multiple features might be higher than 1 where the ZoI of different features overlap.</p>
@@ -488,26 +478,26 @@ ZoI of the nearest cabin and cumulative ZoI of multiple cabins for an exponentia
 <span><span class="co"># show annotated data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bio_data_annotated</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id  z        x       y zoi_nearest_exp_decay500 zoi_nearest_exp_decay1000</span></span>
-<span><span class="co">#&gt; 1  1  8 149329.5 6627478             1.137903e-03               0.033732815</span></span>
-<span><span class="co">#&gt; 2  2 14 194405.2 6645346             6.372419e-05               0.007982743</span></span>
-<span><span class="co">#&gt; 3  3  5 176044.9 6654070             1.738180e-06               0.001318400</span></span>
-<span><span class="co">#&gt; 4  4  7 185018.4 6634186             1.152959e-01               0.339552525</span></span>
-<span><span class="co">#&gt; 5  5  6 186965.8 6629091             2.613537e-02               0.161664383</span></span>
-<span><span class="co">#&gt; 6  6 11 186634.8 6644429             7.871173e-02               0.280556103</span></span>
+<span><span class="co">#&gt; 1  1 11 186552.3 6645875              0.047119919                0.21707123</span></span>
+<span><span class="co">#&gt; 2  2 11 156472.4 6643692              0.050000000                0.22360680</span></span>
+<span><span class="co">#&gt; 3  3 10 193715.1 6636492              0.012754744                0.11293690</span></span>
+<span><span class="co">#&gt; 4  4  3 163299.1 6647256              0.001079432                0.03285470</span></span>
+<span><span class="co">#&gt; 5  5  6 149229.3 6652899              0.001532646                0.03914902</span></span>
+<span><span class="co">#&gt; 6  6 20 163147.2 6654934              0.013293148                0.11529592</span></span>
 <span><span class="co">#&gt;   zoi_nearest_exp_decay1500 zoi_cumulative_exp_decay500</span></span>
-<span><span class="co">#&gt; 1                0.10440029                 0.001137903</span></span>
-<span><span class="co">#&gt; 2                0.03994246                 0.000000000</span></span>
-<span><span class="co">#&gt; 3                0.01202352                 0.000000000</span></span>
-<span><span class="co">#&gt; 4                0.48671117                 1.758322508</span></span>
-<span><span class="co">#&gt; 5                0.29676287                 0.026135373</span></span>
-<span><span class="co">#&gt; 6                0.42856149                 0.554855376</span></span>
+<span><span class="co">#&gt; 1                 0.3611893                 0.051110344</span></span>
+<span><span class="co">#&gt; 2                 0.3684031                 0.053427696</span></span>
+<span><span class="co">#&gt; 3                 0.2336454                 0.012754744</span></span>
+<span><span class="co">#&gt; 4                 0.1025806                 0.000000000</span></span>
+<span><span class="co">#&gt; 5                 0.1152959                 0.003552953</span></span>
+<span><span class="co">#&gt; 6                 0.2368878                 0.021171473</span></span>
 <span><span class="co">#&gt;   zoi_cumulative_exp_decay1000 zoi_cumulative_exp_decay1500</span></span>
-<span><span class="co">#&gt; 1                   0.04194182                   0.16580962</span></span>
-<span><span class="co">#&gt; 2                   0.01596549                   0.10970067</span></span>
-<span><span class="co">#&gt; 3                   0.00000000                   0.07165905</span></span>
-<span><span class="co">#&gt; 4                  15.17824806                  38.14915272</span></span>
-<span><span class="co">#&gt; 5                   0.24939327                   1.05050377</span></span>
-<span><span class="co">#&gt; 6                   9.14750240                  27.99057452</span></span></code></pre></div>
+<span><span class="co">#&gt; 1                    0.4953984                    3.7237748</span></span>
+<span><span class="co">#&gt; 2                    0.3787583                    1.1620335</span></span>
+<span><span class="co">#&gt; 3                    0.1533131                    0.4550807</span></span>
+<span><span class="co">#&gt; 4                    0.2651489                    1.2580749</span></span>
+<span><span class="co">#&gt; 5                    1.8614509                   10.6063645</span></span>
+<span><span class="co">#&gt; 6                    0.3268127                    1.1848631</span></span></code></pre></div>
 <p>From this point, biological data can also be annotated with the ZoI of other disturbance variables and with other environmental covariates and used as input for the estimation of the effect sizes <span class="math inline">\(\beta\)</span> and evaluation of the cumulative effects for different types of infrastructure through statistical models (Fig. D) Statistical analyses can make use of model selection (Burnham &amp; Anderson, 2002; Jackson &amp; Fahrig, 2015; Huais, 2018), penalized regression (Lee et al., 2020), or machine learning approaches, for example (James et al., 2021). Such statistical modeling procedures are beyond the scope of <code>oneimpact</code>.</p>
 </div>
 <div class="section level2">

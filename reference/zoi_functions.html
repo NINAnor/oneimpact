@@ -97,15 +97,15 @@ more broadly any type of land use class or spatial variable.</p>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">threshold_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, constant_influence <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">threshold_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, intercept <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for numeric</span></span>
-<span><span class="fu">threshold_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, constant_influence <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">threshold_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, intercept <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for SpatRaster</span></span>
-<span><span class="fu">threshold_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, constant_influence <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">threshold_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, intercept <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">step_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, constant_influence <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">step_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, intercept <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bartlett_decay</span><span class="op">(</span><span class="va">x</span>, <span class="va">radius</span>, intercept <span class="op">=</span> <span class="fl">1</span>, origin <span class="op">=</span> <span class="fl">0</span>, oneside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -123,7 +123,8 @@ more broadly any type of land use class or spatial variable.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  radius <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  hnorm_decay_parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  intercept <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  origin <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -133,7 +134,8 @@ more broadly any type of land use class or spatial variable.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  radius <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  hnorm_decay_parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  intercept <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  origin <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -143,7 +145,8 @@ more broadly any type of land use class or spatial variable.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  radius <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  exp_decay_parms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>  intercept <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  origin <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  oneside <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  half_life <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -168,9 +171,9 @@ the distance at which the ZoI vanishes or goes below a given minimum limit value
 
 
 <dt>type</dt>
-<dd><p><code>[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett", "linear", "tent", "threshold", "step"}</code> <br> Type or shape of the decay distance.</p><ul><li><p>If <code>"Gauss"</code> or <code>"half_norm"</code>, the ZoI follows a half-normal shape: <br><code>N_0 * exp(-lambda * (euclidean_distance^2))</code>. <code>N_0</code> and <code>lambda</code> are
+<dd><p><code>[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett", "linear", "tent", "threshold", "step"}</code> <br> Type or shape of the decay distance.</p><ul><li><p>If <code>"Gauss"</code> or <code>"half_norm"</code>, the ZoI follows a half-normal shape: <br><code>intercept * exp(-lambda * (euclidean_distance^2))</code>. <code>intercept</code> and <code>lambda</code> are
 parameters to be defined -- see details.</p></li>
-<li><p>If <code>"exp_decay"</code>, the ZoI follows an exponential decay shape: <br><code>N_0 * exp(-lambda * euclidean_distance)</code>. <code>N_0</code> and <code>lambda</code> are
+<li><p>If <code>"exp_decay"</code>, the ZoI follows an exponential decay shape: <br><code>intercept * exp(-lambda * euclidean_distance)</code>. <code>intercept</code> and <code>lambda</code> are
 parameters to be defined -- see details.</p></li>
 <li><p>If <code>"bartlett"</code>, <code>"linear_decay"</code>, or <code>"tent_decay"</code>, the ZoI follows a
 linear decay shape within the ZoI radius (parameter <code>radius</code>).</p></li>
@@ -178,8 +181,8 @@ linear decay shape within the ZoI radius (parameter <code>radius</code>).</p></l
 zone of influence radius (parameter <code>radius</code>). All pixels closer than
 <code>radius</code> to infrastructure are considered as "under the influence" of
 the nearest feature, with a constant influence value defined by the
-<code>constant_influence</code> parameter, and all other pixels are assumed to have
-zero influence.</p></li>
+<code>intercept</code> parameter, and all values/pixels beyond <code>radius</code> are
+assumed to have zero influence.</p></li>
 </ul></dd>
 
 
@@ -205,40 +208,33 @@ This parameter is only meaningful if <code>x</code> is a vector of values, not a
 raster object.</p></dd>
 
 
-<dt>constant_influence</dt>
-<dd><p><code>[numeric(1)=1]</code> <br> Constant value of the
-<code>threshold</code> (or <code>step</code>) function within the Zone of Influence. Default is 1.</p></dd>
-
-
 <dt>intercept</dt>
-<dd><p><code>[numeric(1)=1]</code> For the Bartlett (linear or tent decay) function,
-<code>intercept</code> is the maximum value of the function (at <code>x = 0</code>).</p></dd>
+<dd><p><code>[numeric(1)=1]</code> <br> Maximum value of the ZoI function at
+when the distance from disturbance sources is zero (<code>x = 0</code>).
+For the <code>threshold_decay</code> and <code>step_decay</code> functions, <code>intercept</code> is
+the constant value of the Zone of Influence within the ZoI <code>radius</code>.
+For the other ZoI functions, <code>intercept</code>
+is the value of the functions at the origin (where the sources of disturbance
+are located, i.e. <code>x = 0</code>).
+Default is <code>intercept = 1</code>.</p></dd>
 
 
-<dt>hnorm_decay_parms</dt>
-<dd><p><code>[numeric(2)=c(1,0.01)]</code> <br> For the <code>gaussian_decay</code> function,
-these are the guassian decay parameters c(N, lambda), where N is the maximum
-value of the function (at <code>x = 0</code>)
-and lambda is the decay parameter of the Gaussian function.
-The value for <code>lambda</code> is only considered to draw the Gaussian decay function
-if both <code>radius = NULL</code> and <code>sigma = NULL</code>.</p></dd>
+<dt>lambda</dt>
+<dd><p><code>[numeric(2)=NULL]</code> <br> For the <code>gaussian_decay</code> and <code>exp_decay</code>
+functions, <code>lambda</code> is the decay parameter of the Gaussian or exponential decay
+function. Notice that the interpretation of <code>lambda</code> is different depending on the
+the function -- see details for definitions.
+For the Gaussian decay function, the value for <code>lambda</code> is only considered if both
+<code>radius = NULL</code> and <code>sigma = NULL</code>. For the exponential decay function,
+the value for <code>lambda</code> is only considered if both <code>radius = NULL</code> and <code>half_life = NULL</code>.</p></dd>
 
 
 <dt>sigma</dt>
-<dd><p><code>[numeric(1)=NULL]</code> <br> Standard deviation of the Gaussian
-function. It related to the Gaussian decay rate \(\lambda\) as
+<dd><p><code>[numeric(1)=NULL]</code> <br> Standard deviation of the Gaussian decay
+function. It is related to the Gaussian decay rate \(\lambda\) as
 <code>lambda = 1/(2*sigma^2)</code>. Only considered to compute the ZoI
 for the <code>gaussian_decay</code> function when the ZoI radius parameter is null
 (<code>radius = NULL</code>).</p></dd>
-
-
-<dt>exp_decay_parms</dt>
-<dd><p><code>[numeric(2)=c(1,0.01)]</code> <br> For the <code>exp_decay</code> function,
-these are the exponential decay parameters <code>c(N_0, lambda)</code>, where <code>N_0</code> is the maximum
-value of the function (at <code>x = 0</code>)
-and lambda is the decay parameter of the exponential function.
-The value for <code>lambda</code> is only considered to draw the exponential decay function
-if both <code>radius = NULL</code> and <code>half_life = NULL</code>.</p></dd>
 
 
 <dt>half_life</dt>
@@ -247,7 +243,7 @@ function, in meters (or map units, for rasters). By definition, the half life is
 the distance where the exponential decay function reaches 0.5 of its
 maximum value. For the <code>exp_decay</code> function,
 if the ZoI radius parameter is null (<code>radius = NULL</code>), the value of the
-exponential half life (<code>half_life = log(2)/lambda</code>) can used to parameterize the
+exponential half life (<code>half_life = log(2)/lambda</code>) can be used to parameterize the
 exponential decay function.</p></dd>
 
 
@@ -311,24 +307,24 @@ $$
 where \(c\) is a constant value (by default <code>c = 1</code>).</p></li>
 <li><p><code>linear_decay()</code>: the linear (or tent/Bartlett) decay function \(\phi_{linear}\)
 decreases
-linearly from a maximum value \(b\) (the intercept, by default <code>b = 1</code>) to
+linearly from a maximum value \(c\) (the intercept, by default <code>c = 1</code>) to
 zero when \(x \ge r\):
-$$\phi_{linear}(d_i, r) = b - b/r \text{ if } x &lt; r, \text{ 0 otherwise}$$</p></li>
+$$\phi_{linear}(d_i, r) = c - c/r \text{ if } x &lt; r, \text{ 0 otherwise}$$</p></li>
 <li><p><code>exp_decay()</code>: the exponential decay function \(\phi_{exp}\) decreases
-exponentially from a maximum value \(N\) (by default <code>N = 1</code>) with a rate
+exponentially from a maximum value \(c\) (by default <code>c = 1</code>) with a rate
 \(\lambda\), which is defined by \(r\) and a ZoI limit value
-\(\phi_{lim}\), a small ZoI value below which the effect is considered negligible:
-$$\phi_{exp}(d_i, r, \phi_{lim}) = N exp(-\lambda d_i)$$
+\(\phi_{lim}\), a small ZoI value below which the influence is considered negligible:
+$$\phi_{exp}(d_i, r, \phi_{lim}) = c exp(-\lambda d_i)$$
 with
 $$\lambda = ln(1/\phi_{lim}) / r$$
 In this context, the ZoI radius \(r\) is the distance beyond which
 \(\phi_{exp} &lt; \phi_{lim}\).</p></li>
 <li><p><code>gaussian_decay()</code>: the Gaussian decay function \(\phi_{Gauss}\)
-follows a Gaussian (half-normal) decay with maximum \(N\) (by default <code>N = 1</code>)
+follows a Gaussian (half-normal) decay with maximum \(c\) (by default <code>c = 1</code>)
 and a decay rate \(\lambda\)
 defined by \(r\) and a ZoI limit value
-\(\phi_{lim}\), a small ZoI value below which the effect is considered negligible:
-$$\phi_{Gauss}(d_i, r, \phi_{lim}) = N exp(-\lambda d_i^2)$$
+\(\phi_{lim}\), a small ZoI value below which the influence is considered negligible:
+$$\phi_{Gauss}(d_i, r, \phi_{lim}) = c exp(-\lambda d_i^2)$$
 with
 $$\lambda = ln(1/\phi_{lim}) / (r^2)$$
 In this context, the ZoI radius \(r\) is the distance beyond which
@@ -339,23 +335,21 @@ for the <code>gaussian_decay</code> and the <code>exp_decay</code> functions.</p
     <h2 id="parameterization">Parameterization<a class="anchor" aria-label="anchor" href="#parameterization"></a></h2>
     <p>Some of the shapes of the ZoI (parameter <code>type</code> in <code>dist_decay()</code>) might be
 parameterized in multiple ways. Here is a brief description of each possibility:</p>
-<ul><li><p>For the <code>"Gauss"</code> or <code>"half_norm"</code> shapes, the ZoI follows a half-normal shape: <br><code>N_0 * exp(-lambda * (euclidean_distance^2))</code>. <code>N_0</code> and <code>lambda</code> are
-parameters to be defined. <code>N_0</code> is always defined as the first element of the
-parameter <code>hnorm_decay_parms</code>. There are three ways of specifying <code>lambda</code>:</p><ul><li><p>If the <code>radius = NULL</code> (default), <code>lambda</code> is defined as the second
-element of the parameter <code>hnorm_decay_parms</code>. In all other cases (below)
-this value is ignored.</p></li>
-<li><p>If the parameter <code>radius</code> is given, the rate of decay is given by
+<ul><li><p>For the <code>"Gauss"</code> or <code>"half_norm"</code> shapes, the ZoI follows a half-normal shape: <br><code>intercept * exp(-lambda * (euclidean_distance^2))</code>. <code>intercept</code> and <code>lambda</code> are
+parameters to be defined. There are three ways of specifying <code>lambda</code>:</p><ul><li><p>If the <code>radius = NULL</code> (default), <code>lambda</code> is a parameter by itself to
+be specified by the user. In all other cases (below)
+the value of this parameter is ignored, even if provided.</p></li>
+<li><p>If the parameter <code>radius</code> is provided, the rate of decay is given by
 <code>lambda = log(1/zoi_limit) / (radius**2)</code>. In other words, <code>lambda</code> is defined
 so that the function decreases to <code>zoi_limit</code> when <code>x = radius</code>.</p></li>
-<li><p>If the <code>radius = NULL</code> and <code>sigma</code> is given, <code>lambda</code> is defined as
+<li><p>If the <code>radius = NULL</code> and <code>sigma</code> is provided, <code>lambda</code> is defined as
 <code>lambda = 1/(2*sigma**2)</code>.</p></li>
 </ul></li>
-<li><p>For the <code>"exp_decay"</code> shape, the ZoI follows an exponential decay shape: <br><code>N_0 * exp(-lambda * euclidean_distance)</code>. <code>N_0</code> and <code>lambda</code> are
-parameters to be defined. <code>N_0</code> is always defined as the first element of the
-parameter <code>exp_decay_parms</code>.There are four ways of specifying <code>lambda</code>:</p><ul><li><p>If the <code>radius = NULL</code> (default), <code>lambda</code> is defined as the second
-element of the parameter <code>exp_decay_parms</code>. In all other cases (below)
-this value is ignored.</p></li>
-<li><p>If the parameter <code>radius</code> is given, the rate of decay is given by
+<li><p>For the <code>"exp_decay"</code> shape, the ZoI follows an exponential decay shape: <br><code>intercept * exp(-lambda * euclidean_distance)</code>. <code>intercept</code> and <code>lambda</code> are
+parameters to be defined. There are four ways of specifying <code>lambda</code>:</p><ul><li><p>If the <code>radius = NULL</code> (default), <code>lambda</code> is a parameter by itself to
+be specified by the user. In all other cases (below)
+the value of this parameter is ignored, even if provided.</p></li>
+<li><p>If the parameter <code>radius</code> is provided, the rate of decay is given by
 <code>lambda = log(1/zoi_limit) / radius</code>. In other words, <code>lambda</code> is defined
 so that the function decreases to <code>zoi_limit</code> when <code>x = radius</code>.</p></li>
 <li><p>If the <code>radius = NULL</code> and <code>half_life</code> is given, <code>lambda</code> is defined
@@ -365,7 +359,7 @@ as <code>lambda = log(2)/half_life</code>.</p></li>
 <li><p>The last possibility is to specify <code>zoi_hl_ratio</code>, the ratio between
 the ZoI radius and the half life of the exponential function. For instance,
 if <code>zoi_hl_ratio = 4</code>, this means the ZoI radius is defined as <code>4*half_life</code>.
-If <code>zoi_hl_ratio</code> is given, the exponential <code>half_life</code> is defined based on
+If <code>zoi_hl_ratio</code> is provided, the exponential <code>half_life</code> is defined based on
 this parameter and <code>lambda</code> is defined accordingly, based on the relationship
 above. In this case, <code>radius</code> is ignored, even if specified.</p></li>
 </ul></li>
@@ -378,13 +372,23 @@ within the
 zone of influence radius (parameter <code>radius</code>). All pixels closer than
 <code>radius</code> to infrastructure are considered as "under the influence" of
 the nearest feature, with a constant influence value defined by the
-<code>constant_influence</code> parameter, and all other pixels are assumed to have
+<code>intercept</code> parameter, and all values/pixels beyond <code>radius</code> are assumed to have
 zero influence.</p></li>
 </ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># test the zone of influence functions</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># generic dist_decay function</span></span></span>
+<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2236068</span>
+<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"gaussian_decay"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4728708</span>
+<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"linear_decay"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"step_decay"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># test the zone of influence functions</span></span></span>
 <span class="r-in"><span><span class="co"># here we use ggplot() to illustrate the functions, to make the figures more</span></span></span>
 <span class="r-in"><span><span class="co"># widely reproducible</span></span></span>
 <span class="r-in"><span><span class="co"># to ease the plots, use the function plot_zoi1d()</span></span></span>
@@ -492,16 +496,6 @@ zero influence.</p></li>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="zoi_functions-9.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># generic dist_decay function</span></span></span>
-<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2236068</span>
-<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"gaussian_decay"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4728708</span>
-<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"linear_decay"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
-<span class="r-in"><span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="fl">500</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"step_decay"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># applying dist_decay functions for rasters</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
@@ -512,8 +506,10 @@ zero influence.</p></li>
 <span class="r-in"><span><span class="va">cabins_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="va">cabins</span>, type <span class="op">=</span> <span class="st">"euclidean"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># transform Euclidean in distance decay</span></span></span>
+<span class="r-in"><span><span class="co"># exponential decay</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="va">cabins_dist</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="zoi_functions-10.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># linear decay</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="va">cabins_dist</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"tent_decay"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="zoi_functions-11.png" alt="" width="700" height="433"></span>
 </code></pre></div>

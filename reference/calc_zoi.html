@@ -78,17 +78,21 @@ The neighborhood analysis is done with the <code><a href="https://rdrr.io/pkg/te
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p><code>[RasterLayer,SpatRaster]</code> <br> Raster representing locations of features,
-preferentially with value 1 (or any other positive value) where the features
+preferentially with positive value where the features
 are located and NA elsewhere. Alternatively, <code>x</code> might be a binary (dummy)
 spatial variable representing the presence of linear or area features, with
 NA/no-data as background.
 <code>x</code> can be a <code>RasterLayer</code> from raster package or a <a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a> from
 <a href="https://rdrr.io/pkg/terra/man/terra-package.html" class="external-link">terra</a> package. If <code>where = "GRASS"</code>, <code>x</code> must be a string corresponding
-to the name of the input map within a GRASS GIS location and mapset.
-Maps without NA as background might be prepared as input for <code>calc_zoi_nearest</code>
-through <a href="https://rspatial.org/terra/pkg/4-algebra.html" class="external-link">raster algebra</a> in R
+to the name of the input map within a GRASS GIS location and mapset.</p>
+<p>The input raster <code>x</code> should have positive values in the pixels where infrastructure
+are located and NA/no-data in all other places. In R it is also possible to have zeros
+as the background and set <code>zeroAsNA = TRUE</code> for the computation of the ZoI of the
+nearest feature.
+In GRASS, maps without NA as background might be prepared as input for <code><a href="calc_zoi_nearest.html">calc_zoi_nearest()</a></code>
+through <a href="https://grass.osgeo.org/grass78/manuals/r.mapcalc.html" class="external-link">raster algebra</a>
 and e.g. through the use of the module
-<a href="https://grass.osgeo.org/grass80/manuals/r.null.html" class="external-link"><code>r.null</code></a> in GRASS GIS.</p></dd>
+<a href="https://grass.osgeo.org/grass80/manuals/r.null.html" class="external-link"><code>r.null</code></a>.</p></dd>
 
 
 <dt>zoi_metric</dt>
