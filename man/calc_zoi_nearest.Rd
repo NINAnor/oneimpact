@@ -397,7 +397,7 @@ rgrass7::initGRASS(gisBase = grassdir,
 # define map name within GRASS GIS
 cabins_g <- "cabins_example"
 # add file to GRASS GIS mapset
-rgrass7::write_RAST(cabins, cabins_g, flags = c("g_overwrite", "o"))
+rgrass7::write_RAST(cabins, cabins_g, flags = c("overwrite", "o"))
 
 # check
 terra::plot(cabins, col = "black",

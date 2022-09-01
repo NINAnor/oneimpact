@@ -428,7 +428,8 @@ calc_zoi_nearest_grass <- function(
   g_input_as_region = FALSE,
   g_remove_intermediate = TRUE,
   g_print_expression = FALSE,
-  g_verbose = FALSE, g_overwrite = FALSE,
+  g_verbose = FALSE,
+  g_overwrite = FALSE,
   ...) {
 
   # check if the transformation is valid
