@@ -569,63 +569,19 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span><span class="co"># define map name within GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="va">cabins_g</span> <span class="op">&lt;-</span> <span class="st">"cabins_example"</span></span></span>
 <span class="r-in"><span><span class="co"># add file to GRASS GIS mapset</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"g_overwrite"</span>, <span class="st">"o"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Command: r.in.gdal </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Description: Imports raster data into a GRASS raster map using GDAL library. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Keywords: raster, import, create location </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameters:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: input, type: string, required: yes, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   keydesc: name, keydesc_count: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Name of raster file to be imported]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: output, type: string, required: yes, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   keydesc: name, keydesc_count: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Name for output raster map]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: band, type: integer, required: no, multiple: yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Band(s) to select (default is all bands)]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: memory, type: integer, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   default: 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Cache size for raster rows]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: target, type: string, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   keydesc: name, keydesc_count: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Name of location to create or to read projection from for GCPs transformation]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: title, type: string, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   keydesc: phrase, keydesc_count: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Title for resultant raster map]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: offset, type: integer, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   default: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [If 0, no offset is added and the first band is 1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: num_digits, type: integer, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   default: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [If 0, length will be adjusted to 'offset' number without leading zeros]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: map_names_file, type: string, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   keydesc: name, keydesc_count: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Name of the output file that contains the imported map names]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: location, type: string, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   keydesc: name, keydesc_count: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Name for new location to create]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: table, type: string, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   keydesc: file, keydesc_count: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [The band number and ".csv" will be appended to the file prefix]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: gdal_config, type: string, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Comma-separated list of key=value pairs]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: gdal_doo, type: string, required: no, multiple: no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [Comma-separated list of key=value pairs]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Flags:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: o [Assume that the dataset has same projection as the current location] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: j [Perform projection check only and exit] {TRUE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: e [Also updates the default region if in the PERMANENT mapset] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: f [List supported formats and exit] {TRUE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: l [Force Lat/Lon maps to fit into geographic coordinates (90N,S; 180E,W)] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: a [Attempt to fix small precision errors in resolution and extents] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: k [Keep band numbers instead of using band color names] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: c [Create the location specified by the "location" parameter and exit. Do not import the raster file.] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: r [Limit import to the current region] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: p [Print number of bands and exit] {TRUE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: overwrite [Allow output files to overwrite existing files] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: help [Print usage summary] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: verbose [Verbose module output] {FALSE}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name: quiet [Quiet module output] {FALSE}</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in doGRASS(cmd, flags = flags, ..., parameters = parameters, echoCmd = echoCmd,     legacyExec = legacyExec):</span> Invalid flag value: g_overwrite</span>
+<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"overwrite"</span>, <span class="st">"o"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The command:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> r.in.gdal --overwrite -o input=/home/runner/work/_temp/Library/oneimpact/raster/cabins.tif output=cabins_example</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> produced at least one warning during execution:</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> WARNING: Raster map &lt;cabins_example&gt; already exists and will be overwritten</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Over-riding projection check</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Importing raster map &lt;cabins_example&gt;...</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WARNING: Raster map &lt;cabins_example&gt; already exists and will be overwritten</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Over-riding projection check</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importing raster map &lt;cabins_example&gt;...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SpatRaster read into GRASS using r.in.gdal from file </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check</span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span>, col <span class="op">=</span> <span class="st">"black"</span>,</span></span>
@@ -706,37 +662,37 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file52161a882a81.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519429c3e6bd.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file521645a8bbec.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519468eedab1.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file52162ff59264.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519421600732.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file521661f61e3b.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file51947eac7800.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file5216187c9584.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519429ced4c3.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpdKFWCa/file521657334a2.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519412b3e09c.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Euclidean distance"</span>, <span class="st">"Log distance (base 10)"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Exponential ZoI 1000m"</span>, <span class="st">"Bartlett ZoI 1000m"</span>,</span></span>
