@@ -19,8 +19,8 @@
 #' in 1 dimension
 #' (more broadly, the location of sources of disturbance or spatial variables, or the point of
 #' origin of the ZoI functions).
-#' @param radius `[numeric(1)]` \cr Zone of influence (ZoI) radius,
-#' the distance at which the ZoI vanishes or goes below a given minimum threshold value.
+#' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZoI),
+#' the distance at which the ZoI vanishes or goes below a given minimum limit value.
 #' See [zoi_functions] for details.
 #' @param fun `[function]` \cr A decay function that represents the Zone of Influence (ZoI).
 #' Different functions might represent different shapes for the decay of the ZoI.
@@ -28,7 +28,7 @@
 #' @param zoi_metric `[character(1)="nearest"]{"nearest", "cumulative"}` \cr
 #' Which metric of zone of influence should be plotted. If `"nearest"`(default), the ZoI of
 #' the nearest feature is plotted. If `"cumulative"`, the cumulative ZoI is plotted.
-#' @param range_plot `[numeric(2)=c(0,12)]` \cr A vector c(xmin,xmax) with the x range of
+#' @param range_plot `[numeric(2)=c(0,12)]` \cr A vector `c(xmin, xmax)` with the x range of
 #' the ZoI plot.
 #' @param step `[numeric(1)=0.01]` \cr Size of the step increment used to define the series
 #' of x positions for which the ZoI is computed, within the x range defined by `range_plot`.
@@ -37,8 +37,8 @@
 #' @param ... Additional parameters passed to the ZoI decay function `fun`.
 #'
 #' @return A `ggplot` object with the nearest or cumulative influence plot.
-#' If `return_df = TRUE`, it returns a list with the `ggplot` object and the `data.frame`
-#' with values for `x` (position in 1d space) and `y` (ZoI value).
+#' If `return_df = TRUE`, it returns a list with the `ggplot` object and a `data.frame`  with
+#' values for `x` (position in 1d space) and `y` (ZoI value).
 #'
 #' @example examples/plot_zoi1d_example.R
 #'
@@ -61,7 +61,8 @@ plot_zoi1d <- function(points,
   # create x
   x <- seq(range_plot[1], range_plot[2], step)
   # apply function to each point
-  dat_y <- purrr::map_dfc(points, function(z) fun(x = x, radius = radius, origin = z, oneside = FALSE, ...))
+  dat_y <- sapply(points, function(z) fun(x = x, radius = radius, origin = z, oneside = FALSE, ...)) |>
+    as.data.frame()
 
   # should functions accumulate or not?
   if(zoi_metric == "cumulative") y <- apply(dat_y, 1, sum, na.rm = na.rm) else

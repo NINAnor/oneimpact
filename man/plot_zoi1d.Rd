@@ -22,8 +22,8 @@ in 1 dimension
 (more broadly, the location of sources of disturbance or spatial variables, or the point of
 origin of the ZoI functions).}
 
-\item{radius}{\verb{[numeric(1)]} \cr Zone of influence (ZoI) radius,
-the distance at which the ZoI vanishes or goes below a given minimum threshold value.
+\item{radius}{\verb{[numeric(1)]} \cr Radius of the zone of influence (ZoI),
+the distance at which the ZoI vanishes or goes below a given minimum limit value.
 See \link{zoi_functions} for details.}
 
 \item{fun}{\verb{[function]} \cr A decay function that represents the Zone of Influence (ZoI).
@@ -34,7 +34,7 @@ See \link{zoi_functions} for some examples.}
 Which metric of zone of influence should be plotted. If \code{"nearest"}(default), the ZoI of
 the nearest feature is plotted. If \code{"cumulative"}, the cumulative ZoI is plotted.}
 
-\item{range_plot}{\verb{[numeric(2)=c(0,12)]} \cr A vector c(xmin,xmax) with the x range of
+\item{range_plot}{\verb{[numeric(2)=c(0,12)]} \cr A vector \code{c(xmin, xmax)} with the x range of
 the ZoI plot.}
 
 \item{step}{\verb{[numeric(1)=0.01]} \cr Size of the step increment used to define the series
@@ -47,8 +47,8 @@ corresponding ZoI values is returned, besides the plot.}
 }
 \value{
 A \code{ggplot} object with the nearest or cumulative influence plot.
-If \code{return_df = TRUE}, it returns a list with the \code{ggplot} object and the \code{data.frame}
-with values for \code{x} (position in 1d space) and \code{y} (ZoI value).
+If \code{return_df = TRUE}, it returns a list with the \code{ggplot} object and a \code{data.frame}  with
+values for \code{x} (position in 1d space) and \code{y} (ZoI value).
 }
 \description{
 Plots the functions to represent the zone of influence (ZoI) in 1 dimensional space, for illustration.
