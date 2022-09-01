@@ -18,7 +18,7 @@ ms <- "PERMANENT" # name of the mapset
 rgrass7::initGRASS(gisBase = grassdir,
                    SG = cabins, # use map to define location projection
                    home = tempdir(),
-                   override = T,
+                   override = TRUE,
                    gisDbase = gisDB,
                    location = loc,
                    mapset = ms)
@@ -58,24 +58,24 @@ exp_name <- calc_zoi_cumulative(x = cabins_bin_g,
                                 radius = 1000, zoi_limit = 0.01,
                                 type = "exp_decay",
                                 where = "GRASS",
-                                overwrite = T, quiet = F)
+                                overwrite = TRUE, quiet = FALSE)
 # Bartlett decay
 barlett_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
                                     type = "bartlett",
                                     where = "GRASS",
-                                    overwrite = T, quiet = F)
+                                    overwrite = TRUE, quiet = FALSE)
 # Gaussian decay
 gauss_name <- calc_zoi_cumulative(x = cabins_bin_g,
                                   radius = 1000, zoi_limit = 0.01,
                                   type = "Gauss",
                                   where = "GRASS",
-                                  overwrite = T, quiet = F)
+                                  overwrite = TRUE, quiet = FALSE)
 
 # Threshold decay (circle, step)
 threshold_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
                                       type = "threshold",
                                       where = "GRASS",
-                                      overwrite = T, quiet = F)
+                                      overwrite = TRUE, quiet = FALSE)
 
 (all_names <- c(exp_name, barlett_name, gauss_name, threshold_name))
 
@@ -92,7 +92,7 @@ exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
                                   radius = 1000, zoi_limit = 0.01,
                                   type = "exp_decay", output_type = "density",
                                   where = "GRASS",
-                                  overwrite = T, quiet = F)
+                                  overwrite = TRUE, quiet = FALSE)
 
 cabins_density <- rgrass7::read_RAST(exp_name_d, return_format = "terra")
 
@@ -109,7 +109,7 @@ rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                              output_type = "density",
                                              where = "GRASS",
                                              module = "r.resamp.filter",
-                                             overwrite = T, quiet = F)
+                                             overwrite = TRUE, quiet = FALSE)
 rgrass7::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
   plot(main = "Rectangle ZoI 1000m")
 
@@ -120,7 +120,7 @@ bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                             output_type = "cumulative_zoi",
                                             where = "GRASS",
                                             module = "r.resamp.filter",
-                                            overwrite = T, quiet = F)
+                                            overwrite = TRUE, quiet = FALSE)
 rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
   plot(main = "Bartlett ZoI 1000m")
 
@@ -132,7 +132,7 @@ if(FALSE) {
                                            output_type = "cumulative_zoi",
                                            where = "GRASS",
                                            module = "r.resamp.filter",
-                                           overwrite = T, quiet = F)
+                                           overwrite = TRUE, quiet = FALSE)
   rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
     plot()
 }

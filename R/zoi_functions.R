@@ -60,24 +60,24 @@
 #' where \eqn{c} is a constant value (by default `c = 1`).
 #' - `linear_decay()`: the linear (or tent/Bartlett) decay function \eqn{\phi_{linear}}
 #' decreases
-#' linearly from a maximum value \eqn{b} (the intercept, by default `b = 1`) to
+#' linearly from a maximum value \eqn{c} (the intercept, by default `c = 1`) to
 #' zero when \eqn{x \ge r}:
-#' \deqn{\phi_{linear}(d_i, r) = b - b/r \text{ if } x < r, \text{ 0 otherwise}}
+#' \deqn{\phi_{linear}(d_i, r) = c - c/r \text{ if } x < r, \text{ 0 otherwise}}
 #' - `exp_decay()`: the exponential decay function \eqn{\phi_{exp}} decreases
-#' exponentially from a maximum value \eqn{N} (by default `N = 1`) with a rate
+#' exponentially from a maximum value \eqn{c} (by default `c = 1`) with a rate
 #' \eqn{\lambda}, which is defined by \eqn{r} and a ZoI limit value
-#' \eqn{\phi_{lim}}, a small ZoI value below which the effect is considered negligible:
-#' \deqn{\phi_{exp}(d_i, r, \phi_{lim}) = N exp(-\lambda d_i)}
+#' \eqn{\phi_{lim}}, a small ZoI value below which the influence is considered negligible:
+#' \deqn{\phi_{exp}(d_i, r, \phi_{lim}) = c exp(-\lambda d_i)}
 #' with
 #' \deqn{\lambda = ln(1/\phi_{lim}) / r}
 #' In this context, the ZoI radius \eqn{r} is the distance beyond which
 #' \eqn{\phi_{exp} < \phi_{lim}}.
 #' - `gaussian_decay()`: the Gaussian decay function \eqn{\phi_{Gauss}}
-#' follows a Gaussian (half-normal) decay with maximum \eqn{N} (by default `N = 1`)
+#' follows a Gaussian (half-normal) decay with maximum \eqn{c} (by default `c = 1`)
 #' and a decay rate \eqn{\lambda}
 #' defined by \eqn{r} and a ZoI limit value
-#' \eqn{\phi_{lim}}, a small ZoI value below which the effect is considered negligible:
-#' \deqn{\phi_{Gauss}(d_i, r, \phi_{lim}) = N exp(-\lambda d_i^2)}
+#' \eqn{\phi_{lim}}, a small ZoI value below which the influence is considered negligible:
+#' \deqn{\phi_{Gauss}(d_i, r, \phi_{lim}) = c exp(-\lambda d_i^2)}
 #' with
 #' \deqn{\lambda = ln(1/\phi_{lim}) / (r^2)}
 #' In this context, the ZoI radius \eqn{r} is the distance beyond which
@@ -92,29 +92,27 @@
 #' \itemize{
 #'
 #'   \item For the `"Gauss"` or `"half_norm"` shapes, the ZoI follows a half-normal shape: \cr
-#'   `N_0 * exp(-lambda * (euclidean_distance^2))`. `N_0` and `lambda` are
-#'   parameters to be defined. `N_0` is always defined as the first element of the
-#'   parameter `hnorm_decay_parms`. There are three ways of specifying `lambda`:
+#'   `intercept * exp(-lambda * (euclidean_distance^2))`. `intercept` and `lambda` are
+#'   parameters to be defined. There are three ways of specifying `lambda`:
 #'   \itemize{
-#'     \item If the `radius = NULL` (default), `lambda` is defined as the second
-#'     element of the parameter `hnorm_decay_parms`. In all other cases (below)
-#'     this value is ignored.
-#'     \item If the parameter `radius` is given, the rate of decay is given by
+#'     \item If the `radius = NULL` (default), `lambda` is a parameter by itself to
+#'     be specified by the user. In all other cases (below)
+#'     the value of this parameter is ignored, even if provided.
+#'     \item If the parameter `radius` is provided, the rate of decay is given by
 #'     `lambda = log(1/zoi_limit) / (radius**2)`. In other words, `lambda` is defined
 #'     so that the function decreases to `zoi_limit` when `x = radius`.
-#'     \item If the `radius = NULL` and `sigma` is given, `lambda` is defined as
+#'     \item If the `radius = NULL` and `sigma` is provided, `lambda` is defined as
 #'     `lambda = 1/(2*sigma**2)`.
 #'   }
 #'
 #'   \item For the `"exp_decay"` shape, the ZoI follows an exponential decay shape: \cr
-#'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
-#'   parameters to be defined. `N_0` is always defined as the first element of the
-#'   parameter `exp_decay_parms`.There are four ways of specifying `lambda`:
+#'   `intercept * exp(-lambda * euclidean_distance)`. `intercept` and `lambda` are
+#'   parameters to be defined. There are four ways of specifying `lambda`:
 #'   \itemize{
-#'     \item If the `radius = NULL` (default), `lambda` is defined as the second
-#'     element of the parameter `exp_decay_parms`. In all other cases (below)
-#'     this value is ignored.
-#'     \item If the parameter `radius` is given, the rate of decay is given by
+#'     \item If the `radius = NULL` (default), `lambda` is a parameter by itself to
+#'     be specified by the user. In all other cases (below)
+#'     the value of this parameter is ignored, even if provided.
+#'     \item If the parameter `radius` is provided, the rate of decay is given by
 #'     `lambda = log(1/zoi_limit) / radius`. In other words, `lambda` is defined
 #'     so that the function decreases to `zoi_limit` when `x = radius`.
 #'     \item If the `radius = NULL` and `half_life` is given, `lambda` is defined
@@ -124,7 +122,7 @@
 #'     \item The last possibility is to specify `zoi_hl_ratio`, the ratio between
 #'     the ZoI radius and the half life of the exponential function. For instance,
 #'     if `zoi_hl_ratio = 4`, this means the ZoI radius is defined as `4*half_life`.
-#'     If `zoi_hl_ratio` is given, the exponential `half_life` is defined based on
+#'     If `zoi_hl_ratio` is provided, the exponential `half_life` is defined based on
 #'     this parameter and `lambda` is defined accordingly, based on the relationship
 #'     above. In this case, `radius` is ignored, even if specified.
 #'   }
@@ -139,7 +137,7 @@
 #'   zone of influence radius (parameter `radius`). All pixels closer than
 #'   `radius` to infrastructure are considered as "under the influence" of
 #'   the nearest feature, with a constant influence value defined by the
-#'   `constant_influence` parameter, and all other pixels are assumed to have
+#'   `intercept` parameter, and all values/pixels beyond `radius` are assumed to have
 #'   zero influence.
 #' }
 #'
@@ -164,10 +162,10 @@
 #' "linear", "tent", "threshold", "step"}` \cr Type or shape of the decay distance.
 #' \itemize{
 #'   \item If `"Gauss"` or `"half_norm"`, the ZoI follows a half-normal shape: \cr
-#'   `N_0 * exp(-lambda * (euclidean_distance^2))`. `N_0` and `lambda` are
+#'   `intercept * exp(-lambda * (euclidean_distance^2))`. `intercept` and `lambda` are
 #'   parameters to be defined -- see details.
 #'   \item If `"exp_decay"`, the ZoI follows an exponential decay shape: \cr
-#'   `N_0 * exp(-lambda * euclidean_distance)`. `N_0` and `lambda` are
+#'   `intercept * exp(-lambda * euclidean_distance)`. `intercept` and `lambda` are
 #'   parameters to be defined -- see details.
 #'   \item If `"bartlett"`, `"linear_decay"`, or `"tent_decay"`, the ZoI follows a
 #'   linear decay shape within the ZoI radius (parameter `radius`).
@@ -175,8 +173,8 @@
 #'   zone of influence radius (parameter `radius`). All pixels closer than
 #'   `radius` to infrastructure are considered as "under the influence" of
 #'   the nearest feature, with a constant influence value defined by the
-#'   `constant_influence` parameter, and all other pixels are assumed to have
-#'   zero influence.
+#'   `intercept` parameter, and all values/pixels beyond `radius` are
+#'   assumed to have zero influence.
 #' }
 #'
 #' @param origin `[numeric(1)=0]` \cr In which position (in 1 dimension) is located
@@ -227,38 +225,41 @@ dist_decay <- function(x, radius = NULL,
   }
 }
 
-#' @param constant_influence `[numeric(1)=1]` \cr Constant value of the
-#' `threshold` (or `step`) function within the Zone of Influence. Default is 1.
+#' @param intercept `[numeric(1)=1]` \cr Maximum value of the ZoI function at
+#' when the distance from disturbance sources is zero (`x = 0`).
+#' For the `threshold_decay` and `step_decay` functions, `intercept` is
+#' the constant value of the Zone of Influence within the ZoI `radius`.
+#' For the other ZoI functions, `intercept`
+#' is the value of the functions at the origin (where the sources of disturbance
+#' are located, i.e. `x = 0`).
+#' Default is `intercept = 1`.
 #'
 #' @rdname zoi_functions
 #' @export
-threshold_decay <- function(x, radius, constant_influence = 1, origin = 0, oneside = TRUE) {
+threshold_decay <- function(x, radius, intercept = 1, origin = 0, oneside = TRUE) {
   UseMethod("threshold_decay")
 }
 
 #' @name zoi_functions
 #' @export
-threshold_decay.numeric <- function(x, radius, constant_influence = 1, origin = 0, oneside = TRUE) {
+threshold_decay.numeric <- function(x, radius, intercept = 1, origin = 0, oneside = TRUE) {
   if(oneside) func <- identity else func <- abs
-  ifelse(func(x - origin) < radius, constant_influence, 0)
+  ifelse(func(x - origin) < radius, intercept, 0)
 }
 
 # possibly have that for RasterLayer as well
 
 #' @name zoi_functions
 #' @export
-threshold_decay.SpatRaster <- function(x, radius, constant_influence = 1, origin = 0, oneside = TRUE) {
+threshold_decay.SpatRaster <- function(x, radius, intercept = 1, origin = 0, oneside = TRUE) {
   if(oneside) func <- identity else func <- abs
-  terra::ifel(func(x - origin) < radius, constant_influence, 0)
+  terra::ifel(func(x - origin) < radius, intercept, 0)
 }
 
 #' @rdname zoi_functions
 #' @export
 step_decay <- threshold_decay
 
-#' @param intercept `[numeric(1)=1]` For the Bartlett (linear or tent decay) function,
-#' `intercept` is the maximum value of the function (at `x = 0`).
-#'
 #' @rdname zoi_functions
 #' @export
 bartlett_decay <- function(x, radius, intercept = 1, origin = 0, oneside = TRUE) {
@@ -289,24 +290,26 @@ tent_decay <- bartlett_decay
 #' @export
 linear_decay <- bartlett_decay
 
-#' @param sigma `[numeric(1)=NULL]` \cr Standard deviation of the Gaussian
-#' function. It related to the Gaussian decay rate \eqn{\lambda} as
+#' @param sigma `[numeric(1)=NULL]` \cr Standard deviation of the Gaussian decay
+#' function. It is related to the Gaussian decay rate \eqn{\lambda} as
 #' `lambda = 1/(2*sigma^2)`. Only considered to compute the ZoI
 #' for the `gaussian_decay` function when the ZoI radius parameter is null
 #' (`radius = NULL`).
 #'
-#' @param hnorm_decay_parms `[numeric(2)=c(1,0.01)]` \cr For the `gaussian_decay` function,
-#' these are the guassian decay parameters c(N, lambda), where N is the maximum
-#' value of the function (at `x = 0`)
-#' and lambda is the decay parameter of the Gaussian function.
-#' The value for `lambda` is only considered to draw the Gaussian decay function
-#' if both `radius = NULL` and `sigma = NULL`.
+#' @param lambda `[numeric(2)=NULL]` \cr For the `gaussian_decay` and `exp_decay`
+#' functions, `lambda` is the decay parameter of the Gaussian or exponential decay
+#' function. Notice that the interpretation of `lambda` is different depending on the
+#' the function -- see details for definitions.
+#' Gaussian decay function, the value for `lambda` is only considered if both
+#' `radius = NULL` and `sigma = NULL`. For the exponential decay function,
+#' the value for `lambda` is only considered if both `radius = NULL` and `half_life = NULL`.
 #'
 #' @rdname zoi_functions
 #' @export
 gaussian_decay <- function(x, radius = NULL,
                            zoi_limit = 0.05,
-                           hnorm_decay_parms = c(1, 0.01),
+                           intercept = 1,
+                           lambda = NULL,
                            sigma = NULL,
                            origin = 0, ...) {
 
@@ -316,31 +319,24 @@ gaussian_decay <- function(x, radius = NULL,
     if(!is.null(sigma)) {
       lambda = 1/(2*sigma**2)
     } else {
-      lambda <- hnorm_decay_parms[2]
+      lambda <- lambda
     }
 
   }
 
-  hnorm_decay_parms[1] * exp(- lambda * (x - origin)**2)
+  intercept * exp(- lambda * (x - origin)**2)
 }
 
 #' @rdname zoi_functions
 #' @export
 half_norm_decay <- gaussian_decay
 
-#' @param exp_decay_parms `[numeric(2)=c(1,0.01)]` \cr For the `exp_decay` function,
-#' these are the exponential decay parameters `c(N_0, lambda)`, where `N_0` is the maximum
-#' value of the function (at `x = 0`)
-#' and lambda is the decay parameter of the exponential function.
-#' The value for `lambda` is only considered to draw the exponential decay function
-#' if both `radius = NULL` and `half_life = NULL`.
-#'
 #' @param half_life `[numeric(1)=NULL]` \cr Half life of the exponential decay
 #' function, in meters (or map units, for rasters). By definition, the half life is
 #' the distance where the exponential decay function reaches 0.5 of its
 #' maximum value. For the `exp_decay` function,
 #' if the ZoI radius parameter is null (`radius = NULL`), the value of the
-#' exponential half life (`half_life = log(2)/lambda`) can used to parameterize the
+#' exponential half life (`half_life = log(2)/lambda`) can be used to parameterize the
 #' exponential decay function.
 #'
 #' @param zoi_hl_ratio `[numeric(1)=NULL]` \cr For the `exp_decay` function,
@@ -359,7 +355,8 @@ half_norm_decay <- gaussian_decay
 #' @export
 exp_decay <- function(x, radius = NULL,
                       zoi_limit = 0.05,
-                      exp_decay_parms = c(1, 0.01),
+                      intercept = 1,
+                      lambda = NULL,
                       origin = 0,
                       oneside = TRUE,
                       half_life = NULL,
@@ -380,12 +377,12 @@ exp_decay <- function(x, radius = NULL,
     if(!is.null(half_life)) {
       lambda <- log(2)/half_life
     } else {
-      lambda <- exp_decay_parms[2]
+      lambda <- lambda
     }
   }
 
   # return function
   if(oneside) func <- identity else func <- abs
 
-  exp_decay_parms[1] * exp(- lambda * func(x - origin))
+  intercept * exp(- lambda * func(x - origin))
 }

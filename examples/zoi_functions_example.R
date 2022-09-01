@@ -1,3 +1,9 @@
+# generic dist_decay function
+oneimpact::dist_decay(500, radius = 1000, type = "exp_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "gaussian_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "linear_decay")
+oneimpact::dist_decay(500, radius = 1000, type = "step_decay")
+
 # test the zone of influence functions
 # here we use ggplot() to illustrate the functions, to make the figures more
 # widely reproducible
@@ -90,12 +96,6 @@ f1 +
   labs(x = "Distance", y = "Zone of Influence") +
   theme_bw()
 
-# generic dist_decay function
-oneimpact::dist_decay(500, radius = 1000, type = "exp_decay")
-oneimpact::dist_decay(500, radius = 1000, type = "gaussian_decay")
-oneimpact::dist_decay(500, radius = 1000, type = "linear_decay")
-oneimpact::dist_decay(500, radius = 1000, type = "step_decay")
-
 #---
 # applying dist_decay functions for rasters
 library(terra)
@@ -106,5 +106,7 @@ cabins <- terra::rast(f)
 cabins_dist <- calc_zoi_nearest(cabins, type = "euclidean")
 
 # transform Euclidean in distance decay
+# exponential decay
 plot(oneimpact::dist_decay(cabins_dist, radius = 1000, type = "exp_decay"))
+# linear decay
 plot(oneimpact::dist_decay(cabins_dist, radius = 1000, type = "tent_decay"))
