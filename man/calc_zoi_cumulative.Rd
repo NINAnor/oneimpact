@@ -10,7 +10,6 @@ calc_zoi_cumulative(
   type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
     "mfilter")[1],
   where = c("R", "GRASS")[1],
-  module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
   output_type = c("cumulative_zoi", "density")[1],
   zoi_limit = 0.05,
   min_intensity = 0.01,
@@ -20,21 +19,21 @@ calc_zoi_cumulative(
   extent_y_cut = NULL,
   na.policy = "omit",
   na.rm = TRUE,
-  plotit = FALSE,
-  output_map_name = NULL,
-  input_as_region = FALSE,
-  remove_intermediate = TRUE,
-  overwrite = FALSE,
-  quiet = TRUE,
+  g_module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
+  g_output_map_name = NULL,
+  g_input_as_region = FALSE,
+  g_remove_intermediate = TRUE,
+  g_overwrite = FALSE,
+  verbose = FALSE,
   ...
 )
 }
 \arguments{
 \item{x}{\verb{[RasterLayer,SpatRaster,character]} \cr Raster representing
-locations of features, preferentially a binary map with 1 where the features
+locations of features, preferentially with positive values where the features
 are located (or counts of features within a pixel) and 0 elsewhere.
 Alternatively, \code{x} might be a binary (dummy) spatial variable representing
-the presence of linear or area features.
+the presence of linear or area features, with zero as background.
 \code{x} can be a \code{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
 \link{terra} package. If \code{where = "GRASS"}, \code{x} must be a string corresponding
 to the name of the input map within a GRASS GIS location and mapset.
@@ -42,11 +41,23 @@ Continuous or discrete raster maps with multiple categories can be binarized
 to be used as input for \code{calc_zoi_cumulative()} through
 \code{\link[landscapetools:util_binarize]{landscapetools::util_binarize()}} in R or \code{\link[=grass_binarize]{grass_binarize()}}
 in GRASS GIS, or through common raster algebra in both
-environments.}
+environments.
+
+Notice that, different from \code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}}, the input maps \code{x}
+must have zero as background values, instead of NA. In R it is possible to
+account for NA background values by setting \code{zeroAsNA = TRUE} for the computation
+of the cumulative ZoI.
+In GRASS, maps without NA as background might be changed into maps with 0 as
+background to be used in  \code{calc_zoi_cumulative()}
+through \href{https://grass.osgeo.org/grass78/manuals/r.mapcalc.html}{raster algebra}
+and e.g. through the use of the module
+\href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}}.}
 
 \item{radius}{\verb{[numeric(1)=100]} \cr Radius or scale of the moving
 window for neighborhood analysis, used to calculate the cumulative zoi and
-density. It can be a single value or a vector of values, in which case
+density. The radius represent
+the distance at which the ZoI vanishes or goes below a given minimum limit value
+\code{zoi_limit}. It can be a single value or a vector of values, in which case
 several cumulative ZoI or density maps (one for each radius) are created.
 For \code{type = "circle"}, the \code{radius} corresponds to the radius of the
 circle filter. For \code{type = "Gauss"} and \code{type = "exp_decay"}, \code{radius}
@@ -56,18 +67,16 @@ is the distance at which the filter reaches zero, after a linear decay
 from the central pixel. If \code{type = "rectangle"}, \code{radius}
 corresponds to half the size of the side of a square filter.
 If \code{type = "mfilter"}, radius is not a numeric value but a matrix itself,
-defined by the user. See description in the details.}
+defined by the user. See description in the details and \code{\link[=zoi_functions]{zoi_functions()}}
+for more details on the zone of influence function shapes and parameters.}
 
 \item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter"\}} \cr
-Type of filter used to calculate the cumulative ZoI or density. See details.}
+Type of filter (shape of the zone of influence) used to calculate the
+cumulative ZoI or density. See details.}
 
 \item{where}{\verb{[character(1)="R"]\{"R", "GRASS"\}} \cr Where should the
 computation be done? Default is \code{"R"}. If \code{where = "GRASS"}, the R session
 must be linked to an open GRASS GIS session in a specific location and mapset.}
-
-\item{module}{\verb{[character(1)="r.mfilter"]\{"r.mfilter", "r.resamp.filter", "r.neighbors"\}} \cr
-If \code{where = "GRASS"}, which algorithm should be used to compute the cumulative
-ZoI? See details for their description.}
 
 \item{output_type}{\verb{[character(1)="cumulative_zoi"]\{"cumulative_zoi", "density"\}} \cr If \code{output_type = "cumulative_zoi"} (default), the ZoI weight
 matrix not not normalized, i.e. the maximum value of the weight matrix at the
@@ -112,29 +121,30 @@ The default is to keep the same extent of the input raster.}
 filtering calculations? Option for the neighborhood analysis performed
 through the \code{\link[terra:focal]{terra::focal()}} function. Only used when \code{where = "R"}.}
 
-\item{plotit}{\verb{[logical(1)=FALSE]} \cr Should the outputs be plotted along
-the calculation? Only used when \code{where = "R"}.}
+\item{g_module}{\verb{[character(1)="r.mfilter"]\{"r.mfilter", "r.resamp.filter", "r.neighbors"\}} \cr
+If \code{where = "GRASS"}, which algorithm should be used to compute the cumulative
+ZoI? See details for their description.}
 
-\item{output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map. Only
+\item{g_output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map. Only
 used when \code{where = "GRASS"}. If \code{NULL} (default), a standard name is created
 based on the name of the input map \code{x}, the ZoI shape \code{type}, and the ZoI
 radius \code{radius}.}
 
-\item{input_as_region}{\verb{[logical(1)=TRUE]} \cr Should the input map \code{x} be
+\item{g_input_as_region}{\verb{[logical(1)=TRUE]} \cr Should the input map \code{x} be
 used to redefine the working GRASS region before cumulative ZoI calculation?
 If \code{TRUE}, \code{x} is used to define the region with \code{g.region}. If \code{FALSE},
 the region previously defined in the GRASS GIS session is used for computation.}
 
-\item{remove_intermediate}{\verb{[logical(1)=TRUE]} \cr Should the intermediate
+\item{g_remove_intermediate}{\verb{[logical(1)=TRUE]} \cr Should the intermediate
 maps created for computing the output map be excluded in the end of the
 process? Only used when \code{where = "GRASS"}.}
 
-\item{overwrite}{\verb{[logical(1)=FALSE]} \cr If the a map already exists with the
-name \code{output_map_name} in the working GRASS GIS location and mapset, should
+\item{g_overwrite}{\verb{[logical(1)=FALSE]} \cr If the a map already exists with the
+name \code{g_output_map_name} in the working GRASS GIS location and mapset, should
 it be overwritten? Only used when \code{where = "GRASS"}.}
 
-\item{quiet}{\verb{[logical(1)=TRUE]} \cr Should GRASS GIS messages be ommited
-from the prompt along the computation? Only used when \code{where = "GRASS"}.}
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Should messages of the computation steps
+be printed in the prompt along the computation?}
 
 \item{...}{Other arguments to be used within \code{\link[=filter_create]{filter_create()}}
 or \code{\link[terra:focal]{terra::focal()}}.}
@@ -160,10 +170,14 @@ infrastructure
 and calculates a raster (or set of rasters, in case there is more the one
 value for \code{radius}) representing the cumulative zone of influence (ZoI)
 or density of features in space. The process is done through a spatial
-filter/moving window/neighborhood analysis. The ZoI or weight matrix is
-defined from zone of influence functions, which might follow different shapes
-and cover an area according to the ZoI radius. For more details, see
-\code{\link[=zoi_functions]{zoi_functions()}}.
+filter/moving window/neighborhood analysis. The zones of influence
+(or weight matrices) are defined by functions that decay with the distance
+from each infrastructure feature and their rate of decay is controlled by the
+ZoI radius (\code{radius}), which defines how far the influence of an infrastructure
+feature goes. By using moving window analyses, the cumulative ZoI account for
+the sum of the influence of multiple features across space, weighted by
+the distance to these features according the the ZoI shape.
+For more details on the ZoI functions, see \code{\link[=zoi_functions]{zoi_functions()}}.
 
 The procedure might be computed in both R and GRASS GIS. In R, the
 neighborhood analysis is done with the \code{\link[terra:focal]{terra::focal()}} function. In GRASS,
@@ -234,7 +248,7 @@ correspondent to the original functions the matrix will be.
 
 In GRASS GIS, different modules might be used for the computation,
 \code{r.resamp.filter}, \code{r.mfilter}, or \code{r.neighbors}. The module to be used is
-controlled by the parameter \code{module}. These algorithms provide different
+controlled by the parameter \code{g_module}. These algorithms provide different
 capabilities and flexibility.
 \itemize{
 \item \code{r.resamp.filter} seems to be the fastest one

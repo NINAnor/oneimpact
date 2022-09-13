@@ -5,10 +5,14 @@
 #' and calculates a raster (or set of rasters, in case there is more the one
 #' value for `radius`) representing the cumulative zone of influence (ZoI)
 #' or density of features in space. The process is done through a spatial
-#' filter/moving window/neighborhood analysis. The ZoI or weight matrix is
-#' defined from zone of influence functions, which might follow different shapes
-#' and cover an area according to the ZoI radius. For more details, see
-#' [oneimpact::zoi_functions()].
+#' filter/moving window/neighborhood analysis. The zones of influence
+#' (or weight matrices) are defined by functions that decay with the distance
+#' from each infrastructure feature and their rate of decay is controlled by the
+#' ZoI radius (`radius`), which defines how far the influence of an infrastructure
+#' feature goes. By using moving window analyses, the cumulative ZoI account for
+#' the sum of the influence of multiple features across space, weighted by
+#' the distance to these features according the the ZoI shape.
+#' For more details on the ZoI functions, see [oneimpact::zoi_functions()].
 #'
 #' The procedure might be computed in both R and GRASS GIS. In R, the
 #' neighborhood analysis is done with the [terra::focal()] function. In GRASS,
@@ -78,7 +82,7 @@
 #'
 #' In GRASS GIS, different modules might be used for the computation,
 #' `r.resamp.filter`, `r.mfilter`, or `r.neighbors`. The module to be used is
-#' controlled by the parameter `module`. These algorithms provide different
+#' controlled by the parameter `g_module`. These algorithms provide different
 #' capabilities and flexibility.
 #' - `r.resamp.filter` seems to be the fastest one
 #' in most cases, but has less flexibility in the choice of the zone of influence
@@ -107,10 +111,10 @@
 #' such as mean, median, standard deviation etc.
 #'
 #' @param x `[RasterLayer,SpatRaster,character]` \cr Raster representing
-#' locations of features, preferentially a binary map with 1 where the features
+#' locations of features, preferentially with positive values where the features
 #' are located (or counts of features within a pixel) and 0 elsewhere.
 #' Alternatively, `x` might be a binary (dummy) spatial variable representing
-#' the presence of linear or area features.
+#' the presence of linear or area features, with zero as background.
 #' `x` can be a `RasterLayer` from [raster] package or a [SpatRaster] from
 #' [terra] package. If `where = "GRASS"`, `x` must be a string corresponding
 #' to the name of the input map within a GRASS GIS location and mapset.
@@ -120,13 +124,21 @@
 #' in GRASS GIS, or through common raster algebra in both
 #' environments.
 #'
-#' @param type `[character(1)="circle"]{"circle", "Gauss", "rectangle",
-#' "exp_decay", "bartlett", "threshold", "step", "mfilter"}` \cr
-#' Type of filter used to calculate the cumulative ZoI or density. See details.
+#' Notice that, different from [oneimpact::calc_zoi_nearest()], the input maps `x`
+#' must have zero as background values, instead of NA. In R it is possible to
+#' account for NA background values by setting `zeroAsNA = TRUE` for the computation
+#' of the cumulative ZoI.
+#' In GRASS, maps without NA as background might be changed into maps with 0 as
+#' background to be used in  `calc_zoi_cumulative()`
+#' through [raster algebra](https://grass.osgeo.org/grass78/manuals/r.mapcalc.html)
+#' and e.g. through the use of the module
+#' [`r.null`](https://grass.osgeo.org/grass80/manuals/r.null.html).
 #'
 #' @param radius `[numeric(1)=100]` \cr Radius or scale of the moving
 #' window for neighborhood analysis, used to calculate the cumulative zoi and
-#' density. It can be a single value or a vector of values, in which case
+#' density. The radius represent
+#' the distance at which the ZoI vanishes or goes below a given minimum limit value
+#' `zoi_limit`. It can be a single value or a vector of values, in which case
 #' several cumulative ZoI or density maps (one for each radius) are created.
 #' For `type = "circle"`, the `radius` corresponds to the radius of the
 #' circle filter. For `type = "Gauss"` and `type = "exp_decay"`, `radius`
@@ -136,7 +148,13 @@
 #' from the central pixel. If `type = "rectangle"`, `radius`
 #' corresponds to half the size of the side of a square filter.
 #' If `type = "mfilter"`, radius is not a numeric value but a matrix itself,
-#' defined by the user. See description in the details.
+#' defined by the user. See description in the details and [oneimpact::zoi_functions()]
+#' for more details on the zone of influence function shapes and parameters.
+#'
+#' @param type `[character(1)="circle"]{"circle", "Gauss", "rectangle",
+#' "exp_decay", "bartlett", "threshold", "step", "mfilter"}` \cr
+#' Type of filter (shape of the zone of influence) used to calculate the
+#' cumulative ZoI or density. See details.
 #'
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing functions
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
@@ -158,7 +176,7 @@
 #' computation be done? Default is `"R"`. If `where = "GRASS"`, the R session
 #' must be linked to an open GRASS GIS session in a specific location and mapset.
 #'
-#' @param module `[character(1)="r.mfilter"]{"r.mfilter",
+#' @param g_module `[character(1)="r.mfilter"]{"r.mfilter",
 #' "r.resamp.filter", "r.neighbors"}` \cr
 #' If `where = "GRASS"`, which algorithm should be used to compute the cumulative
 #' ZoI? See details for their description.
@@ -193,27 +211,25 @@
 #' @param na.rm `[logical(1)=FALSE]` \cr Should missing values be removed for
 #' filtering calculations? Option for the neighborhood analysis performed
 #' through the [terra::focal()] function. Only used when `where = "R"`.
-#' @param plotit `[logical(1)=FALSE]` \cr Should the outputs be plotted along
-#' the calculation? Only used when `where = "R"`.
 #' @param ... Other arguments to be used within [oneimpact::filter_create()]
 #' or [terra::focal()].
 #'
-#' @param output_map_name `[character(1)=NULL]` \cr Name of the output map. Only
+#' @param g_output_map_name `[character(1)=NULL]` \cr Name of the output map. Only
 #' used when `where = "GRASS"`. If `NULL` (default), a standard name is created
 #' based on the name of the input map `x`, the ZoI shape `type`, and the ZoI
 #' radius `radius`.
-#' @param input_as_region `[logical(1)=TRUE]` \cr Should the input map `x` be
+#' @param g_input_as_region `[logical(1)=TRUE]` \cr Should the input map `x` be
 #' used to redefine the working GRASS region before cumulative ZoI calculation?
 #' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
 #' the region previously defined in the GRASS GIS session is used for computation.
-#' @param remove_intermediate `[logical(1)=TRUE]` \cr Should the intermediate
+#' @param g_remove_intermediate `[logical(1)=TRUE]` \cr Should the intermediate
 #' maps created for computing the output map be excluded in the end of the
 #' process? Only used when `where = "GRASS"`.
-#' @param overwrite `[logical(1)=FALSE]` \cr If the a map already exists with the
-#' name `output_map_name` in the working GRASS GIS location and mapset, should
+#' @param g_overwrite `[logical(1)=FALSE]` \cr If the a map already exists with the
+#' name `g_output_map_name` in the working GRASS GIS location and mapset, should
 #' it be overwritten? Only used when `where = "GRASS"`.
-#' @param quiet `[logical(1)=TRUE]` \cr Should GRASS GIS messages be ommited
-#' from the prompt along the computation? Only used when `where = "GRASS"`.
+#' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
+#' be printed in the prompt along the computation?
 #'
 #' @returns A `RasterLayer` or [SpatRaster] (according to the input `x` map)
 #' with the cumulative zone of influence or density of features. While the
@@ -245,27 +261,27 @@
 #' @example examples/calc_zoi_cumulative_grass_example.R
 #'
 #' @export
-calc_zoi_cumulative <- function(x,
-                                radius = 100,
-                                type = c("circle", "Gauss", "rectangle", "exp_decay",
-                                         "bartlett", "threshold", "mfilter")[1],
-                                where = c("R", "GRASS")[1],
-                                module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
-                                output_type = c("cumulative_zoi", "density")[1],
-                                zoi_limit = 0.05,
-                                min_intensity = 0.01,
-                                max_dist = 50000,
-                                zeroAsNA = FALSE,
-                                extent_x_cut = NULL,
-                                extent_y_cut = NULL,
-                                na.policy = "omit",
-                                na.rm = TRUE,
-                                plotit = FALSE,
-                                output_map_name = NULL,
-                                input_as_region = FALSE,
-                                remove_intermediate = TRUE,
-                                overwrite = FALSE,
-                                quiet = TRUE, ...) {
+calc_zoi_cumulative <- function(
+  x,
+  radius = 100,
+  type = c("circle", "Gauss", "rectangle", "exp_decay",
+           "bartlett", "threshold", "mfilter")[1],
+  where = c("R", "GRASS")[1],
+  output_type = c("cumulative_zoi", "density")[1],
+  zoi_limit = 0.05,
+  min_intensity = 0.01,
+  max_dist = 50000,
+  zeroAsNA = FALSE,
+  extent_x_cut = NULL,
+  extent_y_cut = NULL,
+  na.policy = "omit",
+  na.rm = TRUE,
+  g_module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
+  g_output_map_name = NULL,
+  g_input_as_region = FALSE,
+  g_remove_intermediate = TRUE,
+  g_overwrite = FALSE,
+  verbose = FALSE, ...) {
 
   # Run in R
   if(where %in% c("R", "r")) {
@@ -284,8 +300,8 @@ calc_zoi_cumulative <- function(x,
                                             extent_y_cut = extent_y_cut,
                                             na.policy = na.policy,
                                             na.rm = na.rm,
-                                            quiet = quiet,
-                                            plotit = plotit, ...)
+                                            verbose = verbose,
+                                            ...)
 
     return(zoi_cumulative)
   } else {
@@ -296,18 +312,18 @@ calc_zoi_cumulative <- function(x,
                                                   radius = radius,
                                                   type = type,
                                                   output_type = output_type,
-                                                  module = module,
+                                                  g_module = g_module,
                                                   zoi_limit = zoi_limit,
                                                   min_intensity = min_intensity,
                                                   max_dist = max_dist,
                                                   extent_x_cut = extent_x_cut,
                                                   extent_y_cut = extent_y_cut,
                                                   parallel = parallel,
-                                                  output_map_name = output_map_name,
-                                                  input_as_region = input_as_region,
-                                                  remove_intermediate = remove_intermediate,
-                                                  overwrite = overwrite,
-                                                  quiet = quiet,
+                                                  g_output_map_name = g_output_map_name,
+                                                  g_input_as_region = g_input_as_region,
+                                                  g_remove_intermediate = g_remove_intermediate,
+                                                  g_overwrite = g_overwrite,
+                                                  verbose = verbose,
                                                   ...)
 
       return(zoi_cumulative)
@@ -319,24 +335,24 @@ calc_zoi_cumulative <- function(x,
 
 # implementation in R
 calc_zoi_cumulative_r <- function(
-    x,
-    radius = 100,
-    type = c("circle", "Gauss", "rectangle", "exp_decay",
-             "bartlett", "threshold", "mfilter")[1],
-    output_type = c("cumulative_zoi", "density")[1],
-    zoi_limit = 0.05,
-    zoi_hl_ratio = NULL,
-    half_life = NULL,
-    exp_decay_parms = c(1, 0.01),
-    min_intensity = 0.01,
-    max_dist = 50000,
-    zeroAsNA = FALSE,
-    extent_x_cut = terra::ext(x)[c(1,2)],
-    extent_y_cut = terra::ext(x)[c(3,4)],
-    na.policy = "omit",
-    na.rm = TRUE,
-    quiet = FALSE,
-    plotit = FALSE, ...) {
+  x,
+  radius = 100,
+  type = c("circle", "Gauss", "rectangle", "exp_decay",
+           "bartlett", "threshold", "mfilter")[1],
+  output_type = c("cumulative_zoi", "density")[1],
+  zoi_limit = 0.05,
+  zoi_hl_ratio = NULL,
+  half_life = NULL,
+  exp_decay_parms = c(1, 0.01),
+  min_intensity = 0.01,
+  max_dist = 50000,
+  zeroAsNA = FALSE,
+  extent_x_cut = terra::ext(x)[c(1,2)],
+  extent_y_cut = terra::ext(x)[c(3,4)],
+  na.policy = "omit",
+  na.rm = TRUE,
+  verbose = FALSE,
+  ...) {
 
   # check if the input is a terra or raster object
   if(class(x) %in% c("SpatRaster")) {
@@ -425,7 +441,7 @@ calc_zoi_cumulative_r <- function(
     # more than one matrix
     if("list" %in% class(filt)) {
       cuminf <- purrr::map2(filt, 1:length(radius), function(f, z) {
-        if(!quiet) print(paste0("Calculating for ZoI n. ", z, "..."))
+        if(verbose) print(paste0("Calculating for ZoI n. ", z, "..."))
         terra::focal(r0, w = f, na.policy = na.policy, na.rm = na.rm, ...)
       })
       if(use_terra) cumulative_r <- do.call(c, cuminf) else
@@ -439,7 +455,7 @@ calc_zoi_cumulative_r <- function(
       cumulative_r <- terra::focal(r0, w = filt, na.policy = na.policy, na.rm = na.rm, ...)
     } else {
       cuminf <- purrr::map2(filt, radius, function(f, z) {
-        if(!quiet) print(paste0("Calculating for ZoI = ", z, "..."))
+        if(verbose) print(paste0("Calculating for ZoI = ", z, "..."))
         terra::focal(r0, w = f, na.policy = na.policy, na.rm = na.rm, ...)
       })
       if(use_terra) cumulative_r <- do.call(c, cuminf) else
@@ -456,8 +472,6 @@ calc_zoi_cumulative_r <- function(
   }
 
   names(cumulative_r) <- name
-  # should the result be plotted?
-  if(plotit) plot(cumulative_r)
 
   # return cropped raster
   if(use_terra)
@@ -468,41 +482,41 @@ calc_zoi_cumulative_r <- function(
 
 # implementation in GRASS
 calc_zoi_cumulative_grass <- function(
-    x,
-    radius = 100,
-    type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
-    module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
-    output_type = c("cumulative_zoi", "density")[1],
-    zoi_limit = 0.05,
-    zoi_hl_ratio = NULL,
-    half_life = NULL,
-    exp_decay_parms = c(1, 0.01),
-    hnorm_decay_parms = c(1, 20),
-    min_intensity = 0.01,
-    max_dist = 50000,
-    divisor = 1,
-    normalize = FALSE,
-    extent_x_cut = NULL,
-    extent_y_cut = NULL,
-    parallel = TRUE,
-    output_map_name = NULL,
-    input_as_region = FALSE,
-    remove_intermediate = TRUE,
-    overwrite = FALSE,
-    quiet = TRUE,
-    ...) {
+  x,
+  radius = 100,
+  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter")[1],
+  g_module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
+  output_type = c("cumulative_zoi", "density")[1],
+  zoi_limit = 0.05,
+  zoi_hl_ratio = NULL,
+  half_life = NULL,
+  exp_decay_parms = c(1, 0.01),
+  hnorm_decay_parms = c(1, 20),
+  min_intensity = 0.01,
+  max_dist = 50000,
+  divisor = 1,
+  normalize = FALSE,
+  extent_x_cut = NULL,
+  extent_y_cut = NULL,
+  parallel = TRUE,
+  g_output_map_name = NULL,
+  g_input_as_region = FALSE,
+  g_remove_intermediate = TRUE,
+  g_overwrite = FALSE,
+  verbose = FALSE,
+  ...) {
 
   # flags
   flags <- c()
-  if(quiet) flags <- c(flags, "quiet")
-  if(overwrite) flags <- c(flags, "overwrite")
+  if(!verbose) flags <- c(flags, "quiet")
+  if(g_overwrite) flags <- c(flags, "overwrite")
 
   # flags for g.region
   flags_region <- c("a")
-  if(!quiet) flags_region <- c(flags_region, "p")
+  if(verbose) flags_region <- c(flags_region, "p")
 
   # intermediate maps to remove
-  if(remove_intermediate) to_remove <- c()
+  if(g_remove_intermediate) to_remove <- c()
 
   # 1. check if there is already a connection with GRASS GIS
   # 2. check if the map is already in GRASS GIS mapset, or if it should be
@@ -511,7 +525,7 @@ calc_zoi_cumulative_grass <- function(
   ##### 3. CUT extent to be implemented
 
   # start by setting the region
-  if(input_as_region)
+  if(g_input_as_region)
     rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
 
   # Differently from the R version, here we do not check if the input map
@@ -520,9 +534,9 @@ calc_zoi_cumulative_grass <- function(
   input_bin <- x
 
   # define the name of the output map
-  if(!is.null(output_map_name)) {
+  if(!is.null(g_output_map_name)) {
     # given name if this is given as a parameter
-    out_map <- output_map_name
+    out_map <- g_output_map_name
   } else {
     # define name as input + cumulative + type
     out_map = ifelse(output_type %in% c("cumulative_zoi", "zoi", "cumulative"),
@@ -547,12 +561,12 @@ calc_zoi_cumulative_grass <- function(
   resolution <- region$nsres
 
   allowed_modules <- c("r.resamp.filter", "r.mfilter", "r.neighbors")
-  if(!(module %in% allowed_modules))
+  if(!(g_module %in% allowed_modules))
     stop(paste0("You should use one of the following GRASS GIS modules: ",
                 paste(allowed_modules, collapse = ","), "."))
 
   # perform calculations for "r.resamp.filter"
-  if(module == "r.resamp.filter") {
+  if(g_module == "r.resamp.filter") {
 
     # allowed methods
     resamp_filter_types <- c("box", "bartlett", "gauss", "normal", "hermite",
@@ -656,19 +670,19 @@ calc_zoi_cumulative_grass <- function(
         if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
           out_final <- parm$output
           parm$output <- paste0(parm$output, "_temp")
-          if(remove_intermediate) to_remove <- c(to_remove, parm$output)
+          if(g_remove_intermediate) to_remove <- c(to_remove, parm$output)
         }
 
         # message
         msg <- paste0("Calculating ", message_name, " for ", z, ", shape ",
                       type, "...")
-        if(!quiet) print(msg)
+        if(verbose) print(msg)
         # region
         # set region
-        if(input_as_region)
+        if(g_input_as_region)
           rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
         # calculate
-        rgrass7::execGRASS(module, parameters = parm, flags = flags)
+        rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
 
         # rescale to the cumulative ZoI, if this is the intended final output
         if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
@@ -680,7 +694,7 @@ calc_zoi_cumulative_grass <- function(
 
           # message
           msg <- paste0("Rescaling from density to cumulative ZoI...")
-          if(!quiet) print(msg)
+          if(verbose) print(msg)
           print(expr)
 
           # calculate ZoI map
@@ -700,19 +714,19 @@ calc_zoi_cumulative_grass <- function(
       if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
         out_final <- parm$output
         parm$output <- paste0(parm$output, "_temp")
-        if(remove_intermediate) to_remove <- c(to_remove, parm$output)
+        if(g_remove_intermediate) to_remove <- c(to_remove, parm$output)
       }
 
       # message
       msg <- paste0("Calculating ", message_name, " for ", z, ", shape ",
                     type, "...")
-      if(!quiet) print(msg)
+      if(verbose) print(msg)
       # region
       # set region
-      if(input_as_region)
+      if(g_input_as_region)
         rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
       # calculate
-      rgrass7::execGRASS(module, parameters = parm, flags = flags)
+      rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
 
       # rescale to the cumulative ZoI, if this is the intended final output
       if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
@@ -724,7 +738,7 @@ calc_zoi_cumulative_grass <- function(
 
         # message
         msg <- paste0("Rescaling from density to cumulative ZoI...")
-        if(!quiet) print(msg)
+        if(verbose) print(msg)
         print(expr)
 
         # calculate ZoI map
@@ -741,7 +755,7 @@ calc_zoi_cumulative_grass <- function(
   # r.neighbors input=private_cabins_sub_bin output=test_neighbors method=count size=21 weight=test_neighbors_exp_filt500.txt --o
 
   # perform calculations for "r.mfilter"
-  if(module == "r.mfilter") {
+  if(g_module == "r.mfilter") {
 
     # define filters
     if(type %in% c("exp_decay", "bartlett", "circle", "threshold", "step", "rectangle", "Gauss")) {
@@ -851,13 +865,13 @@ calc_zoi_cumulative_grass <- function(
 
         # message
         msg <- paste0("Calculating ", message_name, " for ", z, ", shape ", type, "...")
-        if(!quiet) print(msg)
+        if(verbose) print(msg)
         # region
         # set region
-        if(input_as_region)
+        if(g_input_as_region)
           rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
         # calculate
-        rgrass7::execGRASS(module, parameters = parm, flags = flags)
+        rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
       }
 
     } else {
@@ -868,25 +882,25 @@ calc_zoi_cumulative_grass <- function(
 
       # message
       msg <- paste0("Calculating ", message_name, " for ", z, ", shape ", type, "...")
-      if(!quiet) print(msg)
+      if(verbose) print(msg)
       # region
       # set region
-      if(input_as_region)
+      if(g_input_as_region)
         rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
       # calculate
-      rgrass7::execGRASS(module, parameters = parm, flags = flags)
+      rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
 
     }
   }
 
   # perform calculations for "r.mfilter"
-  if(module == "r.neighbors") {
+  if(g_module == "r.neighbors") {
     stop("Usage through 'r.neighbors' not implemented yet.")
   }
 
   # remove intermediate maps
-  remove_flags = ifelse(quiet, c("f", "quiet"), "f")
-  if(remove_intermediate)
+  remove_flags = ifelse(verbose, "f", c("f", "quiet"))
+  if(g_remove_intermediate)
     if(length(to_remove) > 0)
       rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
                          flags = remove_flags)

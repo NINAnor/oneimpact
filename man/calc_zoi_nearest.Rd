@@ -23,8 +23,8 @@ calc_zoi_nearest(
   g_input_as_region = FALSE,
   g_remove_intermediate = TRUE,
   g_print_expression = FALSE,
-  g_verbose = FALSE,
   g_overwrite = FALSE,
+  verbose = FALSE,
   ...
 )
 }
@@ -49,7 +49,9 @@ and e.g. through the use of the module
 
 \item{radius}{\verb{[numeric(1)]} \cr Radius of the zone of influence (ZoI),
 the distance at which the ZoI vanishes or goes below a given minimum limit value
-\code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details. This parameter is
+\code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details.
+It can be a single value or a vector of values, in which case
+several ZoI layers (one for each radius) are created.This parameter is
 ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
 
 \item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "threshold", "step", "euclidean", "log","sqrt"\}} \cr
@@ -163,15 +165,15 @@ process? Only used when \code{where = "GRASS"}.}
 
 \item{g_print_expression}{\verb{[logical(1)=FALSE]} \cr Should the expression for
 transforming the raster of distance into ZoI values should be printed in the prompt?
-Only used when \code{where = "GRASS"} and \code{g_verbose = TRUE} for debugging the
+Only used when \code{where = "GRASS"} and \code{verbose = TRUE} for debugging the
 result of \code{r.mapcalc}.}
-
-\item{g_verbose}{\verb{[logical(1)=FALSE]} \cr Should GRASS GIS messages be shown
-in the prompt along the computation? Only used when \code{where = "GRASS"}.}
 
 \item{g_overwrite}{\verb{[logical(1)=FALSE]} \cr If the a map already exists with the
 name \code{g_output_map_name} in the working GRASS GIS location and mapset, should
 it be overwritten? Only used when \code{where = "GRASS"}.}
+
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Should messages of the computation steps
+be printed in the prompt along the computation?}
 
 \item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}}
 or to the ZoI functions (see \code{\link[=zoi_functions]{zoi_functions()}}) when the

@@ -69,7 +69,9 @@
 #'
 #' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZoI),
 #' the distance at which the ZoI vanishes or goes below a given minimum limit value
-#' `zoi_limit`. See [oneimpact::zoi_functions()] for details. This parameter is
+#' `zoi_limit`. See [oneimpact::zoi_functions()] for details.
+#' It can be a single value or a vector of values, in which case
+#' several ZoI layers (one for each radius) are created.This parameter is
 #' ignored if `type = "euclidean"`, `type = "log"`, or `type = "sqrt"`.
 #'
 #' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
@@ -185,15 +187,15 @@
 #'
 #' @param g_print_expression `[logical(1)=FALSE]` \cr Should the expression for
 #' transforming the raster of distance into ZoI values should be printed in the prompt?
-#' Only used when `where = "GRASS"` and `g_verbose = TRUE` for debugging the
+#' Only used when `where = "GRASS"` and `verbose = TRUE` for debugging the
 #' result of `r.mapcalc`.
 #'
 #' @param g_overwrite `[logical(1)=FALSE]` \cr If the a map already exists with the
 #' name `g_output_map_name` in the working GRASS GIS location and mapset, should
 #' it be overwritten? Only used when `where = "GRASS"`.
 #'
-#' @param g_verbose `[logical(1)=FALSE]` \cr Should GRASS GIS messages be shown
-#' in the prompt along the computation? Only used when `where = "GRASS"`.
+#' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
+#' be printed in the prompt along the computation?
 #'
 #' @param ... \cr Adittional parameters passed to [terra::distance()]
 #' or to the ZoI functions (see [oneimpact::zoi_functions()]) when the
@@ -245,8 +247,8 @@ calc_zoi_nearest <- function(
   g_input_as_region = FALSE,
   g_remove_intermediate = TRUE,
   g_print_expression = FALSE,
-  g_verbose = FALSE,
   g_overwrite = FALSE,
+  verbose = FALSE,
   ...) {
 
   # intercept and constant influence could be only one parameter
@@ -267,6 +269,7 @@ calc_zoi_nearest <- function(
                                       zeroAsNA = zeroAsNA,
                                       extent_x_cut = extent_x_cut,
                                       extent_y_cut = extent_y_cut,
+                                      verbose = verbose,
                                       ...)
 
     return(zoi_nearest)
@@ -289,8 +292,8 @@ calc_zoi_nearest <- function(
                                             g_input_as_region = g_input_as_region,
                                             g_remove_intermediate = g_remove_intermediate,
                                             g_print_expression = g_print_expression,
-                                            g_verbose = g_verbose,
                                             g_overwrite = g_overwrite,
+                                            verbose = verbose,
                                             ...)
 
       return(zoi_nearest)
@@ -315,6 +318,7 @@ calc_zoi_nearest_r <- function(
   zeroAsNA = FALSE,
   extent_x_cut = terra::ext(x)[c(1,2)],
   extent_y_cut = terra::ext(x)[c(3,4)],
+  verbose = FALSE,
   ...) {
 
   # check if the input is a terra or raster object
@@ -351,6 +355,7 @@ calc_zoi_nearest_r <- function(
   }
 
   # Euclidean distance
+  if(verbose) print(paste0("Computing the Euclidean distance to the nearest feature..."))
   dist_r <- terra::distance(r0, ...)
 
   # transform distance
@@ -358,6 +363,8 @@ calc_zoi_nearest_r <- function(
     if(type == "log") dist_r <- log(dist_r+dist_offset, base = log_base) else
       if(type == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
         if(type == "exp_decay") {
+          if(verbose) print("Computing the ZoI of the nearest feature with
+                            exponential decay shape...")
           dist_r <- exp_decay(x = dist_r,
                               radius = radius,
                               intercept = intercept,
@@ -368,6 +375,8 @@ calc_zoi_nearest_r <- function(
         } else
           if(type %in% c("bartlett", "Bartlett", "bartlett_decay",
                          "linear_decay", "tent_decay")) {
+            if(verbose) print("Computing the ZoI of the nearest feature with
+                              linear decay shape...")
             dist_r <- linear_decay(dist_r,
                                    radius = radius,
                                    intercept = intercept)
@@ -375,6 +384,8 @@ calc_zoi_nearest_r <- function(
           } else
             if(type %in% c("Gauss", "half_norm", "gauss",
                            "gaussian_decay", "normal_decay")) {
+              if(verbose) print("Computing the ZoI of the nearest feature with
+                                Gaussian decay shape...")
               dist_r <- gaussian_decay(x = dist_r,
                                        radius = radius,
                                        intercept = intercept,
@@ -384,6 +395,8 @@ calc_zoi_nearest_r <- function(
             } else {
               if(type %in% c("threshold", "step",
                              "threshold_decay", "step_decay")) {
+                if(verbose) print("Computing the ZoI of the nearest feature with
+                                  threshold shape...")
                 dist_r <- threshold_decay(x = dist_r,
                                           radius = radius,
                                           intercept = intercept)
@@ -428,8 +441,9 @@ calc_zoi_nearest_grass <- function(
   g_input_as_region = FALSE,
   g_remove_intermediate = TRUE,
   g_print_expression = FALSE,
-  g_verbose = FALSE,
+  verbose = FALSE,
   g_overwrite = FALSE,
+
   ...) {
 
   # check if the transformation is valid
@@ -443,12 +457,12 @@ calc_zoi_nearest_grass <- function(
 
   # flags
   flags <- c()
-  if(!g_verbose) flags <- c(flags, "quiet")
+  if(!verbose) flags <- c(flags, "quiet")
   if(g_overwrite) flags <- c(flags, "overwrite")
 
   # flags for g.region
   flags_region <- c("a")
-  if(g_verbose) flags_region <- c(flags_region, "p")
+  if(verbose) flags_region <- c(flags_region, "p")
 
   # intermediate maps to remove
   if(g_remove_intermediate) to_remove <- c()
@@ -481,7 +495,7 @@ calc_zoi_nearest_grass <- function(
                        align = x, flags = flags_region)
 
   # print message
-  if(g_verbose) rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...")
+  if(verbose) rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...")
   # calculate
   rgrass7::execGRASS("r.grow.distance", input = x, distance = out_euclidean,
                      metric = g_dist_metric, flags = flags)
@@ -609,7 +623,7 @@ calc_zoi_nearest_grass <- function(
     }
 
     # print message
-    if(g_verbose) rgrass7::execGRASS("g.message", message = out_message)
+    if(verbose) rgrass7::execGRASS("g.message", message = out_message)
     # set region
     if(g_input_as_region)
       rgrass7::execGRASS("g.region", raster = out_euclidean, flags = flags_region)
@@ -625,7 +639,7 @@ calc_zoi_nearest_grass <- function(
   }
 
   # remove intermediate maps
-  remove_flags = ifelse(g_verbose, "f", c("f", "quiet"))
+  remove_flags = ifelse(verbose, "f", c("f", "quiet"))
   if(g_remove_intermediate)
     if(length(to_remove) > 0)
       rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
