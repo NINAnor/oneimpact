@@ -139,8 +139,8 @@ location/mapset, and might be retrieved to R through the
 <span>  g_input_as_region <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  g_remove_intermediate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  g_print_expression <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  g_verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  g_overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -169,7 +169,9 @@ and e.g. through the use of the module
 <dt>radius</dt>
 <dd><p><code>[numeric(1)]</code> <br> Radius of the zone of influence (ZoI),
 the distance at which the ZoI vanishes or goes below a given minimum limit value
-<code>zoi_limit</code>. See <code><a href="zoi_functions.html">zoi_functions()</a></code> for details. This parameter is
+<code>zoi_limit</code>. See <code><a href="zoi_functions.html">zoi_functions()</a></code> for details.
+It can be a single value or a vector of values, in which case
+several ZoI layers (one for each radius) are created.This parameter is
 ignored if <code>type = "euclidean"</code>, <code>type = "log"</code>, or <code>type = "sqrt"</code>.</p></dd>
 
 
@@ -306,19 +308,19 @@ process? Only used when <code>where = "GRASS"</code>.</p></dd>
 <dt>g_print_expression</dt>
 <dd><p><code>[logical(1)=FALSE]</code> <br> Should the expression for
 transforming the raster of distance into ZoI values should be printed in the prompt?
-Only used when <code>where = "GRASS"</code> and <code>g_verbose = TRUE</code> for debugging the
+Only used when <code>where = "GRASS"</code> and <code>verbose = TRUE</code> for debugging the
 result of <code>r.mapcalc</code>.</p></dd>
-
-
-<dt>g_verbose</dt>
-<dd><p><code>[logical(1)=FALSE]</code> <br> Should GRASS GIS messages be shown
-in the prompt along the computation? Only used when <code>where = "GRASS"</code>.</p></dd>
 
 
 <dt>g_overwrite</dt>
 <dd><p><code>[logical(1)=FALSE]</code> <br> If the a map already exists with the
 name <code>g_output_map_name</code> in the working GRASS GIS location and mapset, should
 it be overwritten? Only used when <code>where = "GRASS"</code>.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p><code>[logical(1)=FALSE]</code> <br> Should messages of the computation steps
+be printed in the prompt along the computation?</p></dd>
 
 
 <dt>...</dt>
@@ -662,37 +664,37 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519429c3e6bd.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmps1j2BT/file63046e3631f4.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519468eedab1.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmps1j2BT/file630424acb426.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519421600732.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmps1j2BT/file63041811c531.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file51947eac7800.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmps1j2BT/file6304297a9eeb.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519429ced4c3.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmps1j2BT/file63049e76910.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519412b3e09c.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmps1j2BT/file630458de9dfc.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Euclidean distance"</span>, <span class="st">"Log distance (base 10)"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Exponential ZoI 1000m"</span>, <span class="st">"Bartlett ZoI 1000m"</span>,</span></span>

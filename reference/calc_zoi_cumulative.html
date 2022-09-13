@@ -4,10 +4,14 @@ infrastructure
 and calculates a raster (or set of rasters, in case there is more the one
 value for radius) representing the cumulative zone of influence (ZoI)
 or density of features in space. The process is done through a spatial
-filter/moving window/neighborhood analysis. The ZoI or weight matrix is
-defined from zone of influence functions, which might follow different shapes
-and cover an area according to the ZoI radius. For more details, see
-zoi_functions().
+filter/moving window/neighborhood analysis. The zones of influence
+(or weight matrices) are defined by functions that decay with the distance
+from each infrastructure feature and their rate of decay is controlled by the
+ZoI radius (radius), which defines how far the influence of an infrastructure
+feature goes. By using moving window analyses, the cumulative ZoI account for
+the sum of the influence of multiple features across space, weighted by
+the distance to these features according the the ZoI shape.
+For more details on the ZoI functions, see zoi_functions().
 The procedure might be computed in both R and GRASS GIS. In R, the
 neighborhood analysis is done with the terra::focal() function. In GRASS,
 different modules might be used for the computation: r.resamp.filter,
@@ -27,10 +31,14 @@ infrastructure
 and calculates a raster (or set of rasters, in case there is more the one
 value for radius) representing the cumulative zone of influence (ZoI)
 or density of features in space. The process is done through a spatial
-filter/moving window/neighborhood analysis. The ZoI or weight matrix is
-defined from zone of influence functions, which might follow different shapes
-and cover an area according to the ZoI radius. For more details, see
-zoi_functions().
+filter/moving window/neighborhood analysis. The zones of influence
+(or weight matrices) are defined by functions that decay with the distance
+from each infrastructure feature and their rate of decay is controlled by the
+ZoI radius (radius), which defines how far the influence of an infrastructure
+feature goes. By using moving window analyses, the cumulative ZoI account for
+the sum of the influence of multiple features across space, weighted by
+the distance to these features according the the ZoI shape.
+For more details on the ZoI functions, see zoi_functions().
 The procedure might be computed in both R and GRASS GIS. In R, the
 neighborhood analysis is done with the terra::focal() function. In GRASS,
 different modules might be used for the computation: r.resamp.filter,
@@ -97,10 +105,14 @@ infrastructure
 and calculates a raster (or set of rasters, in case there is more the one
 value for <code>radius</code>) representing the cumulative zone of influence (ZoI)
 or density of features in space. The process is done through a spatial
-filter/moving window/neighborhood analysis. The ZoI or weight matrix is
-defined from zone of influence functions, which might follow different shapes
-and cover an area according to the ZoI radius. For more details, see
-<code><a href="zoi_functions.html">zoi_functions()</a></code>.</p>
+filter/moving window/neighborhood analysis. The zones of influence
+(or weight matrices) are defined by functions that decay with the distance
+from each infrastructure feature and their rate of decay is controlled by the
+ZoI radius (<code>radius</code>), which defines how far the influence of an infrastructure
+feature goes. By using moving window analyses, the cumulative ZoI account for
+the sum of the influence of multiple features across space, weighted by
+the distance to these features according the the ZoI shape.
+For more details on the ZoI functions, see <code><a href="zoi_functions.html">zoi_functions()</a></code>.</p>
 <p>The procedure might be computed in both R and GRASS GIS. In R, the
 neighborhood analysis is done with the <code><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">terra::focal()</a></code> function. In GRASS,
 different modules might be used for the computation: <code>r.resamp.filter</code>,
@@ -126,7 +138,6 @@ location/mapset, and might be retrieved to R through the
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"circle"</span>, <span class="st">"Gauss"</span>, <span class="st">"rectangle"</span>, <span class="st">"exp_decay"</span>, <span class="st">"bartlett"</span>, <span class="st">"threshold"</span>,</span>
 <span>    <span class="st">"mfilter"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="st">"GRASS"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>  module <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r.mfilter"</span>, <span class="st">"r.resamp.filter"</span>, <span class="st">"r.neighbors"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  output_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cumulative_zoi"</span>, <span class="st">"density"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  min_intensity <span class="op">=</span> <span class="fl">0.01</span>,</span>
@@ -136,12 +147,12 @@ location/mapset, and might be retrieved to R through the
 <span>  extent_y_cut <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na.policy <span class="op">=</span> <span class="st">"omit"</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  plotit <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  output_map_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  input_as_region <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  remove_intermediate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  g_module <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r.mfilter"</span>, <span class="st">"r.resamp.filter"</span>, <span class="st">"r.neighbors"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  g_output_map_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  g_input_as_region <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  g_remove_intermediate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  g_overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -150,10 +161,10 @@ location/mapset, and might be retrieved to R through the
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p><code>[RasterLayer,SpatRaster,character]</code> <br> Raster representing
-locations of features, preferentially a binary map with 1 where the features
+locations of features, preferentially with positive values where the features
 are located (or counts of features within a pixel) and 0 elsewhere.
 Alternatively, <code>x</code> might be a binary (dummy) spatial variable representing
-the presence of linear or area features.
+the presence of linear or area features, with zero as background.
 <code>x</code> can be a <code>RasterLayer</code> from raster package or a <a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a> from
 <a href="https://rdrr.io/pkg/terra/man/terra-package.html" class="external-link">terra</a> package. If <code>where = "GRASS"</code>, <code>x</code> must be a string corresponding
 to the name of the input map within a GRASS GIS location and mapset.
@@ -161,13 +172,24 @@ Continuous or discrete raster maps with multiple categories can be binarized
 to be used as input for <code>calc_zoi_cumulative()</code> through
 <code><a href="https://ropensci.github.io/landscapetools/reference/util_binarize.html" class="external-link">landscapetools::util_binarize()</a></code> in R or <code><a href="grass_binarize.html">grass_binarize()</a></code>
 in GRASS GIS, or through common raster algebra in both
-environments.</p></dd>
+environments.</p>
+<p>Notice that, different from <code><a href="calc_zoi_nearest.html">calc_zoi_nearest()</a></code>, the input maps <code>x</code>
+must have zero as background values, instead of NA. In R it is possible to
+account for NA background values by setting <code>zeroAsNA = TRUE</code> for the computation
+of the cumulative ZoI.
+In GRASS, maps without NA as background might be changed into maps with 0 as
+background to be used in  <code>calc_zoi_cumulative()</code>
+through <a href="https://grass.osgeo.org/grass78/manuals/r.mapcalc.html" class="external-link">raster algebra</a>
+and e.g. through the use of the module
+<a href="https://grass.osgeo.org/grass80/manuals/r.null.html" class="external-link"><code>r.null</code></a>.</p></dd>
 
 
 <dt>radius</dt>
 <dd><p><code>[numeric(1)=100]</code> <br> Radius or scale of the moving
 window for neighborhood analysis, used to calculate the cumulative zoi and
-density. It can be a single value or a vector of values, in which case
+density. The radius represent
+the distance at which the ZoI vanishes or goes below a given minimum limit value
+<code>zoi_limit</code>. It can be a single value or a vector of values, in which case
 several cumulative ZoI or density maps (one for each radius) are created.
 For <code>type = "circle"</code>, the <code>radius</code> corresponds to the radius of the
 circle filter. For <code>type = "Gauss"</code> and <code>type = "exp_decay"</code>, <code>radius</code>
@@ -177,24 +199,20 @@ is the distance at which the filter reaches zero, after a linear decay
 from the central pixel. If <code>type = "rectangle"</code>, <code>radius</code>
 corresponds to half the size of the side of a square filter.
 If <code>type = "mfilter"</code>, radius is not a numeric value but a matrix itself,
-defined by the user. See description in the details.</p></dd>
+defined by the user. See description in the details and <code><a href="zoi_functions.html">zoi_functions()</a></code>
+for more details on the zone of influence function shapes and parameters.</p></dd>
 
 
 <dt>type</dt>
 <dd><p><code>[character(1)="circle"]{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter"}</code> <br>
-Type of filter used to calculate the cumulative ZoI or density. See details.</p></dd>
+Type of filter (shape of the zone of influence) used to calculate the
+cumulative ZoI or density. See details.</p></dd>
 
 
 <dt>where</dt>
 <dd><p><code>[character(1)="R"]{"R", "GRASS"}</code> <br> Where should the
 computation be done? Default is <code>"R"</code>. If <code>where = "GRASS"</code>, the R session
 must be linked to an open GRASS GIS session in a specific location and mapset.</p></dd>
-
-
-<dt>module</dt>
-<dd><p><code>[character(1)="r.mfilter"]{"r.mfilter", "r.resamp.filter", "r.neighbors"}</code> <br>
-If <code>where = "GRASS"</code>, which algorithm should be used to compute the cumulative
-ZoI? See details for their description.</p></dd>
 
 
 <dt>output_type</dt>
@@ -256,40 +274,41 @@ filtering calculations? Option for the neighborhood analysis performed
 through the <code><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">terra::focal()</a></code> function. Only used when <code>where = "R"</code>.</p></dd>
 
 
-<dt>plotit</dt>
-<dd><p><code>[logical(1)=FALSE]</code> <br> Should the outputs be plotted along
-the calculation? Only used when <code>where = "R"</code>.</p></dd>
+<dt>g_module</dt>
+<dd><p><code>[character(1)="r.mfilter"]{"r.mfilter", "r.resamp.filter", "r.neighbors"}</code> <br>
+If <code>where = "GRASS"</code>, which algorithm should be used to compute the cumulative
+ZoI? See details for their description.</p></dd>
 
 
-<dt>output_map_name</dt>
+<dt>g_output_map_name</dt>
 <dd><p><code>[character(1)=NULL]</code> <br> Name of the output map. Only
 used when <code>where = "GRASS"</code>. If <code>NULL</code> (default), a standard name is created
 based on the name of the input map <code>x</code>, the ZoI shape <code>type</code>, and the ZoI
 radius <code>radius</code>.</p></dd>
 
 
-<dt>input_as_region</dt>
+<dt>g_input_as_region</dt>
 <dd><p><code>[logical(1)=TRUE]</code> <br> Should the input map <code>x</code> be
 used to redefine the working GRASS region before cumulative ZoI calculation?
 If <code>TRUE</code>, <code>x</code> is used to define the region with <code>g.region</code>. If <code>FALSE</code>,
 the region previously defined in the GRASS GIS session is used for computation.</p></dd>
 
 
-<dt>remove_intermediate</dt>
+<dt>g_remove_intermediate</dt>
 <dd><p><code>[logical(1)=TRUE]</code> <br> Should the intermediate
 maps created for computing the output map be excluded in the end of the
 process? Only used when <code>where = "GRASS"</code>.</p></dd>
 
 
-<dt>overwrite</dt>
+<dt>g_overwrite</dt>
 <dd><p><code>[logical(1)=FALSE]</code> <br> If the a map already exists with the
-name <code>output_map_name</code> in the working GRASS GIS location and mapset, should
+name <code>g_output_map_name</code> in the working GRASS GIS location and mapset, should
 it be overwritten? Only used when <code>where = "GRASS"</code>.</p></dd>
 
 
-<dt>quiet</dt>
-<dd><p><code>[logical(1)=TRUE]</code> <br> Should GRASS GIS messages be ommited
-from the prompt along the computation? Only used when <code>where = "GRASS"</code>.</p></dd>
+<dt>verbose</dt>
+<dd><p><code>[logical(1)=FALSE]</code> <br> Should messages of the computation steps
+be printed in the prompt along the computation?</p></dd>
 
 
 <dt>...</dt>
@@ -370,7 +389,7 @@ correspondent to the original functions the matrix will be.</p>
 
 <p>In GRASS GIS, different modules might be used for the computation,
 <code>r.resamp.filter</code>, <code>r.mfilter</code>, or <code>r.neighbors</code>. The module to be used is
-controlled by the parameter <code>module</code>. These algorithms provide different
+controlled by the parameter <code>g_module</code>. These algorithms provide different
 capabilities and flexibility.</p><ul><li><p><code>r.resamp.filter</code> seems to be the fastest one
 in most cases, but has less flexibility in the choice of the zone of influence
 function. The algorithm calculates the weighted density of features, which
@@ -553,7 +572,7 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file5194656f29cb.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmps1j2BT/file630449821fa.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lightyellow"</span>, <span class="st">"black"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Binarized map of cabins"</span><span class="op">)</span></span></span>
@@ -568,73 +587,39 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                                where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape exp_decay..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_exp_decay1000&gt;</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span><span class="co"># Bartlett decay</span></span></span>
 <span class="r-in"><span><span class="va">barlett_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                    type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                                    where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                    overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape bartlett..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_bartlett1000&gt;</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span><span class="co"># Gaussian decay</span></span></span>
 <span class="r-in"><span><span class="va">gauss_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape Gauss..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_Gauss1000&gt;</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Threshold decay (circle, step)</span></span></span>
 <span class="r-in"><span><span class="va">threshold_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                      type <span class="op">=</span> <span class="st">"threshold"</span>,</span></span>
 <span class="r-in"><span>                                      where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                      overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape threshold..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_threshold1000&gt;</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">all_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">exp_name</span>, <span class="va">barlett_name</span>, <span class="va">gauss_name</span>, <span class="va">threshold_name</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cabins_example_bin_zoi_cumulative_exp_decay1000"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "cabins_example_bin_zoi_cumulative_bartlett1000" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "cabins_example_bin_zoi_cumulative_Gauss1000"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "cabins_example_bin_zoi_cumulative_threshold1000"</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'exp_name' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
 <span class="r-in"><span><span class="va">cabins_zoi_cumulative</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">all_names</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file51943c8a6220.grd&gt; created.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file51941c498448.grd&gt; created.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file51946627f744.grd&gt; created.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519417f98a4c.grd&gt; created.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::read_RAST(all_names, return_format = "terra"):</span> object 'all_names' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Exponential decay 1000m"</span>, <span class="st">"Bartlett decay 1000m"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Gaussian decay 1000m"</span>, <span class="st">"Threshold decay 1000m"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_zoi_cumulative</span>, main <span class="op">=</span> <span class="va">title_plot</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="calc_zoi_cumulative-9.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_zoi_cumulative' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># calculate density vs cumulative ZoI</span></span></span>
@@ -643,21 +628,14 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"exp_decay"</span>, output_type <span class="op">=</span> <span class="st">"density"</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating density for 1000, shape exp_decay..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_density_exp_decay1000&gt;</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cabins_density</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">exp_name_d</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file5194b9b4a1c.grd&gt; created.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::read_RAST(exp_name_d, return_format = "terra"):</span> object 'exp_name_d' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_zoi_cumulative</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">cabins_density</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>            main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZoI"</span>, <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="calc_zoi_cumulative-10.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_zoi_cumulative' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># Using 'r.resamp.filter' algorithm</span></span></span>
@@ -670,17 +648,10 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                             where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                             module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
 <span class="r-in"><span>                                             overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating density for 1000, shape box..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'filt' not found</span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">rectangle_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Rectangle ZoI 1000m"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519419245afa.grd&gt; created.</span>
-<span class="r-plt img"><img src="calc_zoi_cumulative-11.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'rectangle_resamp_filt' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># bartlett</span></span></span>
 <span class="r-in"><span><span class="va">bartlett_resamp_filt</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
@@ -690,20 +661,10 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                            where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                            module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
 <span class="r-in"><span>                                            overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZoI for 1000, shape bartlett..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Rescaling from density to cumulative ZoI..."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cabins_example_bin_zoi_cumulative_bartlett1000 = cabins_example_bin_zoi_cumulative_bartlett1000_temp/0.0095562598354124"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_bin_zoi_cumulative_bartlett1000_temp&gt;</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (module = "r.resamp.filter", overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Bartlett ZoI 1000m"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpXPIaXj/file519412994004.grd&gt; created.</span>
-<span class="r-plt img"><img src="calc_zoi_cumulative-12.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'bartlett_resamp_filt' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Gaussian - to be implemented!</span></span></span>
 <span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -721,6 +682,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="co"># remove rasters created</span></span></span>
 <span class="r-in"><span><span class="va">to_remove_rast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">all_names</span>, <span class="va">exp_name_d</span>,</span></span>
 <span class="r-in"><span>                           <span class="va">rectangle_resamp_filt</span>, <span class="va">bartlett_resamp_filt</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'unique': object 'all_names' not found</span>
 <span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")</span></span></span>
 <span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")</span></span></span>
 </code></pre></div>

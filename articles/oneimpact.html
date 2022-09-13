@@ -79,10 +79,10 @@
 <p>Anthropogenic disturbance often takes place in landscapes already affected by Infrastructure development and land use change, leading to cumulative impacts on biodiversity. Typically, the impact of a given type of infrastructure is determined by computing the distance to the nearest feature only, ignoring potential cumulative impacts of multiple features, which can lead to severe underestimations. The <code>oneimpact</code> package is a collection of tools and functions intended to aid the estimation of cumulative impacts in ecological studies and environmental impact assessments. In version 0.1.0, its main functions are related to the calculation of zone of influence (ZoI) metrics based both on the nearest influence only and the cumulative influence of multiple features of a given type of infrastructure. By calculating the ZoI of the nearest feature and the cumulative ZoI of multiple features using different ZoI shapes and radii, it is possible to use these different metrics as covariates in ecological models and evaluate how strongly different infrastructure types affect ecological processes, how their impact spreads in space, how far they reach, and if the impact of multiple features accumulate. The approach is described in details in Niebuhr et al. (<em>submitted</em>) and exemplified in this document.</p>
 <p>The discussion around the impacts of anthropogenic disturbance and their zone of influence is closely linked to the studies on habitat amount and fragmentation and the <em>scale of effect</em> of spatial variables on species-habitat relationships, widely explored in the landscape ecology literature (e.g. Miguet et al., 2016; Huais, 2018). For all practical purposes, estimating the ZoI of anthropogenic disturbances is similar to estimating their scale of effect while also taking into account the shape of their influence (i.e. how they are spatially weighted; Miguet et al., 2017).</p>
 <p>Here we give an overview of the functions in <code>oneimpact</code>, define and illustrate the zone of influence functions, show how to use the main package functions, and provide an example of how to use this approach to annotate data for statistical analysis.</p>
-<p>To install the <code>oneimpact</code> package, it is possible to use the <code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">devtools::install_github()</a></code> function:</p>
+<p>To install the <code>oneimpact</code> package, it is possible to use the <code>devtools::install_github()</code> function:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"NINAnor/oneimpact"</span>, ref <span class="op">=</span> <span class="st">"HEAD"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"NINAnor/oneimpact"</span>, ref <span class="op">=</span> <span class="st">"HEAD"</span><span class="op">)</span></span></code></pre></div>
 <p>Once installed, we now load the <code>oneimpact</code> package and other packages used in this vignette.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span>
@@ -478,26 +478,26 @@ ZoI of the nearest cabin and cumulative ZoI of multiple cabins for an exponentia
 <span><span class="co"># show annotated data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bio_data_annotated</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id  z        x       y zoi_nearest_exp_decay500 zoi_nearest_exp_decay1000</span></span>
-<span><span class="co">#&gt; 1  1 15 171065.0 6650720              0.004705944                0.06859989</span></span>
-<span><span class="co">#&gt; 2  2 14 167603.5 6626683              0.002220287                0.04711992</span></span>
-<span><span class="co">#&gt; 3  3  9 180585.1 6642674              0.005981347                0.07733917</span></span>
-<span><span class="co">#&gt; 4  4  7 168270.9 6626799              0.003990426                0.06316982</span></span>
-<span><span class="co">#&gt; 5  5  4 192767.6 6655323              0.007149676                0.08455576</span></span>
-<span><span class="co">#&gt; 6  6  3 190188.4 6645511              0.021570920                0.14687042</span></span>
+<span><span class="co">#&gt; 1  1 11 166169.8 6656667               0.16572270                 0.4070905</span></span>
+<span><span class="co">#&gt; 2  2  8 192068.4 6653239               0.09102821                 0.3017088</span></span>
+<span><span class="co">#&gt; 3  3  6 166500.7 6650557               0.00157578                 0.0396961</span></span>
+<span><span class="co">#&gt; 4  4 10 148992.5 6658456               0.03373282                 0.1836650</span></span>
+<span><span class="co">#&gt; 5  5 14 189565.2 6642295               0.08455576                 0.2907847</span></span>
+<span><span class="co">#&gt; 6  6 14 190904.1 6623350               0.08455576                 0.2907847</span></span>
 <span><span class="co">#&gt;   zoi_nearest_exp_decay1500 zoi_cumulative_exp_decay500</span></span>
-<span><span class="co">#&gt; 1                 0.1675775                 0.004705944</span></span>
-<span><span class="co">#&gt; 2                 0.1304577                 0.000000000</span></span>
-<span><span class="co">#&gt; 3                 0.1815236                 0.005981347</span></span>
-<span><span class="co">#&gt; 4                 0.1586134                 0.003990426</span></span>
-<span><span class="co">#&gt; 5                 0.1926469                 0.028105402</span></span>
-<span><span class="co">#&gt; 6                 0.2783703                 0.035926034</span></span>
+<span><span class="co">#&gt; 1                 0.5492803                  0.44510596</span></span>
+<span><span class="co">#&gt; 2                 0.4498406                  0.09102821</span></span>
+<span><span class="co">#&gt; 3                 0.1163675                  0.00000000</span></span>
+<span><span class="co">#&gt; 4                 0.3231103                  0.06461843</span></span>
+<span><span class="co">#&gt; 5                 0.4389156                  0.20360150</span></span>
+<span><span class="co">#&gt; 6                 0.4389156                  0.24367742</span></span>
 <span><span class="co">#&gt;   zoi_cumulative_exp_decay1000 zoi_cumulative_exp_decay1500</span></span>
-<span><span class="co">#&gt; 1                   0.13273806                    0.5423492</span></span>
-<span><span class="co">#&gt; 2                   0.07812371                    0.3391487</span></span>
-<span><span class="co">#&gt; 3                   0.07733917                    0.1876144</span></span>
-<span><span class="co">#&gt; 4                   0.08480047                    0.3352618</span></span>
-<span><span class="co">#&gt; 5                   0.59669363                    1.8718118</span></span>
-<span><span class="co">#&gt; 6                   0.69210981                    2.5845671</span></span></code></pre></div>
+<span><span class="co">#&gt; 1                    2.3256175                    5.3574954</span></span>
+<span><span class="co">#&gt; 2                    0.7233248                    2.6067750</span></span>
+<span><span class="co">#&gt; 3                    0.1121960                    0.6168406</span></span>
+<span><span class="co">#&gt; 4                    0.5701666                    1.2998123</span></span>
+<span><span class="co">#&gt; 5                    3.1369331                   12.9274576</span></span>
+<span><span class="co">#&gt; 6                    2.0216657                    5.1284136</span></span></code></pre></div>
 <p>From this point, biological data can also be annotated with the ZoI of other disturbance variables and with other environmental covariates and used as input for the estimation of the effect sizes <span class="math inline">\(\beta\)</span> and evaluation of the cumulative effects for different types of infrastructure through statistical models (Fig. D) Statistical analyses can make use of model selection (Burnham &amp; Anderson, 2002; Jackson &amp; Fahrig, 2015; Huais, 2018), penalized regression (Lee et al., 2020), or machine learning approaches, for example (James et al., 2021). Such statistical modeling procedures are beyond the scope of <code>oneimpact</code>.</p>
 </div>
 <div class="section level2">
