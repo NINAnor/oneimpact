@@ -15,12 +15,6 @@ reference:
   desc: "Creating spatial filters to compute a meaningful zone of influence"
   contents:
   - starts_with("filter")
-- title: "Model fitting"
-  desc: >
-    Functions to fit statistical models and estimate cumulative impacts and
-    zones of influence
-  contents:
-  - starts_with("multifit")
 - title: "Visualization"
   desc: >
     Functions to help interpreting parameters and visualizing
