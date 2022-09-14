@@ -2,7 +2,7 @@
 % Please edit documentation in R/data.R
 \name{cabins.gpkg}
 \alias{cabins.gpkg}
-\title{Cabins vector data}
+\title{Cabins vector data for the reindeer area}
 \format{
 A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
 file presents the following columns:

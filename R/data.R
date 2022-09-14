@@ -14,7 +14,7 @@
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N.
 NULL
 
-#' Cabins vector data in the sample area
+#' Cabins vector data for the sample area
 #'
 #' Dataset containing the location of tourist private cabins is Southern
 #' Norway, within the sample area for the `oneimpact` package.
@@ -42,7 +42,7 @@ NULL
 #' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
 
-#' Cabin presence raster data
+#' Cabin presence raster data for the sample area
 #'
 #' Raster data indicating pixels with presence of tourist private cabins in Norway.
 #' It corresponds to some specific building types (object_type = "Bygning",
@@ -66,7 +66,7 @@ NULL
 #' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
 
-#' Cabin count raster data in the sample area
+#' Cabin count raster data for the sample area
 #'
 #' Raster data indicating the number of tourist private cabins per pixel in Norway.
 #' It corresponds to some specific building types (object_type = "Bygning",
@@ -107,7 +107,7 @@ NULL
 #' populations. Ecography, 38(7), 659–669. \url{https://doi.org/10.1111/ecog.01075}
 NULL
 
-#' Cabins vector data
+#' Cabins vector data for the reindeer area
 #'
 #' Dataset containing the location of tourist private cabins is Southern
 #' Norway, within the reindeer management area of Setesdal Austhei.
@@ -134,7 +134,7 @@ NULL
 #' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
 
-#' Public roads vector data
+#' Public roads vector data for the reindeer area
 #'
 #' Dataset containing the location of large, public roads is Southern
 #' Norway, within the reindeer management area of Setesdal Austhei.
@@ -160,7 +160,7 @@ NULL
 #' @source \url{https://kartkatalog.geonorge.no/metadata/elveg-20/77944f7e-3d75-4f6d-ae04-c528cc72e8f6}
 NULL
 
-#' Private roads vector data
+#' Private roads vector data for the reindeer area
 #'
 #' Dataset containing the location of small, private roads is Southern
 #' Norway, within the reindeer management area of Setesdal Austhei.

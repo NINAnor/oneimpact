@@ -2,7 +2,7 @@
 % Please edit documentation in R/data.R
 \name{roads_private.gpkg}
 \alias{roads_private.gpkg}
-\title{Private roads vector data}
+\title{Private roads vector data for the reindeer area}
 \format{
 A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
 file presents the following columns:
@@ -26,7 +26,5 @@ Retrieved from the Norwegian road dataset Elveg 1.0.
 \examples{
 (s <- system.file("vector/roads_private.gpkg", package = "oneimpact"))
 sf::st_read(s)
-# or
-terra::vect(s)
 
 }

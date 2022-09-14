@@ -2,7 +2,7 @@
 % Please edit documentation in R/data.R
 \name{cabins_sample.tif}
 \alias{cabins_sample.tif}
-\title{Cabin presence raster data in the sample area}
+\title{Cabin presence raster data for the sample area}
 \format{
 A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 \itemize{
