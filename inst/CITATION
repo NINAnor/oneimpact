@@ -20,7 +20,7 @@ citEntry(
   pages    = {},
   url      = {"https://doi.org/10.1101/2022.06.14.495994"},
   textVersion = paste("Niebuhr, B. B., Moorter, B. V., Stien, A., Tveraa, T., Strand, O., Langeland, K.,",
-                      "Sandstrom, P., Alam, M., Skarin, A., & Panzacchi, M. (2022). Estimating the cumulative",
+                      "Sandström, P., Alam, M., Skarin, A., & Panzacchi, M. (2022). Estimating the cumulative",
                       "impact and zone of influence of anthropogenic infrastructure on biodiversity.",
                       "https://www.biorxiv.org/content/10.1101/2022.06.14.495994v1"
   )
