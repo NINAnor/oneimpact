@@ -34,9 +34,9 @@ rgrass7::execGRASS("g.region", parameters = list(vector = "region_test_influence
 use_sf()
 # study_area <- rgrass7::readVECT(c("region_test_oneimpact_pkg"))
 # save externally
-sf::st_write(study_area, dsn = "inst/vector/study_area.gpkg", delete_dsn = TRUE)
+sf::st_write(study_area, dsn = "inst/vector/sample_area.gpkg", delete_dsn = TRUE)
 # re-open
-study_area <- sf::st_read("inst/vector/study_area.gpkg")
+study_area <- sf::st_read("inst/vector/sample_area.gpkg")
 study_area
 
 # save
@@ -56,11 +56,11 @@ rgrass7::execGRASS("v.select", ainput = cabins_vect_name,
 
 # get to R
 cabins_vect <- rgrass7::readVECT("private_cabins_vect") %>%
-  dplyr::select(cat, byggtyp_nbr, kommune, value)
+  dplyr::select(cat, buildtype = byggtyp_nbr, city = kommune, value)
 cabins_vect
 
 # save externally
-sf::st_write(cabins_vect, dsn = "inst/vector/cabins_vect.gpkg", delete_dsn = TRUE)
+sf::st_write(cabins_vect, dsn = "inst/vector/cabins_sample.gpkg", delete_dsn = TRUE)
 
 #------------------
 # Get cabins --- re do here based on the rasterization of the vector above
@@ -73,19 +73,19 @@ names(cabins) <- "cabins"
 terra::plot(cabins, col = "black")
 
 # save externally
-terra::writeRaster(cabins, filename = "inst/raster/cabins.tif")
+terra::writeRaster(cabins, filename = "inst/raster/cabins_sample.tif")
 # re-open
-cabins <- terra::rast("inst/raster/cabins.tif")
+cabins <- terra::rast("inst/raster/cabins_sample.tif")
 cabins
 
 # save
 # usethis::use_data(cabins, overwrite = TRUE)
 
 # cabins count
-(s <- system.file("vector/cabins_vect.gpkg", package = "oneimpact"))
+(s <- system.file("vector/cabins_sample.gpkg", package = "oneimpact"))
 v <- terra::vect(s)
 
-(f <- system.file("raster/cabins.tif", package = "oneimpact"))
+(f <- system.file("raster/cabins_sample.tif", package = "oneimpact"))
 r <- terra::rast(f)
 
 cabins_count <- terra::rasterize(v, r, fun = length)
@@ -93,7 +93,7 @@ cabins_count[is.na(cabins_count)] <- 0
 plot(cabins_count)
 
 # save externally
-terra::writeRaster(cabins_count, filename = "inst/raster/cabins_count.tif")
+terra::writeRaster(cabins_count, filename = "inst/raster/cabins_sample_count.tif")
 # re-open
-cabins_count <- terra::rast("inst/raster/cabins_count.tif")
+cabins_count <- terra::rast("inst/raster/cabins_sample_count.tif")
 cabins_count
