@@ -172,7 +172,7 @@ threshold_decay(10, radius = 10) # at or beyond the radius
 ```
 
 To visualize the function shape in 1 dimension space, we make use of the function
-`plot_zoi1d()`. This plot assumes the source of disturbance is located at $x = 0$
+`plot_zoi1d()`. This plot assumes the source of disturbance is located at `x = 0`
 and the distance to it increases for both sides in the x axis:
 
 ```{r plot_threshold, message=FALSE, error=FALSE, warning=FALSE, fig.cap="Illustration of a threshold decay ZoI with ZoI radius = 10."}
@@ -329,14 +329,14 @@ than 1 where the ZoI of different features overlap.
 To calculate the ZoI metrics for 2 dimensional raster objects, we use the functions
 `calc_zoi_nearest()` and `calc_zoi_cumulative()`. To give an example, we present a 
 data set with the
-location of private cabins in Norway, subset for a small study region in Southern Norway.
+location of private cabins in Norway, subset for a small sample region in Southern Norway.
 The data is mapped as points in vector format; more information about it might be
-found using the command `help(cabins_vect.gpkg)`. We read the vector file using the
+found using the command `help(cabins_sample.gpkg)`. We read the vector file using the
 package `terra`:
 
 ```{r read_vect, fig.cap="Location of private cabins in a study area in Souther Norway."}
 # file path
-s <- system.file("vector/cabins_vect.gpkg", package = "oneimpact")
+s <- system.file("vector/cabins_sample.gpkg", package = "oneimpact")
 # read file
 cabins_vect <- terra::vect(s)
 # check
@@ -354,12 +354,12 @@ located and 0 (or `NA`) elsewhere.
 For point representation of infrastructure, though, it might be more interesting to
 count the number of features per pixel. To create a raster with the number of
 cabins per pixel, we use the function
-`terra::rasterize()` with parameter $\verb|fun = length|$. We load another raster with
+`terra::rasterize()` with parameter `fun = length`. We load another raster with
 100 m resolution for the area to use it as a grid for the rasterization process.
 
 ```{r rasterize, fig.cap="Raster with number of private cabins per pixel, used as input for calculating the ZoI metrics."}
 # load grid
-s2 <- system.file("raster/cabins.tif", package = "oneimpact")
+s2 <- system.file("raster/cabins_sample.tif", package = "oneimpact")
 grid <- terra::rast(s2)
 # rasterize
 cabins_rast <- terra::rasterize(cabins_vect, grid, fun = length)
@@ -379,7 +379,7 @@ This map might be used as it is as input for `calc_zoi_nearest()`. For this func
 is it important that the background of the input raster map (pixels with no cabins)
 is `NA` (no-data). We calculate the ZoI of the nearest feature using a Gaussian
 shaped ZoI with radius = 1000 m. By default, the computation is done in R (parameter
-$\verb|where = "R"|$).
+`where = "R"`).
 
 ```{r calc_zoi_near, fig.cap="Zone of influence of the nearest feature for private cabins, using a Gaussian ZoI with radius = 1000 m."}
 # calculate ZoI
@@ -390,7 +390,7 @@ plot(cabins_nearest)
 
 The shape of the ZoI might be changed through the parameter `type`, using the
 functions presented above. This parameter might be also set to 
-$\verb|type = "euclidean"|$
+`type = "euclidean"`
 for only the computation of the Euclidean distance to the nearest feature or to
 `"log"` or `"sqrt"` for the log- or sqrt-transformed distance from the nearest
 feature.
@@ -399,7 +399,7 @@ feature.
 
 Differently from `calc_zoi_nearest()`, the input raster map for the `calc_zoi_cumulative()`
 should present zeros as the background (pixels with no cabins). In R, background `NA`
-values might be checked and reclassified to zero using the $\verb|zeroAsNA = TRUE|$ parameter,
+values might be checked and reclassified to zero using the `zeroAsNA = TRUE` parameter,
 but in GRASS GIS this is not implemented In this case, the easiest procedure 
 is to prepare the input
 raster map outside GRASS or make use of the module `r.null` for managing
@@ -419,16 +419,15 @@ Notice that the output map differs considerably from the ZoI of the nearest
 feature only. Here the shape of the ZoI might also be changed through the
 parameter `type`, using the functions presented above. Alternatively, a customized
 weight matrix might be defined by the user and used as the `radius` parameter,
-in case which the user must set $\verb|type = "mfilter"|$. Other functions to define
+in case which the user must set `type = "mfilter"`. Other functions to define
 weight matrices might be set e.g. through `terra::focalMat()` (Hijmans, 2022) or
 `smoothie::kernel2dmeitsjer()` (Gilleland, 2013) functions. Notice, however, that these
 functions are parameterized differently, with no reference to the ZoI radius as
 the ones defined in `oneimpact`.
 
 For `calc_zoi_cumulative()`, the user might choose between computing the 
-cumulative ZoI metric when
-$\verb|output_type = "cumulative_zoi"|$
-(default), or the density of features if $\verb|output_type = "density"|$. The cumulative
+cumulative ZoI metric when `output_type = "cumulative_zoi"`
+(default), or the density of features if `output_type = "density"`. The cumulative
 ZoI is the (distance weighted) number of features per unit of space, and
 might assumes values much higher than one when there are features located closer than the
 ZoI (see Figs. D6 and D10). The calculation of the density of features, on the other hand,
@@ -461,7 +460,7 @@ Here we simulate a data set of sampling points and a theoretical random biologic
 response variable to show the process of calculation of ZoI variables and the annotation
 of the biological data.
 
-First we create in the study area $n = 40$ random locations representing sampling points
+First we create in the study area `n = 40` random locations representing sampling points
 for a given response variable `z` (e.g. species richness or abundance). We sample
 the locations using the `set_points()` function from the package `oneimpact` and 
 simulate the response variable
