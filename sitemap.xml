@@ -16,13 +16,16 @@
     <loc>https://ninanor.github.io/oneimpact/index.html</loc>
   </url>
   <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/cabins.tif.html</loc>
+    <loc>https://ninanor.github.io/oneimpact/reference/cabins.gpkg.html</loc>
   </url>
   <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/cabins_count.tif.html</loc>
+    <loc>https://ninanor.github.io/oneimpact/reference/cabins_sample.gpkg.html</loc>
   </url>
   <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/cabins_vect.gpkg.html</loc>
+    <loc>https://ninanor.github.io/oneimpact/reference/cabins_sample.tif.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/cabins_sample_count.tif.html</loc>
   </url>
   <url>
     <loc>https://ninanor.github.io/oneimpact/reference/calc_zoi.html</loc>
@@ -61,7 +64,22 @@
     <loc>https://ninanor.github.io/oneimpact/reference/raster_rescale.html</loc>
   </url>
   <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/reindeer.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/reindeer_area.gpkg.html</loc>
+  </url>
+  <url>
     <loc>https://ninanor.github.io/oneimpact/reference/rescale_coefficients.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/roads_private.gpkg.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/roads_public.gpkg.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/sample_area.gpkg.html</loc>
   </url>
   <url>
     <loc>https://ninanor.github.io/oneimpact/reference/set_points.html</loc>
@@ -71,9 +89,6 @@
   </url>
   <url>
     <loc>https://ninanor.github.io/oneimpact/reference/set_points_sample.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/study_area.gpkg.html</loc>
   </url>
   <url>
     <loc>https://ninanor.github.io/oneimpact/reference/zoi_functions.html</loc>

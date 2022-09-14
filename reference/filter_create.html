@@ -302,10 +302,12 @@ GRASS GIS uses of filters in neighborhood analysis.</p></div>
 <span class="r-in"><span><span class="co"># load example - raster of tourist private cabins</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/cabins.tif"</span>, package<span class="op">=</span><span class="st">"oneimpact"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [rast] filename is empty. Provide a valid filename</span>
 <span class="r-in"><span><span class="co"># terra::ext(r)[1:2] %&gt;% diff</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># set value zero where there are no cabins</span></span></span>
 <span class="r-in"><span><span class="va">r</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in r[is.na(r)] &lt;- 0:</span> object 'r' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create exponential filter</span></span></span>
 <span class="r-in"><span><span class="va">filt_exp1000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
@@ -313,56 +315,66 @@ GRASS GIS uses of filters in neighborhood analysis.</p></div>
 <span class="r-in"><span>                              type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                              max_dist <span class="op">=</span> <span class="fl">5000</span>,</span></span>
 <span class="r-in"><span>                              normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in class(r) %in% c("RasterLayer", "RasterBrick", "RasterStack",     "SpatRaster"):</span> object 'r' not found</span>
 <span class="r-in"><span><span class="va">filt_exp3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>,</span></span>
 <span class="r-in"><span>                              zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                              type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                              max_dist <span class="op">=</span> <span class="fl">5000</span>,</span></span>
 <span class="r-in"><span>                              normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in class(r) %in% c("RasterLayer", "RasterBrick", "RasterStack",     "SpatRaster"):</span> object 'r' not found</span>
 <span class="r-in"><span><span class="co"># use exponential filter</span></span></span>
 <span class="r-in"><span><span class="va">neigh_r_exp1000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_exp1000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
 <span class="r-in"><span>                                na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'focal': object 'r' not found</span>
 <span class="r-in"><span><span class="va">neigh_r_exp3000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_exp3000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
 <span class="r-in"><span>                                na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'focal': object 'r' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">neigh_r_exp1000</span>, <span class="va">neigh_r_exp3000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"original"</span>, <span class="st">"exp filter 1000m"</span>, <span class="st">"exp filter 3000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="filter_create-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'r' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create step filter</span></span></span>
 <span class="r-in"><span><span class="va">filt_step3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>, type <span class="op">=</span> <span class="st">"step"</span>,</span></span>
 <span class="r-in"><span>                               normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in class(r) %in% c("RasterLayer", "RasterBrick", "RasterStack",     "SpatRaster"):</span> object 'r' not found</span>
 <span class="r-in"><span><span class="co"># use step filter</span></span></span>
 <span class="r-in"><span><span class="va">neigh_r_step3000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_step3000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
 <span class="r-in"><span>                                 na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'focal': object 'r' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">neigh_r_exp3000</span>, <span class="va">neigh_r_step3000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp filter 3000m"</span>, <span class="st">"step filter 3000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="filter_create-2.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'neigh_r_exp3000' not found</span>
 <span class="r-in"><span><span class="co"># plot(app(c(neigh_r_exp3000, neigh_r_step3000), "diff"))</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create bartlett (linear/tent decay) filter</span></span></span>
 <span class="r-in"><span><span class="va">filt_bart3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>, type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                               normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in class(r) %in% c("RasterLayer", "RasterBrick", "RasterStack",     "SpatRaster"):</span> object 'r' not found</span>
 <span class="r-in"><span><span class="co"># use bartlett filter</span></span></span>
 <span class="r-in"><span><span class="va">neigh_r_bart3000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_bart3000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
 <span class="r-in"><span>                                 na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'focal': object 'r' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create Gaussian filter - parameterized with zoi</span></span></span>
 <span class="r-in"><span><span class="va">filt_gauss3000</span> <span class="op">&lt;-</span> <span class="fu">filter_create</span><span class="op">(</span><span class="va">r</span>, radius <span class="op">=</span> <span class="fl">3000</span>,</span></span>
 <span class="r-in"><span>                                type <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
 <span class="r-in"><span>                                zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in class(r) %in% c("RasterLayer", "RasterBrick", "RasterStack",     "SpatRaster"):</span> object 'r' not found</span>
 <span class="r-in"><span><span class="co"># use Gaussian filter</span></span></span>
 <span class="r-in"><span><span class="va">neigh_r_gauss3000</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">focal</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">filt_gauss3000</span>, fun <span class="op">=</span> <span class="st">"sum"</span>,</span></span>
 <span class="r-in"><span>                                  na.policy <span class="op">=</span> <span class="st">"omit"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'focal': object 'r' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">neigh_r_exp3000</span>, <span class="va">neigh_r_step3000</span>, <span class="va">neigh_r_bart3000</span>, <span class="va">neigh_r_gauss3000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp filter 3000m"</span>, <span class="st">"step filter 3000m"</span>,</span></span>
 <span class="r-in"><span>              <span class="st">"Bartlett filter 3000m"</span>, <span class="st">"Gaussian filter 3000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="filter_create-3.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'neigh_r_exp3000' not found</span>
 <span class="r-in"><span><span class="co"># plot(app(c(neigh_r_exp3000, neigh_r_bart3000), "diff"))</span></span></span>
 <span class="r-in"><span><span class="co"># plot(app(c(neigh_r_step3000, neigh_r_bart3000), "diff"))</span></span></span>
 <span class="r-in"><span></span></span>

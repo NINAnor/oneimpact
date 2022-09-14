@@ -193,7 +193,7 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="fu"><a href="../reference/zoi_functions.html">threshold_decay</a></span><span class="op">(</span><span class="fl">10</span>, radius <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># at or beyond the radius</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
-<p>To visualize the function shape in 1 dimension space, we make use of the function <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>. This plot assumes the source of disturbance is located at <span class="math inline">\(x = 0\)</span> and the distance to it increases for both sides in the x axis:</p>
+<p>To visualize the function shape in 1 dimension space, we make use of the function <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>. This plot assumes the source of disturbance is located at <code>x = 0</code> and the distance to it increases for both sides in the x axis:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># threshold ZoI with radius = 10</span></span>
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">threshold_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -330,10 +330,10 @@ Illustration of a Gaussian decay ZoI with ZoI radius = 10 and ZoI limit = 0.05.
 <div class="section level3">
 <h3 id="define-the-input-raster-map">Define the input raster map<a class="anchor" aria-label="anchor" href="#define-the-input-raster-map"></a>
 </h3>
-<p>To calculate the ZoI metrics for 2 dimensional raster objects, we use the functions <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code> and <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>. To give an example, we present a data set with the location of private cabins in Norway, subset for a small study region in Southern Norway. The data is mapped as points in vector format; more information about it might be found using the command <code><a href="../reference/cabins_vect.gpkg.html">help(cabins_vect.gpkg)</a></code>. We read the vector file using the package <code>terra</code>:</p>
+<p>To calculate the ZoI metrics for 2 dimensional raster objects, we use the functions <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code> and <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>. To give an example, we present a data set with the location of private cabins in Norway, subset for a small sample region in Southern Norway. The data is mapped as points in vector format; more information about it might be found using the command <code><a href="../reference/cabins_sample.gpkg.html">help(cabins_sample.gpkg)</a></code>. We read the vector file using the package <code>terra</code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># file path</span></span>
-<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/cabins_vect.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/cabins_sample.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
 <span><span class="co"># read file</span></span>
 <span><span class="va">cabins_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
 <span><span class="co"># check</span></span>
@@ -342,13 +342,13 @@ Illustration of a Gaussian decay ZoI with ZoI radius = 10 and ZoI limit = 0.05.
 <span><span class="co">#&gt;  geometry    : points </span></span>
 <span><span class="co">#&gt;  dimensions  : 6875, 4  (geometries, attributes)</span></span>
 <span><span class="co">#&gt;  extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt;  source      : cabins_vect.gpkg</span></span>
+<span><span class="co">#&gt;  source      : cabins_sample.gpkg</span></span>
 <span><span class="co">#&gt;  coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833) </span></span>
-<span><span class="co">#&gt;  names       :    cat byggtyp_nbr kommune value</span></span>
-<span><span class="co">#&gt;  type        :  &lt;int&gt;       &lt;chr&gt;   &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  values      : 131621         161     604     1</span></span>
-<span><span class="co">#&gt;                131623         161     604     1</span></span>
-<span><span class="co">#&gt;                131627         161     604     1</span></span>
+<span><span class="co">#&gt;  names       :    cat buildtype  city value</span></span>
+<span><span class="co">#&gt;  type        :  &lt;int&gt;     &lt;chr&gt; &lt;int&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt;  values      : 131621       161   604     1</span></span>
+<span><span class="co">#&gt;                131623       161   604     1</span></span>
+<span><span class="co">#&gt;                131627       161   604     1</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -356,10 +356,10 @@ Illustration of a Gaussian decay ZoI with ZoI radius = 10 and ZoI limit = 0.05.
 Location of private cabins in a study area in Souther Norway.
 </p>
 </div>
-<p>If the input map is already in raster format, it can be used directly in the <code>calc_zoi_*()</code> functions. In our case, since it is in vector format, it must be rasterized first. For many types of anthropogenic infrastructure or disturbance which are represented by lines or polygons (e.g. roads, power lines, areas of deforestation), it is enough to create a binary raster as a dummy variable with value 1 where the disturbance is located and 0 (or <code>NA</code>) elsewhere. For point representation of infrastructure, though, it might be more interesting to count the number of features per pixel. To create a raster with the number of cabins per pixel, we use the function <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> with parameter <span class="math inline">\(\verb|fun = length|\)</span>. We load another raster with 100 m resolution for the area to use it as a grid for the rasterization process.</p>
+<p>If the input map is already in raster format, it can be used directly in the <code>calc_zoi_*()</code> functions. In our case, since it is in vector format, it must be rasterized first. For many types of anthropogenic infrastructure or disturbance which are represented by lines or polygons (e.g. roads, power lines, areas of deforestation), it is enough to create a binary raster as a dummy variable with value 1 where the disturbance is located and 0 (or <code>NA</code>) elsewhere. For point representation of infrastructure, though, it might be more interesting to count the number of features per pixel. To create a raster with the number of cabins per pixel, we use the function <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> with parameter <code>fun = length</code>. We load another raster with 100 m resolution for the area to use it as a grid for the rasterization process.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load grid</span></span>
-<span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
+<span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/cabins_sample.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
 <span><span class="va">grid</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span>
 <span><span class="co"># rasterize</span></span>
 <span><span class="va">cabins_rast</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">cabins_vect</span>, <span class="va">grid</span>, fun <span class="op">=</span> <span class="va">length</span><span class="op">)</span></span>
@@ -385,7 +385,7 @@ Raster with number of private cabins per pixel, used as input for calculating th
 <div class="section level3">
 <h3 id="calculate-the-zoi-of-the-nearest-feature-only">Calculate the ZoI of the nearest feature only<a class="anchor" aria-label="anchor" href="#calculate-the-zoi-of-the-nearest-feature-only"></a>
 </h3>
-<p>This map might be used as it is as input for <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>. For this function, is it important that the background of the input raster map (pixels with no cabins) is <code>NA</code> (no-data). We calculate the ZoI of the nearest feature using a Gaussian shaped ZoI with radius = 1000 m. By default, the computation is done in R (parameter <span class="math inline">\(\verb|where = "R"|\)</span>).</p>
+<p>This map might be used as it is as input for <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>. For this function, is it important that the background of the input raster map (pixels with no cabins) is <code>NA</code> (no-data). We calculate the ZoI of the nearest feature using a Gaussian shaped ZoI with radius = 1000 m. By default, the computation is done in R (parameter <code>where = "R"</code>).</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate ZoI</span></span>
 <span><span class="va">cabins_nearest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="va">cabins_rast</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"Gauss"</span><span class="op">)</span></span>
@@ -396,12 +396,12 @@ Raster with number of private cabins per pixel, used as input for calculating th
 Zone of influence of the nearest feature for private cabins, using a Gaussian ZoI with radius = 1000 m.
 </p>
 </div>
-<p>The shape of the ZoI might be changed through the parameter <code>type</code>, using the functions presented above. This parameter might be also set to <span class="math inline">\(\verb|type = "euclidean"|\)</span> for only the computation of the Euclidean distance to the nearest feature or to <code>"log"</code> or <code>"sqrt"</code> for the log- or sqrt-transformed distance from the nearest feature.</p>
+<p>The shape of the ZoI might be changed through the parameter <code>type</code>, using the functions presented above. This parameter might be also set to <code>type = "euclidean"</code> for only the computation of the Euclidean distance to the nearest feature or to <code>"log"</code> or <code>"sqrt"</code> for the log- or sqrt-transformed distance from the nearest feature.</p>
 </div>
 <div class="section level3">
 <h3 id="calculate-the-cumulative-zoi-of-multiple-features">Calculate the cumulative ZoI of multiple features<a class="anchor" aria-label="anchor" href="#calculate-the-cumulative-zoi-of-multiple-features"></a>
 </h3>
-<p>Differently from <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>, the input raster map for the <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> should present zeros as the background (pixels with no cabins). In R, background <code>NA</code> values might be checked and reclassified to zero using the <span class="math inline">\(\verb|zeroAsNA = TRUE|\)</span> parameter, but in GRASS GIS this is not implemented In this case, the easiest procedure is to prepare the input raster map outside GRASS or make use of the module <code>r.null</code> for managing no-data values is rasters within GRASS. We calculate the cumulative ZoI of multiple features using the same setup – a Gaussian shaped ZoI with radius = 1000 m.</p>
+<p>Differently from <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>, the input raster map for the <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> should present zeros as the background (pixels with no cabins). In R, background <code>NA</code> values might be checked and reclassified to zero using the <code>zeroAsNA = TRUE</code> parameter, but in GRASS GIS this is not implemented In this case, the easiest procedure is to prepare the input raster map outside GRASS or make use of the module <code>r.null</code> for managing no-data values is rasters within GRASS. We calculate the cumulative ZoI of multiple features using the same setup – a Gaussian shaped ZoI with radius = 1000 m.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate ZoI</span></span>
 <span><span class="va">cabins_cumul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative</a></span><span class="op">(</span><span class="va">cabins_rast</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"gaussian_decay"</span>,</span>
@@ -413,8 +413,8 @@ Zone of influence of the nearest feature for private cabins, using a Gaussian Zo
 Cumulative zone of influence of multiple features for private cabins, using a Gaussian ZoI with radius = 1000 m.
 </p>
 </div>
-<p>Notice that the output map differs considerably from the ZoI of the nearest feature only. Here the shape of the ZoI might also be changed through the parameter <code>type</code>, using the functions presented above. Alternatively, a customized weight matrix might be defined by the user and used as the <code>radius</code> parameter, in case which the user must set <span class="math inline">\(\verb|type = "mfilter"|\)</span>. Other functions to define weight matrices might be set e.g. through <code><a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat()</a></code> (Hijmans, 2022) or <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code> (Gilleland, 2013) functions. Notice, however, that these functions are parameterized differently, with no reference to the ZoI radius as the ones defined in <code>oneimpact</code>.</p>
-<p>For <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>, the user might choose between computing the cumulative ZoI metric when <span class="math inline">\(\verb|output_type = "cumulative_zoi"|\)</span> (default), or the density of features if <span class="math inline">\(\verb|output_type = "density"|\)</span>. The cumulative ZoI is the (distance weighted) number of features per unit of space, and might assumes values much higher than one when there are features located closer than the ZoI (see Figs. D6 and D10). The calculation of the density of features, on the other hand, occurs after a normalization of the weight matrix, so that their values sum 1. As a consequence, the density of features generally presents values lower than or close to 1. Both measures represent the same spatial variation, but the interpretation of their values is different.</p>
+<p>Notice that the output map differs considerably from the ZoI of the nearest feature only. Here the shape of the ZoI might also be changed through the parameter <code>type</code>, using the functions presented above. Alternatively, a customized weight matrix might be defined by the user and used as the <code>radius</code> parameter, in case which the user must set <code>type = "mfilter"</code>. Other functions to define weight matrices might be set e.g. through <code><a href="https://rdrr.io/pkg/terra/man/focalMat.html" class="external-link">terra::focalMat()</a></code> (Hijmans, 2022) or <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code> (Gilleland, 2013) functions. Notice, however, that these functions are parameterized differently, with no reference to the ZoI radius as the ones defined in <code>oneimpact</code>.</p>
+<p>For <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>, the user might choose between computing the cumulative ZoI metric when <code>output_type = "cumulative_zoi"</code> (default), or the density of features if <code>output_type = "density"</code>. The cumulative ZoI is the (distance weighted) number of features per unit of space, and might assumes values much higher than one when there are features located closer than the ZoI (see Figs. D6 and D10). The calculation of the density of features, on the other hand, occurs after a normalization of the weight matrix, so that their values sum 1. As a consequence, the density of features generally presents values lower than or close to 1. Both measures represent the same spatial variation, but the interpretation of their values is different.</p>
 </div>
 </div>
 <div class="section level2">
@@ -428,7 +428,7 @@ Workflow for calculating infrastructure ZoI and estimating the cumulative impact
 </div>
 <p>Figure D shows a workflow for calculating the ZoI metrics and using them to annotate biological data for the estimation of cumulative impacts. The calculation of the ZoI of the nearest feature and the cumulative ZoI might be done for different ZoI shapes, radii, and infrastructure type, and each of those combinations turn into a different covariate when annotated to the biological data for ecological modeling.</p>
 <p>Here we simulate a data set of sampling points and a theoretical random biological response variable to show the process of calculation of ZoI variables and the annotation of the biological data.</p>
-<p>First we create in the study area <span class="math inline">\(n = 40\)</span> random locations representing sampling points for a given response variable <code>z</code> (e.g. species richness or abundance). We sample the locations using the <code><a href="../reference/set_points.html">set_points()</a></code> function from the package <code>oneimpact</code> and simulate the response variable <code>z</code> as a Poisson distributed random variable with mean <span class="math inline">\(\lambda = 10\)</span>. The simulated sampled data is shown in Fig. D.</p>
+<p>First we create in the study area <code>n = 40</code> random locations representing sampling points for a given response variable <code>z</code> (e.g. species richness or abundance). We sample the locations using the <code><a href="../reference/set_points.html">set_points()</a></code> function from the package <code>oneimpact</code> and simulate the response variable <code>z</code> as a Poisson distributed random variable with mean <span class="math inline">\(\lambda = 10\)</span>. The simulated sampled data is shown in Fig. D.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get extent of the study area</span></span>
 <span><span class="va">extent</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">cabins_rast</span><span class="op">)</span></span>
@@ -478,26 +478,26 @@ ZoI of the nearest cabin and cumulative ZoI of multiple cabins for an exponentia
 <span><span class="co"># show annotated data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bio_data_annotated</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id  z        x       y zoi_nearest_exp_decay500 zoi_nearest_exp_decay1000</span></span>
-<span><span class="co">#&gt; 1  1 11 166169.8 6656667               0.16572270                 0.4070905</span></span>
-<span><span class="co">#&gt; 2  2  8 192068.4 6653239               0.09102821                 0.3017088</span></span>
-<span><span class="co">#&gt; 3  3  6 166500.7 6650557               0.00157578                 0.0396961</span></span>
-<span><span class="co">#&gt; 4  4 10 148992.5 6658456               0.03373282                 0.1836650</span></span>
-<span><span class="co">#&gt; 5  5 14 189565.2 6642295               0.08455576                 0.2907847</span></span>
-<span><span class="co">#&gt; 6  6 14 190904.1 6623350               0.08455576                 0.2907847</span></span>
+<span><span class="co">#&gt; 1  1  9 166463.9 6630170              0.261915800                0.51177710</span></span>
+<span><span class="co">#&gt; 2  2 17 164884.3 6650644              0.021570920                0.14687042</span></span>
+<span><span class="co">#&gt; 3  3  6 188835.0 6629208              0.150368332                0.38777356</span></span>
+<span><span class="co">#&gt; 4  4  8 170580.0 6636210              0.068599886                0.26191580</span></span>
+<span><span class="co">#&gt; 5  5 14 181378.4 6625336              0.004551411                0.06746414</span></span>
+<span><span class="co">#&gt; 6  6  6 182739.8 6650792              1.000000000                1.00000000</span></span>
 <span><span class="co">#&gt;   zoi_nearest_exp_decay1500 zoi_cumulative_exp_decay500</span></span>
-<span><span class="co">#&gt; 1                 0.5492803                  0.44510596</span></span>
-<span><span class="co">#&gt; 2                 0.4498406                  0.09102821</span></span>
-<span><span class="co">#&gt; 3                 0.1163675                  0.00000000</span></span>
-<span><span class="co">#&gt; 4                 0.3231103                  0.06461843</span></span>
-<span><span class="co">#&gt; 5                 0.4389156                  0.20360150</span></span>
-<span><span class="co">#&gt; 6                 0.4389156                  0.24367742</span></span>
+<span><span class="co">#&gt; 1                 0.6398142                 0.261915800</span></span>
+<span><span class="co">#&gt; 2                 0.2783703                 0.034486682</span></span>
+<span><span class="co">#&gt; 3                 0.5317638                 0.562692652</span></span>
+<span><span class="co">#&gt; 4                 0.4093623                 0.671354236</span></span>
+<span><span class="co">#&gt; 5                 0.1657227                 0.006084056</span></span>
+<span><span class="co">#&gt; 6                 1.0000000                19.665031686</span></span>
 <span><span class="co">#&gt;   zoi_cumulative_exp_decay1000 zoi_cumulative_exp_decay1500</span></span>
-<span><span class="co">#&gt; 1                    2.3256175                    5.3574954</span></span>
-<span><span class="co">#&gt; 2                    0.7233248                    2.6067750</span></span>
-<span><span class="co">#&gt; 3                    0.1121960                    0.6168406</span></span>
-<span><span class="co">#&gt; 4                    0.5701666                    1.2998123</span></span>
-<span><span class="co">#&gt; 5                    3.1369331                   12.9274576</span></span>
-<span><span class="co">#&gt; 6                    2.0216657                    5.1284136</span></span></code></pre></div>
+<span><span class="co">#&gt; 1                    0.6216761                     1.272583</span></span>
+<span><span class="co">#&gt; 2                    0.4814741                     1.313601</span></span>
+<span><span class="co">#&gt; 3                    3.4852715                     7.055488</span></span>
+<span><span class="co">#&gt; 4                    5.6255754                    12.752981</span></span>
+<span><span class="co">#&gt; 5                    0.1750467                     0.611040</span></span>
+<span><span class="co">#&gt; 6                   50.4061440                    78.736711</span></span></code></pre></div>
 <p>From this point, biological data can also be annotated with the ZoI of other disturbance variables and with other environmental covariates and used as input for the estimation of the effect sizes <span class="math inline">\(\beta\)</span> and evaluation of the cumulative effects for different types of infrastructure through statistical models (Fig. D) Statistical analyses can make use of model selection (Burnham &amp; Anderson, 2002; Jackson &amp; Fahrig, 2015; Huais, 2018), penalized regression (Lee et al., 2020), or machine learning approaches, for example (James et al., 2021). Such statistical modeling procedures are beyond the scope of <code>oneimpact</code>.</p>
 </div>
 <div class="section level2">

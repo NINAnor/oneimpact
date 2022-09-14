@@ -503,15 +503,17 @@ zero influence.</p></li>
 <span class="r-in"><span><span class="co"># calculate Euclidean distance</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [rast] filename is empty. Provide a valid filename</span>
 <span class="r-in"><span><span class="va">cabins_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="va">cabins</span>, type <span class="op">=</span> <span class="st">"euclidean"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'ext': object 'cabins' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># transform Euclidean in distance decay</span></span></span>
 <span class="r-in"><span><span class="co"># exponential decay</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="va">cabins_dist</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="zoi_functions-10.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_dist' not found</span>
 <span class="r-in"><span><span class="co"># linear decay</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">oneimpact</span><span class="fu">::</span><span class="fu">dist_decay</span><span class="op">(</span><span class="va">cabins_dist</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"tent_decay"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="zoi_functions-11.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_dist' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

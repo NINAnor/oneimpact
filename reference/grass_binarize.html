@@ -201,11 +201,10 @@ and a documentation of raster algebra with <a href="https://rdrr.io/pkg/terra/ma
 <span class="r-in"><span><span class="co"># map with only 1</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin1_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">name_var</span>, output <span class="op">=</span> <span class="st">"cabins_bin1"</span>,</span></span>
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("r.mapcalc.simple", expression = expr, a = x,     output = out, flags = flags):</span> The command:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> r.mapcalc.simple --quiet --overwrite expression="if(A &gt;= 1.000000, 1, 0)" a=private_cabins_sub output=cabins_bin1</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    r.mapcalc.simple --interface-description</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> access: No such file or directory</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span>    access: No such file or directoryERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
 <span class="r-in"><span><span class="co"># map with 0, 1</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin2_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">name_var</span>, output <span class="op">=</span> <span class="st">"cabins_bin2"</span>,</span></span>
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, null <span class="op">=</span> <span class="fl">0</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
