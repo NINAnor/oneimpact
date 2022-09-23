@@ -1,9 +1,17 @@
+#----------------------------------------------------------------------------------------
+# Sample dataset
+
 #' Sample area: a polygon vector data
 #'
 #' Dataset containing the limits of an arbitrary study area in Southern Norway, used
 #' for illustrative purposes.
 #'
 #' @name sample_area.gpkg
+#' @seealso
+#' Maps for the sample area: \cr
+#' Cabins: [oneimpact::sample_area_cabins.gpkg], [oneimpact::sample_area_cabins.tif],
+#' [oneimpact::sample_area_cabins_count.tif] \cr
+#' Roads: [oneimpact::sample_area_roads.gpkg], [oneimpact::sample_area_roads.tif]
 #'
 #' @examples
 #' (s <- system.file("vector/sample_area.gpkg", package = "oneimpact"))
@@ -16,16 +24,21 @@ NULL
 
 #' Cabins vector data for the sample area
 #'
-#' Dataset containing the location of tourist private cabins is Southern
-#' Norway, within the sample area for the `oneimpact` package.
+#' Dataset containing the location of tourist private cabins in Southern
+#' Norway.
 #' It corresponds to some specific building types (object_type = "Bygning",
 #' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
-#' The map was cut for the sample area presented in the `oneimpact` package.
+#' The map was clipped for the sample area presented in the `oneimpact` package.
 #'
-#' @name cabins_sample.gpkg
+#' @name sample_area_cabins.gpkg
+#' @seealso
+#' Maps for the sample area: \cr
+#' Limits of sample area: [oneimpact::sample_area.gpkg] \cr
+#' Cabins: [oneimpact::sample_area_cabins.tif], [oneimpact::sample_area_cabins_count.tif] \cr
+#' Roads: [oneimpact::sample_area_roads.gpkg], [oneimpact::sample_area_roads.tif]
 #'
 #' @examples
-#' (s <- system.file("vector/cabins_sample.gpkg", package = "oneimpact"))
+#' (s <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact"))
 #' sf::st_read(s)
 #' # or
 #' terra::vect(s)
@@ -45,10 +58,10 @@ NULL
 #' Cabin presence raster data for the sample area
 #'
 #' Raster data indicating pixels with presence of tourist private cabins in Norway.
-#' It corresponds to some specific building types (object_type = "Bygning",
+#' Cabins corresponds to some specific building types (object_type = "Bygning",
 #' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
 #' The original data consisted of point vector data and were rasterized with 100m
-#' resolution, for the purpose of illustration here. The raster was cut for the
+#' resolution, for the purpose of illustration. The raster was clipped for the
 #' sample area presented in the `oneimpact` package.
 #'
 #' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
@@ -58,10 +71,15 @@ NULL
 #' }
 #'
 #' @examples
-#' (f <- system.file("raster/cabins_sample.tif", package = "oneimpact"))
+#' (f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact"))
 #' terra::rast(f)
 #'
-#' @name cabins_sample.tif
+#' @name sample_area_cabins.tif
+#' @seealso
+#' Maps for the sample area: \cr
+#' Limits of sample area: [oneimpact::sample_area.gpkg] \cr
+#' Cabins: [oneimpact::sample_area_cabins.gpkg], [oneimpact::sample_area_cabins_count.tif] \cr
+#' Roads: [oneimpact::sample_area_roads.gpkg], [oneimpact::sample_area_roads.tif]
 #'
 #' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
@@ -69,22 +87,93 @@ NULL
 #' Cabin count raster data for the sample area
 #'
 #' Raster data indicating the number of tourist private cabins per pixel in Norway.
-#' It corresponds to some specific building types (object_type = "Bygning",
+#' Cabins corresponds to some specific building types (object_type = "Bygning",
 #' byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
 #' The original data consisted of point vector data and were rasterized with 100m
 #' resolution by counting the number of cabins in each pixel. The raster
-#' was cut for the study area presented in the `oneimpact` package.
+#' was clipped for the study area presented in the `oneimpact` package.
 #'
 #' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 #'
 #' @examples
-#' (f <- system.file("raster/cabins_sample_count.tif", package = "oneimpact"))
+#' (f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact"))
 #' terra::rast(f)
 #'
-#' @name cabins_sample_count.tif
+#' @name sample_area_cabins_count.tif
+#' @seealso
+#' Maps for the sample area: \cr
+#' Limits of sample area: [oneimpact::sample_area.gpkg] \cr
+#' Cabins: [oneimpact::sample_area_cabins.gpkg], [oneimpact::sample_area_cabins.tif] \cr
+#' Roads: [oneimpact::sample_area_roads.gpkg], [oneimpact::sample_area_roads.tif]
 #'
 #' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
+
+#' Road vector data for the sample area
+#'
+#' Dataset containing the location of public roads in Southern
+#' Norway.
+#' Retrieved from the Norwegian road dataset Elveg 1.0 and
+#' clipped for the study area presented in the `oneimpact` package.
+#'
+#' @name sample_area_roads.gpkg
+#' @seealso
+#' Maps for the sample area: \cr
+#' Limits of sample area: [oneimpact::sample_area.gpkg] \cr
+#' Cabins: [oneimpact::sample_area_cabins.gpkg], [oneimpact::sample_area_cabins.tif],
+#' [oneimpact::sample_area_cabins_count.tif] \cr
+#' Roads: [oneimpact::sample_area_roads.tif]
+#'
+#' @examples
+#' (s <- system.file("vector/sample_area_roads.gpkg", package = "oneimpact"))
+#' sf::st_read(s)
+#' # or
+#' terra::vect(s)
+#'
+#' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
+#' file presents the following columns:
+#' \itemize{
+#'         \item{id:} {Line number, corresponding to the original dataset}
+#'         \item{name:} {Local name of the road}
+#'         \item{publ_priv:} {Whether the road is public or private}
+#'         \item{traffic_bin:} {Binary classification of the traffic on the road - high or low}
+#'         \item{name_area:} {Name of the reindeer management area where the road is located}
+#'         \item{traffic_bin:} {Value 1, to be used for rasterization purposes}
+#' }
+#'
+#' @source \url{https://kartkatalog.geonorge.no/metadata/elveg/ed1e6798-b3cf-48be-aee1-c0d3531da01a}
+NULL
+
+#' Road raster data for the sample area
+#'
+#' Raster data indicating pixels with public roads in Southern
+#' Norway. Rasterized from the vector data from the Norwegian road dataset Elveg 1.0
+#' with 100 m resolution and
+#' clipped for the study area presented in the `oneimpact` package.
+#'
+#' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
+#' \itemize{
+#'         \item{1:} {Presence of roads}
+#'         \item{NA:} {No presence of roads}
+#' }
+#'
+#' @examples
+#' (f <- system.file("raster/sample_area_roads.tif", package = "oneimpact"))
+#' terra::rast(f)
+#'
+#' @name sample_area_roads.tif
+#' @seealso
+#' Maps for the sample area: \cr
+#' Limits of sample area: [oneimpact::sample_area.gpkg] \cr
+#' Cabins: [oneimpact::sample_area_cabins.gpkg], [oneimpact::sample_area_cabins.tif],
+#' [oneimpact::sample_area_cabins_count.tif] \cr
+#' Roads: [oneimpact::sample_area_roads.gpkg]
+#'
+#' @source \url{https://kartkatalog.geonorge.no/metadata/elveg/ed1e6798-b3cf-48be-aee1-c0d3531da01a}
+NULL
+
+#----------------------------------------------------------------------------------------
+# Reindeer dataset
 
 #' Reindeer area: a polygon vector data for the Setesdal Austhei reindeer herding area
 #'
@@ -114,10 +203,10 @@ NULL
 #' It corresponds to some specific building types (object_type = "Bygning",
 #' byggtyp_nbr = c("161", "162", "163")) from the public N50 dataset.
 #'
-#' @name cabins.gpkg
+#' @name reindeer_cabins.gpkg
 #'
 #' @examples
-#' (s <- system.file("vector/cabins.gpkg", package = "oneimpact"))
+#' (s <- system.file("vector/reindeer_cabins.gpkg", package = "oneimpact"))
 #' sf::st_read(s)
 #' # or
 #' terra::vect(s)
@@ -140,10 +229,10 @@ NULL
 #' Norway, within the reindeer management area of Setesdal Austhei.
 #' Retrieved from the Norwegian road dataset Elveg 1.0.
 #'
-#' @name roads_public.gpkg
+#' @name reindeer_roads_public.gpkg
 #'
 #' @examples
-#' (s <- system.file("vector/roads_public.gpkg", package = "oneimpact"))
+#' (s <- system.file("vector/reindeer_roads_public.gpkg", package = "oneimpact"))
 #' sf::st_read(s)
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
@@ -166,10 +255,10 @@ NULL
 #' Norway, within the reindeer management area of Setesdal Austhei.
 #' Retrieved from the Norwegian road dataset Elveg 1.0.
 #'
-#' @name roads_private.gpkg
+#' @name reindeer_roads_private.gpkg
 #'
 #' @examples
-#' (s <- system.file("vector/roads_private.gpkg", package = "oneimpact"))
+#' (s <- system.file("vector/reindeer_roads_private.gpkg", package = "oneimpact"))
 #' sf::st_read(s)
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector

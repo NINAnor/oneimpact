@@ -17,3 +17,9 @@ sf::st_read(s)
 terra::vect(s)
 
 }
+\seealso{
+Maps for the sample area: \cr
+Cabins: \link{sample_area_cabins.gpkg}, \link{sample_area_cabins.tif},
+\link{sample_area_cabins_count.tif} \cr
+Roads: \link{sample_area_roads.gpkg}, \link{sample_area_roads.tif}
+}
