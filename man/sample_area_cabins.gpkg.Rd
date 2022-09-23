@@ -18,16 +18,17 @@ file presents the following columns:
 }
 \description{
 Dataset containing the location of tourist private cabins in Southern
-Norway, within the sample area for the \code{oneimpact} package.
+Norway.
 It corresponds to some specific building types (object_type = "Bygning",
 byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
-The map was cut for the sample area presented in the \code{oneimpact} package.
+The map was clipped for the sample area presented in the \code{oneimpact} package.
 }
 \examples{
-(s <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact"))
-sf::st_read(s)
+(f <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact"))
+sf::st_read(f)
 # or
-terra::vect(s)
+v <- terra::vect(f)
+plot(v)
 
 }
 \seealso{

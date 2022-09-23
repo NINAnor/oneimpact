@@ -15,12 +15,14 @@ A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 }
 \description{
 Raster data indicating pixels with public roads in Southern
-Norway, within the sample area for the \code{oneimpact} package.
-Rasterized from the vector data from the Norwegian road dataset Elveg 1.0.
+Norway. Rasterized from the vector data from the Norwegian road dataset Elveg 1.0
+with 100 m resolution and
+clipped for the study area presented in the \code{oneimpact} package.
 }
 \examples{
 (f <- system.file("raster/sample_area_roads.tif", package = "oneimpact"))
-terra::rast(f)
+r <- terra::rast(f)
+plot(r)
 
 }
 \seealso{

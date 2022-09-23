@@ -11,10 +11,11 @@ Dataset containing the limits of an arbitrary study area in Southern Norway, use
 for illustrative purposes.
 }
 \examples{
-(s <- system.file("vector/sample_area.gpkg", package = "oneimpact"))
-sf::st_read(s)
+(f <- system.file("vector/sample_area.gpkg", package = "oneimpact"))
+sf::st_read(f)
 # or
-terra::vect(s)
+v <- terra::vect(f)
+plot(v)
 
 }
 \seealso{

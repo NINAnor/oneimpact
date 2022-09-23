@@ -17,9 +17,10 @@ in Southern Norway, as defined in Panzacchi et al. (2015). Note this area is sli
 larger than the boundaries used for reindeer management in Norway.
 }
 \examples{
-(s <- system.file("vector/reindeer_area.gpkg", package = "oneimpact"))
-sf::st_read(s)
+(f <- system.file("vector/reindeer_area.gpkg", package = "oneimpact"))
+sf::st_read(f)
 # or
-terra::vect(s)
+v <- terra::vect(f)
+plot(v)
 
 }

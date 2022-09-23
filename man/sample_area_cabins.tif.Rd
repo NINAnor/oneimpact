@@ -15,15 +15,16 @@ A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 }
 \description{
 Raster data indicating pixels with presence of tourist private cabins in Norway.
-It corresponds to some specific building types (object_type = "Bygning",
+Cabins corresponds to some specific building types (object_type = "Bygning",
 byggtyp_nbr = c("161", "162", "163")) form the public N50 dataset.
 The original data consisted of point vector data and were rasterized with 100m
-resolution, for the purpose of illustration here. The raster was cut for the
+resolution, for the purpose of illustration. The raster was clipped for the
 sample area presented in the \code{oneimpact} package.
 }
 \examples{
 (f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact"))
-terra::rast(f)
+r <- terra::rast(f)
+plot(r)
 
 }
 \seealso{

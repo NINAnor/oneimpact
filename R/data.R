@@ -14,10 +14,11 @@
 #' Roads: [oneimpact::sample_area_roads.gpkg], [oneimpact::sample_area_roads.tif]
 #'
 #' @examples
-#' (s <- system.file("vector/sample_area.gpkg", package = "oneimpact"))
-#' sf::st_read(s)
+#' (f <- system.file("vector/sample_area.gpkg", package = "oneimpact"))
+#' sf::st_read(f)
 #' # or
-#' terra::vect(s)
+#' v <- terra::vect(f)
+#' plot(v)
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N.
 NULL
@@ -38,10 +39,11 @@ NULL
 #' Roads: [oneimpact::sample_area_roads.gpkg], [oneimpact::sample_area_roads.tif]
 #'
 #' @examples
-#' (s <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact"))
-#' sf::st_read(s)
+#' (f <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact"))
+#' sf::st_read(f)
 #' # or
-#' terra::vect(s)
+#' v <- terra::vect(f)
+#' plot(v)
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
 #' file presents the following columns:
@@ -72,7 +74,8 @@ NULL
 #'
 #' @examples
 #' (f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact"))
-#' terra::rast(f)
+#' r <- terra::rast(f)
+#' plot(r)
 #'
 #' @name sample_area_cabins.tif
 #' @seealso
@@ -97,7 +100,8 @@ NULL
 #'
 #' @examples
 #' (f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact"))
-#' terra::rast(f)
+#' r <- terra::rast(f)
+#' plot(r)
 #'
 #' @name sample_area_cabins_count.tif
 #' @seealso
@@ -125,10 +129,11 @@ NULL
 #' Roads: [oneimpact::sample_area_roads.tif]
 #'
 #' @examples
-#' (s <- system.file("vector/sample_area_roads.gpkg", package = "oneimpact"))
-#' sf::st_read(s)
+#' (f <- system.file("vector/sample_area_roads.gpkg", package = "oneimpact"))
+#' sf::st_read(f)
 #' # or
-#' terra::vect(s)
+#' v <- terra::vect(f)
+#' plot(v)
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
 #' file presents the following columns:
@@ -159,7 +164,8 @@ NULL
 #'
 #' @examples
 #' (f <- system.file("raster/sample_area_roads.tif", package = "oneimpact"))
-#' terra::rast(f)
+#' r <- terra::rast(f)
+#' plot(r)
 #'
 #' @name sample_area_roads.tif
 #' @seealso
@@ -184,10 +190,11 @@ NULL
 #' @name reindeer_area.gpkg
 #'
 #' @examples
-#' (s <- system.file("vector/reindeer_area.gpkg", package = "oneimpact"))
-#' sf::st_read(s)
+#' (f <- system.file("vector/reindeer_area.gpkg", package = "oneimpact"))
+#' sf::st_read(f)
 #' # or
-#' terra::vect(s)
+#' v <- terra::vect(f)
+#' plot(v)
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N.
 #'
@@ -206,10 +213,11 @@ NULL
 #' @name reindeer_cabins.gpkg
 #'
 #' @examples
-#' (s <- system.file("vector/reindeer_cabins.gpkg", package = "oneimpact"))
-#' sf::st_read(s)
+#' (f <- system.file("vector/reindeer_cabins.gpkg", package = "oneimpact"))
+#' sf::st_read(f)
 #' # or
-#' terra::vect(s)
+#' v <- terra::vect(f)
+#' plot(v)
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
 #' file presents the following columns:
@@ -232,8 +240,9 @@ NULL
 #' @name reindeer_roads_public.gpkg
 #'
 #' @examples
-#' (s <- system.file("vector/reindeer_roads_public.gpkg", package = "oneimpact"))
-#' sf::st_read(s)
+#' (f <- system.file("vector/reindeer_roads_public.gpkg", package = "oneimpact"))
+#' v <- sf::st_read(f)
+#' plot(v[1])
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
 #' file presents the following columns:
@@ -258,8 +267,9 @@ NULL
 #' @name reindeer_roads_private.gpkg
 #'
 #' @examples
-#' (s <- system.file("vector/reindeer_roads_private.gpkg", package = "oneimpact"))
-#' sf::st_read(s)
+#' (f <- system.file("vector/reindeer_roads_private.gpkg", package = "oneimpact"))
+#' v <- sf::st_read(f)
+#' plot(v[1])
 #'
 #' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
 #' file presents the following columns:

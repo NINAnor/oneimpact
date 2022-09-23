@@ -20,14 +20,16 @@ file presents the following columns:
 }
 \description{
 Dataset containing the location of public roads in Southern
-Norway, within the sample area for the \code{oneimpact} package.
-Retrieved from the Norwegian road dataset Elveg 1.0.
+Norway.
+Retrieved from the Norwegian road dataset Elveg 1.0 and
+clipped for the study area presented in the \code{oneimpact} package.
 }
 \examples{
-(s <- system.file("vector/sample_area_roads.gpkg", package = "oneimpact"))
-sf::st_read(s)
+(f <- system.file("vector/sample_area_roads.gpkg", package = "oneimpact"))
+sf::st_read(f)
 # or
-terra::vect(s)
+v <- terra::vect(f)
+plot(v)
 
 }
 \seealso{
