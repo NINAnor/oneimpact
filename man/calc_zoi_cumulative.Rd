@@ -150,7 +150,8 @@ be printed in the prompt along the computation?}
 or \code{\link[terra:focal]{terra::focal()}}.}
 }
 \value{
-A \code{RasterLayer} or \link{SpatRaster} (according to the input \code{x} map)
+If the calculations are performed in R (\code{where = "R"}),
+a \code{RasterLayer} or \link{SpatRaster} (according to the input \code{x} map)
 with the cumulative zone of influence or density of features. While the
 cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
 (creating values in the output map which might go well beyond 1), the
@@ -158,8 +159,8 @@ density of features uses a normalized ZoI/weight matrix (with all values
 summing 1), what created values smaller than one in the output map.
 if multiple \code{radius} values are given, a \code{RasterBrick} or multi-layer
 \code{SpatRaster}, with the cumulative ZoI or density maps for each ZoI radius. \cr
-If the computation is done in GRASS GIS, the output is name of
-the output raster map within the GRASS GIS location and mapset of the
+If the computation is done in GRASS GIS, the output is the name of
+the output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
 \code{\link[rgrass7:readRAST]{rgrass7::read_RAST()}} or export them outside GRASS using the
 \code{r.out.gdal} module, for instance.

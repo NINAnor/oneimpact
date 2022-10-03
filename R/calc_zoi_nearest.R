@@ -71,7 +71,7 @@
 #' the distance at which the ZoI vanishes or goes below a given minimum limit value
 #' `zoi_limit`. See [oneimpact::zoi_functions()] for details.
 #' It can be a single value or a vector of values, in which case
-#' several ZoI layers (one for each radius) are created.This parameter is
+#' several ZoI layers (one for each radius) are created. This parameter is
 #' ignored if `type = "euclidean"`, `type = "log"`, or `type = "sqrt"`.
 #'
 #' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
@@ -210,7 +210,7 @@
 #' the maps are kept only within the GRASS GIS location/mapset and the function
 #' returns the name of the calculated maps. \cr
 #' If the computation is done in GRASS GIS, the output is name of
-#' the output raster map within the GRASS GIS location and mapset of the
+#' the output raster map(s) within the GRASS GIS location and mapset of the
 #' current session. The user can retrieve these maps to R using
 #' [rgrass7::read_RAST] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.

@@ -479,21 +479,30 @@ of their values is different.
 
 In the cumulative impact assessment proposed in `oneimpact`, the calculation of the 
 ZoI ($\phi$) is done before statistical analysis. In this formulation, $\phi$ defined 
-based on different shapes and radii are considered as different covariates 
-(Fig. D\ref{fig:workflow}). Therefore, the evaluation of how the impact of multiple 
+based on different shapes and radii are considered as different candidates of predictor
+variables in statistical models
+(see figure below). Therefore, the evaluation of how the impact of multiple 
 infrastructure features accumulate and the identification of the ZoI shape and radius 
 are recasted as a model selection rather than a parameterization problem.
 
-```{r workflow, echo=FALSE, fig.cap="Workflow for calculating infrastructure ZoI and estimating the cumulative impact and ZoI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZoI of the nearest feaure and the cumulative ZoI based on arguments for the ZoI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZoI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I.", out.width="100%"}
+```{r workflow, echo=FALSE, out.width="100%"}
 knitr::include_graphics("figure_workflow.png")
 ```
 
-Figure D\ref{fig:workflow} shows a workflow for calculating the ZoI metrics and 
+<!-- fig.cap="Figure 11. Workflow for calculating infrastructure ZoI and estimating the cumulative impact and ZoI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZoI of the nearest feaure and the cumulative ZoI based on arguments for the ZoI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZoI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I." -->
+
+The figure above shows a workflow for calculating the ZoI metrics and 
 using them to annotate biological data for the estimation of cumulative impacts.
-The calculation of the ZoI of the nearest feature and the cumulative ZoI might be 
-done for different ZoI shapes, radii, and infrastructure type, and each of those
-combinations turn into a different covariate when annotated to the biological
-data for ecological modeling.
+Infrastructure raster data are input to the `calc_zoi_*()` functions, which 
+allow the computation of the ZoI of the nearest feaure and the cumulative ZoI 
+based on arguments for the ZoI shape and radius.
+The output influence rasters 
+and other environmental data are then annotated to biological data, and for each 
+infrastructure type each ZoI metric defined by a shape and radius is considered 
+as a different candidate for a predictor variable. The annotated data is then 
+analyzed through the statistical modeling procedures selected by the user 
+to estimate the effect size and the Zoi radius for each infrastructure 
+type and calculate the impact.
 
 Here we simulate a data set of sampling points and a theoretical random biological 
 response variable to show the process of calculation of ZoI variables and the annotation
@@ -504,28 +513,34 @@ for a given response variable `z` (e.g. species richness or abundance). We sampl
 the locations using the `set_points()` function from the package `oneimpact` and 
 simulate the response variable
 `z` as a Poisson distributed random variable with mean $\lambda = 10$. The simulated
-sampled data is shown in Fig. D\ref{fig:set_points}.
+sampled data is plotted below.
 
-```{r set_points, fig.cap="Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins."}
+```{r set_points}
+# seed
+set.seed(111)
 # get extent of the study area
 extent <- terra::ext(cabins_rast)
 # sample n = 40 random locations and simulate biological data
+# get only coordinates with $pts at the end
 bio_data <- set_points(40, method = "random", res = 100, 
-                       extent_x = extent[c(1,2)], extent_y = extent[c(3,4)]) %>%
-  .$pts %>% # get only coordinates
-  sf::st_as_sf(coords = c(1,2), crs = crs(cabins_rast)) %>% # change to sf object
-  dplyr::mutate(id = 1:40, z = rpois(40, lambda = 10)) %>% # add id and simulate response z 
+                       extent_x = extent[c(1,2)], extent_y = extent[c(3,4)])$pts |> 
+  sf::st_as_sf(coords = c(1,2), crs = crs(cabins_rast)) |> # change to sf object
+  dplyr::mutate(id = 1:40, z = rpois(40, lambda = 10)) |> # add id and simulate response z 
   terra::vect() # transform to vect to use with SpatRaster object
 # plot
 plot(cabins_vect, cex = 0.5)
 plot(bio_data, col = "red", add = T)
 ```
+<!-- fig.cap="Figure 12. Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins." -->
 
 Now we use the same procedure presented above to calculate the ZoI of the nearest 
 feature and the cumulative ZoI for different radii. We use an exponential decay ZoI and 
-vary the ZoI radius from 500 m to 1500 m.
+vary the ZoI radius from 500 m to 1500 m. However, we use the `calc_zoi()` function
+which can compute both ZoI metrics at once. To do so, we set the parameter `zeroAsNA`
+to `FALSE`, since our input raster map has `NA` as background values. We plot the
+ZoI layers below.
 
-```{r calc_zoi_data}
+```{r calc_zoi_data_old, eval=FALSE, echo=FALSE}
 # radii
 radii <- c(500, 1000, 1500)
 # exp decay ZoI - nearest
@@ -534,13 +549,18 @@ zoi_exp_nearest <- calc_zoi_nearest(cabins_rast, radius = radii,
 # exp decay ZoI - cumulative
 zoi_exp_cumul <- calc_zoi_cumulative(cabins_rast, radius = radii,
                                      type = "exp_decay", zeroAsNA = TRUE)
+plot(zoi_all)
 ```
 
-We can combine the ZoI variables to visualize them:
-
-```{r plot_zoi_multiple, fig.cap="ZoI of the nearest cabin and cumulative ZoI of multiple cabins for an exponential decay ZoI with radius = 500, 1000, and 1500 m."}
-# combine ZoI variables
-zoi_all <- c(zoi_exp_nearest, zoi_exp_cumul)
+```{r calc_zoi_data_old, eval=FALSE, echo=FALSE}
+# radii
+radii <- c(500, 1000, 1500)
+# exp decay ZoI - both nearest and cumulative
+# use zeroAsNA = FALSE since the input has NULL as background
+zoi_all <- oneimpact:::calc_zoi(cabins_rast, 
+                                radius = radii, type = "exp_decay",
+                                zoi_metric = "all", 
+                                zeroAsNA = FALSE)
 # plot
 plot(zoi_all)
 ```
@@ -550,7 +570,7 @@ analysis.
 
 ```{r annotate_data}
 # extract values
-zoi_sampling_pts <- terra::extract(zoi_all, bio_data)
+zoi_sampling_pts <- terra::extract(zoi_all, bio_data, )
 # combine response variable with extracted data
 bio_data_annotated <- dplyr::left_join(as.data.frame(bio_data, geom = "XY"), 
                                        zoi_sampling_pts, by = c("id" = "ID"))
@@ -561,7 +581,7 @@ head(bio_data_annotated)
 From this point, biological data can also be annotated with the ZoI of other disturbance
 variables and with other environmental covariates and used as input for the 
 estimation of the effect sizes $\beta$ and evaluation of the cumulative effects for 
-different types of infrastructure through statistical models (Fig. D\ref{fig:workflow})
+different types of infrastructure through statistical models.
 Statistical analyses 
 can make use of model selection (Burnham & Anderson, 2002; Jackson & Fahrig, 2015;
 Huais, 2018), 

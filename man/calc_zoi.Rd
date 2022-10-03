@@ -7,65 +7,79 @@ and the cumulative zone of influence of multiple features}
 \usage{
 calc_zoi(
   x,
+  radius = radius,
+  type = type,
   zoi_metric = c("all", "nearest", "cumulative")[1],
   where = c("R", "GRASS")[1],
+  zeroAsNA = TRUE,
   ...
 )
 }
 \arguments{
 \item{x}{\verb{[RasterLayer,SpatRaster]} \cr Raster representing locations of features,
 preferentially with positive value where the features
-are located and NA elsewhere. Alternatively, \code{x} might be a binary (dummy)
+are located and either 0 or NA elsewhere.
+Alternatively, \code{x} might be a binary (dummy)
 spatial variable representing the presence of linear or area features, with
-NA/no-data as background.
+0 or NA/no-data as background.
 \code{x} can be a \code{RasterLayer} from \link{raster} package or a \link{SpatRaster} from
 \link{terra} package. If \code{where = "GRASS"}, \code{x} must be a string corresponding
 to the name of the input map within a GRASS GIS location and mapset.
 
-The input raster \code{x} should have positive values in the pixels where infrastructure
-are located and NA/no-data in all other places. In R it is also possible to have zeros
-as the background and set \code{zeroAsNA = TRUE} for the computation of the ZoI of the
-nearest feature.
-In GRASS, maps without NA as background might be prepared as input for \code{calc_zoi_nearest()}
-through \href{https://grass.osgeo.org/grass78/manuals/r.mapcalc.html}{raster algebra}
-and e.g. through the use of the module
-\href{https://grass.osgeo.org/grass80/manuals/r.null.html}{\code{r.null}}.}
+The default parameters assume that the input \code{x} presents zeros as the background
+value, where infrastructure or disturbance are absent. Therefore, to deal correctly
+with the computation of both ZoI metrics, by default we set the parameter \code{zeroAsNA = TRUE}.
+If, in contrast, the input map \code{x} has \code{NA} as background values, the parameter
+\code{zeroAsNA} should be set to \code{FALSE}.}
+
+\item{radius}{\verb{[numeric(1)]} \cr Radius of the zone of influence (ZoI),
+the distance at which the ZoI vanishes or goes below a given minimum limit value
+\code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details.
+It can be a single value or a vector of values, in which case
+several ZoI layers (one for each radius) are created.}
+
+\item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step"\}} \cr
+Type of filter (shape of the zone of influence) used to calculate the
+ZoI.}
 
 \item{zoi_metric}{\verb{[character(1)="all"]\{"all", "nearest", "cumulative"\}} \cr
 Which metric of zone of influence should be computed. Either \code{"all"}, \code{"nearest"},
 or \code{"cumulative"}.}
-
-\item{where}{\verb{[character(1)="R"]\{"R", "GRASS"\}} \cr Where should the
-computation be done? Default is \code{"R"}. If \code{where = "GRASS"}, the R session
-must be linked to an open GRASS GIS session in a specific location and mapset.}
-
-\item{...}{\cr Adittional parameters passed to \code{\link[terra:distance]{terra::distance()}}
-or to the ZoI functions (see \code{\link[=zoi_functions]{zoi_functions()}}) when the
-calculations are performed in R.
-No additional parameters implemented for computation in GRASS GIS.}
 }
 \value{
-A RasterBrick with de distance to the nearest feature and the densities for all scales selected.
+If the calculations are performed in R (\code{where = "R"}),
+a \code{RasterLayer}/\code{RasterStack} or \link{SpatRaster} object
+(according to the input \code{x} map)
+with the either the zone of influence of the nearest feature
+(if \code{zoi_metric = "nearest"}), the cumulative zone of influence of multiple
+features (if \code{zoi_metric = "cumulative"}), or both metrics
+(if \code{zoi_metric = "all"}, the default). \cr
+If the computation is done in GRASS GIS, the output is the name of
+the output raster map(s) within the GRASS GIS location and mapset of the
+current session. The user can retrieve these maps to R using
+\code{\link[rgrass7:readRAST]{rgrass7::read_RAST()}} or export them outside GRASS using the
+\code{r.out.gdal} module, for instance.
 }
 \description{
-This function takes in a raster with locations of infrastructure and calculates (1)
-a raster representing the distance from each pixel to the neareast feature and (2)
-a raster (or set of rasters, in case there is more the one value for \code{scale})
-representing the density of features in space (through a spatial filter/neighborhood analysis).
-The neighborhood analysis is done with the \code{\link[raster:focal]{raster::focal()}} function.
-}
-\details{
-The neighborhood analysis can be done with different methods. The default is a Gaussian filter
-(\code{type_density = "Gauss"}), in which case scale corresponds to the sigma paramater of the Gaussian
-filter. If \code{type_density = "circle"} or \code{type_density = "rectangle"}, the scale corresponds to the
-radius of the circle or width of the rectangle, respectively. See \code{\link[raster:focalWeight]{raster::focalWeight()}} for more
-details.
-
-TO IMPROVE2: do the same in communication with GRASS GIS.
+This function takes in a raster with locations of infrastructure and calculates
+either (1) a raster representing the Zone of Influence (ZoI) of the neareast feature or (2)
+a raster representing the cumulative Zone of Influence of multiple features, or both.
+This function takes in a raster with locations or counts of
+infrastructure and calculates a raster (or set of rasters, in case there is
+more the one value for \code{radius}) representing either of two zone of influence (ZoI)
+metrics for type of infrastructure: (1) the ZoI of the neareast feature, (2) the cumulative
+ZoI of multiple features, or (3) both ZoI metrics. Zones of influence
+are defined by functions that decay with the distance from each
+infrastructure and their rate of decay is controlled by the ZoI radius
+(\code{radius}), which defines how far the influence of an infrastructure
+feature goes. To see more information on each ZoI metric, see
+\code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}} and \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}.
 }
 \examples{
 library(terra)
 }
 \seealso{
-\code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}}, \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}
+Fore more details on each of the ZoI metrics,
+other function parameters, and their specific details, see
+\code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}} and \code{\link[=calc_zoi_cumulative]{calc_zoi_cumulative()}}.
 }

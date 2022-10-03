@@ -51,7 +51,7 @@ and e.g. through the use of the module
 the distance at which the ZoI vanishes or goes below a given minimum limit value
 \code{zoi_limit}. See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 It can be a single value or a vector of values, in which case
-several ZoI layers (one for each radius) are created.This parameter is
+several ZoI layers (one for each radius) are created. This parameter is
 ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
 
 \item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "threshold", "step", "euclidean", "log","sqrt"\}} \cr
@@ -189,7 +189,7 @@ If the calculations are performed in GRASS GIS (\code{where = "GRASS"}),
 the maps are kept only within the GRASS GIS location/mapset and the function
 returns the name of the calculated maps. \cr
 If the computation is done in GRASS GIS, the output is name of
-the output raster map within the GRASS GIS location and mapset of the
+the output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
 \link[rgrass7:readRAST]{rgrass7::read_RAST} or export them outside GRASS using the
 \code{r.out.gdal} module, for instance.

@@ -231,7 +231,8 @@
 #' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
 #' be printed in the prompt along the computation?
 #'
-#' @returns A `RasterLayer` or [SpatRaster] (according to the input `x` map)
+#' @returns If the calculations are performed in R (`where = "R"`),
+#' a `RasterLayer` or [SpatRaster] (according to the input `x` map)
 #' with the cumulative zone of influence or density of features. While the
 #' cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
 #' (creating values in the output map which might go well beyond 1), the
@@ -239,8 +240,8 @@
 #' summing 1), what created values smaller than one in the output map.
 #' if multiple `radius` values are given, a `RasterBrick` or multi-layer
 #' `SpatRaster`, with the cumulative ZoI or density maps for each ZoI radius. \cr
-#' If the computation is done in GRASS GIS, the output is name of
-#' the output raster map within the GRASS GIS location and mapset of the
+#' If the computation is done in GRASS GIS, the output is the name of
+#' the output raster map(s) within the GRASS GIS location and mapset of the
 #' current session. The user can retrieve these maps to R using
 #' [rgrass7::read_RAST()] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
