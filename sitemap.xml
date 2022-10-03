@@ -16,18 +16,6 @@
     <loc>https://ninanor.github.io/oneimpact/index.html</loc>
   </url>
   <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/cabins.gpkg.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/cabins_sample.gpkg.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/cabins_sample.tif.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/cabins_sample_count.tif.html</loc>
-  </url>
-  <url>
     <loc>https://ninanor.github.io/oneimpact/reference/calc_zoi.html</loc>
   </url>
   <url>
@@ -70,16 +58,34 @@
     <loc>https://ninanor.github.io/oneimpact/reference/reindeer_area.gpkg.html</loc>
   </url>
   <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/reindeer_cabins.gpkg.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/reindeer_roads_private.gpkg.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/reindeer_roads_public.gpkg.html</loc>
+  </url>
+  <url>
     <loc>https://ninanor.github.io/oneimpact/reference/rescale_coefficients.html</loc>
   </url>
   <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/roads_private.gpkg.html</loc>
-  </url>
-  <url>
-    <loc>https://ninanor.github.io/oneimpact/reference/roads_public.gpkg.html</loc>
-  </url>
-  <url>
     <loc>https://ninanor.github.io/oneimpact/reference/sample_area.gpkg.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/sample_area_cabins.gpkg.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/sample_area_cabins.tif.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/sample_area_cabins_count.tif.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/sample_area_roads.gpkg.html</loc>
+  </url>
+  <url>
+    <loc>https://ninanor.github.io/oneimpact/reference/sample_area_roads.tif.html</loc>
   </url>
   <url>
     <loc>https://ninanor.github.io/oneimpact/reference/set_points.html</loc>
