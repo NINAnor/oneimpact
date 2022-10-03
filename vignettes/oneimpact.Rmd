@@ -17,12 +17,12 @@ knitr::opts_chunk$set(
 # Introduction
 
 Anthropogenic disturbance often takes place in landscapes already affected by 
-Infrastructure development and land use change, leading to cumulative impacts on biodiversity. Typically, the impact of a given type of infrastructure is determined by computing 
+infrastructure development and land use change, leading to cumulative impacts on biodiversity. Typically, the impact of a given type of infrastructure is determined by computing 
 the distance to the nearest feature only, ignoring potential cumulative impacts of 
 multiple features, which can lead to severe underestimations. 
 The `oneimpact` package is a collection of tools and functions intended to aid 
 the estimation of cumulative impacts in ecological studies and environmental 
-impact assessments. In version 0.1.0, its main functions are related to the
+impact assessments. Its main functions are related to the
 calculation of zone of influence (ZoI) metrics based both
 on the nearest influence only and the cumulative influence of multiple features
 of a given type of infrastructure.
@@ -71,13 +71,14 @@ library(dplyr) # for data wrangling
 # Overview of the package
 
 The `oneimpact` package has two main functions to calculate zones of influence,
-the functions `calc_zoi_nearest()` and `calc_zoi_cumulative()`. Alternatively the
+the functions `calc_zoi_nearest()` and `calc_zoi_cumulative()`. Alternatively, the
 function `calc_zoi()` can calculate both ZoI metrics in the same run. 
 These functions' main arguments are the `type`, which defines the shape of the 
 spatial decay of the ZoI, and `radius`, which defines how far the influence
 expands in space (or how fast it decreases with distance). 
 
-Both functions can be run in R environment (R Core Team, 2021) and in GRASS GIS 
+Both functions can be run in [R environment](https://www.r-project.org/) 
+(R Core Team, 2021) and in [GRASS GIS](https://grass.osgeo.org/) 
 environment (GRASS Development Team, 2017). 
 This is defined by the parameter `where`. On the one hand, computations
 in R are generally fast and easy-to-use, since they make use of the optimized 
@@ -336,7 +337,7 @@ package `terra`:
 
 ```{r read_vect, fig.cap="Location of private cabins in a study area in Souther Norway."}
 # file path
-s <- system.file("vector/cabins_sample.gpkg", package = "oneimpact")
+s <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact")
 # read file
 cabins_vect <- terra::vect(s)
 # check
@@ -359,7 +360,7 @@ cabins per pixel, we use the function
 
 ```{r rasterize, fig.cap="Raster with number of private cabins per pixel, used as input for calculating the ZoI metrics."}
 # load grid
-s2 <- system.file("raster/cabins_sample.tif", package = "oneimpact")
+s2 <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 grid <- terra::rast(s2)
 # rasterize
 cabins_rast <- terra::rasterize(cabins_vect, grid, fun = length)
