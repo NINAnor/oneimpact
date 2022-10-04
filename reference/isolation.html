@@ -111,25 +111,25 @@ null cells if necessary, in an approach similar to set_points_sample.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_points.html">set_points</a></span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"random"</span>, centers <span class="op">=</span> <span class="fl">1</span>, width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu">isolation</span><span class="op">(</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.068346245 0.082614985 0.058174858 0.081319086 0.084725369 0.003557386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.064648763 0.021202851 0.053834044 0.029531420 0.033879227 0.010220870</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.016228332 0.041959348 0.023929249 0.037355686 0.005631982 0.065699796</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.029028647 0.026111269 0.035569254 0.025759145 0.068757861 0.042535760</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.021589793 0.091196855 0.051081656 0.037227706 0.057208288 0.084117433</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.061377869 0.050967412 0.010845361 0.047156657 0.042641689 0.075199765</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.024262825 0.018863884 0.009532514 0.016928864 0.020732317 0.051164018</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.086500614 0.044925689 0.084857044 0.060656043 0.064578039 0.084020264</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.125731939 0.052997937 0.065961365 0.010502925 0.037012062 0.066091656</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.035831316 0.059872024 0.041850616 0.063150720 0.029502709 0.089315538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.067119525 0.059721790 0.057099522 0.062249806 0.007762248 0.047642202</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.019330189 0.054723474 0.061159675 0.012392616 0.008340875 0.015367765</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.015273659 0.047029464 0.033976941 0.017484956 0.031713484 0.030418270</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.023547088 0.003290354 0.074986792 0.048155446 0.080053944 0.075107117</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.073839792 0.017840702 0.031622227 0.105977163 0.054306101 0.062912255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.005764827 0.040389356 0.087272434 0.025929543 0.039309890 0.037133091</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.053401900 0.038755540 0.066199279 0.043862414 0.057654788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.017666950 0.009092797 0.078068851 0.021604662 0.047562030 0.041876497</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.010556336 0.046137334 0.033261530 0.048958333 0.032230764 0.017242640</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.026685610 0.022648426 0.008349746 0.092816654 0.041093925 0.087713532</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.146771108 0.060128585 0.054317943 0.037917252 0.085144654 0.074076404</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.061891088 0.025468982 0.097488658 0.062055065 0.065189133 0.050065449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.111896616 0.032188257 0.028201728 0.081464273 0.007533156 0.019153153</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.080762720 0.010151377 0.028875860 0.099692920 0.033801212 0.020630361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.054326865 0.068740083 0.062712455 0.043170445 0.039463118 0.093214945</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.044239436 0.033300232 0.054272935 0.014141035 0.068997572 0.044618838</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.077809260 0.022730697 0.020157065 0.063675392 0.048380380 0.019857183</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.046770378 0.070229728 0.070760859 0.041873872 0.108073768 0.048346962</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.024527018 0.055274048 0.015738175 0.076875872 0.029874172 0.009053506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.064794325 0.060490169 0.056753492 0.104405905 0.033779053 0.062044506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.062297962 0.059960886 0.032283038 0.066352700 0.053104254 0.055045342</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.007565884 0.038760945 0.049280822 0.044115697 0.061212972 0.035289978</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.088237142 0.072079362 0.057909059 0.084081283 0.009192622 0.089909197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.134808202 0.068722732 0.008679640 0.043120955 0.027733662</span>
 <span class="r-in"><span><span class="fu">mean_isolation</span><span class="op">(</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04878451</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05362955</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

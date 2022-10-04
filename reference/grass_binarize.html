@@ -83,7 +83,6 @@ within this GRASS GIS mapset.</p>
 <span>  setnull <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bin_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  input_as_region <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -128,125 +127,156 @@ values that should be transformed into NULL/NA data (using the module
 have if their values are either "lower" or "equal or higher" <code>breaks</code>. By default, c(0, 1).</p></dd>
 
 
-<dt>quiet, overwrite</dt>
-<dd><p><code>[logical(1)]</code> <br> Whether the procedures is GRASS GIS should be run
-quetly (flag <code>quiet = TRUE</code>) and whether the output maps should be overwriten (flag <code>overwrite = TRUE</code>).</p></dd>
+<dt>input_as_region</dt>
+<dd><p><code>[logical(1)=FALSE]</code> <br> Should the input map <code>x</code> be
+used to redefine the working region in GRASS before raster binarization?
+If <code>TRUE</code>, <code>x</code> is used to define the region with <code>g.region</code>. If <code>FALSE</code>,
+the region previously defined in the GRASS GIS session is used for computation.
+Default is <code>FALSE</code>.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p><code>[logical(1)=FALSE]</code> <br> Should messages of the computation steps
+be printed in the prompt along the computation?</p></dd>
+
+
+<dt>overwrite</dt>
+<dd><p><code>[logical(1)]</code> <br> Whether the output maps should be overwriten
+(flag <code>overwrite = TRUE</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A binarized map with only two values (or a set of binarized maps if <code>length(breaks)</code> &gt; 1).</p>
+<p>A binarized map with only two values (or a set of binarized maps if <code>length(breaks)</code> &gt; 1)
+within the GRASS GIS mapset. In R, the output is a string with the name of this
+map.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For a similar procedure within R, use the function <code><a href="https://ropensci.github.io/landscapetools/reference/util_binarize.html" class="external-link">landscapetools::util_binarize()</a></code>
-or the raster algebra functions within the <a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a> and <a href="https://rdrr.io/pkg/terra/man/terra-package.html" class="external-link">terra</a> packages.</p>
+or the raster algebra functions within the raster and <a href="https://rdrr.io/pkg/terra/man/terra-package.html" class="external-link">terra</a> packages.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>See also <code><a href="https://ropensci.github.io/landscapetools/reference/util_binarize.html" class="external-link">landscapetools::util_binarize()</a></code>, <code><a href="https://ropensci.github.io/landscapetools/reference/util_classify.html" class="external-link">landscapetools::util_classify()</a></code>,
 and a documentation of raster algebra with <a href="https://rdrr.io/pkg/terra/man/terra-package.html" class="external-link">terra</a> <a href="https://rspatial.org/terra/pkg/4-algebra.html" class="external-link">here</a> and with
-<a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a> <a href="https://rspatial.org/raster/pkg/4-algebra.html" class="external-link">here</a>.</p></div>
+raster <a href="https://rspatial.org/raster/pkg/4-algebra.html" class="external-link">here</a>.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># libraries</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://grass.osgeo.org/" class="external-link">rgrass7</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘dplyr’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:raster’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, select, union</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:terra’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, union</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     filter, lag</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># connect to grass gis 7.8</span></span></span>
-<span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass78 --config path"</span>, intern <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"/data/grass"</span></span></span>
-<span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span></span></span>
-<span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"u_bb_cuminf"</span></span></span>
+<span class="r-in"><span><span class="co"># Load raster data</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># connect to grass gis 7.8 and create grass location</span></span></span>
+<span class="r-in"><span><span class="co"># For linux or within OSGeo4W shell</span></span></span>
+<span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass78 --config path"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># If you used the standalone installer in Windows</span></span></span>
+<span class="r-in"><span><span class="co"># grassdir &lt;- "C:\Programs\GRASS GIS 7.8" # Correct if the path is different</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"."</span> <span class="co"># create location and mapset in the working directory</span></span></span>
+<span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span> <span class="co"># name of the location</span></span></span>
+<span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"PERMANENT"</span> <span class="co"># name of the mapset</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/initGRASS.html" class="external-link">initGRASS</a></span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
+<span class="r-in"><span>                   SG <span class="op">=</span> <span class="va">cabins</span>, <span class="co"># use map to define location projection</span></span></span>
 <span class="r-in"><span>                   home <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                   override <span class="op">=</span> <span class="cn">T</span>,</span></span>
+<span class="r-in"><span>                   override <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
 <span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
 <span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass', reason 'Permission denied'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N', reason 'No such file or directory'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N//PERMANENT', reason 'No such file or directory'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot create dir '/data/grass/ETRS_33N//u_bb_cuminf', reason 'No such file or directory'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>running command 'g.version' had status 1</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (gv == "sh: line 1: g.version: command not found") {    compatible &lt;- as.logical(NA)    attr(compatible, "message") &lt;- gv    return(compatible)}:</span> argument is of length zero</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gisdbase    . </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> location    ETRS_33N/ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mapset      PERMANENT </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rows        361 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> columns     478 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> north       6658900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> south       6622800 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> west        146900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> east        194700 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nsres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ewres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection  +proj=utm +no_defs +zone=33 +a=6378137 +rf=298.257222101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +towgs84=0,0,0,0,0,0,0 +type=crs +to_meter=1 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># input map (not binarized)</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/gmeta.html" class="external-link">use_sp</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::use_sp():</span> sp or rgdal is not available. You need both packages installed.</span>
-<span class="r-in"><span><span class="va">name_var</span> <span class="op">&lt;-</span> <span class="st">"private_cabins_sub"</span></span></span>
+<span class="r-in"><span><span class="co"># add map to GRASS</span></span></span>
+<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="st">"cabins"</span>, flags <span class="op">=</span> <span class="st">"o"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Over-riding projection check</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importing raster map &lt;cabins&gt;...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SpatRaster read into GRASS using r.in.gdal from file </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># binarize the input map</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># map with only 1</span></span></span>
-<span class="r-in"><span><span class="va">cabins_bin1_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">name_var</span>, output <span class="op">=</span> <span class="st">"cabins_bin1"</span>,</span></span>
+<span class="r-in"><span><span class="va">cabins_bin1_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="st">"cabins"</span>, output <span class="op">=</span> <span class="st">"cabins_bin1"</span>,</span></span>
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("r.mapcalc.simple", expression = expr, a = x,     output = out, flags = flags):</span> The command:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> r.mapcalc.simple --quiet --overwrite expression="if(A &gt;= 1.000000, 1, 0)" a=private_cabins_sub output=cabins_bin1</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> access: No such file or directory</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
 <span class="r-in"><span><span class="co"># map with 0, 1</span></span></span>
-<span class="r-in"><span><span class="va">cabins_bin2_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">name_var</span>, output <span class="op">=</span> <span class="st">"cabins_bin2"</span>,</span></span>
+<span class="r-in"><span><span class="va">cabins_bin2_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="st">"cabins"</span>, output <span class="op">=</span> <span class="st">"cabins_bin2"</span>,</span></span>
 <span class="r-in"><span>                                   breaks <span class="op">=</span> <span class="fl">1</span>, null <span class="op">=</span> <span class="fl">0</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("g.copy", parameters = list(raster = paste0(x,     ",", inter_map)), flags = flags):</span> The command:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> g.copy --quiet --overwrite raster=private_cabins_sub,inter_map</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> access: No such file or directory</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: LOCATION &lt;/data/grass/ETRS_33N/&gt; not available</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;inter_map&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
-<span class="r-in"><span><span class="va">cabins_bin1_2</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">readRAST</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_bin2_name</span>, <span class="va">cabins_bin1_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 is transitioning to package rgrass for GRASS GIS 8.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> 'readRAST' is deprecated. Use 'read_RAST' instead.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'rast': error in evaluating the argument 'x' in selecting a method for function 'stack': object 'cabins_bin2_name' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin1_2</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Binarized map setting null to 0"</span>, <span class="st">"Binarized map keeping null"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_bin1_2' not found</span>
+<span class="r-in"><span><span class="va">cabins_bin1_2</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_bin1_name</span>, <span class="va">cabins_bin2_name</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                    return_format <span class="op">=</span> <span class="st">"terra"</span>, NODATA <span class="op">=</span> <span class="fl">255</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpKxqEnM/file540788458ea.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpKxqEnM/file540733176fac.grd&gt; created.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin1_2</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Binarized map keeping null"</span>, <span class="st">"Binarized map setting null to 0"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="grass_binarize-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#-------</span></span></span>
 <span class="r-in"><span><span class="co"># binarize the map with multiple break values</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># first create a continuous map</span></span></span>
-<span class="r-in"><span><span class="va">cont_map_name</span> <span class="op">&lt;-</span> <span class="fu">calc_influence_nearest</span><span class="op">(</span><span class="va">name_var</span>, zoi <span class="op">=</span> <span class="fl">1000</span>, transform <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
-<span class="r-in"><span>                                        where <span class="op">=</span> <span class="st">"GRASS"</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_influence_nearest(name_var, zoi = 1000, transform = "exp_decay",     where = "GRASS", overwrite = T):</span> could not find function "calc_influence_nearest"</span>
+<span class="r-in"><span><span class="va">cont_map_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="st">"cabins_bin1"</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
+<span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_bin1_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span><span class="co"># binarize</span></span></span>
-<span class="r-in"><span><span class="va">cabins_bin2vals_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">cont_map_name</span>, output <span class="op">=</span> <span class="st">"cabins_bin"</span>,</span></span>
-<span class="r-in"><span>                                       breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.5</span><span class="op">)</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in doGRASS(cmd, flags = flags, ..., parameters = parameters, echoCmd = echoCmd,     legacyExec = legacyExec):</span> object 'cont_map_name' not found</span>
+<span class="r-in"><span><span class="va">cabins_bin2vals_name</span> <span class="op">&lt;-</span> <span class="fu">grass_binarize</span><span class="op">(</span><span class="va">cont_map_name</span>, output <span class="op">=</span> <span class="st">"cabins_zoi1000_bin"</span>,</span></span>
+<span class="r-in"><span>                                       breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.8</span><span class="op">)</span>, overwrite <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
-<span class="r-in"><span><span class="va">cabins_bin2vals</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">readRAST</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cont_map_name</span>, <span class="va">cabins_bin2vals_name</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 is transitioning to package rgrass for GRASS GIS 8.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> 'readRAST' is deprecated. Use 'read_RAST' instead.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'rast': error in evaluating the argument 'x' in selecting a method for function 'stack': object 'cont_map_name' not found</span>
+<span class="r-in"><span><span class="va">cabins_bin2vals</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cont_map_name</span>, <span class="va">cabins_bin2vals_name</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                      return_format <span class="op">=</span> <span class="st">"terra"</span>, NODATA <span class="op">=</span> <span class="fl">255</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpKxqEnM/file5407423ee8a6.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpKxqEnM/file54073d773214.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpKxqEnM/file54072568c579.grd&gt; created.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin2vals</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Original map"</span>,</span></span>
 <span class="r-in"><span>              <span class="st">"Binarized map, break = 0.3"</span>,</span></span>
 <span class="r-in"><span>              <span class="st">"Binarized map, break = 0.5"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_bin2vals' not found</span>
+<span class="r-plt img"><img src="grass_binarize-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

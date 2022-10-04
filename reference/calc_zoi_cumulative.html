@@ -148,6 +148,7 @@ location/mapset, and might be retrieved to R through the
 <span>  na.policy <span class="op">=</span> <span class="st">"omit"</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  g_module <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"r.mfilter"</span>, <span class="st">"r.resamp.filter"</span>, <span class="st">"r.neighbors"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  g_parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  g_output_map_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  g_input_as_region <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  g_remove_intermediate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -278,6 +279,13 @@ through the <code><a href="https://rdrr.io/pkg/terra/man/focal.html" class="exte
 <dd><p><code>[character(1)="r.mfilter"]{"r.mfilter", "r.resamp.filter", "r.neighbors"}</code> <br>
 If <code>where = "GRASS"</code>, which algorithm should be used to compute the cumulative
 ZoI? See details for their description.</p></dd>
+
+
+<dt>g_parallel</dt>
+<dd><p><code>[logical(1)=TRUE]</code> <br> If the <code>r.mfilter</code> tool is used for
+computing the cumulative ZoI in GRASS GIS, <code>g_parallel</code> tells if parallelization
+should be used. Default is <code>TRUE</code>. The option is ignored for other GRASS tools
+(parameter <code>g_module</code>) and for computation in R (<code>where = "R"</code>).</p></dd>
 
 
 <dt>g_output_map_name</dt>
@@ -440,57 +448,50 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load raster data</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/cabins_count.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins_count.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [rast] filename is empty. Provide a valid filename</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate cumulative zone of influence for multiple influence radii,</span></span></span>
 <span class="r-in"><span><span class="co"># using a Gaussian filter</span></span></span>
 <span class="r-in"><span><span class="va">zoi_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cumzoi_gauss</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span><span class="va">cabins</span>, type <span class="op">=</span> <span class="st">"Gauss"</span>, radius <span class="op">=</span> <span class="va">zoi_values</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'ext': object 'cabins' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cumzoi_gauss</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cumzoi_gauss' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate cumulative zone of influence for multiple influence radii,</span></span></span>
 <span class="r-in"><span><span class="co"># using a circle neighborhood</span></span></span>
 <span class="r-in"><span><span class="va">cumzoi_circle</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span><span class="va">cabins</span>, type <span class="op">=</span> <span class="st">"circle"</span>, radius <span class="op">=</span> <span class="va">zoi_values</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'ext': object 'cabins' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cumzoi_circle</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cumzoi_circle' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate cumulative zone of influence for multiple influence radii,</span></span></span>
 <span class="r-in"><span><span class="co"># using an exponential decay neighborhood</span></span></span>
 <span class="r-in"><span><span class="va">cumzoi_exp</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span><span class="va">cabins</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span>, radius <span class="op">=</span> <span class="va">zoi_values</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'ext': object 'cabins' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cumzoi_exp</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cumzoi_exp' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># comparing</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cumzoi_gauss</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, <span class="va">cumzoi_circle</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, <span class="va">cumzoi_exp</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gaussian 1000m"</span>,</span></span>
 <span class="r-in"><span>              <span class="st">"Circle 1000m"</span>,</span></span>
 <span class="r-in"><span>              <span class="st">"Exponential decay 1000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cumzoi_gauss' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate cumulative influence for a single zone of influence</span></span></span>
 <span class="r-in"><span><span class="co"># using a user-defined filter</span></span></span>
 <span class="r-in"><span><span class="va">my_filter</span> <span class="op">&lt;-</span> <span class="fu"><a href="filter_create.html">filter_create</a></span><span class="op">(</span><span class="va">cabins</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"rectangle"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in class(r) %in% c("RasterLayer", "RasterBrick", "RasterStack",     "SpatRaster"):</span> object 'cabins' not found</span>
 <span class="r-in"><span><span class="va">cumzoi_user</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span><span class="va">cabins</span>, type <span class="op">=</span> <span class="st">"mfilter"</span>, radius <span class="op">=</span> <span class="va">my_filter</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'ext': object 'cabins' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cumzoi_user</span>, main <span class="op">=</span> <span class="st">"User-defined rectangular filter"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cumzoi_user' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate density with 1000m radius using an exp_decay neighborhood</span></span></span>
 <span class="r-in"><span><span class="va">density_exp</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span><span class="va">cabins</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                   output_type <span class="op">=</span> <span class="st">"density"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'ext': object 'cabins' not found</span>
 <span class="r-in"><span><span class="co"># compare</span></span></span>
 <span class="r-in"><span><span class="co"># note the difference in the color scales</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cumzoi_exp</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, <span class="va">density_exp</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZoI 1000m"</span>, <span class="st">"Density 1000m"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cumzoi_exp' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#--------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Running calc_zoi_cumulative through GRASS GIS</span></span></span>
@@ -500,9 +501,8 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load raster data</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [rast] filename is empty. Provide a valid filename</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># connect to grass gis 7.8 and create grass location</span></span></span>
 <span class="r-in"><span><span class="co"># For linux or within OSGeo4W shell</span></span></span>
@@ -520,27 +520,51 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
 <span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
 <span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::initGRASS(gisBase = grassdir, SG = cabins, home = tempdir(),     override = TRUE, gisDbase = gisDB, location = loc, mapset = ms):</span> object 'cabins' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gisdbase    . </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> location    ETRS_33N/ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mapset      PERMANENT </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rows        361 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> columns     478 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> north       6658900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> south       6622800 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> west        146900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> east        194700 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nsres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ewres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection  +proj=utm +no_defs +zone=33 +a=6378137 +rf=298.257222101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +towgs84=0,0,0,0,0,0,0 +type=crs +to_meter=1 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># define map name within GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="va">cabins_g</span> <span class="op">&lt;-</span> <span class="st">"cabins_example"</span></span></span>
 <span class="r-in"><span><span class="co"># add file to GRASS GIS mapset</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"o"</span>, <span class="st">"overwrite"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::write_RAST(cabins, cabins_g, flags = c("o", "overwrite")):</span> object 'cabins' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Over-riding projection check</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importing raster map &lt;cabins_example&gt;...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SpatRaster read into GRASS using r.in.gdal from file </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check</span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span>, col <span class="op">=</span> <span class="st">"black"</span>,</span></span>
 <span class="r-in"><span>            main <span class="op">=</span> <span class="st">"Map of tourist cabins"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-7.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># define region in GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html" class="external-link">execGRASS</a></span><span class="op">(</span><span class="st">"g.region"</span>, raster <span class="op">=</span> <span class="va">cabins_g</span>,</span></span>
 <span class="r-in"><span>                   flags <span class="op">=</span> <span class="st">"p"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("g.region", raster = cabins_g, flags = "p"):</span> The command:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> g.region -p raster=cabins_example</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: Unable to open element file &lt;&gt; for &lt;DEFAULT_WIND@PERMANENT&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection: 99 (unknown)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> zone:       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> datum:      etrs89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ellipsoid:  grs80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> north:      6658900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> south:      6622800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> west:       146900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> east:       194700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nsres:      100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ewres:      100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rows:       361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cols:       478</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cells:      172558</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># Guarantee input map is binary (zeros as background)</span></span></span>
@@ -548,26 +572,20 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="co"># Input map name within GRASS GIS - binary map</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin_g</span> <span class="op">&lt;-</span> <span class="fu"><a href="grass_binarize.html">grass_binarize</a></span><span class="op">(</span><span class="va">cabins_g</span>, breaks <span class="op">=</span> <span class="fl">1</span>, output <span class="op">=</span> <span class="st">"cabins_example_bin"</span>,</span></span>
 <span class="r-in"><span>                               null <span class="op">=</span> <span class="fl">0</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The command:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> g.copy --quiet --overwrite raster=cabins_example,inter_map</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> produced at least one warning during execution:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> WARNING: &lt;cabins_example&gt; not found</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WARNING: &lt;cabins_example&gt; not found</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::execGRASS("r.null", parameters = parms, flags = qq):</span> The command:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> r.null --quiet map=inter_map null=0</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: Raster map &lt;inter_map&gt; not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;inter_map&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check input</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="st">"cabins_example_bin"</span>, return_format <span class="op">=</span> <span class="st">"terra"</span>, NODATA <span class="op">=</span> <span class="fl">255</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in execGRASS("r.out.gdal", input = vname[i], output = tmplist[[i]],     format = drv, nodata = NODATAi, flags = flags, ignore.stderr = ignore.stderr):</span> The command:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> r.out.gdal --overwrite -c -m input=cabins_example_bin output=/tmp/RtmpDeM1ur/file545f161b6b9b.grd format=RRASTER nodata=255</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: Raster map or group &lt;cabins_example_bin&gt; not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpKxqEnM/file54074bcc6adb.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lightyellow"</span>, <span class="st">"black"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Binarized map of cabins"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_bin' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># Using 'r.mfilter' algorithm (default)</span></span></span>
@@ -578,27 +596,27 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                                where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'cabins_bin_g' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span><span class="co"># Bartlett decay</span></span></span>
 <span class="r-in"><span><span class="va">barlett_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                    type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                                    where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                    overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'cabins_bin_g' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span><span class="co"># Gaussian decay</span></span></span>
 <span class="r-in"><span><span class="va">gauss_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'cabins_bin_g' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Threshold decay (circle, step)</span></span></span>
 <span class="r-in"><span><span class="va">threshold_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>, radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                      type <span class="op">=</span> <span class="st">"threshold"</span>,</span></span>
 <span class="r-in"><span>                                      where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                      overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'cabins_bin_g' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">all_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">exp_name</span>, <span class="va">barlett_name</span>, <span class="va">gauss_name</span>, <span class="va">threshold_name</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'exp_name' not found</span>
@@ -619,7 +637,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"exp_decay"</span>, output_type <span class="op">=</span> <span class="st">"density"</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                  overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'cabins_bin_g' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cabins_density</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">exp_name_d</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rgrass7::read_RAST(exp_name_d, return_format = "terra"):</span> object 'exp_name_d' not found</span>
@@ -639,7 +657,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                             where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                             module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
 <span class="r-in"><span>                                             overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'cabins_bin_g' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, g_parallel = g_parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'filt' not found</span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">rectangle_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Rectangle ZoI 1000m"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'rectangle_resamp_filt' not found</span>
@@ -652,7 +670,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                            where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                            module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
 <span class="r-in"><span>                                            overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in calc_zoi_cumulative_grass(x = x, radius = radius, type = type,     output_type = output_type, g_module = g_module, zoi_limit = zoi_limit,     min_intensity = min_intensity, max_dist = max_dist, extent_x_cut = extent_x_cut,     extent_y_cut = extent_y_cut, parallel = parallel, g_output_map_name = g_output_map_name,     g_input_as_region = g_input_as_region, g_remove_intermediate = g_remove_intermediate,     g_overwrite = g_overwrite, verbose = verbose, ...):</span> object 'cabins_bin_g' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in oneimpact::filter_create(r = resolution, radius = radius, type = type,     zoi_limit = zoi_limit, zoi_hl_ratio = zoi_hl_ratio, half_life = half_life,     max_dist = max_dist, min_intensity = min_intensity, divisor = divisor,     normalize = normalize, save_txt = TRUE, save_file = filter_file,     ...):</span> unused arguments (module = "r.resamp.filter", overwrite = TRUE, quiet = FALSE)</span>
 <span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Bartlett ZoI 1000m"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'bartlett_resamp_filt' not found</span>

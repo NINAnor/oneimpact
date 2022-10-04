@@ -147,6 +147,19 @@ to avoid edge effects when calculating densities using neighborhood analysis.</p
 the output list. This is <code>NULL</code> for <code>method = "mobsim"</code>.</p></dd>
 
 
+<dt>use_terra</dt>
+<dd><p><code>[logical(1)=TRUE]</code> <br> If <code>TRUE</code> (default), the <code>rast</code> element
+created from the points is a <code>SpatRaster</code> object
+from <code>terra</code> package is created. If <code>FALSE</code>, it is a <code>RasterLayer</code> from <code>raster</code> package
+is created.</p></dd>
+
+
+<dt>crs</dt>
+<dd><p><code>[character(1)]</code> <br> Specification for the coordinate reference system
+of the <code>rast</code> object created from the points. Default is
+<code>"+proj=utm +zone=1 +datum=WGS84"</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other arguments passed as input to the NLMR functions, defined by the <code>nlmr_function</code>
 argument.</p></dd>
@@ -189,6 +202,11 @@ a function from the <a href="https://ropensci.github.io/NLMR/reference/NLMR-pack
 <span class="r-in"><span><span class="co"># using mobsim</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MoBiodiv/mobsim" class="external-link">mobsim</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘mobsim’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:oneimpact’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     dist_decay</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
