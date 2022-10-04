@@ -247,15 +247,11 @@ exp_decay(15, radius = 10, zoi_limit = 0.01) # beyond the radius
 
 We visualize the function shape in 1 dimension space:
 
-```{r plot_exp, message=FALSE, error=FALSE, warning=FALSE, include=FALSE}
+```{r plot_exp, message=FALSE, error=FALSE, warning=FALSE}
 # threshold ZoI with radius = 10
-p <- plot_zoi1d(points = 0, radius = 10, fun = exp_decay, range_plot = c(-20, 20)) +
+plot_zoi1d(points = 0, radius = 10, fun = exp_decay, range_plot = c(-20, 20)) +
   geom_hline(yintercept = 0.05, linetype = 2, color = "grey") +
   geom_vline(xintercept = c(-10, 10), linetype = 2, color = "grey")
-```
-
-```{r plot_exp2, message=FALSE, error=FALSE, warning=FALSE}
-p
 ```
 
 <!-- fig.cap="Figure 3. Illustration of an exponential decay ZoI with ZoI radius = 10 and ZoI limit = 0.05." -->
@@ -282,11 +278,9 @@ We visualize the function shape in 1 dimension space:
 
 ```{r plot_gauss, message=FALSE, error=FALSE, warning=FALSE}
 # threshold ZoI with radius = 10
-p <- plot_zoi1d(points = 0, radius = 10, fun = gaussian_decay, range_plot = c(-20, 20)) +
+plot_zoi1d(points = 0, radius = 10, fun = gaussian_decay, range_plot = c(-20, 20)) +
   geom_hline(yintercept = 0.05, linetype = 2, color = "grey") +
   geom_vline(xintercept = c(-10, 10), linetype = 2, color = "grey")
-
-p
 ```
 
 <!-- fig.cap="Figure 4. Illustration of a Gaussian decay ZoI with ZoI radius = 10 and ZoI limit = 0.05." -->
@@ -316,13 +310,11 @@ the ZoI of the nearest feature alone by setting `zoi_metric = "nearest"`:
 
 ```{r zoi_metrics_near}
 disturbance_locations <- c(0, 2, 8, 12)
-p <- plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
+plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
            zoi_metric = "nearest", range_plot = c(-10, 20)) +
   labs(x = "Space") +
   ylim(0, 1.5) +
   geom_vline(xintercept = disturbance_locations, linetype = 2, color = "grey")
-
-print(p)
 ```
 
 <!-- fig.cap="Figure 5. Metric of ZoI of the neareast feature for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZoI with radius = 3." -->
@@ -334,13 +326,11 @@ Now we do the same but considering that the ZoI of each feature accumulates. We 
 setting `zoi_metric = "cumulative"` in `plot_zoi1d()`:
 
 ```{r zoi_metrics_cum}
-p <- plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
+plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
            zoi_metric = "cumulative", range_plot = c(-10, 20)) +
   labs(x = "Space") +
   ylim(0, 1.5) +
   geom_vline(xintercept = disturbance_locations, linetype = 2, color = "grey")
-
-p
 ```
 
 <!-- fig.cap="Figure 6. Metric of cumulative ZoI for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZoI with radius = 3."} -->
