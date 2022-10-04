@@ -39,12 +39,23 @@
 #'
 #' @param type `[character(1)="circle"]{"circle", "Gauss", "rectangle",
 #' "exp_decay", "bartlett", "threshold", "step"}` \cr
-#' Type of filter (shape of the zone of influence) used to calculate the
-#' ZoI.
+#' Shape of the zone of influence. See [oneimpact::calc_zoi_nearest()] for
+#' details.
 #'
 #' @param zoi_metric `[character(1)="all"]{"all", "nearest", "cumulative"}` \cr
 #' Which metric of zone of influence should be computed. Either `"all"`, `"nearest"`,
 #' or `"cumulative"`.
+#'
+#' @param output_type `[character(1)="cumulative_zoi"]{"cumulative_zoi",
+#' "density"}` \cr
+#' For the cumulative ZoI, if `output_type = "cumulative_zoi"` (default), the ZoI weight
+#' matrix not not normalized, i.e. the maximum value of the weight matrix at the
+#' central pixel value is always 1. This means the values of the input map are
+#' summed (considering a decay with distance within the neighborhood) and the
+#' output map presents values higher than 1. If `output_type = "density"`, the
+#' weight matrix is normalized before the filtering process, leading to values
+#' in the outmap map generally lower than 1. This parameter is ignored for
+#' the ZoI of the nearest feature.
 #'
 #' @returns If the calculations are performed in R (`where = "R"`),
 #' a `RasterLayer`/`RasterStack` or [SpatRaster] object
@@ -72,6 +83,7 @@ calc_zoi <- function(x,
                      zoi_metric = c("all", "nearest", "cumulative")[1],
                      where = c("R", "GRASS")[1],
                      zeroAsNA = TRUE,
+                     output_type = c("cumulative_zoi", "density")[1],
                      ...) {
 
   # check if the input is a terra or raster object
@@ -103,6 +115,7 @@ calc_zoi <- function(x,
                                         radius = radius,
                                         type = type,
                                         zeroAsNA = !zeroAsNA,
+                                        output_type = output_type,
                                         ...)
   }
 
@@ -112,10 +125,14 @@ calc_zoi <- function(x,
       if(use_terra) r_stk <- do.call(c, list(nearest_r, cumulative_r)) else
         r_stk <- raster::stack(nearest_r, cumulative_r)
     } else {
-      r_stk <- do.call(c, list(nearest_r, cumulative_r))
+      r_stk <- c(nearest_r, cumulative_r)
     }
   } else {
-    r_stk <- c(nearest_r, cumulative_r)
+    if(zoi_metric %in% c("near", "nearest", "dist", "distance")) {
+      r_stk <- nearest_r
+    } else {
+      r_stk <- cumulative_r
+    }
   }
 
   r_stk

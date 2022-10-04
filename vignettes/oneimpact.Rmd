@@ -247,7 +247,7 @@ exp_decay(15, radius = 10, zoi_limit = 0.01) # beyond the radius
 
 We visualize the function shape in 1 dimension space:
 
-```{r plot_exp, message=FALSE, error=FALSE, warning=FALSE, eval=TRUE, results='hide'}
+```{r plot_exp, message=FALSE, error=FALSE, warning=FALSE, include=FALSE}
 # threshold ZoI with radius = 10
 p <- plot_zoi1d(points = 0, radius = 10, fun = exp_decay, range_plot = c(-20, 20)) +
   geom_hline(yintercept = 0.05, linetype = 2, color = "grey") +
@@ -552,7 +552,7 @@ zoi_exp_cumul <- calc_zoi_cumulative(cabins_rast, radius = radii,
 plot(zoi_all)
 ```
 
-```{r calc_zoi_data_old, eval=FALSE, echo=FALSE}
+```{r calc_zoi_data, eval=TRUE}
 # radii
 radii <- c(500, 1000, 1500)
 # exp decay ZoI - both nearest and cumulative

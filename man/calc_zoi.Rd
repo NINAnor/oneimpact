@@ -12,6 +12,7 @@ calc_zoi(
   zoi_metric = c("all", "nearest", "cumulative")[1],
   where = c("R", "GRASS")[1],
   zeroAsNA = TRUE,
+  output_type = c("cumulative_zoi", "density")[1],
   ...
 )
 }
@@ -39,12 +40,22 @@ It can be a single value or a vector of values, in which case
 several ZoI layers (one for each radius) are created.}
 
 \item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step"\}} \cr
-Type of filter (shape of the zone of influence) used to calculate the
-ZoI.}
+Shape of the zone of influence. See \code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}} for
+details.}
 
 \item{zoi_metric}{\verb{[character(1)="all"]\{"all", "nearest", "cumulative"\}} \cr
 Which metric of zone of influence should be computed. Either \code{"all"}, \code{"nearest"},
 or \code{"cumulative"}.}
+
+\item{output_type}{\verb{[character(1)="cumulative_zoi"]\{"cumulative_zoi", "density"\}} \cr
+For the cumulative ZoI, if \code{output_type = "cumulative_zoi"} (default), the ZoI weight
+matrix not not normalized, i.e. the maximum value of the weight matrix at the
+central pixel value is always 1. This means the values of the input map are
+summed (considering a decay with distance within the neighborhood) and the
+output map presents values higher than 1. If \code{output_type = "density"}, the
+weight matrix is normalized before the filtering process, leading to values
+in the outmap map generally lower than 1. This parameter is ignored for
+the ZoI of the nearest feature.}
 }
 \value{
 If the calculations are performed in R (\code{where = "R"}),
@@ -77,6 +88,47 @@ feature goes. To see more information on each ZoI metric, see
 }
 \examples{
 library(terra)
+
+# Load raster data
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
+cabins <- terra::rast(f)
+
+#---
+# check background values
+terra::freq(cabins) ## No zeros, background is NA
+
+# compute both Zoi metrics with Gaussian decay, radius = 1000 m
+# since the background is NA, we use zeroAsNA = FALSE
+zoi_metrics <- calc_zoi(cabins,
+                        radius = 1000,
+                        type = "Gauss",
+                        zeroAsNA = FALSE)
+# check
+zoi_metrics
+# plot
+plot(zoi_metrics)
+
+#-------
+
+# Load raster data
+f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact")
+cabins_count <- terra::rast(f)
+
+# check background values
+terra::freq(cabins_count) ## Places with no infrastructure have value zero
+
+# compute both Zoi metrics with linear decay, varying radius from 1000 m to 3000 m
+# since the background is zero, we use zeroAsNA = TRUE
+zoi_metrics2 <- calc_zoi(cabins_count,
+                         radius = c(1000, 2000, 3000),
+                         type = "bartlett",
+                         zeroAsNA = TRUE,
+                         output_type = "density")
+
+# check
+zoi_metrics2
+# plot
+plot(zoi_metrics2)
 }
 \seealso{
 Fore more details on each of the ZoI metrics,

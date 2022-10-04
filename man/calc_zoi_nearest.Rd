@@ -55,6 +55,7 @@ several ZoI layers (one for each radius) are created. This parameter is
 ignored if \code{type = "euclidean"}, \code{type = "log"}, or \code{type = "sqrt"}.}
 
 \item{type}{\verb{[character(1)="Gauss"]\{"Gauss", "exp_decay", "bartlett", "threshold", "step", "euclidean", "log","sqrt"\}} \cr
+Shape of the zone of influence: \cr
 \itemize{
 \item If \code{Gauss} or \code{half_norm}, the ZoI follows a half-normal shape: \cr
 \code{intercept * exp(-lambda * (euclidean_distance^2))}. \code{intercept} and \code{lambda} are
@@ -376,7 +377,7 @@ library(terra)
 library(sp)
 
 # Load raster data
-f <- system.file("raster/cabins.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # connect to grass gis 7.8 and create grass location

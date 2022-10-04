@@ -76,6 +76,7 @@
 #'
 #' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
 #' "threshold", "step", "euclidean", "log","sqrt"}` \cr
+#' Shape of the zone of influence: \cr
 #' \itemize{
 #'   \item If `Gauss` or `half_norm`, the ZoI follows a half-normal shape: \cr
 #'   `intercept * exp(-lambda * (euclidean_distance^2))`. `intercept` and `lambda` are
@@ -348,9 +349,9 @@ calc_zoi_nearest_r <- function(
   r0 <- x
   if(zeroAsNA) {
     if(use_terra) {
-      r0 <- terra::classify(r0, cbind(NA, 0)) # binary map
+      r0 <- terra::classify(r0, cbind(0, NA)) # binary map
     } else {
-      r0 <- raster::reclassify(r0, cbind(NA, 0)) # binary map
+      r0 <- raster::reclassify(r0, cbind(0, NA)) # binary map
     }
   }
 
