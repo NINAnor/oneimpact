@@ -1,7 +1,6 @@
 # Running calc_zoi_nearest through GRASS GIS
 library(rgrass7)
 library(terra)
-library(sp)
 
 # Load raster data
 f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
@@ -84,5 +83,5 @@ title_plot <- c("Euclidean distance", "Log distance (base 10)",
 terra::plot(cabins_zoi_nearest, main = title_plot)
 
 # remove rasters created
-to_remove_rast <- c(all_names)
-rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
+# to_remove_rast <- c(all_names)
+# rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")

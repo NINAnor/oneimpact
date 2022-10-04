@@ -141,8 +141,6 @@
 #' interval $[0,1]$. If `normalize = TRUE`, the divisor is set to `n*n`.
 #' @param parallel `[logical(1)=TRUE]` \cr Whether the computation should be paralelized or not (details in
 #' the documentation of the [`r.mfilter`](https://grass.osgeo.org/grass78/manuals/r.mfilter.html) module).
-#' @param separator `[character(1)=" "]` \cr Separator between values of the matrix, within each line. Default is
-#' a space.
 #'
 #' @return A matrix with the weight values. In the context of cumulative impact assessment, we call it a
 #' zone of influence (ZoI) matrix used to compute the cumulative zone of influence. If `save_txt = TRUE`,

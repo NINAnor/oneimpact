@@ -20,6 +20,7 @@ calc_zoi_cumulative(
   na.policy = "omit",
   na.rm = TRUE,
   g_module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
+  g_parallel = TRUE,
   g_output_map_name = NULL,
   g_input_as_region = FALSE,
   g_remove_intermediate = TRUE,
@@ -124,6 +125,11 @@ through the \code{\link[terra:focal]{terra::focal()}} function. Only used when \
 \item{g_module}{\verb{[character(1)="r.mfilter"]\{"r.mfilter", "r.resamp.filter", "r.neighbors"\}} \cr
 If \code{where = "GRASS"}, which algorithm should be used to compute the cumulative
 ZoI? See details for their description.}
+
+\item{g_parallel}{\verb{[logical(1)=TRUE]} \cr If the \code{r.mfilter} tool is used for
+computing the cumulative ZoI in GRASS GIS, \code{g_parallel} tells if parallelization
+should be used. Default is \code{TRUE}. The option is ignored for other GRASS tools
+(parameter \code{g_module}) and for computation in R (\code{where = "R"}).}
 
 \item{g_output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map. Only
 used when \code{where = "GRASS"}. If \code{NULL} (default), a standard name is created
@@ -286,7 +292,7 @@ such as mean, median, standard deviation etc.
 library(terra)
 
 # Load raster data
-f <- system.file("raster/cabins_count.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # calculate cumulative zone of influence for multiple influence radii,
@@ -331,7 +337,7 @@ library(rgrass7)
 library(terra)
 
 # Load raster data
-f <- system.file("raster/cabins.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # connect to grass gis 7.8 and create grass location

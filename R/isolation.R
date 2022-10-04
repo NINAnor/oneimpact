@@ -38,7 +38,8 @@ isolation <- function(x, n_rand = 100, ext = c(0, 1, 0, 1), lonlat = FALSE) {
   # n_rand cannot be the same of the number of points in x
   if(n_rand == nrow(x)) n_rand <- n_rand + 1
   # create random points
-  rand <- data.frame(x = runif(n_rand, ext[1], ext[2]), y = runif(n_rand, ext[3], ext[4]))
+  rand <- data.frame(x = stats::runif(n_rand, ext[1], ext[2]),
+                     y = stats::runif(n_rand, ext[3], ext[4]))
   # calc dist
   dists  <- raster::pointDistance(x, rand, lonlat = lonlat)
   # min dist (nearest neighbor)

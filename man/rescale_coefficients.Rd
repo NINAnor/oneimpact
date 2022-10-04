@@ -6,6 +6,35 @@
 \usage{
 rescale_coefficients(model, data)
 }
+\arguments{
+\item{model}{\cr Fitted model, i.e. the object created by a model fit funtion
+such as "lm", "glm", or "coxph".}
+
+\item{data}{\cr The original \code{data.frame} with the data used to fit the model.}
+}
+\value{
+A vector of rescaled coefficients for the input model.
+}
 \description{
-Rescale standardized coefficients back to their original range after model fitting
+Predictor variables are often standardized to be included in statistical models
+and allow comparison of the effect sizes for different predictors. This functions
+scales the fitted models coefficients back to the original scale of the predictors,
+to allow ecological interpretation.
+}
+\examples{
+library(dplyr)
+
+# standardize predictors
+iris_std <- iris |>
+  dplyr::mutate(across(2:4, ~ scale(.x)))
+# fit model
+m1 <- lm(Sepal.Length ~ Petal.Length + Species, data = iris_std)
+summary(m1)
+
+# rescale coefficients
+resc_cf <- rescale_coefficients(m1, iris)
+
+# compare with model with no standardization of predictors
+coef(lm(Sepal.Length ~ Petal.Length + Species, data = iris))
+
 }

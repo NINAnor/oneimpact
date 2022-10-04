@@ -66,7 +66,7 @@ filter_save <- function(
   # define the divisor
   DIV <- divisor
   # if normalize = TRUE, replace DIV
-  if(normalize) DIV <- size_pix**2
+  if(normalize) DIV <- nrow(filt)*ncol(filt)
 
   # should the computation be parallelized?
   if(parallel) TYP <- "P" else TYP <- "S"

@@ -6,7 +6,7 @@
 #' will be rescaled.
 #' @param to `[numeric(2)=c(0,1)]` \cr Range of final values (in the format c(min,max))
 #' to which the raster will be rescaled.
-#' @param to `[numeric(2)=NULL]` \cr Range of original values (in the format c(min,max))
+#' @param from `[numeric(2)=NULL]` \cr Range of original values (in the format c(min,max))
 #' from which the raster will be rescaled. If `NULL`, the minimum and maximum values
 #' from `x` are used.
 #'
@@ -21,8 +21,8 @@ raster_rescale <- function(x, to = c(0, 1), from = NULL) {
   # if original miximum and maximum are not given,
   # get them from the layers
   if(is.null(from)) {
-    mins <- global(x, "min", na.rm = T)[,1] # cabins@ptr$range_min?
-    maxs <- global(x, "max", na.rm = T)[,1] # cabins@ptr$range_max?
+    mins <- terra::global(x, "min", na.rm = T)[,1] # cabins@ptr$range_min?
+    maxs <- terra::global(x, "max", na.rm = T)[,1] # cabins@ptr$range_max?
   } else {
     mins <- from[1]
     maxs <- from[2]
@@ -30,9 +30,9 @@ raster_rescale <- function(x, to = c(0, 1), from = NULL) {
 
   # rescale
   x_out <- mapply(function(a, b, c) {
-    values(a) <- scales::rescale(values(a), to = to, from = c(b, c))
+    terra::values(a) <- scales::rescale(values(a), to = to, from = c(b, c))
     a
-  }, a = terra::split(x, 1:nlyr(x)), b = mins, c = maxs)
+  }, a = terra::split(x, 1:terra::nlyr(x)), b = mins, c = maxs)
 
   # combine SpatRasters
   x_out <- do.call(c, x_out)

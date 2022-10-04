@@ -2,7 +2,7 @@
 library(terra)
 
 # Load raster data
-f <- system.file("raster/cabins_count.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # calculate cumulative zone of influence for multiple influence radii,

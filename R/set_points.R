@@ -54,6 +54,13 @@
 #' to avoid edge effects when calculating densities using neighborhood analysis.
 #' @param return_base_raster `[logical(1)=TRUE]` \cr Whether the base_raster should be returned in
 #' the output list. This is `NULL` for `method = "mobsim"`.
+#' @param use_terra `[logical(1)=TRUE]` \cr If `TRUE` (default), the `rast` element
+#' created from the points is a `SpatRaster` object
+#' from `terra` package is created. If `FALSE`, it is a `RasterLayer` from `raster` package
+#' is created.
+#' @param crs `[character(1)]` \cr Specification for the coordinate reference system
+#' of the `rast` object created from the points. Default is
+#' `"+proj=utm +zone=1 +datum=WGS84"`.
 #' @param ... Other arguments passed as input to the NLMR functions, defined by the `nlmr_function`
 #' argument.
 #'

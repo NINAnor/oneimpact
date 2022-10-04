@@ -61,6 +61,15 @@ to avoid edge effects when calculating densities using neighborhood analysis.}
 \item{return_base_raster}{\verb{[logical(1)=TRUE]} \cr Whether the base_raster should be returned in
 the output list. This is \code{NULL} for \code{method = "mobsim"}.}
 
+\item{use_terra}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE} (default), the \code{rast} element
+created from the points is a \code{SpatRaster} object
+from \code{terra} package is created. If \code{FALSE}, it is a \code{RasterLayer} from \code{raster} package
+is created.}
+
+\item{crs}{\verb{[character(1)]} \cr Specification for the coordinate reference system
+of the \code{rast} object created from the points. Default is
+\code{"+proj=utm +zone=1 +datum=WGS84"}.}
+
 \item{...}{Other arguments passed as input to the NLMR functions, defined by the \code{nlmr_function}
 argument.}
 }

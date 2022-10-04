@@ -40,6 +40,10 @@ the ZoI plot.}
 \item{step}{\verb{[numeric(1)=0.01]} \cr Size of the step increment used to define the series
 of x positions for which the ZoI is computed, within the x range defined by \code{range_plot}.}
 
+\item{na.rm}{\verb{[logical(1)=TRUE]} \cr Should \code{NA} values be removed when computing
+either the sum (for the cumulative ZoI) or the maximum (for the ZoI of the nearest
+feature)?}
+
 \item{return_df}{\verb{[logical(1)=FALSE]} \cr If TRUE, a \code{data.frame} with \code{x} values and their
 corresponding ZoI values is returned, besides the plot.}
 

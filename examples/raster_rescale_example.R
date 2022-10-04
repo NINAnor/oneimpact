@@ -1,11 +1,11 @@
 library(terra)
 
-f <- system.file("raster/cabins.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # calculate influence
 ni <- calc_zoi_nearest(cabins, radius = 1000, type = "exp_decay")
-ci <- calc_zoi_cumulative(cabins, zoi_radius = 1000, type = "exp_decay",
+ci <- calc_zoi_cumulative(cabins, radius = 1000, type = "exp_decay",
                           zeroAsNA = TRUE)
 plot(c(ni, ci))
 

@@ -1,6 +1,10 @@
 #' Rasterizes a vector counting the number of features in each pixel
 #'
-#' Add within and other arguments for grass functions as options/parameters
+#' This function rasterizes a vector file in GRASS GIS, counting the number of
+#' vector features within each pixel. The function uses the resolution and extent
+#' already set as the GRASS GIS mapset's computational region. If `input_as_region`
+#' is set to `TRUE`, the extent of the vector map `x` is used reset as the region.
+#' The resolution, though, continues the same set up earlier through `g.region`.
 #'
 #' @param x Input vector map.
 #' @param output Output map name.
@@ -13,6 +17,14 @@
 #' If `FALSE`, the current computational region is used.
 #' @param align `[character(1)=NULL]` \cr Name of a raster map with which to align the
 #' computational region to produce the output map.
+#' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
+#' be printed in the prompt along the computation?
+#' @param overwrite `[logical(1)]` \cr Whether the output maps should be overwriten
+#' (flag `overwrite = TRUE`).
+#'
+#' @return A raster map with the count of features within each pixel. The map is written
+#' within the GRASS GIS mapset. In R, the output is a string with the name of this
+#' map.
 #'
 #' @example examples/grass_v2rast_count_example.R
 #'
@@ -23,7 +35,6 @@ grass_v2rast_count <- function(x,
                                input_as_region = FALSE,
                                align = NULL,
                                remove_intermediate = TRUE,
-                               quiet = TRUE,
                                verbose = FALSE,
                                overwrite = FALSE, ...) {
 
@@ -31,7 +42,7 @@ grass_v2rast_count <- function(x,
   # flags
   flags <- c()
   flags_text <- ""
-  if(quiet) flags <- c(flags, "quiet")
+  if(!verbose) flags <- c(flags, "quiet")
   if(overwrite) flags <- c(flags, "overwrite")
 
   # flags for g.region
@@ -77,7 +88,7 @@ grass_v2rast_count <- function(x,
     if(verbose) rgrass7::execGRASS("g.message", message = "Adding new column for counting...")
     column_count <- "val_c"
     flags_table <- c()
-    if(quiet) flags_table <- c(flags_table, "quiet")
+    if(!verbose) flags_table <- c(flags_table, "quiet")
     rgrass7::execGRASS("v.db.addtable", map = temp_vect, columns = sprintf("%s integer", column_count),
                        flags = flags_table)
     rgrass7::execGRASS("v.db.update", map = temp_vect, column = column_count, value = "1",
@@ -98,7 +109,7 @@ grass_v2rast_count <- function(x,
                      flags = flags)
 
   # remove intermediate maps
-  remove_flags = ifelse(quiet, c("f", "quiet"), "f")
+  remove_flags = ifelse(!verbose, c("f", "quiet"), "f")
   if(remove_intermediate & length(to_remove) > 0)
     rgrass7::execGRASS("g.remove", type = "vect", name = to_remove,
                        flags = remove_flags)

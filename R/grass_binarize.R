@@ -35,10 +35,19 @@
 #' [r.null](https://grass.osgeo.org/grass78/manuals/r.null.html)).
 #' @param bin_values `[numeric(2)=c(0,1)]` \cr Values c(lower, upper) that the output map pixels should
 #' have if their values are either "lower" or "equal or higher" `breaks`. By default, c(0, 1).
-#' @param quiet,overwrite `[logical(1)]` \cr Whether the procedures is GRASS GIS should be run
-#' quetly (flag `quiet = TRUE`) and whether the output maps should be overwriten (flag `overwrite = TRUE`).
+#' @param overwrite `[logical(1)]` \cr Whether the output maps should be overwriten
+#' (flag `overwrite = TRUE`).
+#' @param input_as_region `[logical(1)=FALSE]` \cr Should the input map `x` be
+#' used to redefine the working region in GRASS before raster binarization?
+#' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
+#' the region previously defined in the GRASS GIS session is used for computation.
+#' Default is `FALSE`.
+#' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
+#' be printed in the prompt along the computation?
 #'
-#' @return A binarized map with only two values (or a set of binarized maps if `length(breaks)` > 1).
+#' @return A binarized map with only two values (or a set of binarized maps if `length(breaks)` > 1)
+#' within the GRASS GIS mapset. In R, the output is a string with the name of this
+#' map.
 #'
 #' @seealso See also [landscapetools::util_binarize()], [landscapetools::util_classify()],
 #' and a documentation of raster algebra with [terra] [here](https://rspatial.org/terra/pkg/4-algebra.html) and with
@@ -54,7 +63,6 @@ grass_binarize <- function(x,
                            setnull = NULL,
                            bin_values = c(0, 1),
                            input_as_region = FALSE,
-                           quiet = TRUE,
                            verbose = FALSE,
                            overwrite = FALSE, ...) {
 
@@ -63,7 +71,7 @@ grass_binarize <- function(x,
 
   # flags
   flags <- c()
-  if(quiet) flags <- c(flags, "quiet")
+  if(!verbose) flags <- c(flags, "quiet")
   if(overwrite) flags <- c(flags, "overwrite")
 
   # flags for g.region
@@ -99,7 +107,7 @@ grass_binarize <- function(x,
       parms <- list(map = inter_map)
       if(!is.null(null)) parms <- append(parms, list(null = null))
       if(!is.null(setnull)) parms <- append(parms, list(setnull = setnull))
-      if(quiet) qq <- "quiet" else qq <- c()
+      if(!verbose) qq <- "quiet" else qq <- c()
       # run r.null
       rgrass7::execGRASS("r.null", parameters = parms, flags = qq)
 
@@ -119,8 +127,10 @@ grass_binarize <- function(x,
   }
 
   # remove intermediate map
-  rgrass7::execGRASS("g.remove", type = "raster", name = "inter_map",
-                     flags = "f")
+  if(!(is.null(null) & is.null(setnull))) {
+    rgrass7::execGRASS("g.remove", type = "raster", name = "inter_map",
+                       flags = "f")
+  }
 
   return(out_name)
 }

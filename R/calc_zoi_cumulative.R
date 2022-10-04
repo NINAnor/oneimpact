@@ -218,6 +218,10 @@
 #' used when `where = "GRASS"`. If `NULL` (default), a standard name is created
 #' based on the name of the input map `x`, the ZoI shape `type`, and the ZoI
 #' radius `radius`.
+#' @param g_parallel `[logical(1)=TRUE]` \cr If the `r.mfilter` tool is used for
+#' computing the cumulative ZoI in GRASS GIS, `g_parallel` tells if parallelization
+#' should be used. Default is `TRUE`. The option is ignored for other GRASS tools
+#' (parameter `g_module`) and for computation in R (`where = "R"`).
 #' @param g_input_as_region `[logical(1)=TRUE]` \cr Should the input map `x` be
 #' used to redefine the working GRASS region before cumulative ZoI calculation?
 #' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
@@ -278,6 +282,7 @@ calc_zoi_cumulative <- function(
   na.policy = "omit",
   na.rm = TRUE,
   g_module = c("r.mfilter", "r.resamp.filter", "r.neighbors")[1],
+  g_parallel = TRUE,
   g_output_map_name = NULL,
   g_input_as_region = FALSE,
   g_remove_intermediate = TRUE,
@@ -319,7 +324,7 @@ calc_zoi_cumulative <- function(
                                                   max_dist = max_dist,
                                                   extent_x_cut = extent_x_cut,
                                                   extent_y_cut = extent_y_cut,
-                                                  parallel = parallel,
+                                                  g_parallel = g_parallel,
                                                   g_output_map_name = g_output_map_name,
                                                   g_input_as_region = g_input_as_region,
                                                   g_remove_intermediate = g_remove_intermediate,
@@ -499,7 +504,7 @@ calc_zoi_cumulative_grass <- function(
   normalize = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
-  parallel = TRUE,
+  g_parallel = TRUE,
   g_output_map_name = NULL,
   g_input_as_region = FALSE,
   g_remove_intermediate = TRUE,
@@ -654,7 +659,7 @@ calc_zoi_cumulative_grass <- function(
         parms <- purrr::map(radius, function(x)
           list(input = input_bin, output = paste0(out_map, x),
                filter = paste(types, collapse = ","), radius = x))
-        out_names <- purrr::map(parms, ~ .$output) %>% unlist()
+        out_names <- purrr::map(parms, ~ .$output) |> unlist()
       }
     }
 
@@ -820,7 +825,7 @@ calc_zoi_cumulative_grass <- function(
                                divisor = divisor,
                                save_format = c("GRASS_rmfilter"),
                                save_file = filter_file,
-                               parallel = parallel,
+                               parallel = g_parallel,
                                separator = " ")
       } else {
         # for multiple matrices
@@ -833,7 +838,7 @@ calc_zoi_cumulative_grass <- function(
                                    divisor = divisor,
                                    save_format = c("GRASS_rmfilter"),
                                    save_file = file,
-                                   parallel = parallel,
+                                   parallel = g_parallel,
                                    separator = " ")
           })
         }
@@ -852,7 +857,7 @@ calc_zoi_cumulative_grass <- function(
       if(is.list(filt)) {
         parms <- purrr::map2(filter_count, filter_file, function(x, y)
           list(input = input_bin, output = paste0(out_map, x), filter = y))
-        out_names <- purrr::map(parms, ~ .$output) %>% unlist()
+        out_names <- purrr::map(parms, ~ .$output) |> unlist()
       }
     }
 

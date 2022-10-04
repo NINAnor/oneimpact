@@ -34,6 +34,9 @@
 #' of x positions for which the ZoI is computed, within the x range defined by `range_plot`.
 #' @param return_df `[logical(1)=FALSE]` \cr If TRUE, a `data.frame` with `x` values and their
 #' corresponding ZoI values is returned, besides the plot.
+#' @param na.rm `[logical(1)=TRUE]` \cr Should `NA` values be removed when computing
+#' either the sum (for the cumulative ZoI) or the maximum (for the ZoI of the nearest
+#' feature)?
 #' @param ... Additional parameters passed to the ZoI decay function `fun`.
 #'
 #' @return A `ggplot` object with the nearest or cumulative influence plot.

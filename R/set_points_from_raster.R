@@ -29,12 +29,12 @@ set_points_from_raster <- function(base_raster, n_features = 1000) {
   res <- terra::res(base_raster)
 
   # random points in the center of the cells
-  ptscell <- sample(1:ncell(base_raster), n_features, prob = base_raster[], replace = TRUE)
+  ptscell <- sample(1:terra::ncell(base_raster), n_features, prob = base_raster[], replace = TRUE)
   # get the centers
-  center <- xyFromCell(base_raster, ptscell)
+  center <- terra::xyFromCell(base_raster, ptscell)
   # add random values within the pixels
-  pts <- center + cbind(runif(nrow(center), - res[1]/2, res[1]/2),
-                        runif(nrow(center), - res[2]/2, res[2]/2))
+  pts <- center + cbind(stats::runif(nrow(center), - res[1]/2, res[1]/2),
+                        stats::runif(nrow(center), - res[2]/2, res[2]/2))
 
   # return the points
   data.frame(pts)

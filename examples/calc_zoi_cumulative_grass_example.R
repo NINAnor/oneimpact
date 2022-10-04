@@ -3,7 +3,7 @@ library(rgrass7)
 library(terra)
 
 # Load raster data
-f <- system.file("raster/cabins.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # connect to grass gis 7.8 and create grass location

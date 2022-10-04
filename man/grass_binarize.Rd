@@ -12,7 +12,6 @@ grass_binarize(
   setnull = NULL,
   bin_values = c(0, 1),
   input_as_region = FALSE,
-  quiet = TRUE,
   verbose = FALSE,
   overwrite = FALSE,
   ...
@@ -43,11 +42,22 @@ values that should be transformed into NULL/NA data (using the module
 \item{bin_values}{\verb{[numeric(2)=c(0,1)]} \cr Values c(lower, upper) that the output map pixels should
 have if their values are either "lower" or "equal or higher" \code{breaks}. By default, c(0, 1).}
 
-\item{quiet, overwrite}{\verb{[logical(1)]} \cr Whether the procedures is GRASS GIS should be run
-quetly (flag \code{quiet = TRUE}) and whether the output maps should be overwriten (flag \code{overwrite = TRUE}).}
+\item{input_as_region}{\verb{[logical(1)=FALSE]} \cr Should the input map \code{x} be
+used to redefine the working region in GRASS before raster binarization?
+If \code{TRUE}, \code{x} is used to define the region with \code{g.region}. If \code{FALSE},
+the region previously defined in the GRASS GIS session is used for computation.
+Default is \code{FALSE}.}
+
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Should messages of the computation steps
+be printed in the prompt along the computation?}
+
+\item{overwrite}{\verb{[logical(1)]} \cr Whether the output maps should be overwriten
+(flag \code{overwrite = TRUE}).}
 }
 \value{
-A binarized map with only two values (or a set of binarized maps if \code{length(breaks)} > 1).
+A binarized map with only two values (or a set of binarized maps if \code{length(breaks)} > 1)
+within the GRASS GIS mapset. In R, the output is a string with the name of this
+map.
 }
 \description{
 Through GRASS GIS, this function transforms continuous
@@ -67,53 +77,59 @@ or the raster algebra functions within the \link{raster} and \link{terra} packag
 \examples{
 # libraries
 library(rgrass7)
-library(raster)
 library(terra)
-library(dplyr)
 
-# connect to grass gis 7.8
-grassdir <- system("grass78 --config path", intern = T)
-gisDB <- "/data/grass"
-loc <- "ETRS_33N/"
-ms <- "u_bb_cuminf"
+# Load raster data
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
+cabins <- terra::rast(f)
+
+# connect to grass gis 7.8 and create grass location
+# For linux or within OSGeo4W shell
+grassdir <- system("grass78 --config path", intern = TRUE)
+# If you used the standalone installer in Windows
+# grassdir <- "C:\\Programs\\GRASS GIS 7.8" # Correct if the path is different
+
+gisDB <- "." # create location and mapset in the working directory
+loc <- "ETRS_33N/" # name of the location
+ms <- "PERMANENT" # name of the mapset
 rgrass7::initGRASS(gisBase = grassdir,
+                   SG = cabins, # use map to define location projection
                    home = tempdir(),
-                   override = T,
+                   override = TRUE,
                    gisDbase = gisDB,
                    location = loc,
                    mapset = ms)
 
-# input map (not binarized)
-rgrass7::use_sp()
-name_var <- "private_cabins_sub"
+# add map to GRASS
+rgrass7::write_RAST(cabins, "cabins", flags = "o")
 
 # binarize the input map
 
 # map with only 1
-cabins_bin1_name <- grass_binarize(name_var, output = "cabins_bin1",
+cabins_bin1_name <- grass_binarize("cabins", output = "cabins_bin1",
                                    breaks = 1, overwrite = T)
 # map with 0, 1
-cabins_bin2_name <- grass_binarize(name_var, output = "cabins_bin2",
+cabins_bin2_name <- grass_binarize("cabins", output = "cabins_bin2",
                                    breaks = 1, null = 0, overwrite = T)
 
 # visualize
-cabins_bin1_2 <- rgrass7::readRAST(c(cabins_bin2_name, cabins_bin1_name)) \%>\%
-  raster::stack() \%>\%
-  terra::rast()
-plot(cabins_bin1_2, main = c("Binarized map setting null to 0", "Binarized map keeping null"))
+cabins_bin1_2 <- rgrass7::read_RAST(c(cabins_bin1_name, cabins_bin2_name),
+                                    return_format = "terra", NODATA = 255)
+plot(cabins_bin1_2, main = c("Binarized map keeping null", "Binarized map setting null to 0"))
 
+#-------
 # binarize the map with multiple break values
 
 # first create a continuous map
-cont_map_name <- calc_influence_nearest(name_var, zoi = 1000, transform = "exp_decay",
-                                        where = "GRASS", overwrite = T)
+cont_map_name <- calc_zoi_nearest("cabins_bin1", radius = 1000,
+                                  type = "exp_decay",
+                                  where = "GRASS", overwrite = TRUE)
 # binarize
-cabins_bin2vals_name <- grass_binarize(cont_map_name, output = "cabins_bin",
-                                       breaks = c(0.3, 0.5), overwrite = T)
+cabins_bin2vals_name <- grass_binarize(cont_map_name, output = "cabins_zoi1000_bin",
+                                       breaks = c(0.3, 0.8), overwrite = T)
 # visualize
-cabins_bin2vals <- rgrass7::readRAST(c(cont_map_name, cabins_bin2vals_name)) \%>\%
-  raster::stack() \%>\%
-  terra::rast()
+cabins_bin2vals <- rgrass7::read_RAST(c(cont_map_name, cabins_bin2vals_name),
+                                      return_format = "terra", NODATA = 255)
 plot(cabins_bin2vals,
      main = c("Original map",
               "Binarized map, break = 0.3",

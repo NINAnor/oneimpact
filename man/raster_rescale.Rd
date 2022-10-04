@@ -10,7 +10,10 @@ raster_rescale(x, to = c(0, 1), from = NULL)
 \item{x}{\verb{[SpatRaster]} \cr Raster object or colletion of rasters whose values
 will be rescaled.}
 
-\item{to}{\verb{[numeric(2)=NULL]} \cr Range of original values (in the format c(min,max))
+\item{to}{\verb{[numeric(2)=c(0,1)]} \cr Range of final values (in the format c(min,max))
+to which the raster will be rescaled.}
+
+\item{from}{\verb{[numeric(2)=NULL]} \cr Range of original values (in the format c(min,max))
 from which the raster will be rescaled. If \code{NULL}, the minimum and maximum values
 from \code{x} are used.}
 }
@@ -24,12 +27,12 @@ Rescales raster values to a given range.
 \examples{
 library(terra)
 
-f <- system.file("raster/cabins.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
 # calculate influence
 ni <- calc_zoi_nearest(cabins, radius = 1000, type = "exp_decay")
-ci <- calc_zoi_cumulative(cabins, zoi_radius = 1000, type = "exp_decay",
+ci <- calc_zoi_cumulative(cabins, radius = 1000, type = "exp_decay",
                           zeroAsNA = TRUE)
 plot(c(ni, ci))
 
