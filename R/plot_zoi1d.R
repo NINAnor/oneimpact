@@ -81,7 +81,7 @@ plot_zoi1d <- function(points,
   if (isTRUE(return_df)) {
     return(list(zoi_plot = g1, zoi_df = dat))
   } else {
-    return(suppressWarnings(print(g1)))
+    return(suppressWarnings(g1))
   }
 
 }
