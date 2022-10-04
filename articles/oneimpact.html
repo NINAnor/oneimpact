@@ -246,12 +246,6 @@
 <span><span class="co">#&gt; [1] 0.001</span></span></code></pre></div>
 <p>We visualize the function shape in 1 dimension space:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># threshold ZoI with radius = 10</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.05</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/plot_exp-1.png" width="700"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/plot_exp2-1.png" width="700"></p>
 <!-- fig.cap="Figure 3. Illustration of an exponential decay ZoI with ZoI radius = 10 and ZoI limit = 0.05." -->
@@ -261,7 +255,7 @@
 <h5 id="gaussian-decay-function">Gaussian decay function<a class="anchor" aria-label="anchor" href="#gaussian-decay-function"></a>
 </h5>
 <p>The Gaussian (or half-normal) decay function decays following a half normal shape, and the rate of decay is set so that <span class="math inline">\(\phi = \phi_{limit}\)</span> at the ZoI radius (<span class="math inline">\(d = r\)</span>). The Gaussian decay might be calculated using the <code><a href="../reference/zoi_functions.html">gaussian_decay()</a></code> and <code><a href="../reference/zoi_functions.html">half_norm_decay()</a></code> functions:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Gaussian decay ZoI with radius = 10</span></span>
 <span><span class="fu"><a href="../reference/zoi_functions.html">gaussian_decay</a></span><span class="op">(</span><span class="fl">5</span>, radius <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># within the radius</span></span>
 <span><span class="co">#&gt; [1] 0.4728708</span></span>
@@ -270,13 +264,13 @@
 <span><span class="fu"><a href="../reference/zoi_functions.html">gaussian_decay</a></span><span class="op">(</span><span class="fl">15</span>, radius <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># at or beyond the radius</span></span>
 <span><span class="co">#&gt; [1] 0.001182177</span></span></code></pre></div>
 <p>We visualize the function shape in 1 dimension space:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># threshold ZoI with radius = 10</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.05</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/plot_gauss-1.png" width="700"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">p</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/plot_gauss-2.png" width="700"></p>
@@ -290,7 +284,7 @@
 </h3>
 <p>Given a ZoI function was set with a specific shape and ZoI radius and there is more than one infrastructure feature or source of disturbance in space, two metrics might be calculated for the zone of influence: the ZoI of the nearest feature alone and the cumulative ZoI of multiple features.</p>
 <p>To exemplify their difference, we illustrate them using a Gaussian decay ZoI in 1 dimension space using the <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code> function. We set four sources of disturbance (e.g. houses) located at <code>x = 0</code>, <code>x = 2</code>, <code>x = 8</code>, and <code>x = 12</code>, and set the ZoI radius of each feature as <code>radius = 3</code>. We start by plotting the ZoI of the nearest feature alone by setting <code>zoi_metric = "nearest"</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">disturbance_locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">8</span>, <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="va">disturbance_locations</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>,</span>
 <span>           zoi_metric <span class="op">=</span> <span class="st">"nearest"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -298,21 +292,21 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/zoi_metrics_near-1.png" width="700"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/zoi_metrics_near-2.png" width="700"></p>
 <!-- fig.cap="Figure 5. Metric of ZoI of the neareast feature for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZoI with radius = 3." -->
 <p>The location of the disturbance sources is shown by the vertical dashed lines. Notice that the the maximum value for the ZoI of the nearest feature is 1.</p>
 <p>Now we do the same but considering that the ZoI of each feature accumulates. We do it by setting <code>zoi_metric = "cumulative"</code> in <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="va">disturbance_locations</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>,</span>
 <span>           zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Space"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/zoi_metrics_cum-1.png" width="700"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">p</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/zoi_metrics_cum-2.png" width="700"></p>
@@ -327,7 +321,7 @@
 <h3 id="define-the-input-raster-map">Define the input raster map<a class="anchor" aria-label="anchor" href="#define-the-input-raster-map"></a>
 </h3>
 <p>To calculate the ZoI metrics for 2 dimensional, raster objects, we use the functions <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code> and <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>. To give an example, we present a data set with the location of private cabins in Norway, subset for a small sample region in Southern Norway. The data is mapped as points in vector format; more information about it might be found using the command <code><a href="../reference/sample_area_cabins.gpkg.html">help(sample_area_cabins.gpkg)</a></code>. We read the vector file using the package <code>terra</code> and plot it:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># file path</span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_cabins.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
 <span><span class="co"># read file</span></span>
@@ -350,7 +344,7 @@
 <p><img src="oneimpact_files/figure-html/read_vect-1.png" width="700"></p>
 <!-- fig.cap="Figure 7. Location of private cabins in a study area in Souther Norway." -->
 <p>If the input map is already in raster format, it can be used directly in the <code>calc_zoi_*()</code> functions. In our case, since it is in vector format, it must be rasterized first. For many types of anthropogenic infrastructure or disturbance which are represented by lines or polygons (e.g. roads, power lines, areas of deforestation), it is enough to create a binary raster as a dummy variable with value 1 where the disturbance is located and 0 (or <code>NA</code>) elsewhere. For point representation of infrastructure and large enough pixels size, though, it might be more interesting to count the number of features per pixel, since there might be more than one feature within each pixel. To create a raster with the number of cabins per pixel, we use the function <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> with parameter <code>fun = length</code>. We load another raster with 100 m resolution for the area to use it as a grid for the rasterization process.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load grid</span></span>
 <span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
 <span><span class="va">grid</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">s2</span><span class="op">)</span></span>
@@ -376,7 +370,7 @@
 <h3 id="compute-the-zoi-of-the-nearest-feature-only">Compute the ZoI of the nearest feature only<a class="anchor" aria-label="anchor" href="#compute-the-zoi-of-the-nearest-feature-only"></a>
 </h3>
 <p>This map might be used as it is as input for <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>. For this function, is it important for the background values of the input raster map (pixels with no cabins) to be <code>NA</code> (no-data). We compute the ZoI of the nearest feature using a Gaussian shaped ZoI with radius = 1000 m. By default, the computation is done in R (parameter <code>where = "R"</code>).</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate ZoI</span></span>
 <span><span class="va">cabins_nearest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="va">cabins_rast</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"Gauss"</span><span class="op">)</span></span>
 <span><span class="co"># plot</span></span>
@@ -389,7 +383,7 @@
 <h3 id="compute-the-cumulative-zoi-of-multiple-features">Compute the cumulative ZoI of multiple features<a class="anchor" aria-label="anchor" href="#compute-the-cumulative-zoi-of-multiple-features"></a>
 </h3>
 <p>Differently from <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>, the input raster map for the <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> should present zeros as the background (pixels with no cabins). In R, background <code>NA</code> values might be checked and reclassified to zero using the <code>zeroAsNA = TRUE</code> parameter, but in GRASS GIS this is not implemented. In this case, the easiest procedure is to prepare the input raster map outside GRASS or make use of the module <code>[r.null](https://grass.osgeo.org/grass82/manuals/r.null.html)</code> for managing no-data values is rasters within GRASS. We calculate the cumulative ZoI of multiple features using the same setup – a Gaussian shaped ZoI with radius = 1000 m.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate ZoI</span></span>
 <span><span class="va">cabins_cumul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative</a></span><span class="op">(</span><span class="va">cabins_rast</span>, </span>
 <span>                                    radius <span class="op">=</span> <span class="fl">1000</span>, </span>
@@ -406,85 +400,72 @@
 <div class="section level2">
 <h2 id="using-the-zoi-approach-to-annotate-and-analyze-data">Using the ZoI approach to annotate and analyze data<a class="anchor" aria-label="anchor" href="#using-the-zoi-approach-to-annotate-and-analyze-data"></a>
 </h2>
-<p>In the cumulative impact assessment proposed in <code>oneimpact</code>, the calculation of the ZoI (<span class="math inline">\(\phi\)</span>) is done before statistical analysis. In this formulation, <span class="math inline">\(\phi\)</span> defined based on different shapes and radii are considered as different covariates (Fig. D). Therefore, the evaluation of how the impact of multiple infrastructure features accumulate and the identification of the ZoI shape and radius are recasted as a model selection rather than a parameterization problem.</p>
-<div class="figure">
-<img src="figure_workflow.png" alt="Workflow for calculating infrastructure ZoI and estimating the cumulative impact and ZoI radius of multiple infrastructure. Infrastructure raster data are input to the calc\_zoi\_*() functions, which allow the calculation of the ZoI of the nearest feaure and the cumulative ZoI based on arguments for the ZoI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZoI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I." width="100%"><p class="caption">
-Workflow for calculating infrastructure ZoI and estimating the cumulative impact and ZoI radius of multiple infrastructure. Infrastructure raster data are input to the calc_zoi_*() functions, which allow the calculation of the ZoI of the nearest feaure and the cumulative ZoI based on arguments for the ZoI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZoI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I.
-</p>
-</div>
-<p>Figure D shows a workflow for calculating the ZoI metrics and using them to annotate biological data for the estimation of cumulative impacts. The calculation of the ZoI of the nearest feature and the cumulative ZoI might be done for different ZoI shapes, radii, and infrastructure type, and each of those combinations turn into a different covariate when annotated to the biological data for ecological modeling.</p>
+<p>In the cumulative impact assessment proposed in <code>oneimpact</code>, the calculation of the ZoI (<span class="math inline">\(\phi\)</span>) is done before statistical analysis. In this formulation, <span class="math inline">\(\phi\)</span> defined based on different shapes and radii are considered as different candidates of predictor variables in statistical models (see figure below). Therefore, the evaluation of how the impact of multiple infrastructure features accumulate and the identification of the ZoI shape and radius are recasted as a model selection rather than a parameterization problem.</p>
+<p><img src="figure_workflow.png" width="100%"></p>
+<!-- fig.cap="Figure 11. Workflow for calculating infrastructure ZoI and estimating the cumulative impact and ZoI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZoI of the nearest feaure and the cumulative ZoI based on arguments for the ZoI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZoI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I." -->
+<p>The figure above shows a workflow for calculating the ZoI metrics and using them to annotate biological data for the estimation of cumulative impacts. Infrastructure raster data are input to the <code>calc_zoi_*()</code> functions, which allow the computation of the ZoI of the nearest feaure and the cumulative ZoI based on arguments for the ZoI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZoI metric defined by a shape and radius is considered as a different candidate for a predictor variable. The annotated data is then analyzed through the statistical modeling procedures selected by the user to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact.</p>
 <p>Here we simulate a data set of sampling points and a theoretical random biological response variable to show the process of calculation of ZoI variables and the annotation of the biological data.</p>
-<p>First we create in the study area <code>n = 40</code> random locations representing sampling points for a given response variable <code>z</code> (e.g. species richness or abundance). We sample the locations using the <code><a href="../reference/set_points.html">set_points()</a></code> function from the package <code>oneimpact</code> and simulate the response variable <code>z</code> as a Poisson distributed random variable with mean <span class="math inline">\(\lambda = 10\)</span>. The simulated sampled data is shown in Fig. D.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># get extent of the study area</span></span>
+<p>First we create in the study area <code>n = 40</code> random locations representing sampling points for a given response variable <code>z</code> (e.g. species richness or abundance). We sample the locations using the <code><a href="../reference/set_points.html">set_points()</a></code> function from the package <code>oneimpact</code> and simulate the response variable <code>z</code> as a Poisson distributed random variable with mean <span class="math inline">\(\lambda = 10\)</span>. The simulated sampled data is plotted below.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># seed</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">111</span><span class="op">)</span></span>
+<span><span class="co"># get extent of the study area</span></span>
 <span><span class="va">extent</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="va">cabins_rast</span><span class="op">)</span></span>
 <span><span class="co"># sample n = 40 random locations and simulate biological data</span></span>
+<span><span class="co"># get only coordinates with $pts at the end</span></span>
 <span><span class="va">bio_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_points.html">set_points</a></span><span class="op">(</span><span class="fl">40</span>, method <span class="op">=</span> <span class="st">"random"</span>, res <span class="op">=</span> <span class="fl">100</span>, </span>
-<span>                       extent_x <span class="op">=</span> <span class="va">extent</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, extent_y <span class="op">=</span> <span class="va">extent</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">$</span><span class="va">pts</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># get only coordinates</span></span>
-<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">cabins_rast</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># change to sf object</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">40</span>, z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">40</span>, lambda <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># add id and simulate response z </span></span>
+<span>                       extent_x <span class="op">=</span> <span class="va">extent</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, extent_y <span class="op">=</span> <span class="va">extent</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">pts</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/crs.html" class="external-link">crs</a></span><span class="op">(</span><span class="va">cabins_rast</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># change to sf object</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">40</span>, z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">40</span>, lambda <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># add id and simulate response z </span></span>
 <span>  <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># transform to vect to use with SpatRaster object</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bio_data</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="oneimpact_files/figure-html/set_points-1.png" alt="Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins." width="700"><p class="caption">
-Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins.
-</p>
-</div>
-<p>Now we use the same procedure presented above to calculate the ZoI of the nearest feature and the cumulative ZoI for different radii. We use an exponential decay ZoI and vary the ZoI radius from 500 m to 1500 m.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p><img src="oneimpact_files/figure-html/set_points-1.png" width="700"><!-- fig.cap="Figure 12. Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins." --></p>
+<p>Now we use the same procedure presented above to calculate the ZoI of the nearest feature and the cumulative ZoI for different radii. We use an exponential decay ZoI and vary the ZoI radius from 500 m to 1500 m. However, we use the <code><a href="../reference/calc_zoi.html">calc_zoi()</a></code> function which can compute both ZoI metrics at once. To do so, we set the parameter <code>zeroAsNA</code> to <code>FALSE</code>, since our input raster map has <code>NA</code> as background values. We plot the ZoI layers below.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># radii</span></span>
 <span><span class="va">radii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">1500</span><span class="op">)</span></span>
-<span><span class="co"># exp decay ZoI - nearest</span></span>
-<span><span class="va">zoi_exp_nearest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="va">cabins_rast</span>, radius <span class="op">=</span> <span class="va">radii</span>,</span>
-<span>                                    type <span class="op">=</span> <span class="st">"exp_decay"</span><span class="op">)</span></span>
-<span><span class="co"># exp decay ZoI - cumulative</span></span>
-<span><span class="va">zoi_exp_cumul</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative</a></span><span class="op">(</span><span class="va">cabins_rast</span>, radius <span class="op">=</span> <span class="va">radii</span>,</span>
-<span>                                     type <span class="op">=</span> <span class="st">"exp_decay"</span>, zeroAsNA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>We can combine the ZoI variables to visualize them:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># combine ZoI variables</span></span>
-<span><span class="va">zoi_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">zoi_exp_nearest</span>, <span class="va">zoi_exp_cumul</span><span class="op">)</span></span>
+<span><span class="co"># exp decay ZoI - both nearest and cumulative</span></span>
+<span><span class="co"># use zeroAsNA = FALSE since the input has NULL as background</span></span>
+<span><span class="va">zoi_all</span> <span class="op">&lt;-</span> <span class="fu">oneimpact</span><span class="fu">:::</span><span class="fu"><a href="../reference/calc_zoi.html">calc_zoi</a></span><span class="op">(</span><span class="va">cabins_rast</span>, </span>
+<span>                                radius <span class="op">=</span> <span class="va">radii</span>, type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span>
+<span>                                zoi_metric <span class="op">=</span> <span class="st">"all"</span>, </span>
+<span>                                zeroAsNA <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_all</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="oneimpact_files/figure-html/plot_zoi_multiple-1.png" alt="ZoI of the nearest cabin and cumulative ZoI of multiple cabins for an exponential decay ZoI with radius = 500, 1000, and 1500 m." width="700"><p class="caption">
-ZoI of the nearest cabin and cumulative ZoI of multiple cabins for an exponential decay ZoI with radius = 500, 1000, and 1500 m.
-</p>
-</div>
+<p><img src="oneimpact_files/figure-html/calc_zoi_data-1.png" width="700"></p>
 <p>Finally, the ZoI variables can be used to annotate the biological data for statistical analysis.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extract values</span></span>
-<span><span class="va">zoi_sampling_pts</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">zoi_all</span>, <span class="va">bio_data</span><span class="op">)</span></span>
+<span><span class="va">zoi_sampling_pts</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">zoi_all</span>, <span class="va">bio_data</span>, <span class="op">)</span></span>
 <span><span class="co"># combine response variable with extracted data</span></span>
 <span><span class="va">bio_data_annotated</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">bio_data</span>, geom <span class="op">=</span> <span class="st">"XY"</span><span class="op">)</span>, </span>
 <span>                                       <span class="va">zoi_sampling_pts</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># show annotated data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bio_data_annotated</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id  z        x       y zoi_nearest_exp_decay500 zoi_nearest_exp_decay1000</span></span>
-<span><span class="co">#&gt; 1  1  8 182480.2 6655971              1.000000000                 1.0000000</span></span>
-<span><span class="co">#&gt; 2  2  9 189599.4 6641174              0.261915800                 0.5117771</span></span>
-<span><span class="co">#&gt; 3  3  8 184309.3 6640989              0.026135373                 0.1616644</span></span>
-<span><span class="co">#&gt; 4  4 10 149942.7 6647376              0.007982743                 0.0893462</span></span>
-<span><span class="co">#&gt; 5  5  8 166217.8 6644952              0.039696097                 0.1992388</span></span>
-<span><span class="co">#&gt; 6  6  9 165333.8 6656091              0.014456586                 0.1202355</span></span>
+<span><span class="co">#&gt; 1  1  6 175244.5 6645947             1.334868e-07              0.0003653584</span></span>
+<span><span class="co">#&gt; 2  2  9 181625.8 6634659             4.711992e-02              0.2170712297</span></span>
+<span><span class="co">#&gt; 3  3  8 164606.2 6645748             8.455576e-02              0.2907847259</span></span>
+<span><span class="co">#&gt; 4  4 11 171513.4 6656320             1.152959e-01              0.3395525247</span></span>
+<span><span class="co">#&gt; 5  5 10 164952.3 6643566             1.445659e-02              0.1202355426</span></span>
+<span><span class="co">#&gt; 6  6 13 166896.5 6636037             1.088079e-04              0.0104311010</span></span>
 <span><span class="co">#&gt;   zoi_nearest_exp_decay1500 zoi_cumulative_exp_decay500</span></span>
-<span><span class="co">#&gt; 1                 1.0000000                  1.00399043</span></span>
-<span><span class="co">#&gt; 2                 0.6398142                  1.54764384</span></span>
-<span><span class="co">#&gt; 3                 0.2967629                  0.03583196</span></span>
-<span><span class="co">#&gt; 4                 0.1998561                  0.01007693</span></span>
-<span><span class="co">#&gt; 5                 0.3411269                  0.04623737</span></span>
-<span><span class="co">#&gt; 6                 0.2436063                  0.07032239</span></span>
+<span><span class="co">#&gt; 1               0.005110689                  0.00000000</span></span>
+<span><span class="co">#&gt; 2               0.361189274                  0.08906389</span></span>
+<span><span class="co">#&gt; 3               0.438915644                  0.12350292</span></span>
+<span><span class="co">#&gt; 4               0.486711165                  0.18623277</span></span>
+<span><span class="co">#&gt; 5               0.243606335                  0.03573248</span></span>
+<span><span class="co">#&gt; 6               0.047740478                  0.00000000</span></span>
 <span><span class="co">#&gt;   zoi_cumulative_exp_decay1000 zoi_cumulative_exp_decay1500</span></span>
-<span><span class="co">#&gt; 1                    1.1104814                     1.455182</span></span>
-<span><span class="co">#&gt; 2                    8.2080627                    23.807375</span></span>
-<span><span class="co">#&gt; 3                    0.4957039                     4.614876</span></span>
-<span><span class="co">#&gt; 4                    0.2549108                     3.206806</span></span>
-<span><span class="co">#&gt; 5                    0.4276001                     1.623194</span></span>
-<span><span class="co">#&gt; 6                    1.1687982                     3.710065</span></span></code></pre></div>
-<p>From this point, biological data can also be annotated with the ZoI of other disturbance variables and with other environmental covariates and used as input for the estimation of the effect sizes <span class="math inline">\(\beta\)</span> and evaluation of the cumulative effects for different types of infrastructure through statistical models (Fig. D) Statistical analyses can make use of model selection (Burnham &amp; Anderson, 2002; Jackson &amp; Fahrig, 2015; Huais, 2018), penalized regression (Lee et al., 2020), or machine learning approaches, for example (James et al., 2021). Such statistical modeling procedures are beyond the scope of <code>oneimpact</code>.</p>
+<span><span class="co">#&gt; 1                   0.00000000                   0.02269499</span></span>
+<span><span class="co">#&gt; 2                   1.16104432                   4.87939875</span></span>
+<span><span class="co">#&gt; 3                   0.88921937                   2.34383617</span></span>
+<span><span class="co">#&gt; 4                   0.88243528                   1.75187108</span></span>
+<span><span class="co">#&gt; 5                   0.38080083                   1.07029764</span></span>
+<span><span class="co">#&gt; 6                   0.04619249                   0.45860291</span></span></code></pre></div>
+<p>From this point, biological data can also be annotated with the ZoI of other disturbance variables and with other environmental covariates and used as input for the estimation of the effect sizes <span class="math inline">\(\beta\)</span> and evaluation of the cumulative effects for different types of infrastructure through statistical models. Statistical analyses can make use of model selection (Burnham &amp; Anderson, 2002; Jackson &amp; Fahrig, 2015; Huais, 2018), penalized regression (Lee et al., 2020), or machine learning approaches, for example (James et al., 2021). Such statistical modeling procedures are beyond the scope of <code>oneimpact</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

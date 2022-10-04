@@ -320,7 +320,8 @@ or <code><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A <code>RasterLayer</code> or <a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a> (according to the input <code>x</code> map)
+<p>If the calculations are performed in R (<code>where = "R"</code>),
+a <code>RasterLayer</code> or <a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a> (according to the input <code>x</code> map)
 with the cumulative zone of influence or density of features. While the
 cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
 (creating values in the output map which might go well beyond 1), the
@@ -330,8 +331,8 @@ if multiple <code>radius</code> values are given, a <code>RasterBrick</code> or 
 <code>SpatRaster</code>, with the cumulative ZoI or density maps for each ZoI radius. <br></p>
 
 
-<p>If the computation is done in GRASS GIS, the output is name of
-the output raster map within the GRASS GIS location and mapset of the
+<p>If the computation is done in GRASS GIS, the output is the name of
+the output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
 <code><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">rgrass7::read_RAST()</a></code> or export them outside GRASS using the
 <code>r.out.gdal</code> module, for instance.</p>
@@ -560,7 +561,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="co"># check input</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="st">"cabins_example_bin"</span>, return_format <span class="op">=</span> <span class="st">"terra"</span>, NODATA <span class="op">=</span> <span class="fl">255</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in execGRASS("r.out.gdal", input = vname[i], output = tmplist[[i]],     format = drv, nodata = NODATAi, flags = flags, ignore.stderr = ignore.stderr):</span> The command:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> r.out.gdal --overwrite -c -m input=cabins_example_bin output=/tmp/RtmpOCwYop/file54e37027a420.grd format=RRASTER nodata=255</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> r.out.gdal --overwrite -c -m input=cabins_example_bin output=/tmp/RtmppGxHx9/file544143a6255d.grd format=RRASTER nodata=255</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> produced an error (1) during execution:</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> ERROR: Raster map or group &lt;cabins_example_bin&gt; not found</span>
 <span class="r-in"><span></span></span>
