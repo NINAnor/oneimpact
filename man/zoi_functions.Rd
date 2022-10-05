@@ -420,7 +420,7 @@ f1 +
 library(terra)
 
 # calculate Euclidean distance
-f <- system.file("raster/cabins.tif", package = "oneimpact")
+f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 cabins_dist <- calc_zoi_nearest(cabins, type = "euclidean")
 

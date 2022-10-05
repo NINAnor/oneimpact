@@ -618,7 +618,7 @@ calc_zoi_cumulative_grass <- function(
                                            max_dist = max_dist,
                                            min_intensity = min_intensity,
                                            normalize = TRUE,
-                                           save_txt = TRUE,
+                                           save_txt = FALSE,
                                            save_format = "raw",
                                            save_file = filter_file, ...)
         } else {
@@ -631,7 +631,7 @@ calc_zoi_cumulative_grass <- function(
                                      min_intensity = min_intensity,
                                      divisor = divisor,
                                      normalize = TRUE,
-                                     save_txt = TRUE,
+                                     save_txt = FALSE,
                                      save_format = "raw",
                                      save_file = file, ...)
           })

@@ -52,6 +52,7 @@ is set to \code{TRUE}, the extent of the vector map \code{x} is used reset as th
 The resolution, though, continues the same set up earlier through \code{g.region}.
 }
 \examples{
+# not run
 \dontrun{
 
 # libraries

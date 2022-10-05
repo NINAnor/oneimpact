@@ -56,4 +56,4 @@ cabins_bin2vals <- rgrass7::read_RAST(c(cont_map_name, cabins_bin2vals_name),
 plot(cabins_bin2vals,
      main = c("Original map",
               "Binarized map, break = 0.3",
-              "Binarized map, break = 0.5"))
+              "Binarized map, break = 0.8"))

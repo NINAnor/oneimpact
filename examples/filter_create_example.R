@@ -1,8 +1,8 @@
 library(terra)
 
 # load example - raster of tourist private cabins
-f <- system.file("raster/cabins.tif", package="oneimpact")
-r <- rast(f)
+f <- system.file("raster/sample_area_cabins.tif", package="oneimpact")
+r <- terra::rast(f)
 # terra::ext(r)[1:2] %>% diff
 
 # set value zero where there are no cabins
@@ -66,7 +66,7 @@ plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
 
 # Not run
 # save outside R for use in GRASS GIS
-if(FALSE) {
+\dontrun{
   filter_create(r, radius = 1000,
                 type = "bartlett",
                 max_dist = 5000,

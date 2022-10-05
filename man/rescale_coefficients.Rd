@@ -32,7 +32,7 @@ m1 <- lm(Sepal.Length ~ Petal.Length + Species, data = iris_std)
 summary(m1)
 
 # rescale coefficients
-resc_cf <- rescale_coefficients(m1, iris)
+(resc_cf <- rescale_coefficients(m1, iris))
 
 # compare with model with no standardization of predictors
 coef(lm(Sepal.Length ~ Petal.Length + Species, data = iris))

@@ -392,24 +392,30 @@ exp_name <- calc_zoi_cumulative(x = cabins_bin_g,
                                 radius = 1000, zoi_limit = 0.01,
                                 type = "exp_decay",
                                 where = "GRASS",
-                                overwrite = TRUE, quiet = FALSE)
+                                g_overwrite = TRUE,
+                                verbose = TRUE)
 # Bartlett decay
-barlett_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
+barlett_name <- calc_zoi_cumulative(x = cabins_bin_g,
+                                    radius = 1000,
                                     type = "bartlett",
                                     where = "GRASS",
-                                    overwrite = TRUE, quiet = FALSE)
+                                    g_overwrite = TRUE,
+                                    verbose = TRUE)
 # Gaussian decay
 gauss_name <- calc_zoi_cumulative(x = cabins_bin_g,
                                   radius = 1000, zoi_limit = 0.01,
                                   type = "Gauss",
                                   where = "GRASS",
-                                  overwrite = TRUE, quiet = FALSE)
+                                  g_overwrite = TRUE,
+                                  verbose = TRUE)
 
 # Threshold decay (circle, step)
-threshold_name <- calc_zoi_cumulative(x = cabins_bin_g, radius = 1000,
+threshold_name <- calc_zoi_cumulative(x = cabins_bin_g,
+                                      radius = 1000,
                                       type = "threshold",
                                       where = "GRASS",
-                                      overwrite = TRUE, quiet = FALSE)
+                                      g_overwrite = TRUE,
+                                      verbose = TRUE)
 
 (all_names <- c(exp_name, barlett_name, gauss_name, threshold_name))
 
@@ -426,7 +432,8 @@ exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
                                   radius = 1000, zoi_limit = 0.01,
                                   type = "exp_decay", output_type = "density",
                                   where = "GRASS",
-                                  overwrite = TRUE, quiet = FALSE)
+                                  g_overwrite = TRUE,
+                                  verbose = TRUE)
 
 cabins_density <- rgrass7::read_RAST(exp_name_d, return_format = "terra")
 
@@ -442,8 +449,9 @@ rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                              type = "box",
                                              output_type = "density",
                                              where = "GRASS",
-                                             module = "r.resamp.filter",
-                                             overwrite = TRUE, quiet = FALSE)
+                                             g_module = "r.resamp.filter",
+                                             g_overwrite = TRUE,
+                                             verbose = TRUE)
 rgrass7::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
   plot(main = "Rectangle ZoI 1000m")
 
@@ -453,13 +461,15 @@ bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                             type = "bartlett",
                                             output_type = "cumulative_zoi",
                                             where = "GRASS",
-                                            module = "r.resamp.filter",
-                                            overwrite = TRUE, quiet = FALSE)
+                                            g_module = "r.resamp.filter",
+                                            g_overwrite = TRUE,
+                                            verbose = TRUE)
 rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
   plot(main = "Bartlett ZoI 1000m")
 
+# not run
 # Gaussian - to be implemented!
-if(FALSE) {
+\dontrun{
   gauss_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                            radius = "1000,3000",
                                            type = "gauss,box",
@@ -472,8 +482,8 @@ if(FALSE) {
 }
 
 # remove rasters created
-to_remove_rast <- unique(c(all_names, exp_name_d,
-                           rectangle_resamp_filt, bartlett_resamp_filt))
+# to_remove_rast <- unique(c(all_names, exp_name_d,
+#                            rectangle_resamp_filt, bartlett_resamp_filt))
 # rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")
 # rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
 }
