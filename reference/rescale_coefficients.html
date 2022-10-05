@@ -125,7 +125,9 @@ such as "lm", "glm", or "coxph".</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rescale coefficients</span></span></span>
-<span class="r-in"><span><span class="va">resc_cf</span> <span class="op">&lt;-</span> <span class="fu">rescale_coefficients</span><span class="op">(</span><span class="va">m1</span>, <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">resc_cf</span> <span class="op">&lt;-</span> <span class="fu">rescale_coefficients</span><span class="op">(</span><span class="va">m1</span>, <span class="va">iris</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       (Intercept)      Petal.Length Speciesversicolor  Speciesvirginica </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         7.0828803         0.9045646        -1.6009717        -2.1176692 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compare with model with no standardization of predictors</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">Sepal.Length</span> <span class="op">~</span> <span class="va">Petal.Length</span> <span class="op">+</span> <span class="va">Species</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span><span class="op">)</span></span></span>
