@@ -44,7 +44,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence for different types of variable</a>
+    <a class="dropdown-item" href="../articles/onimpect.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence</a>
+    <a class="dropdown-item" href="../articles/zoi_on_grass.html">Zones of influence on GRASS GIS</a>
   </div>
 </li>
       </ul>
@@ -340,7 +342,7 @@
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/read_vect-1.png" width="700"></p>
 <!-- fig.cap="Figure 7. Location of private cabins in a study area in Souther Norway." -->
-<p>If the input map is already in raster format, it can be used directly in the <code>calc_zoi_*()</code> functions. In our case, since it is in vector format, it must be rasterized first. For many types of anthropogenic infrastructure or disturbance which are represented by lines or polygons (e.g. roads, power lines, areas of deforestation), it is enough to create a binary raster as a dummy variable with value 1 where the disturbance is located and 0 (or <code>NA</code>) elsewhere. For point representation of infrastructure and large enough pixels size, though, it might be more interesting to count the number of features per pixel, since there might be more than one feature within each pixel. To create a raster with the number of cabins per pixel, we use the function <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> with parameter <code>fun = length</code>. We load another raster with 100 m resolution for the area to use it as a grid for the rasterization process.</p>
+<p>If the input map is already in raster format, it can be used directly in the <code>calc_zoi_*()</code> functions. In our case, since it is in vector format, it must be rasterized first. For many types of anthropogenic infrastructure or disturbance which are represented by lines or polygons (e.g. roads, power lines, areas of deforestation), it is enough to create a binary raster as a dummy variable with value 1 where the disturbance is located and 0 (or <code>NA</code>) elsewhere (see an example at this other <code>oneimpact</code> <a href="https://ninanor.github.io/oneimpact/articles/computing_zoi.html">vignette</a>). For point representation of infrastructure and large enough pixels size, though, it might be more interesting to count the number of features per pixel, since there might be more than one feature within each pixel. To create a raster with the number of cabins per pixel, we use the function <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> with parameter <code>fun = length</code>. We load another raster with 100 m resolution for the area to use it as a grid for the rasterization process.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load grid</span></span>
 <span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
