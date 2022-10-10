@@ -32,6 +32,12 @@ average isolation calculated through isolation()."><!-- mathjax --><script src="
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence for different types of variable</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -111,25 +117,25 @@ null cells if necessary, in an approach similar to set_points_sample.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_points.html">set_points</a></span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"random"</span>, centers <span class="op">=</span> <span class="fl">1</span>, width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu">isolation</span><span class="op">(</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.030872999 0.095156887 0.030366026 0.117521067 0.061639326 0.096601212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.055780460 0.037238952 0.031136268 0.085737839 0.118755214 0.033328997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.042607543 0.028564315 0.063386554 0.084614297 0.065398268 0.103520717</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.027020821 0.054300570 0.124356854 0.101319003 0.046963097 0.058062083</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.008303331 0.152971775 0.123176454 0.067792280 0.024676220 0.009700032</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.045076540 0.091078209 0.024867481 0.053088805 0.096646889 0.022427909</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.077602311 0.028180435 0.044923026 0.035225424 0.020868347 0.018217310</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.041305834 0.065918771 0.089409508 0.031487076 0.021571424 0.058314840</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.032264236 0.067400340 0.025415780 0.058224546 0.031159813 0.039605410</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.098760513 0.079891769 0.037746402 0.051159175 0.071257040 0.012634436</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.050565021 0.052158674 0.022049849 0.185448380 0.026015107 0.064398195</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.059559055 0.061967417 0.029965100 0.098883961 0.029826346 0.055154156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.155208659 0.042817622 0.037785059 0.064197444 0.030500019 0.038745368</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.081462899 0.121605692 0.045612464 0.114248810 0.049485194 0.117891618</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.071839472 0.028034504 0.126343823 0.059348522 0.094925460 0.042702566</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.030544609 0.064817231 0.073104723 0.068149332 0.012780157 0.041774072</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.070830884 0.077020731 0.062902866 0.158436549 0.052452273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.055966601 0.029654380 0.039713316 0.098438150 0.055038375 0.040079494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.080502531 0.026468051 0.094436474 0.017060259 0.056752913 0.077533336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.067202099 0.023602078 0.062764940 0.080632297 0.022804153 0.053584353</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.045995135 0.037170740 0.040276163 0.047636322 0.055561288 0.025198146</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.027429849 0.091050713 0.019017200 0.032738746 0.038947908 0.057849407</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.057480579 0.061073896 0.009621478 0.065630788 0.048787906 0.078450660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.024444948 0.028027545 0.046331955 0.066631983 0.027697354 0.047931143</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.067569902 0.036186179 0.075379348 0.115609279 0.029334432 0.044362100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.039767166 0.070618506 0.012926760 0.065125138 0.060209341 0.081260595</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.090555778 0.077309092 0.038080748 0.024191782 0.066463183 0.017403139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.036605983 0.038116591 0.031744288 0.039981802 0.019202187 0.062302584</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.075991979 0.014401617 0.029364782 0.020240977 0.101489512 0.055995269</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.028371008 0.074028267 0.011065680 0.031445923 0.047077415 0.068180957</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.008898735 0.032701754 0.036166443 0.053471409 0.081096028 0.038510322</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.029869084 0.039459471 0.035460643 0.059652633 0.021795283 0.047935966</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.036406113 0.101070547 0.032919292 0.046257658 0.021058467 0.045909667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.089023767 0.022470520 0.005239836 0.038061809 0.056026997</span>
 <span class="r-in"><span><span class="fu">mean_isolation</span><span class="op">(</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05961596</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04756752</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

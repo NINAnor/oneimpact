@@ -50,6 +50,12 @@ calc_zoi_nearest() and calc_zoi_cumulative()."><!-- mathjax --><script src="http
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence for different types of variable</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -169,7 +175,7 @@ features (if <code>zoi_metric = "cumulative"</code>), or both metrics
 <p>If the computation is done in GRASS GIS, the output is the name of
 the output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-<code><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">rgrass7::read_RAST()</a></code> or export them outside GRASS using the
+<code><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">rgrass7::read_RAST()</a></code> or export them outside GRASS using the
 <code>r.out.gdal</code> module, for instance.</p>
     </div>
     <div class="section level2">

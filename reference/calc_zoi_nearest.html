@@ -70,6 +70,12 @@ r.out.gdal module, for instance."><!-- mathjax --><script src="https://cdnjs.clo
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence for different types of variable</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -106,7 +112,7 @@ or a transformation from it (e.g. log- and sqrt-distance from the nearest
 feature).</p>
 <p>The procedure might be computed in both R and GRASS GIS. In GRASS, it
 requires an active connection between the R session and a GRASS GIS
-location and mapset (through the package <a href="https://rsbivand.github.io/rgrass/reference/rgrass.html" class="external-link">rgrass7</a>), and that the input
+location and mapset (through the package rgrass7), and that the input
 maps are already loaded within this GRASS GIS mapset.
 If the calculations are done in R, the input is a (set of) raster map(s)
 and the function returns another (set of) raster map(s). If the calculations
@@ -114,7 +120,7 @@ are done within GRASS GIS, the input is the name of a raster map already
 loaded in a GRASS GIS location and mapset, and the function returns
 only the name of the output map. This map is stored in the GRASS GIS
 location/mapset, and might be retrieved to R through the
-<code><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">rgrass7::read_RAST()</a></code> function or exported outside GRASS using the
+<code><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">rgrass7::read_RAST()</a></code> function or exported outside GRASS using the
 <code>r.out.gdal</code> module, for instance.</p>
     </div>
 
@@ -347,7 +353,7 @@ returns the name of the calculated maps. <br></p>
 <p>If the computation is done in GRASS GIS, the output is name of
 the output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-<a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">rgrass7::read_RAST</a> or export them outside GRASS using the
+<a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">rgrass7::read_RAST</a> or export them outside GRASS using the
 <code>r.out.gdal</code> module, for instance.</p>
     </div>
     <div class="section level2">
@@ -538,13 +544,30 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"."</span> <span class="co"># create location and mapset in the working directory</span></span></span>
 <span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span> <span class="co"># name of the location</span></span></span>
 <span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"PERMANENT"</span> <span class="co"># name of the mapset</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/initGRASS.html" class="external-link">initGRASS</a></span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
+<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">initGRASS</a></span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
 <span class="r-in"><span>                   SG <span class="op">=</span> <span class="va">cabins</span>, <span class="co"># use map to define location projection</span></span></span>
 <span class="r-in"><span>                   home <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                   override <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
 <span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
 <span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> gisdbase    . </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> location    ETRS_33N/ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mapset      PERMANENT </span>
@@ -562,7 +585,11 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span><span class="co"># define map name within GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="va">cabins_g</span> <span class="op">&lt;-</span> <span class="st">"cabins_example"</span></span></span>
 <span class="r-in"><span><span class="co"># add file to GRASS GIS mapset</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"overwrite"</span>, <span class="st">"o"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"overwrite"</span>, <span class="st">"o"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The command:</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> r.in.gdal --overwrite -o input=/home/runner/work/_temp/Library/oneimpact/raster/sample_area_cabins.tif output=cabins_example</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> produced at least one warning during execution:</span>
@@ -583,8 +610,11 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># define region in GRASS GIS</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html" class="external-link">execGRASS</a></span><span class="op">(</span><span class="st">"g.region"</span>, raster <span class="op">=</span> <span class="va">cabins_g</span>,</span></span>
+<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">execGRASS</a></span><span class="op">(</span><span class="st">"g.region"</span>, raster <span class="op">=</span> <span class="va">cabins_g</span>,</span></span>
 <span class="r-in"><span>                   flags <span class="op">=</span> <span class="st">"p"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> projection: 99 (unknown)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> zone:       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datum:      etrs89</span>
@@ -608,36 +638,84 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                  g_verbose <span class="op">=</span> <span class="cn">FALSE</span>, g_overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Bartlett decay ZoI=1000m</span></span></span>
 <span class="r-in"><span><span class="va">bartlett_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"bartlett"</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>, g_verbose <span class="op">=</span> <span class="cn">FALSE</span>, g_overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Threshold influence ZoI = 1000m</span></span></span>
 <span class="r-in"><span><span class="va">threshold_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"threshold"</span>,</span></span>
 <span class="r-in"><span>                                   radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                   where <span class="op">=</span> <span class="st">"GRASS"</span>, g_verbose <span class="op">=</span> <span class="cn">FALSE</span>, g_overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Gaussian influence ZoI = 1000m</span></span></span>
 <span class="r-in"><span><span class="va">gaussian_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"Gauss"</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>, g_verbose <span class="op">=</span> <span class="cn">FALSE</span>, g_overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Log-distance</span></span></span>
 <span class="r-in"><span><span class="va">log_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"log"</span>, log_base <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span>                             where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                             g_verbose <span class="op">=</span> <span class="cn">FALSE</span>, g_overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_zoi_nearest_euclidean&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Euclidean</span></span></span>
 <span class="r-in"><span><span class="va">euclidean_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_nearest</span><span class="op">(</span><span class="va">cabins_g</span>, type <span class="op">=</span> <span class="st">"euclidean"</span>,</span></span>
 <span class="r-in"><span>                                   where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                   g_verbose <span class="op">=</span> <span class="cn">FALSE</span>, g_overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">all_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">euclidean_name</span>, <span class="va">log_name</span>, <span class="va">expdecay_name</span>,</span></span>
 <span class="r-in"><span>                <span class="va">bartlett_name</span>, <span class="va">threshold_name</span>, <span class="va">gaussian_name</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -649,43 +727,83 @@ zone of influence and density of multiple features.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "cabins_example_zoi_nearest_Gauss1000"    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
-<span class="r-in"><span><span class="va">cabins_zoi_nearest</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">all_names</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cabins_zoi_nearest</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">all_names</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmpjok9us/file5460789f3335.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpkCuYFo/file56553c337ee0.grd&gt; created.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmpjok9us/file54606ed146f8.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpkCuYFo/file56555b072a6c.grd&gt; created.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmpjok9us/file54607acb7657.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpkCuYFo/file56554a2573b7.grd&gt; created.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmpjok9us/file54606c0b1d88.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpkCuYFo/file56555d558d58.grd&gt; created.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmpjok9us/file54607ba61f23.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpkCuYFo/file56555710204f.grd&gt; created.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Package rgrass7 transitioning to package rgrass for GRASS 7+.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/Rtmpjok9us/file5460738ec35a.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpkCuYFo/file56551986329.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Euclidean distance"</span>, <span class="st">"Log distance (base 10)"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Exponential ZoI 1000m"</span>, <span class="st">"Bartlett ZoI 1000m"</span>,</span></span>
