@@ -288,7 +288,9 @@ of ZoI metrics, must take into account what is the resolution of the data. For v
 resolution maps (small pixel size), input infrastructure raster maps might be binary,
 with each pixel representing a feature or feature segment. For large areas, though,
 the computation of ZoI metrics might be computationally and time consuming (but 
-see the alternative computation in GRASS GIS for these cases!). In contrast, as the
+see the 
+[alternative computation in GRASS GIS]((https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html)) 
+for these cases!). In contrast, as the
 input maps have a rougher resolution (larger pixel size), one must think if the input 
 infrastructure raster maps should be binary or represent counts of infrastructure
 features.

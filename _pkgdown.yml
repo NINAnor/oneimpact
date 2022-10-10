@@ -1,6 +1,17 @@
 url: https://ninanor.github.io/oneimpact/
 template:
   bootstrap: 5
+navbar:
+  components:
+   articles:
+    text: Articles
+    menu:
+    - text: Getting started
+      href: articles/onimpect.html
+    - text: Computing zones of influence
+      href: articles/computing_zoi.html
+    - text: Zones of influence on GRASS GIS
+      href: articles/zoi_on_grass.html
 reference:
 - title: "Zone of influence (ZoI) functions"
   desc: "Functions to represent the zone of influence"

@@ -368,7 +368,8 @@ functions. In our case, since it is in vector format, it must be rasterized firs
 For many types of anthropogenic infrastructure or disturbance which are represented
 by lines or polygons (e.g. roads, power lines, areas of deforestation), it is enough to
 create a binary raster as a dummy variable with value 1 where the disturbance is
-located and 0 (or `NA`) elsewhere.
+located and 0 (or `NA`) elsewhere (see an example at this other `oneimpact` 
+[vignette](https://ninanor.github.io/oneimpact/articles/computing_zoi.html)).
 For point representation of infrastructure and large enough pixels size, though, 
 it might be more interesting to
 count the number of features per pixel, since there might be more than one feature 
