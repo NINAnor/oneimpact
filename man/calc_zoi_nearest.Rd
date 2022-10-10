@@ -149,7 +149,7 @@ If the calculations are perfomed within GRASS GIS, this is the \code{metric}
 argument to calculate the distance
 from the infrastructure features with the module \code{r.grow.distance}.
 More information at the GRASS GIS documentation for
-\href{https://grass.osgeo.org/grass80/manuals/r.grow.distance.html}{this function}.
+\href{https://grass.osgeo.org/grass82/manuals/r.grow.distance.html}{this function}.
 This parameter is ignored when the calculations are performed in R
 (\code{where = "R"}).}
 

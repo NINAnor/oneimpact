@@ -93,7 +93,7 @@
 #' information about the algorithm
 #' [here](https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html).
 #' - `r.mfilter` is slower than `r.resamp.filter` but much faster than
-#' `r.neighbors`, and allow a flexible choice of the shape of the zone of
+#' `r.neighbors`, and allows a flexible choice of the shape of the zone of
 #' influence (the wight matrix shape). `r.mfilter` is then the most indicated
 #' in terms of a balance between flexibility in the choice of the ZoI shape
 #' and computation efficiency.
@@ -104,7 +104,7 @@
 #' \eqn{ge radius} around the input raster map, to avoid such edge effects.
 #' See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 #' - `r.neighbors` is considerably slower than the other algorithms (from 10 to
-#' 100 times), but allow the a flexible choice of the ZoI shape. Contrary to
+#' 100 times), but allows a flexible choice of the ZoI shape. Contrary to
 #' `r.resamp.filter` and `r.mfilter`, which can only perform a sum of pixel
 #' values weighted by the input filter or ZoI, `r.neighbors` might
 #' calculate many other statistical summaries within the window of analysis,
@@ -324,6 +324,7 @@ calc_zoi_cumulative <- function(
                                                   max_dist = max_dist,
                                                   extent_x_cut = extent_x_cut,
                                                   extent_y_cut = extent_y_cut,
+                                                  zeroAsNA = zeroAsNA,
                                                   g_parallel = g_parallel,
                                                   g_output_map_name = g_output_map_name,
                                                   g_input_as_region = g_input_as_region,
@@ -504,6 +505,7 @@ calc_zoi_cumulative_grass <- function(
   normalize = FALSE,
   extent_x_cut = NULL,
   extent_y_cut = NULL,
+  zeroAsNA = FALSE,
   g_parallel = TRUE,
   g_output_map_name = NULL,
   g_input_as_region = FALSE,
@@ -537,7 +539,24 @@ calc_zoi_cumulative_grass <- function(
   # Differently from the R version, here we do not check if the input map
   # is binary or if it has NA values
   # This should be checked by the users before calculation
-  input_bin <- x
+
+  if(zeroAsNA) {
+    # print message
+    if(verbose) rgrass7::execGRASS("g.message", message = "Setting zeros as NULL data...")
+    # copy map and use r.null
+    set_null_map <- "temp_set_null_input"
+    # copy map
+    rgrass7::execGRASS("g.copy", raster = paste0(x, ",", set_null_map), flags = flags)
+    # set nulls
+    rgrass7::execGRASS("r.null", map = set_null_map, null = "0")
+    # define input
+    input_bin <- set_null_map
+    # check if it should be deleted afterwards
+    if(g_remove_intermediate)
+      to_remove <- c(to_remove, set_null_map)
+  } else {
+    input_bin <- x
+  }
 
   # define the name of the output map
   if(!is.null(g_output_map_name)) {

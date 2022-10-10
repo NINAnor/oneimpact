@@ -93,6 +93,8 @@ this GRASS GIS mapset.  Furthermore, in GRASS GIS the function returns only the
 name of the output map. This map is stored in the GRASS GIS location/mapset, 
 and might be retrieved to R through the `rgrass7::read_RAST()` function
 or exported outside GRASS using the [`r.out.gdal`](https://grass.osgeo.org/grass82/manuals/r.out.gdal.html) module, for instance.
+See this [other vignette](https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html) 
+for more details on how to compute ZoI metrics in GRASS.
 
 The ZoI of the nearest feature (the output of `calc_zoi_nearest()`) is based on 
 transformations of the map of distance to the nearest feature. First, this map is 

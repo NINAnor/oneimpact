@@ -171,7 +171,7 @@
 #' argument to calculate the distance
 #' from the infrastructure features with the module `r.grow.distance`.
 #' More information at the GRASS GIS documentation for
-#' [this function](https://grass.osgeo.org/grass80/manuals/r.grow.distance.html).
+#' [this function](https://grass.osgeo.org/grass82/manuals/r.grow.distance.html).
 #' This parameter is ignored when the calculations are performed in R
 #' (`where = "R"`).
 #'
@@ -283,6 +283,7 @@ calc_zoi_nearest <- function(
                                             type = type,
                                             intercept = intercept,
                                             zoi_limit = zoi_limit,
+                                            zeroAsNA = zeroAsNA,
                                             lambda = lambda,
                                             log_base = log_base,
                                             dist_offset = dist_offset,
@@ -429,6 +430,7 @@ calc_zoi_nearest_grass <- function(
            "euclidean", "log", "sqrt")[1],
   intercept = 1,
   zoi_limit = 0.05,
+  zeroAsNA = FALSE,
   zoi_hl_ratio = NULL,
   half_life = NULL,
   lambda = NULL,
@@ -495,10 +497,27 @@ calc_zoi_nearest_grass <- function(
     rgrass7::execGRASS("g.region", s = extent_y_cut[1], n = extent_y_cut[2],
                        align = x, flags = flags_region)
 
+  # check if zero should be replaced by NA
+  if(zeroAsNA) {
+    # print message
+    if(verbose) rgrass7::execGRASS("g.message", message = "Setting zeros as NULL data...")
+    # copy map and use r.null
+    temp_null_map <- "temp_set_null_input"
+    # copy map
+    rgrass7::execGRASS("g.copy", raster = paste0(x, ",", temp_null_map), flags = flags)
+    # set nulls
+    rgrass7::execGRASS("r.null", map = temp_null_map, setnull = "0")
+    # check if it should be deleted afterwards
+    if(g_remove_intermediate)
+      to_remove <- c(to_remove, temp_null_map)
+  }
+
   # print message
   if(verbose) rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...")
+  # set input
+  if(zeroAsNA) input_euc <- temp_null_map else input_euc <- x
   # calculate
-  rgrass7::execGRASS("r.grow.distance", input = x, distance = out_euclidean,
+  rgrass7::execGRASS("r.grow.distance", input = input_euc, distance = out_euclidean,
                      metric = g_dist_metric, flags = flags)
   # check if it should be deleted afterwards
   # check if the layer already exists first; if not, remove it in the end.

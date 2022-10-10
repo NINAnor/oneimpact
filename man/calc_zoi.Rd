@@ -7,8 +7,9 @@ and the cumulative zone of influence of multiple features}
 \usage{
 calc_zoi(
   x,
-  radius = radius,
-  type = type,
+  radius = 100,
+  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
+    "mfilter")[1],
   zoi_metric = c("all", "nearest", "cumulative")[1],
   where = c("R", "GRASS")[1],
   zeroAsNA = TRUE,

@@ -1,0 +1,389 @@
+---
+title: "Computing zones of influence on GRASS GIS through the oneimpact package in R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Computing zones of influence on GRASS GIS through the oneimpact package in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+The computation of zones of influence (ZoI) in useful to assess whether the effect of 
+a given anthropogenic infrastructure, disturbance, or landscape variable affect
+an ecological response variable beyond its spatial delimitation. Computing zones of 
+influence for large maps with fine resolution though, is tricky because of computing and
+memory limitations in processing raster maps in R. To deal with that, the `oneimpact`
+package offers tools to compute the ZoI in [GRASS GIS](https://grass.osgeo.org/), a
+powerful, open-source , using the package [`rgrass7`](https://rsbivand.github.io/rgrass/) 
+to link R and GRASS. Here we provide an example and some comments on how to
+compute ZoI metrics in GRASS GIS via R.
+
+For an introduction to the zone of influence approach in R, look at the 
+[Getting started](https://ninanor.github.io/oneimpact/articles/oneimpact.html) and
+[Computing zones of influence](https://ninanor.github.io/oneimpact/articles/computing_zoi.html)
+introdutory vignettes.
+
+# Overview
+
+To compute ZoI metrics in GRASS GIS,
+we can use the same function used to compute ZoI in R, `calc_zoi()` (or 
+`calc_zoi_nearest()` and `calc_zoi_cumulative` for only the nearest and cumulative
+ZoI metrics), adding a parameter `where = "GRASS"`. However, the computation in GRASS GIS 
+is slighly different from doing the same in R. Here are some key differences:
+
+- raster processing is made in GRASS GIS, so it requires an active connection between
+the R session and a GRASS GIS location and mapset;
+- the input raster maps representing infrastructure or disturbance might be loaded into
+the GRASS GIS location/mapset R is connected to. This might be done through the
+`rgrass7` package;
+- once the input raster maps are loaded in GRASS, the input to the `calc_zoi()`
+function is not a raster object in R but a string with the name of the map in the
+GRASS mapset;
+- after processing, ZoI maps are saved within the GRASS GIS location and mapset.
+To retrieve them, one must use the `rgrass7` pacakge to import the maps into R
+or outside to a working folder.
+
+Below we show how to do these steps to compute the ZoI and provide a few comments.
+
+# Establishing a connection between R and GRASS
+
+## Downloading and installing GRASS GIS
+
+The first requirement to compute ZoI metrics in GRASS is to have GRASS GIS installed.
+GRASS can be freely downloaded and installed in most operational systems 
+(Windows, Linux, MacOS). For more information on installations, please see the official
+[GRASS Downloads webpage](https://grass.osgeo.org/download/). The website also
+provides [helpful manuals, tutorials, and videos](https://grass.osgeo.org/learn/) 
+and various languages for first time and experienced users.
+
+## Connecting R to GRASS GIS
+
+GRASS GIS has a slighly different project organization, if compared to other
+popular GIS software such as ArcGIS and QGIS. GRASS projects are called **Locations**,
+which are defined by a single [geodetic datum](https://en.wikipedia.org/wiki/Geodetic_datum) 
+and [coordinate reference system (CRS)](https://rspatial.org/terra/spatial/6-crs.html).
+This means that all maps of all types (e.g. vector, raster) within a location
+have the very same CRS, what assures all data is processed correctly. Each location
+has a main folder called **PERMANENT** and might have multiple other folders; these folders
+are called **Mapsets**. See 
+[this tutorial](https://neteler.gitlab.io/grass-gis-analysis/01_grass-gis-basics/) 
+for more information on the GRASS database and location structure.
+
+### Running GRASS from R
+
+When connecting R to GRASS, R might be connected to a given GRASS location and mapset
+through the function `rgrass7::initGRASS()`. One must provide to this call the folder where the 
+GRASS GIS executable files are found (parameter `gisBase`), as well as the folder where
+the project is located (parameter `gisDbase`), the location name (parameter `location`)
+and the mapset name (parameter `mapset`). The function might be used to connect to an 
+already existing location or create a new one, if it does not exist.
+
+For illustration, here we create a new location to work on the `oneimpact` examples.
+To do so, we use as a reference (for defining the datum and CRS of the GRASS location)
+the map of number of private tourist cabins in a sample area in Southern Norway, 
+stored in the `oneimpact` package (see `?sample_area_cabins_count.tif`
+for more information). We first load this data set.
+
+```{r load_cabins}
+# load packages
+library(oneimpact)
+library(rgrass7) # for connecting R and GRASS
+library(terra) # for geodata in R
+
+# load cabins raster data into R
+(f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact"))
+cabins_count <- terra::rast(f)
+```
+
+Next, we need to know what is the path of the folder where GRASS GIS executable
+files are located. The following command works in Linux, MacOS, and within the OSGeo4W
+in Windows:
+
+```{r where_grass}
+# For linux or within OSGeo4W shell
+grassdir <- system("grass78 --config path", intern = TRUE)
+grassdir
+```
+
+Now we can create a GRASS GIS location and connect our R session to it:
+
+```{r create_grassdb, message=FALSE, warning=FALSE, error=FALSE}
+gisDB <- "." # create location and mapset in the working directory
+loc <- "test_location/" # name of the location
+ms <- "PERMANENT" # name of the mapset
+# create grass db and connect
+rgrass7::initGRASS(gisBase = grassdir,
+                   SG = cabins_count, # use map to define location projection
+                   home = tempdir(),
+                   gisDbase = gisDB,
+                   location = loc,
+                   mapset = ms,
+                   override = TRUE, )
+```
+
+Notice that, in the code above, a few additional parameters were filled. First, 
+the `SG = cabins_count` parameter defined the map of cabins as the reference to 
+define the CRS of the created location. Second, we created a location in a temporary
+folder using `home = tempdir()`. While this is ok for tests and demonstration purposes like 
+this tutorial, we do not recommend you to use it when processing maps for other purposes,
+since the data might be lost after the connection to GRASS is closed. 
+
+As a proof to check if the connection between R and GRASS is active, the `initGRASS()`
+function shows a series of information about the grass database and location. The
+same might be checked at any time by using the `rgrass7::gmeta()` function:
+
+```{r check_grass, eval=FALSE}
+# check grass connection
+rgrass7::gmeta()
+```
+
+This command shows all the information on the grass database, location, mapset, and
+reference system. Besides, it provides information about the GRASS working computational region
+(number of `rows` and `columns` of the region; `north`, `south`, `west`, and `east` boundaries of 
+the region extent; and region resolution in the north-south and east-west directions,
+`nsres` and `ewres`). Differently from other GIS, GRASS works based on computational regions
+to perform map processing. This means that, regardless of the extent and resolution of the input
+maps, it is possible to set a specific desired extent and resolution as the output for most
+of the GRASS GIS tools. More information on GRASS computational regions can be found 
+[here](https://neteler.gitlab.io/grass-gis-analysis/01_grass-gis-basics/#concept-of-computational-region).
+
+### Running R within GRASS
+
+Another option is to open a GRASS GIS session and run R within the GRASS shell.
+Too know more about this option, please look at these GRASS GIS 
+[wiki](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7).
+
+## Notes in GRASS installation and connections on Windows
+
+It is possible to install GRASS on Windows operational systems in two ways, and it might
+be a little tricky to connect R and GRASS. 
+
+### Standalone installation
+
+The first option is to download a [standalone installer](https://grass.osgeo.org/download/windows/) 
+and install a given GRASS GIS
+version. If you do so, the code above should work, except the command 
+`system("grass78 --config path", intern = TRUE)`. In this case, the `grassdir` object
+with the path to the executable GRASS files should look like:
+
+```{r grass_windows, eval=FALSE}
+# If you used the standalone installer in Windows
+grassdir <- "C:\Programs\GRASS GIS 7.8" # Correct if the path is different
+```
+
+### Installation through OSGeo4W
+
+Another option on Windows is to use [OSGeo4W](https://grass.osgeo.org/download/windows/). 
+OSGeo4W is an installer for a broad set of open source geospatial software packages including GRASS GIS 
+as well as many other packages (QGIS, GDAL/OGR, and more). Here it is possible to choose which version of 
+GRASS GIS to install and choose many other installation setting besides the default.
+
+When GRASS is installed through OSGeo4W, though, R must be opened from the OSGeo4W shell
+for the connection between R and GRASS to work through the `rgrass7` package. See the
+documentation for the `rgrass7::initGRASS()` function for more information.
+
+# Computing the zones of influence
+
+## Loading input maps into GRASS
+
+Before computing the ZoI metrics, the input infrastructure or disturbance maps must
+be loaded into GRASS. If the maps are already open in our R session, it is possible
+to write them into our GRASS mapset using the `rgrass7::write_RAST()` function:
+
+```{r write_raster1}
+# write raster into GRASS
+rgrass7::write_RAST(cabins_count, 
+                    vname = "cabins_count", # name of the map in GRASS
+                    flags = c("o", "quiet"))
+```
+
+In some cases, there might be small, negligible differences between the GRASS location
+CRS and the the input map CRS. In such cases where this difference might be ignored,
+the parameter `flags = "o"` might be added to ignore the differences (look 
+[here](https://grass.osgeo.org/grass82/manuals/r.in.gdal.html) for more details on
+the `-o` flag). Likewise, if the map already exists in the GRASS location and we want
+to overwrite it, we must add the `overwrite = TRUE` parameter to the function.
+
+Another way of loading a map into a GRASS location and mapset directly from a folder 
+in your computer, without the need to pre-load it into R, is to use the 
+[`r.in.gdal`](https://grass.osgeo.org/grass82/manuals/r.out.gdal.html) or 
+[`r.import`](https://grass.osgeo.org/grass82/manuals/r.import.html) GRASS tools through 
+the `rgrass7::execGRASS()` function. The function `execGRASS()` provides a way of 
+running GRASS modules and addons directly, as if we were running them through the GRASS
+console.
+
+In this case, the following command would also work:
+
+```{r write_raster2, eval=FALSE}
+# get path to the raster file
+f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact")
+f
+
+# load this file to the GRASS mapset
+rgrass7::execGRASS("r.in.gdal", input = f, 
+                   output = "cabins_count", # name of the map in GRASS
+                   flags = c("overwrite", "o"))
+```
+
+
+## Computing the ZoI
+
+Now, computing the ZoI is very similar to the procedure in R with the `calc_zoi()`
+function. We will here
+compute both the ZoI of the nearest feature and the cumutive ZoI for cabins
+using a ZoI with a linear decay (i.e. Bartlett) shape and radii of 500 and 1000 m. 
+Importantly, here the main input `x` for the `calc_zoi()` funcion is a string
+with the name of the map within the GRASS mapset (or a vector strings for multiple maps).
+To inform R that we wish to make processing in GRASS, we must set `where = "GRASS"`:
+
+```{r compute_zoi}
+# compute zoi
+zoi_metrics <- calc_zoi(x = "cabins_count", # string as input
+                        radius = c(500, 1000),
+                        type = "bartlett",
+                        zeroAsNA = TRUE,
+                        where = "GRASS", 
+                        g_overwrite = TRUE)
+
+# check the output
+zoi_metrics
+```
+
+Notice that, differently from when `calc_zoi()` is run entirely in R, the output object `zoi_metrics`
+is a vector of strings specifying the name of the output maps computed in GRASS. Below we
+show how to retrieve these maps into R or export them from GRASS into a local folder.
+
+Notice also that the `g_overwrite` parameter was used to guarantee that, if there are already
+maps with similar names in the GRASS GIS mapset, they will be overwritten. Other parameters
+to control how `calc_zoi()` is computed in GRASS are available, all following starting 
+with `g_`. For instance, the name of the output map (or pattern in the output names, when there
+is more than one map or ZoI radius) might be determined using the `g_output_map_name` parameter.
+If no parameter is specified, the input map name is used, together with the ZoI metric, shape, and radius,
+to create the name of the output maps. For more information on GRASS GIS options for 
+ZoI computation, see the documentation for `calc_zoi_nearest()` and `calc_zoi_cumulative()`.
+
+# Retrieving outputs from GRASS
+
+Once the ZoI maps are calculated, we can retrieve them to R using the function
+`rgrass7::read_RAST()`. By default, this function reads the rasters as a 
+`SpatialGridDataFrame` object from the `sp` package. Here we prefer to specify
+`return_format = "terra"`, in case which the output is a *terra* `SpatRaster` object.
+
+```{r retrieve_maps}
+# retireve maps
+cabins_zoi_cumulative <- rgrass7::read_RAST(zoi_metrics, 
+                                            return_format = "terra",
+                                            flags = "quiet")
+cabins_zoi_cumulative
+```
+
+```{r fix_raster, eval=TRUE, include=FALSE}
+# For some reason the nearest maps are being read/approximated to integers
+# we fix it here, later on we look for the issue
+# probably a terra package issue, or a rgrass issue
+cabins_zoi_cumulative[[1]][] <- as.numeric(cabins_zoi_cumulative[[1]][])
+cabins_zoi_cumulative[[2]][] <- as.numeric(cabins_zoi_cumulative[[2]][])
+cabins_zoi_cumulative[[3]][] <- as.numeric(cabins_zoi_cumulative[[3]][])
+cabins_zoi_cumulative[[4]][] <- as.numeric(cabins_zoi_cumulative[[4]][])
+```
+
+
+Now we can plot the ZoI metrics computed in GRASS:
+
+```{r}
+# plot ZoI metrics
+terra::plot(cabins_zoi_cumulative)
+```
+
+From this point, the `oneimpact` vignette [Getting started](https://ninanor.github.io/oneimpact/articles/oneimpact.html) shows how it is
+possible to annotate biological data with the ZoI variables computed for different
+variables to prepare data for a multi-scale analysis on the effects of infrastructure
+and anthropogenic disturbance on biological responses (see also Niebuhr et al, 
+*submitted*).
+
+# Additional resources
+
+## Different algorithms to compute the cumulative zone of influence
+
+In GRASS GIS, different algorithms might be used for the computation of 
+neighborhood analyses, which are the basis for the cumulative ZoI calculation.
+The following GRASS tools are available to be used in `calc_zoi()` in GRASS:
+`r.resamp.filter`, `r.mfilter`, or `r.neighbors`. The module to be used is
+controlled by the parameter `g_module`. Each of these algorithms provide different
+capabilities and flexibility:
+
+- `r.resamp.filter` seems to be the fastest one
+in most cases, but has less flexibility in the choice of the zone of influence
+shapes. The algorithm calculates the weighted density of features, which
+might be rescaled to the cumulative ZoI if the appropriate scaling factor
+(calculated from the weight matrix) is provided. Currently only the
+filters `type = "bartlett"` and `type = "box"` are implemented in
+`oneimpact`. More
+information about the algorithm
+[here](https://grass.osgeo.org/grass82/manuals/r.resamp.filter.html).
+- `r.mfilter` (the default tools in the `calc_zoi()` functions) 
+is slower than `r.resamp.filter` but much faster than
+`r.neighbors`, and allows a flexible choice of the shape of the zone of
+influence (the wight matrix shape). `r.mfilter` is then the most indicated
+in terms of a balance between flexibility in the choice of the ZoI shape
+and computation efficiency.
+The only inconvenient of `r.mfilter` is that it
+creates an edge effect with no information in the outer cells of a raster
+(the number of cells correspond to `radius` or half the size of the weight
+matrix), so if it is used the users should add a buffer area
+\eqn{ge radius} around the input raster map, to avoid such edge effects.
+See \url{https://github.com/OSGeo/grass/issues/2184} for more details about 
+this issue, and [this link](https://grass.osgeo.org/grass82/manuals/r.mfilter.html)
+for more information on this tool.
+- `r.neighbors` is considerably slower than the other algorithms (from 10 to
+100 times), but allows a flexible choice of the ZoI shape. Contrary to
+`r.resamp.filter` and `r.mfilter`, which can only perform a sum of pixel
+values weighted by the input filter or ZoI, `r.neighbors` might
+calculate many other statistical summaries within the window of analysis,
+such as mean, median, standard deviation etc. In principle, though, the sum
+is enough to compute the cumulative ZoI as formulated in Niebuhr et al. (*submitted*)
+and proposed here.
+
+## Different measures of distance to compute the zone of influence of the nearest feature
+
+The metrics of ZoI of the nearest feature are based on maps of distance form each 
+pixel in the landscape to the nearest feature. They are computed in GRASS through the
+[r.grow.distance](https://grass.osgeo.org/grass78/manuals/r.grow.distance.html)
+tool. This tool allows the computation of the distance to the nearest feature based
+on different distance metrics:  "euclidean", "geodesic", "squared", "maximum", "manhattan".
+This allows extra flexibility and might be controlled in the `calc_zoi()` functions
+through the `g_dist_metric` parameter. If `g_dist_metric = "geodesic"` and one uses 
+the option `flags = "m"`, for instance, the computation of the distance is made in 
+meters even if the map is in geographical coordinate system (Latitude-Longitude).
+Find more information at the GRASS GIS documentation for this function 
+[here](https://grass.osgeo.org/grass82/manuals/r.grow.distance.html).
+
+## Additional ancillary functions
+
+Additional examples for the computation of the ZoI in GRASS can be 
+found in the documentation of the `calc_zoi_nearest()`
+and `calc_zoi_cumulative()` functions. The `oneimpact` package also provides a 
+few other ancillary functions to help processing maps within GRASS:
+
+- The function `grass_binarize()` transforms continuous maps into binary maps
+based on `breaks` to define discrete categories. The output consists of maps with
+1 for values above the `break` and 0 for values below it. It might be used for 
+preparing inputs to compute the ZoI based on continuous layers.
+- The function `grass_v2rast_count()` rasterizes vectors within GRASS 
+by counting the number of features in each pixel. This is usefull for large maps
+which are hard to be rasterized within R. See the 
+[Computing zones of influence](https://ninanor.github.io/oneimpact/articles/computing_zoi.html)
+vignette for a reasoning about where this might be useful.
+
+# References
+
+Niebuhr, B. B., van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,
+Alam, M., Skarin, A., & Panzacchi, M. Estimating the cumulative impact and zone of
+influence of anthropogenic infrastructure on biodiversity. *Submitted manuscript*.

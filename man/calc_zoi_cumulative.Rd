@@ -267,7 +267,7 @@ filters \code{type = "bartlett"} and \code{type = "box"} are implemented. More
 information about the algorithm
 \href{https://grass.osgeo.org/grass80/manuals/r.resamp.filter.html}{here}.
 \item \code{r.mfilter} is slower than \code{r.resamp.filter} but much faster than
-\code{r.neighbors}, and allow a flexible choice of the shape of the zone of
+\code{r.neighbors}, and allows a flexible choice of the shape of the zone of
 influence (the wight matrix shape). \code{r.mfilter} is then the most indicated
 in terms of a balance between flexibility in the choice of the ZoI shape
 and computation efficiency.
@@ -278,7 +278,7 @@ matrix), so if it is used the users should add a buffer area
 \eqn{ge radius} around the input raster map, to avoid such edge effects.
 See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 \item \code{r.neighbors} is considerably slower than the other algorithms (from 10 to
-100 times), but allow the a flexible choice of the ZoI shape. Contrary to
+100 times), but allows a flexible choice of the ZoI shape. Contrary to
 \code{r.resamp.filter} and \code{r.mfilter}, which can only perform a sum of pixel
 values weighted by the input filter or ZoI, \code{r.neighbors} might
 calculate many other statistical summaries within the window of analysis,

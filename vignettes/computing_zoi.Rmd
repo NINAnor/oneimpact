@@ -129,7 +129,7 @@ around it. As illustration, we'll compute here a map representing the count of
 cabins. We'll rasterize the vector map using the function `rasterize()` from the 
 `terra` package, filling the information in each pixel with the count of features
 within them (function `fun = length`). We also fill the background areas (pixels with
-no cabins) with value zero, since that is not default in the `rasterize` function.
+no cabins) with value zero, since that is not default in the `terra::rasterize()` function.
 
 ```{r rasterize_cabins}
 # rasterize cabins counting the number of features in each pixel
@@ -183,7 +183,7 @@ of the class in each pixel.
 # Computing the ZoI
 
 To compute the ZoI, we'll use the `calc_zoi()` function from the `oneimpact` package.
-`calc_zoi` might accommodate the calculation of both the ZoI of the nearest feature
+`calc_zoi()` might accommodate the calculation of both the ZoI of the nearest feature
 (when the parameter `zoi_metric` is `"nearest"`) and the cumulative ZoI of multiple features
 (when `zoi_metric = "cumulative"`), or both (the default, if `zoi_metric = "all"`).
 It is also possible to control the shape and the radius of the ZoI through the parameters 
@@ -208,7 +208,8 @@ zoi_cabins
 ```
 
 Since we opted to compute both ZoI metrics (`zoi_metric = "all"` by default, if nothing
-else is specified) using two different radii, the resulting raster is composed of \verb|2 x 2 = 4| 
+else is specified) using two different radii, the resulting raster is composed of 
+$\verb|2 x 2 = 4|$ 
 layers. Below we plot these layers to visualize the different spatial patterns:
 
 ```{r plot_zoi_cabins}
@@ -294,7 +295,7 @@ resolution maps (small pixel size), input infrastructure raster maps might be bi
 with each pixel representing a feature or feature segment. For large areas, though,
 the computation of ZoI metrics might be computationally and time consuming (but 
 see the 
-[alternative computation in GRASS GIS]((https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html)) 
+[alternative computation in GRASS GIS](https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html) 
 for these cases!). In contrast, as the
 input maps have a rougher resolution (larger pixel size), one must think if the input 
 infrastructure raster maps should be binary or represent counts of infrastructure
@@ -307,7 +308,7 @@ when they are used to annotate ecological data and assess cumulative impacts on
 species or ecological processes (Jackson & Fahrig, 2015).
 
 First, the impact of infrastructure on ecological processes might differ depending 
-of the extent of the study area (Vistnes & Nellemann, 2008). Skarin & ̊Ahman (2014)
+of the extent of the study area (Vistnes & Nellemann, 2008). Skarin & Åhman (2014)
 showed that, depending of the temporal and spatial range of
 the study, the same type of infrastructure might vary in their effect on biological 
 response variables, from no effect to positive or negative effects. Second, 
