@@ -78,8 +78,9 @@
 #'
 #' @export
 calc_zoi <- function(x,
-                     radius = radius,
-                     type = type,
+                     radius = 100,
+                     type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
+                              "mfilter")[1],
                      zoi_metric = c("all", "nearest", "cumulative")[1],
                      where = c("R", "GRASS")[1],
                      zeroAsNA = TRUE,
@@ -105,6 +106,7 @@ calc_zoi <- function(x,
     nearest_r <- calc_zoi_nearest(x = x,
                                   radius = radius,
                                   type = type,
+                                  where = where,
                                   zeroAsNA = zeroAsNA,
                                   ...)
   }
@@ -114,6 +116,7 @@ calc_zoi <- function(x,
     cumulative_r <- calc_zoi_cumulative(x = x,
                                         radius = radius,
                                         type = type,
+                                        where = where,
                                         zeroAsNA = !zeroAsNA,
                                         output_type = output_type,
                                         ...)
