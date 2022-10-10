@@ -4,7 +4,8 @@ pkgdown_sha: ~
 articles:
   computing_zoi: computing_zoi.html
   oneimpact: oneimpact.html
-last_built: 2022-10-10T14:49Z
+  zoi_on_grass: zoi_on_grass.html
+last_built: 2022-10-10T23:22Z
 urls:
   reference: https://ninanor.github.io/oneimpact/reference
   article: https://ninanor.github.io/oneimpact/articles
