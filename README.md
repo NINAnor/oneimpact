@@ -1,6 +1,7 @@
 # oneimpact <img src="man/figures/oneimpact_hex_logo.png" align="right" alt="" width="150" />
 
 <!-- badges: start -->
+  [![DOI](https://zenodo.org/badge/453101311.svg)](https://zenodo.org/badge/latestdoi/453101311)
 <!--  [![R-CMD-check](https://github.com/NINAnor/oneimpact/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/oneimpact/actions) -->
 <!-- badges: end -->
 
