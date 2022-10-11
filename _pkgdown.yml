@@ -7,7 +7,7 @@ navbar:
     text: Articles
     menu:
     - text: Getting started
-      href: articles/onimpect.html
+      href: articles/onimpact.html
     - text: Computing zones of influence
       href: articles/computing_zoi.html
     - text: Zones of influence on GRASS GIS
