@@ -187,7 +187,9 @@ GRASS GIS to install and choose many other installation setting besides the defa
 
 When GRASS is installed through OSGeo4W, though, R must be opened from the OSGeo4W shell
 for the connection between R and GRASS to work through the `rgrass7` package. See the
-documentation for the `rgrass7::initGRASS()` function for more information.
+documentation for the `rgrass7::initGRASS()` function and
+[this issue](https://github.com/NINAnor/oneimpact/issues/10) for more information
+on the connection between R and GRASS on Windows.
 
 # Computing the zones of influence
 
