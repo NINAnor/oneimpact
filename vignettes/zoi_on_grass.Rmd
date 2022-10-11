@@ -197,7 +197,7 @@ Before computing the ZoI metrics, the input infrastructure or disturbance maps m
 be loaded into GRASS. If the maps are already open in our R session, it is possible
 to write them into our GRASS mapset using the `rgrass7::write_RAST()` function:
 
-```{r write_raster1}
+```{r write_raster1, warning=FALSE, error=FALSE, message=FALSE}
 # write raster into GRASS
 rgrass7::write_RAST(cabins_count, 
                     vname = "cabins_count", # name of the map in GRASS
@@ -221,7 +221,7 @@ console.
 
 In this case, the following command would also work:
 
-```{r write_raster2, eval=FALSE}
+```{r write_raster2, eval=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 # get path to the raster file
 f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact")
 f
@@ -243,7 +243,7 @@ Importantly, here the main input `x` for the `calc_zoi()` funcion is a string
 with the name of the map within the GRASS mapset (or a vector strings for multiple maps).
 To inform R that we wish to make processing in GRASS, we must set `where = "GRASS"`:
 
-```{r compute_zoi}
+```{r compute_zoi, warning=FALSE, error=FALSE, message=FALSE}
 # compute zoi
 zoi_metrics <- calc_zoi(x = "cabins_count", # string as input
                         radius = c(500, 1000),
@@ -276,7 +276,7 @@ Once the ZoI maps are calculated, we can retrieve them to R using the function
 `SpatialGridDataFrame` object from the `sp` package. Here we prefer to specify
 `return_format = "terra"`, in case which the output is a *terra* `SpatRaster` object.
 
-```{r retrieve_maps}
+```{r retrieve_maps, warning=FALSE, error=FALSE, message=FALSE}
 # retireve maps
 cabins_zoi_cumulative <- rgrass7::read_RAST(zoi_metrics, 
                                             return_format = "terra",
