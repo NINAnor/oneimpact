@@ -207,10 +207,6 @@
 <span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins_count</span>, </span>
 <span>                    vname <span class="op">=</span> <span class="st">"cabins_count"</span>, <span class="co"># name of the map in GRASS</span></span>
 <span>                    flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"o"</span>, <span class="st">"quiet"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
 <span><span class="co">#&gt; SpatRaster read into GRASS using r.in.gdal from file</span></span></code></pre></div>
 <p>In some cases, there might be small, negligible differences between the GRASS location CRS and the the input map CRS. In such cases where this difference might be ignored, the parameter <code>flags = "o"</code> might be added to ignore the differences (look <a href="https://grass.osgeo.org/grass82/manuals/r.in.gdal.html" class="external-link">here</a> for more details on the <code>-o</code> flag). Likewise, if the map already exists in the GRASS location and we want to overwrite it, we must add the <code>overwrite = TRUE</code> parameter to the function.</p>
 <p>Another way of loading a map into a GRASS location and mapset directly from a folder in your computer, without the need to pre-load it into R, is to use the <a href="https://grass.osgeo.org/grass82/manuals/r.out.gdal.html" class="external-link"><code>r.in.gdal</code></a> or <a href="https://grass.osgeo.org/grass82/manuals/r.import.html" class="external-link"><code>r.import</code></a> GRASS tools through the <code><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">rgrass7::execGRASS()</a></code> function. The function <code><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">execGRASS()</a></code> provides a way of running GRASS modules and addons directly, as if we were running them through the GRASS console.</p>
@@ -237,46 +233,9 @@
 <span>                        zeroAsNA <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                        where <span class="op">=</span> <span class="st">"GRASS"</span>, </span>
 <span>                        g_overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
 <span><span class="co">#&gt;    0%   2%   4%   6%   8%  10%  12%  14%  16%  18%  20%  22%  24%  26%  28%  30%  32%  34%  36%  38%  40%  42%  44%  46%  48%  50%  52%  54%  56%  58%  60%  62%  64%  66%  68%  70%  72%  74%  76%  78%  80%  82%  84%  86%  88%  90%  92%  94%  96%  98% 100%</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
 <span><span class="co">#&gt; Removing raster &lt;cabins_count_zoi_nearest_euclidean&gt;</span></span>
 <span><span class="co">#&gt; Removing raster &lt;temp_set_null_input&gt;</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
 <span></span>
 <span><span class="co"># check the output</span></span>
 <span><span class="va">zoi_metrics</span></span>
@@ -297,43 +256,15 @@
 <span><span class="va">cabins_zoi_cumulative</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/rgrass-deprecated.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">zoi_metrics</span>, </span>
 <span>                                            return_format <span class="op">=</span> <span class="st">"terra"</span>,</span>
 <span>                                            flags <span class="op">=</span> <span class="st">"quiet"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
-<span><span class="co">#&gt; Warning: Package rgrass7 transitioning to package rgrass for GRASS 7+.</span></span>
 <span><span class="va">cabins_zoi_cumulative</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
 <span><span class="co">#&gt; dimensions  : 361, 478, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs </span></span>
-<span><span class="co">#&gt; sources     : file597e1d8a87ef.grd  </span></span>
-<span><span class="co">#&gt;               file597e15860490.grd  </span></span>
-<span><span class="co">#&gt;               file597e446121de.grd  </span></span>
+<span><span class="co">#&gt; sources     : file5a2d1d215ac5.grd  </span></span>
+<span><span class="co">#&gt;               file5a2d3dd9239e.grd  </span></span>
+<span><span class="co">#&gt;               file5a2d64cb209c.grd  </span></span>
 <span><span class="co">#&gt;               ... and 1 more source(s)</span></span>
 <span><span class="co">#&gt; color table : 1, 2, 3, 4 </span></span>
 <span><span class="co">#&gt; names       : cabins_~lett500, cabins_~ett1000, cabins_~lett500, cabins_~ett1000 </span></span>
