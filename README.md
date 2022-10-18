@@ -5,7 +5,7 @@
 <!--  [![R-CMD-check](https://github.com/NINAnor/oneimpact/workflows/R-CMD-check/badge.svg)](https://github.com/NINAnor/oneimpact/actions) -->
 <!-- badges: end -->
 
-`oneimpact` provides tools for the assessment of cumulative impacts from multiple infrastructure and land use modification in ecological studies.
+`oneimpact` provides tools for the assessment of cumulative impacts of multiple infrastructure and land use modifications in ecological studies.
 The tools use R interface but the main calculations might be run in both R and GRASS GIS. The tools available so far are:
 
 ### Zone of influence (ZoI) decay functions
