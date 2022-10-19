@@ -22,7 +22,8 @@ filter_create(
   save_format = c("GRASS_rmfilter", "raw")[1],
   save_folder = NULL,
   save_file = NULL,
-  parallel = TRUE
+  parallel = TRUE,
+  ...
 )
 }
 \arguments{
@@ -155,6 +156,8 @@ If \code{NULL}, a standard filename is created, using the \code{type} and \code{
 
 \item{parallel}{\verb{[logical(1)=TRUE]} \cr Whether the computation should be paralelized or not (details in
 the documentation of the \href{https://grass.osgeo.org/grass78/manuals/r.mfilter.html}{\code{r.mfilter}} module).}
+
+\item{...}{Additional parameters (none implemented).}
 }
 \value{
 A matrix with the weight values. In the context of cumulative impact assessment, we call it a

@@ -141,6 +141,7 @@
 #' interval $[0,1]$. If `normalize = TRUE`, the divisor is set to `n*n`.
 #' @param parallel `[logical(1)=TRUE]` \cr Whether the computation should be paralelized or not (details in
 #' the documentation of the [`r.mfilter`](https://grass.osgeo.org/grass78/manuals/r.mfilter.html) module).
+#' @param ... Additional parameters (none implemented).
 #'
 #' @return A matrix with the weight values. In the context of cumulative impact assessment, we call it a
 #' zone of influence (ZoI) matrix used to compute the cumulative zone of influence. If `save_txt = TRUE`,
@@ -176,7 +177,8 @@ filter_create <- function(r = 100,
                           save_format = c("GRASS_rmfilter", "raw")[1],
                           save_folder = NULL,
                           save_file = NULL,
-                          parallel = TRUE) {
+                          parallel = TRUE,
+                          ...) {
 
   # check the input data class of r
   if(class(r) %in% c("RasterLayer", "RasterBrick", "RasterStack", "SpatRaster")) {
