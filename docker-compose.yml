@@ -1,0 +1,9 @@
+version: "3.4"
+services:
+  rstudio:
+    environment:
+      PASSWORD: rstudio
+    image: ghcr.io/ninanor/oneimpact:main
+    build: .
+    ports:
+    - 8787:8787

@@ -56,7 +56,7 @@ devtools::install_github("NINAnor/oneimpact", ref = "HEAD")
 ## Run with Docker
 
 ```bash
-docker run --rm -p 8787:8787 -e PASSWORD=rstudio ghcr.io/ninanor/oneimpact:main
+docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v $PWD/myproject:/home/rstudio/myproject ghcr.io/ninanor/oneimpact:main
 ```
 
 ## See also
