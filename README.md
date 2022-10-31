@@ -53,6 +53,12 @@ library(devtools)
 devtools::install_github("NINAnor/oneimpact", ref = "HEAD")
 ```
 
+## Run with Docker
+
+```bash
+docker run --rm -p 8787:8787 -e PASSWORD=rstudio ghcr.io/ninanor/oneimpact:main
+```
+
 ## See also
 
 The `oneimpact` functions are greatly based on neighborhood analyses made through the
