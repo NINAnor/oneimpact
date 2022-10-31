@@ -59,6 +59,14 @@ devtools::install_github("NINAnor/oneimpact", ref = "HEAD")
 docker run --rm -p 8787:8787 -e PASSWORD=rstudio -v $PWD/myproject:/home/rstudio/myproject ghcr.io/ninanor/oneimpact:main
 ```
 
+If you use Compose:
+
+```bash
+docker compose run rstudio
+```
+
+You can customize `docker-compose.yml` based on your needs.
+
 ## See also
 
 The `oneimpact` functions are greatly based on neighborhood analyses made through the

@@ -1,9 +1,17 @@
 version: "3.4"
+x-common-r:
+  &common-r
+  image: ghcr.io/ninanor/oneimpact:main
+  build: .
 services:
   rstudio:
+    << : *common-r
     environment:
       PASSWORD: rstudio
-    image: ghcr.io/ninanor/oneimpact:main
-    build: .
     ports:
     - 8787:8787
+  test:
+    << : *common-r
+    profiles:
+    - test
+    command: Rscript -e "library('rcmdcheck');rcmdcheck()"
