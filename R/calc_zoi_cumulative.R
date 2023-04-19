@@ -3,16 +3,16 @@
 #' @description This function takes in a raster with locations or counts of
 #' infrastructure
 #' and calculates a raster (or set of rasters, in case there is more the one
-#' value for `radius`) representing the cumulative zone of influence (ZoI)
+#' value for `radius`) representing the cumulative zone of influence (ZOI)
 #' or density of features in space. The process is done through a spatial
 #' filter/moving window/neighborhood analysis. The zones of influence
 #' (or weight matrices) are defined by functions that decay with the distance
 #' from each infrastructure feature and their rate of decay is controlled by the
-#' ZoI radius (`radius`), which defines how far the influence of an infrastructure
-#' feature goes. By using moving window analyses, the cumulative ZoI account for
+#' ZOI radius (`radius`), which defines how far the influence of an infrastructure
+#' feature goes. By using moving window analyses, the cumulative ZOI account for
 #' the sum of the influence of multiple features across space, weighted by
-#' the distance to these features according the the ZoI shape.
-#' For more details on the ZoI functions, see [oneimpact::zoi_functions()].
+#' the distance to these features according the the ZOI shape.
+#' For more details on the ZOI functions, see [oneimpact::zoi_functions()].
 #'
 #' The procedure might be computed in both R and GRASS GIS. In R, the
 #' neighborhood analysis is done with the [terra::focal()] function. In GRASS,
@@ -42,7 +42,7 @@
 #'
 #' ## Zone of Influence functions and weight matrices
 #'
-#' The neighborhood analysis to define the cumulative ZoI can be
+#' The neighborhood analysis to define the cumulative ZOI can be
 #' computed with different functions/filters. The options currently implemented
 #' are:
 #' - circular/threshold matrix: the circular filter (`type = "circle"` or
@@ -87,7 +87,7 @@
 #' - `r.resamp.filter` seems to be the fastest one
 #' in most cases, but has less flexibility in the choice of the zone of influence
 #' function. The algorithm calculates the weighted density of features, which
-#' might be rescaled to the cumulative ZoI if the appropriate scaling factor
+#' might be rescaled to the cumulative ZOI if the appropriate scaling factor
 #' (calculated from the weight matrix) is provided. Currently only the
 #' filters `type = "bartlett"` and `type = "box"` are implemented. More
 #' information about the algorithm
@@ -95,7 +95,7 @@
 #' - `r.mfilter` is slower than `r.resamp.filter` but much faster than
 #' `r.neighbors`, and allows a flexible choice of the shape of the zone of
 #' influence (the wight matrix shape). `r.mfilter` is then the most indicated
-#' in terms of a balance between flexibility in the choice of the ZoI shape
+#' in terms of a balance between flexibility in the choice of the ZOI shape
 #' and computation efficiency.
 #' The only inconvenient of `r.mfilter` is that it
 #' creates an edge effect with no information in the outer cells of a raster
@@ -104,9 +104,9 @@
 #' \eqn{ge radius} around the input raster map, to avoid such edge effects.
 #' See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 #' - `r.neighbors` is considerably slower than the other algorithms (from 10 to
-#' 100 times), but allows a flexible choice of the ZoI shape. Contrary to
+#' 100 times), but allows a flexible choice of the ZOI shape. Contrary to
 #' `r.resamp.filter` and `r.mfilter`, which can only perform a sum of pixel
-#' values weighted by the input filter or ZoI, `r.neighbors` might
+#' values weighted by the input filter or ZOI, `r.neighbors` might
 #' calculate many other statistical summaries within the window of analysis,
 #' such as mean, median, standard deviation etc.
 #'
@@ -127,7 +127,7 @@
 #' Notice that, different from [oneimpact::calc_zoi_nearest()], the input maps `x`
 #' must have zero as background values, instead of NA. In R it is possible to
 #' account for NA background values by setting `zeroAsNA = TRUE` for the computation
-#' of the cumulative ZoI.
+#' of the cumulative ZOI.
 #' In GRASS, maps without NA as background might be changed into maps with 0 as
 #' background to be used in  `calc_zoi_cumulative()`
 #' through [raster algebra](https://grass.osgeo.org/grass78/manuals/r.mapcalc.html)
@@ -137,9 +137,9 @@
 #' @param radius `[numeric(1)=100]` \cr Radius or scale of the moving
 #' window for neighborhood analysis, used to calculate the cumulative zoi and
 #' density. The radius represent
-#' the distance at which the ZoI vanishes or goes below a given minimum limit value
+#' the distance at which the ZOI vanishes or goes below a given minimum limit value
 #' `zoi_limit`. It can be a single value or a vector of values, in which case
-#' several cumulative ZoI or density maps (one for each radius) are created.
+#' several cumulative ZOI or density maps (one for each radius) are created.
 #' For `type = "circle"`, the `radius` corresponds to the radius of the
 #' circle filter. For `type = "Gauss"` and `type = "exp_decay"`, `radius`
 #' corresponds to the distance where the Gaussian or exponential decay function
@@ -154,17 +154,17 @@
 #' @param type `[character(1)="circle"]{"circle", "Gauss", "rectangle",
 #' "exp_decay", "bartlett", "threshold", "step", "mfilter"}` \cr
 #' Type of filter (shape of the zone of influence) used to calculate the
-#' cumulative ZoI or density. See details.
+#' cumulative ZOI or density. See details.
 #'
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing functions
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
-#' between the ZoI radius and the decay functions:
-#' `radius` is defined as the minimum distance at which the ZoI assumes values
+#' between the ZOI radius and the decay functions:
+#' `radius` is defined as the minimum distance at which the ZOI assumes values
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
 #' if `radius` is not `NULL`.
 #'
 #' @param output_type `[character(1)="cumulative_zoi"]{"cumulative_zoi",
-#' "density"}` \cr If `output_type = "cumulative_zoi"` (default), the ZoI weight
+#' "density"}` \cr If `output_type = "cumulative_zoi"` (default), the ZOI weight
 #' matrix not not normalized, i.e. the maximum value of the weight matrix at the
 #' central pixel value is always 1. This means the values of the input map are
 #' summed (considering a decay with distance within the neighborhood) and the
@@ -179,7 +179,7 @@
 #' @param g_module `[character(1)="r.mfilter"]{"r.mfilter",
 #' "r.resamp.filter", "r.neighbors"}` \cr
 #' If `where = "GRASS"`, which algorithm should be used to compute the cumulative
-#' ZoI? See details for their description.
+#' ZOI? See details for their description.
 #'
 #' @param min_intensity `[numeric(1)=0.01]` \cr Minimum intensity of the
 #' exponential and Gaussian decay functions to
@@ -197,7 +197,7 @@
 #' representing the minimum and
 #' maximum extent in x and y for the final output, in the format c(min,max).
 #' It is intended to keep only a region of interest but consider the
-#' surroundings when calculating the cumulative ZoI or density. This might be
+#' surroundings when calculating the cumulative ZOI or density. This might be
 #' especially useful for example in the use of the `r.mfilter` algorithm in
 #' GRASS, in which the edges of the region are excluded from the computation.
 #' The default is to keep the same extent of the input raster.
@@ -216,14 +216,14 @@
 #'
 #' @param g_output_map_name `[character(1)=NULL]` \cr Name of the output map. Only
 #' used when `where = "GRASS"`. If `NULL` (default), a standard name is created
-#' based on the name of the input map `x`, the ZoI shape `type`, and the ZoI
+#' based on the name of the input map `x`, the ZOI shape `type`, and the ZOI
 #' radius `radius`.
 #' @param g_parallel `[logical(1)=TRUE]` \cr If the `r.mfilter` tool is used for
-#' computing the cumulative ZoI in GRASS GIS, `g_parallel` tells if parallelization
+#' computing the cumulative ZOI in GRASS GIS, `g_parallel` tells if parallelization
 #' should be used. Default is `TRUE`. The option is ignored for other GRASS tools
 #' (parameter `g_module`) and for computation in R (`where = "R"`).
 #' @param g_input_as_region `[logical(1)=TRUE]` \cr Should the input map `x` be
-#' used to redefine the working GRASS region before cumulative ZoI calculation?
+#' used to redefine the working GRASS region before cumulative ZOI calculation?
 #' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
 #' the region previously defined in the GRASS GIS session is used for computation.
 #' @param g_remove_intermediate `[logical(1)=TRUE]` \cr Should the intermediate
@@ -238,19 +238,19 @@
 #' @returns If the calculations are performed in R (`where = "R"`),
 #' a `RasterLayer` or [SpatRaster] (according to the input `x` map)
 #' with the cumulative zone of influence or density of features. While the
-#' cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
+#' cumulative ZOI uses a ZOI/weight matrix rescaled to 1 at the central pixel
 #' (creating values in the output map which might go well beyond 1), the
-#' density of features uses a normalized ZoI/weight matrix (with all values
+#' density of features uses a normalized ZOI/weight matrix (with all values
 #' summing 1), what created values smaller than one in the output map.
 #' if multiple `radius` values are given, a `RasterBrick` or multi-layer
-#' `SpatRaster`, with the cumulative ZoI or density maps for each ZoI radius. \cr
+#' `SpatRaster`, with the cumulative ZOI or density maps for each ZOI radius. \cr
 #' If the computation is done in GRASS GIS, the output is the name of
 #' the output raster map(s) within the GRASS GIS location and mapset of the
 #' current session. The user can retrieve these maps to R using
 #' [rgrass::read_RAST()] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
-#' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes and
+#' @seealso See [oneimpact::zoi_functions()] for some ZOI function shapes and
 #' [oneimpact::filter_create()] for options to create weight matrices. \cr
 #' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
 #' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
@@ -448,7 +448,7 @@ calc_zoi_cumulative_r <- function(
     # more than one matrix
     if("list" %in% class(filt)) {
       cuminf <- purrr::map2(filt, 1:length(radius), function(f, z) {
-        if(verbose) print(paste0("Calculating for ZoI n. ", z, "..."))
+        if(verbose) print(paste0("Calculating for ZOI n. ", z, "..."))
         terra::focal(r0, w = f, na.policy = na.policy, na.rm = na.rm, ...)
       })
       if(use_terra) cumulative_r <- do.call(c, cuminf) else
@@ -462,7 +462,7 @@ calc_zoi_cumulative_r <- function(
       cumulative_r <- terra::focal(r0, w = filt, na.policy = na.policy, na.rm = na.rm, ...)
     } else {
       cuminf <- purrr::map2(filt, radius, function(f, z) {
-        if(verbose) print(paste0("Calculating for ZoI = ", z, "..."))
+        if(verbose) print(paste0("Calculating for ZOI = ", z, "..."))
         terra::focal(r0, w = f, na.policy = na.policy, na.rm = na.rm, ...)
       })
       if(use_terra) cumulative_r <- do.call(c, cuminf) else
@@ -570,10 +570,10 @@ calc_zoi_cumulative_grass <- function(
   }
 
   # Define parameters based on output_type
-  # Cumulative ZoI or Density
+  # Cumulative ZOI or Density
   if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
     normalize <- FALSE
-    message_name <- "cumulative ZoI"
+    message_name <- "cumulative ZOI"
   } else {
     if(output_type %in% c("density", "Density")) {
       normalize <- TRUE
@@ -620,7 +620,7 @@ calc_zoi_cumulative_grass <- function(
                   ". Currently, the following filters were selected: ",
                   paste(types, collapse = ","), "."))
 
-    # define filters for rescaling if we want the cumulative ZoI
+    # define filters for rescaling if we want the cumulative ZOI
     if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
 
       # here we must implement the filters exactly as they are used in
@@ -656,7 +656,7 @@ calc_zoi_cumulative_grass <- function(
           })
         }
       } else {
-        stop("Currently, the cumulative ZoI using 'r.resamp.filter' is only
+        stop("Currently, the cumulative ZOI using 'r.resamp.filter' is only
               implemented for the filters 'bartlett', 'rectangle/box', and
               'gauss'. Please select one of those or change the GRASS GIS
               module to either 'r.mfilter' or 'r.neighbors'.")
@@ -691,7 +691,7 @@ calc_zoi_cumulative_grass <- function(
         z <- radius[[i]]
 
         # change names for creating density map first, in case the
-        # final output is the cumulative ZoI
+        # final output is the cumulative ZOI
         if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
           out_final <- parm$output
           parm$output <- paste0(parm$output, "_temp")
@@ -709,7 +709,7 @@ calc_zoi_cumulative_grass <- function(
         # calculate
         rgrass::execGRASS(g_module, parameters = parm, flags = flags)
 
-        # rescale to the cumulative ZoI, if this is the intended final output
+        # rescale to the cumulative ZOI, if this is the intended final output
         if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
 
           # maximum value from weight matrix
@@ -718,11 +718,11 @@ calc_zoi_cumulative_grass <- function(
           expr <- paste0(out_final, " = ", parm$output, "/", max_val)
 
           # message
-          msg <- paste0("Rescaling from density to cumulative ZoI...")
+          msg <- paste0("Rescaling from density to cumulative ZOI...")
           if(verbose) print(msg)
           print(expr)
 
-          # calculate ZoI map
+          # calculate ZOI map
           out_final <- rgrass::execGRASS("r.mapcalc", expression = expr,
                                           flags = flags)
         }
@@ -735,7 +735,7 @@ calc_zoi_cumulative_grass <- function(
       z <- radius
 
       # change names for creating density map first, in case the
-      # final output is the cumulative ZoI
+      # final output is the cumulative ZOI
       if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
         out_final <- parm$output
         parm$output <- paste0(parm$output, "_temp")
@@ -753,7 +753,7 @@ calc_zoi_cumulative_grass <- function(
       # calculate
       rgrass::execGRASS(g_module, parameters = parm, flags = flags)
 
-      # rescale to the cumulative ZoI, if this is the intended final output
+      # rescale to the cumulative ZOI, if this is the intended final output
       if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
 
         # maximum value from weight matrix
@@ -762,11 +762,11 @@ calc_zoi_cumulative_grass <- function(
         expr <- paste0(out_final, " = ", parm$output, "/", max_val)
 
         # message
-        msg <- paste0("Rescaling from density to cumulative ZoI...")
+        msg <- paste0("Rescaling from density to cumulative ZOI...")
         if(verbose) print(msg)
         print(expr)
 
-        # calculate ZoI map
+        # calculate ZOI map
         out_final <- rgrass::execGRASS("r.mapcalc", expression = expr,
                                         flags = flags)
       }

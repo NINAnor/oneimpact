@@ -2,17 +2,17 @@
 #' and the cumulative zone of influence of multiple features
 #'
 #' This function takes in a raster with locations of infrastructure and calculates
-#' either (1) a raster representing the Zone of Influence (ZoI) of the neareast feature or (2)
+#' either (1) a raster representing the Zone of Influence (ZOI) of the neareast feature or (2)
 #' a raster representing the cumulative Zone of Influence of multiple features, or both.
 #' This function takes in a raster with locations or counts of
 #' infrastructure and calculates a raster (or set of rasters, in case there is
-#' more the one value for `radius`) representing either of two zone of influence (ZoI)
-#' metrics for type of infrastructure: (1) the ZoI of the neareast feature, (2) the cumulative
-#' ZoI of multiple features, or (3) both ZoI metrics. Zones of influence
+#' more the one value for `radius`) representing either of two zone of influence (ZOI)
+#' metrics for type of infrastructure: (1) the ZOI of the neareast feature, (2) the cumulative
+#' ZOI of multiple features, or (3) both ZOI metrics. Zones of influence
 #' are defined by functions that decay with the distance from each
-#' infrastructure and their rate of decay is controlled by the ZoI radius
+#' infrastructure and their rate of decay is controlled by the ZOI radius
 #' (`radius`), which defines how far the influence of an infrastructure
-#' feature goes. To see more information on each ZoI metric, see
+#' feature goes. To see more information on each ZOI metric, see
 #' [oneimpact::calc_zoi_nearest()] and [oneimpact::calc_zoi_cumulative()].
 #'
 #' @param x `[RasterLayer,SpatRaster]` \cr Raster representing locations of features,
@@ -27,15 +27,15 @@
 #'
 #' The default parameters assume that the input `x` presents zeros as the background
 #' value, where infrastructure or disturbance are absent. Therefore, to deal correctly
-#' with the computation of both ZoI metrics, by default we set the parameter `zeroAsNA = TRUE`.
+#' with the computation of both ZOI metrics, by default we set the parameter `zeroAsNA = TRUE`.
 #' If, in contrast, the input map `x` has `NA` as background values, the parameter
 #' `zeroAsNA` should be set to `FALSE`.
 #'
-#' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZoI),
-#' the distance at which the ZoI vanishes or goes below a given minimum limit value
+#' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZOI),
+#' the distance at which the ZOI vanishes or goes below a given minimum limit value
 #' `zoi_limit`. See [oneimpact::zoi_functions()] for details.
 #' It can be a single value or a vector of values, in which case
-#' several ZoI layers (one for each radius) are created.
+#' several ZOI layers (one for each radius) are created.
 #'
 #' @param type `[character(1)="circle"]{"circle", "Gauss", "rectangle",
 #' "exp_decay", "bartlett", "threshold", "step"}` \cr
@@ -48,14 +48,14 @@
 #'
 #' @param output_type `[character(1)="cumulative_zoi"]{"cumulative_zoi",
 #' "density"}` \cr
-#' For the cumulative ZoI, if `output_type = "cumulative_zoi"` (default), the ZoI weight
+#' For the cumulative ZOI, if `output_type = "cumulative_zoi"` (default), the ZOI weight
 #' matrix not not normalized, i.e. the maximum value of the weight matrix at the
 #' central pixel value is always 1. This means the values of the input map are
 #' summed (considering a decay with distance within the neighborhood) and the
 #' output map presents values higher than 1. If `output_type = "density"`, the
 #' weight matrix is normalized before the filtering process, leading to values
 #' in the outmap map generally lower than 1. This parameter is ignored for
-#' the ZoI of the nearest feature.
+#' the ZOI of the nearest feature.
 #'
 #' @returns If the calculations are performed in R (`where = "R"`),
 #' a `RasterLayer`/`RasterStack` or [SpatRaster] object
@@ -70,7 +70,7 @@
 #' [rgrass::read_RAST()] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
-#' @seealso Fore more details on each of the ZoI metrics,
+#' @seealso Fore more details on each of the ZOI metrics,
 #' other function parameters, and their specific details, see
 #' [oneimpact::calc_zoi_nearest()] and [oneimpact::calc_zoi_cumulative()].
 #'

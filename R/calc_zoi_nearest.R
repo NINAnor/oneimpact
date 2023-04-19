@@ -3,12 +3,12 @@
 #' @description
 #' This function takes in a raster with locations or counts of
 #' infrastructure and calculates a raster (or set of rasters, in case there is
-#' more the one value for `radius`) representing the zone of influence (ZoI)
+#' more the one value for `radius`) representing the zone of influence (ZOI)
 #' from the neareast feature of that type of infrastructure. Zones of influence
 #' are defined by functions that decay with the distance from each
-#' infrastructure and their rate of decay is controlled by the ZoI radius
+#' infrastructure and their rate of decay is controlled by the ZOI radius
 #' (`radius`), which defines how far the influence of an infrastructure
-#' feature goes. By default, the Gaussian decay ZoI is calculated, but other
+#' feature goes. By default, the Gaussian decay ZOI is calculated, but other
 #' decay shapes might be used (see [oneimpact::zoi_functions()] for examples).
 #' The function might also return the distance to the nearest feature
 #' or a transformation from it (e.g. log- and sqrt-distance from the nearest
@@ -29,7 +29,7 @@
 #'
 #' @details
 #' In practice, the function `calc_zoi_nearest()` first calculates the distance from each
-#' pixel to the nearest feature and then transforms it according to the ZoI
+#' pixel to the nearest feature and then transforms it according to the ZOI
 #' functions. In R, `calc_zoi_nearest()` makes use of the [terra::distance()]
 #' function and the following procedures are made through raster algebra.
 #' In GRASS, the module
@@ -37,7 +37,7 @@
 #' is used to calculate the Euclidean distance from
 #' the nearest feature and
 #' [`r.mapcalc.simple`](https://grass.osgeo.org/grass78/manuals/r.mapcalc.simple.html)
-#' to transform the distance into the different ZoI of the nearest feature.
+#' to transform the distance into the different ZOI of the nearest feature.
 #'
 #' The input raster `x` should have positive values in the pixels where
 #' infrastructure are located and NA/no-data in all other places.
@@ -60,32 +60,32 @@
 #'
 #' The input raster `x` should have positive values in the pixels where infrastructure
 #' are located and NA/no-data in all other places. In R it is also possible to have zeros
-#' as the background and set `zeroAsNA = TRUE` for the computation of the ZoI of the
+#' as the background and set `zeroAsNA = TRUE` for the computation of the ZOI of the
 #' nearest feature.
 #' In GRASS, maps without NA as background might be prepared as input for `calc_zoi_nearest()`
 #' through [raster algebra](https://grass.osgeo.org/grass78/manuals/r.mapcalc.html)
 #' and e.g. through the use of the module
 #' [`r.null`](https://grass.osgeo.org/grass80/manuals/r.null.html).
 #'
-#' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZoI),
-#' the distance at which the ZoI vanishes or goes below a given minimum limit value
+#' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZOI),
+#' the distance at which the ZOI vanishes or goes below a given minimum limit value
 #' `zoi_limit`. See [oneimpact::zoi_functions()] for details.
 #' It can be a single value or a vector of values, in which case
-#' several ZoI layers (one for each radius) are created. This parameter is
+#' several ZOI layers (one for each radius) are created. This parameter is
 #' ignored if `type = "euclidean"`, `type = "log"`, or `type = "sqrt"`.
 #'
 #' @param type `[character(1)="Gauss"]{"Gauss", "exp_decay", "bartlett",
 #' "threshold", "step", "euclidean", "log","sqrt"}` \cr
 #' Shape of the zone of influence: \cr
 #' \itemize{
-#'   \item If `Gauss` or `half_norm`, the ZoI follows a half-normal shape: \cr
+#'   \item If `Gauss` or `half_norm`, the ZOI follows a half-normal shape: \cr
 #'   `intercept * exp(-lambda * (euclidean_distance^2))`. `intercept` and `lambda` are
 #'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
-#'   \item If `exp_decay`, the ZoI follows an exponential decay shape: \cr
+#'   \item If `exp_decay`, the ZOI follows an exponential decay shape: \cr
 #'   `intercept * exp(-lambda * euclidean_distance)`. `intercept` and `lambda` are
 #'   parameters to be defined -- see [oneimpact::zoi_functions()] for details.
-#'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZoI follows a
-#'   linear decay shape within the ZoI radius (`radius`).
+#'   \item If `bartlett`, `linear_decay`, or `tent_decay`, the ZOI follows a
+#'   linear decay shape within the ZOI radius (`radius`).
 #'   \item If `threshold` or `step`, a constant influence is considered within the
 #'   zone of influence radius (`radius`). All pixels closer than
 #'   `radius` to infrastructure are considered as "under the influence" of
@@ -93,30 +93,30 @@
 #'   `intercept` parameter, and all other pixels are assumed to have
 #'   zero influence.
 #'   \item If `euclidean`, the function returns the Euclidean distance as a
-#'   proxy for the ZoI, even though a proper zone of influence is not defined
+#'   proxy for the ZOI, even though a proper zone of influence is not defined
 #'   in this case.
 #'   \item If `log`, the function returns the log-distance:
 #'   `log(euclidean_distance, base = log_base)` as a
-#'   proxy for the ZoI, even though a proper zone of influence is not defined
+#'   proxy for the ZOI, even though a proper zone of influence is not defined
 #'   in this case.
 #'   \item If `sqrt`, the functions returns the square rooted distance:
 #'   `sqrt(euclidean_distance)` as a
-#'   proxy for the ZoI, even though a proper zone of influence is not defined
+#'   proxy for the ZOI, even though a proper zone of influence is not defined
 #'   in this case.
 #' }
 #' See details below.
 #' Other options still to be implemented (such as other functions and a
-#' generic user-defined ZoI function as input).
+#' generic user-defined ZOI function as input).
 #'
 #' @param where `[character(1)="R"]{"R", "GRASS"}` \cr Where should the
 #' computation be done? Default is `"R"`. If `where = "GRASS"`, the R session
 #' must be linked to an open GRASS GIS session in a specific location and mapset.
 #'
-#' @param intercept `[numeric(1)=1]` \cr Maximum value of the ZoI functions at
+#' @param intercept `[numeric(1)=1]` \cr Maximum value of the ZOI functions at
 #' when the distance from disturbance sources is zero (`x = 0`).
 #' For the `threshold_decay` and `step_decay` functions, `intercept` is
-#' the constant value of the Zone of Influence within the ZoI `radius`.
-#' For the other ZoI functions, `intercept`
+#' the constant value of the Zone of Influence within the ZOI `radius`.
+#' For the other ZOI functions, `intercept`
 #' is the value of the functions at the origin (where the sources of disturbance
 #' are located, i.e. `x = 0`).
 #' Default is `intercept = 1`. This parameter is
@@ -124,8 +124,8 @@
 #'
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing functions
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
-#' between the ZoI radius and the decay functions:
-#' `radius` is defined as the minimum distance at which the ZoI assumes values
+#' between the ZOI radius and the decay functions:
+#' `radius` is defined as the minimum distance at which the ZOI assumes values
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
 #' if `radius` is not `NULL`.
 #'
@@ -152,8 +152,8 @@
 #' representing the minimum and
 #' maximum extent in x and y for the final output, in the format c(min,max).
 #' It is intended to keep only a region of interest, for standardizing the
-#' parameters and region when comparing the resulting ZoI maps with the
-#' cumulative ZoI, calculated through [oneimpact::calc_zoi_cumulative()].
+#' parameters and region when comparing the resulting ZOI maps with the
+#' cumulative ZOI, calculated through [oneimpact::calc_zoi_cumulative()].
 #' If `NULL` (default), this parameter is ignored.
 #'
 #' @param g_output_map_name `[character(1)=NULL]` \cr Name of the output map name,
@@ -176,7 +176,7 @@
 #' (`where = "R"`).
 #'
 #' @param g_input_as_region `[logical(1)=FALSE]` \cr Should the input map `x` be
-#' used to redefine the working region in GRASS before the ZoI calculation?
+#' used to redefine the working region in GRASS before the ZOI calculation?
 #' If `TRUE`, `x` is used to define the region with `g.region`. If `FALSE`,
 #' the region previously defined in the GRASS GIS session is used for computation.
 #' Default is `FALSE`. This parameter is ignored when the calculations are performed in R
@@ -187,7 +187,7 @@
 #' process? Only used when `where = "GRASS"`.
 #'
 #' @param g_print_expression `[logical(1)=FALSE]` \cr Should the expression for
-#' transforming the raster of distance into ZoI values should be printed in the prompt?
+#' transforming the raster of distance into ZOI values should be printed in the prompt?
 #' Only used when `where = "GRASS"` and `verbose = TRUE` for debugging the
 #' result of `r.mapcalc`.
 #'
@@ -199,7 +199,7 @@
 #' be printed in the prompt along the computation?
 #'
 #' @param ... \cr Adittional parameters passed to [terra::distance()]
-#' or to the ZoI functions (see [oneimpact::zoi_functions()]) when the
+#' or to the ZOI functions (see [oneimpact::zoi_functions()]) when the
 #' calculations are performed in R.
 #' No additional parameters implemented for computation in GRASS GIS.
 #'
@@ -216,7 +216,7 @@
 #' [rgrass::read_RAST] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
-#' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes. \cr
+#' @seealso See [oneimpact::zoi_functions()] for some ZOI function shapes. \cr
 #' See also [terra::distance()] for details on the calculation of the distance
 #' to the nearest future in R. \cr
 #' See
@@ -343,7 +343,7 @@ calc_zoi_nearest_r <- function(
                       "half_norm", "threshold", "step")
   if(!(type %in% possible_types))
     stop("You should select an appropriate method ('type' parameter)
-         for the calculation the ZoI of the nearest feature.")
+         for the calculation the ZOI of the nearest feature.")
 
   # check if the input raster presents only a single value (1,NA)
   # if so, transform it into a binary map (1,0)
@@ -365,7 +365,7 @@ calc_zoi_nearest_r <- function(
     if(type == "log") dist_r <- log(dist_r+dist_offset, base = log_base) else
       if(type == "sqrt") dist_r <- sqrt(dist_r+dist_offset) else
         if(type == "exp_decay") {
-          if(verbose) print("Computing the ZoI of the nearest feature with
+          if(verbose) print("Computing the ZOI of the nearest feature with
                             exponential decay shape...")
           dist_r <- exp_decay(x = dist_r,
                               radius = radius,
@@ -377,7 +377,7 @@ calc_zoi_nearest_r <- function(
         } else
           if(type %in% c("bartlett", "Bartlett", "bartlett_decay",
                          "linear_decay", "tent_decay")) {
-            if(verbose) print("Computing the ZoI of the nearest feature with
+            if(verbose) print("Computing the ZOI of the nearest feature with
                               linear decay shape...")
             dist_r <- linear_decay(dist_r,
                                    radius = radius,
@@ -386,7 +386,7 @@ calc_zoi_nearest_r <- function(
           } else
             if(type %in% c("Gauss", "half_norm", "gauss",
                            "gaussian_decay", "normal_decay")) {
-              if(verbose) print("Computing the ZoI of the nearest feature with
+              if(verbose) print("Computing the ZOI of the nearest feature with
                                 Gaussian decay shape...")
               dist_r <- gaussian_decay(x = dist_r,
                                        radius = radius,
@@ -397,7 +397,7 @@ calc_zoi_nearest_r <- function(
             } else {
               if(type %in% c("threshold", "step",
                              "threshold_decay", "step_decay")) {
-                if(verbose) print("Computing the ZoI of the nearest feature with
+                if(verbose) print("Computing the ZOI of the nearest feature with
                                   threshold shape...")
                 dist_r <- threshold_decay(x = dist_r,
                                           radius = radius,
@@ -456,7 +456,7 @@ calc_zoi_nearest_grass <- function(
                       "half_norm", "threshold", "step")
   if(!(type %in% possible_types))
     stop("You should select an appropriate method ('type' parameter)
-         for the calculation the ZoI of the nearest feature.")
+         for the calculation the ZOI of the nearest feature.")
 
   # flags
   flags <- c()
@@ -648,7 +648,7 @@ calc_zoi_nearest_grass <- function(
     if(g_input_as_region)
       rgrass::execGRASS("g.region", raster = out_euclidean, flags = flags_region)
 
-    # compute ZoI
+    # compute ZOI
     for(ii in seq_along(expression_influence)) {
 
       if(g_print_expression) rgrass::execGRASS("g.message", message = expression_influence[ii])

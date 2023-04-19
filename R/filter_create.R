@@ -2,20 +2,20 @@
 #'
 #' This function creates matrices of weights following different
 #' functions to be used in neighborhood analyses for rasters. In the context of
-#' cumulative impact analysis, they represent the Zone of Influence (ZoI) of each
-#' infrastructure point/pixel, to be used to calculate the cumulative ZoI.
+#' cumulative impact analysis, they represent the Zone of Influence (ZOI) of each
+#' infrastructure point/pixel, to be used to calculate the cumulative ZOI.
 #' It is possible to export these matrices as text files, for use with external
 #' software such as the `r.mfilter` module within GRASS GIS.
 #'
-#' The function creates \eqn{n} x \eqn{n} ZoI or weight matrices based on
-#' functions with different shapes and parameterized with the ZoI radius, where
+#' The function creates \eqn{n} x \eqn{n} ZOI or weight matrices based on
+#' functions with different shapes and parameterized with the ZOI radius, where
 #' \eqn{n} is the dimension of the matrix.
 #' For some functions (e.g. threshold decay, linear decay),
-#' the size of the matrix is defined by the ZoI radius, in meters,
+#' the size of the matrix is defined by the ZOI radius, in meters,
 #' given the intended resolution (parameter `r`), potentially adding new lines
 #' and columns with value zero to keep \eqn{n} an odd number.
 #' For non-vanishing function (e.g. exponential or Gaussian decay),
-#' even though the function is parameterized with the ZoI radius the size of
+#' even though the function is parameterized with the ZOI radius the size of
 #' the matrix can go beyond this radius. In this case, the size of the matrix
 #' \eqn{n} is defined either by a minimum intensity function value
 #' (parameter `min_intensity`) or by a maximum distance for
@@ -33,9 +33,9 @@
 #' package or `RasterLayer`, `RasterBrick`, or `RasterStack` from the
 #' `raster` package) from which such resolution can be extracted.
 #'
-#' @param radius `[numeric(1)=NULL]` \cr Zone of Influence (ZoI) radius,
+#' @param radius `[numeric(1)=NULL]` \cr Zone of Influence (ZOI) radius,
 #' in map units (preferentially meters).
-#' The ZoI radius is the distance, scale, or buffer size around a
+#' The ZOI radius is the distance, scale, or buffer size around a
 #' feature up to which we consider there is
 #' an effect or influence of an infrastructure or variable. In `filter_create`,
 #' the interpretation of the
@@ -62,8 +62,8 @@
 #'
 #' @param zoi_limit `[numeric(1)=0.05]` \cr For non-vanishing filters
 #' (e.g. `exp_decay`, `gaussian_decay`), this value is used to set the relationship
-#' between the ZoI radius and the decay functions:
-#' `radius` is defined as the minimum distance `x` at which the ZoI assumes values
+#' between the ZOI radius and the decay functions:
+#' `radius` is defined as the minimum distance `x` at which the ZOI assumes values
 #' below `zoi_limit`. The default is 0.05. This parameter is used only
 #' if `radius` is not `NULL`.
 #'
@@ -71,12 +71,12 @@
 #' "threshold_decay", "gaussian_decay", "Gauss", "rectangle"}` \cr
 #' Shape of the Zone of Influence of weight matrix. It can be any of:
 #' - `"circle"`, `"threshold"`, `"threshold_decay"`, `"step"` or `"step_decay"`
-#' for a threshold decay ZoI;
-#' - `"exp_decay"` for exponential decay ZoI;
-#' - `"Gauss"`, `"gaussian"`, or `"gaussian_decay"` for Gaussian decay ZoI;
+#' for a threshold decay ZOI;
+#' - `"exp_decay"` for exponential decay ZOI;
+#' - `"Gauss"`, `"gaussian"`, or `"gaussian_decay"` for Gaussian decay ZOI;
 #' - `"bartlett"`, `"bartlett_decay"`, `"linear_decay"`, or `"tent_decay"`
-#' for linear decay ZoI;
-#' - `"rectangle"` or `"box"` for a rectangular ZoI.
+#' for linear decay ZOI;
+#' - `"rectangle"` or `"box"` for a rectangular ZOI.
 #' There might be some correspondence between the weight matrix `type`
 #' in `filter_create` and other similar functions (e.g. `type = "rectangle"`
 #' and `type = "boxcar"` in [smoothie::kernel2dmeitsjer()] or
@@ -89,20 +89,20 @@
 #'  function, in meters. By definition, the half life is
 #'  the distance where the exponential decay function reaches 0.5 of its
 #'  maximum value. For the `exp_decay` function,
-#'  if the ZoI radius parameter is null (`radius = NULL`), the value of the
+#'  if the ZOI radius parameter is null (`radius = NULL`), the value of the
 #'  exponential half life (`half_life = log(2)/lambda`) can used to parameterize the
 #'  exponential decay function. See details in [oneimpact::zoi_functions()].
 #' @param zoi_hl_ratio `[numeric(1)=6]` \cr For the `exp_decay` function,
-#' if both the ZoI radius `radius` and `zoi_hl_ratio` are given and
+#' if both the ZOI radius `radius` and `zoi_hl_ratio` are given and
 #' `half_life` is `NULL`, this value is used
-#' to set the ZoI radius (and `zoi_limit` is ignored).
+#' to set the ZOI radius (and `zoi_limit` is ignored).
 #' `zoi_hl_ratio` is the ratio between the
-#' ZoI radius value and the half life of the exponential function.
+#' ZOI radius value and the half life of the exponential function.
 #' For instance, if `radius = 1200` and `zoi_hl_ratio = 6`, this means
-#' `half_life` is 200. As a consequence, the exponential decay ZoI function
-#' decreases to 0.5 at distance 200, and the ZoI radius = 1200
+#' `half_life` is 200. As a consequence, the exponential decay ZOI function
+#' decreases to 0.5 at distance 200, and the ZOI radius = 1200
 #' is defined as the distance
-#' at which the ZoI decreases to 0.5**6 = 0.015625.
+#' at which the ZOI decreases to 0.5**6 = 0.015625.
 #' @param min_intensity `[numeric(1)=0.01]` \cr Minimum intensity of the
 #' exponential and Gaussian decay functions to
 #' define the radius of the window that define the filter.
@@ -111,13 +111,13 @@
 #' applicable for exponential and Gaussian decay functions.
 #' @param sigma `[numeric(1)=NULL]` \cr Standard deviation of the Gaussian
 #' function. It related to the Gaussian decay rate \eqn{\lambda} as
-#' `lambda = 1/(2*sigma^2)`. Only considered to compute the ZoI
-#' for the `gaussian_decay` function when the ZoI radius parameter is null
+#' `lambda = 1/(2*sigma^2)`. Only considered to compute the ZOI
+#' for the `gaussian_decay` function when the ZOI radius parameter is null
 #' (`radius = NULL`).
 #'
 #' @param round_vals `[numeric(1)=NULL]` \cr Number of digits for rounding the weights
 #' in the output matrix. If `NULL` (default), weights are not rounded.
-#' @param save_txt `[logical(1)=FALSE]` \cr Should the ZoI matrix be saved in an external
+#' @param save_txt `[logical(1)=FALSE]` \cr Should the ZOI matrix be saved in an external
 #' text file? If `FALSE` (default), the output matrix is just printed within the R session.
 #'
 #' @param save_format `[character(1)="GRASS_rmfilter"]{"GRASS_rmfilter", "raw"}` \cr
@@ -144,13 +144,13 @@
 #' @param ... Additional parameters (none implemented).
 #'
 #' @return A matrix with the weight values. In the context of cumulative impact assessment, we call it a
-#' zone of influence (ZoI) matrix used to compute the cumulative zone of influence. If `save_txt = TRUE`,
+#' zone of influence (ZOI) matrix used to compute the cumulative zone of influence. If `save_txt = TRUE`,
 #' the matrix is saved in an output text file, e.g. to be used with external software.
 #'
 #' @example examples/filter_create_example.R
 #'
-#' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes and
-#' [oneimpact::filter_save()] for options to save the ZoI matrix as a text file. \cr
+#' @seealso See [oneimpact::zoi_functions()] for some ZOI function shapes and
+#' [oneimpact::filter_save()] for options to save the ZOI matrix as a text file. \cr
 #' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
 #' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
 #' See

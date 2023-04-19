@@ -14,34 +14,34 @@ knitr::opts_chunk$set(
 )
 ```
 
-Zones of influence (ZoI) represent how the influence of anthropogenic infrastructure
+Zones of influence (ZOI) represent how the influence of anthropogenic infrastructure
 or disturbance spreads in space. When there are multiple features of a given type of
 infrastructure or disturbance in a landscape, `oneimpact` allows the computation of
-two metrics to represent the zone of influence: the ZoI of the nearest feature, which
+two metrics to represent the zone of influence: the ZOI of the nearest feature, which
 accounts only for the influence of the feature nearest to each site in space; and
-the cumulative ZoI of multiple features, which account for the sum of the influence 
+the cumulative ZOI of multiple features, which account for the sum of the influence 
 of nearby features. Zones of influence can be computed for different types of variable,
 represented as points (e.g. houses, tourist cabins, wind turbines), lines (e.g. roads,
 railways, power lines), or polygons (e.g. mines, urban areas, agricultural areas or polygons 
-of any land use type). Here we provide examples of computation of the ZoI metrics
+of any land use type). Here we provide examples of computation of the ZOI metrics
 for point and linear infrastructure, and we explain a few technical details that must
 be dealt with for the correct creation of input raster maps and the calculation of the
-ZoI. Along this vignette we refer mostly to anthropogenic infrastructure, but the
+ZOI. Along this vignette we refer mostly to anthropogenic infrastructure, but the
 same might be applied to anthropogenic disturbance, land cover types, or most
 spatial and landscape variables that can be discretized.
 
 For an introduction to the zone of influence approach in R and details on how
-to use computed ZoI maps to annotate biological data and prepare it for analysis, look at the 
+to use computed ZOI maps to annotate biological data and prepare it for analysis, look at the 
 [Getting started](https://ninanor.github.io/oneimpact/articles/oneimpact.html)
 introdutory vignette.
 
 # Preparing the input data
 
-ZoI metrics in `oneimpact` use raster data as input, i.e. matrix representations
+ZOI metrics in `oneimpact` use raster data as input, i.e. matrix representations
 of where the infrastructure or disturbance sources are located. In these input raster
 maps, each cell or pixel represents if there are infrastructure and possibly the 
 number of infrastructure in each site within the landscape. Both raster maps from
-the `raster` or the `terra` package can be used as input for the ZoI calculation.
+the `raster` or the `terra` package can be used as input for the ZOI calculation.
 We start by showing the preparation of input maps for two types of infrastructure:
 private tourist cabins and main roads, using a sample landscape from Southern Norway.
 
@@ -53,7 +53,7 @@ library(terra) # for processing with geodata
 
 Let's say our infrastructure data is in vector format, as it is common for maps of
 this type. We'll load the two vector data sets from the `oneimpact` package, then
-rasterize it to be able to compute the ZoI metrics. Both loading and rasterizing 
+rasterize it to be able to compute the ZOI metrics. Both loading and rasterizing 
 maps can be accomplished e.g. with the package `terra`.
 
 ```{r load_data_cabins}
@@ -169,7 +169,7 @@ plot(roads)
 
 Note that here we did not fill the background of the map (areas without roads) with 
 zero but kept the `NA` values. We did so on purpose to illustrate the use of the 
-`zeroAsNA` parameter when computing the ZoI below.
+`zeroAsNA` parameter when computing the ZOI below.
 
 ### Input rasters for polygon data
 
@@ -180,19 +180,19 @@ or `1-NA` values. If we already have a rastr map (e.g. a land use or land cover 
 specific classes can be separated into dummy variables representing the presence/absence
 of the class in each pixel.
 
-# Computing the ZoI
+# Computing the ZOI
 
-To compute the ZoI, we'll use the `calc_zoi()` function from the `oneimpact` package.
-`calc_zoi()` might accommodate the calculation of both the ZoI of the nearest feature
-(when the parameter `zoi_metric` is `"nearest"`) and the cumulative ZoI of multiple features
+To compute the ZOI, we'll use the `calc_zoi()` function from the `oneimpact` package.
+`calc_zoi()` might accommodate the calculation of both the ZOI of the nearest feature
+(when the parameter `zoi_metric` is `"nearest"`) and the cumulative ZOI of multiple features
 (when `zoi_metric = "cumulative"`), or both (the default, if `zoi_metric = "all"`).
-It is also possible to control the shape and the radius of the ZoI through the parameters 
+It is also possible to control the shape and the radius of the ZOI through the parameters 
 `type` and `radius`, respectively.
 
 ## Point infrastructure
 
 First we compute the zone of influence variables for our point example data, the
-cabins data set. We use an exponential decay ZoI with radii of 500 and 1000 m. Since the
+cabins data set. We use an exponential decay ZOI with radii of 500 and 1000 m. Since the
 background of the input map is `0`, we set the parameter `zeroAsNA = TRUE` (default), 
 which means we do need to treat background zero values as `NA`:
 
@@ -207,7 +207,7 @@ zoi_cabins <- calc_zoi(cabins,
 zoi_cabins
 ```
 
-Since we opted to compute both ZoI metrics (`zoi_metric = "all"` by default, if nothing
+Since we opted to compute both ZOI metrics (`zoi_metric = "all"` by default, if nothing
 else is specified) using two different radii, the resulting raster is composed of 
 $\verb|2 x 2 = 4|$ 
 layers. Below we plot these layers to visualize the different spatial patterns:
@@ -217,23 +217,23 @@ layers. Below we plot these layers to visualize the different spatial patterns:
 plot(zoi_cabins)
 ```
 
-The figure shows the two measures of the ZoI of the nearest feature in the row above
-(for radius = 500 and 1000 m) and the two measures of the cumulative ZoI below. Note that,
-while both ZoI metrics equivalently represent the **influence** of the infrastructure
+The figure shows the two measures of the ZOI of the nearest feature in the row above
+(for radius = 500 and 1000 m) and the two measures of the cumulative ZOI below. Note that,
+while both ZOI metrics equivalently represent the **influence** of the infrastructure
 in its surroudings, each metric has a slightly different interpretation:
 
-- The ZoI of the nearest feature varies between 0 and 1, and represents 
+- The ZOI of the nearest feature varies between 0 and 1, and represents 
 **the decay in the influence of the cabins with distance**, 
 accounting only for the nearest one. In this 
 context, it does not matter if the cabins are clustered or isolated in space.
-- The cumulative ZoI corresponds to a **(exponentially-weighted) count of cabins** within 500 m 
+- The cumulative ZOI corresponds to a **(exponentially-weighted) count of cabins** within 500 m 
 and 1000 m radii, being a measure of the number of cabins affecting a given site.
 Therefore, this metric can reach much higher values than 1.
 
 ## Linear infrastructure
 
 Now we compute the zone of influence variables for our linear example data, the
-roads data set. We again use an exponential decay ZoI with radii of 1000 and 2000 m. Since the
+roads data set. We again use an exponential decay ZOI with radii of 1000 and 2000 m. Since the
 background of the input map is `NA`, we now need to set the parameter `zeroAsNA = FALSE`:
 
 ```{r compute_zoi_roads}
@@ -247,7 +247,7 @@ zoi_roads <- calc_zoi(roads,
 zoi_roads
 ```
 
-We again have four layers representing the two ZoI metrics for roads for the 
+We again have four layers representing the two ZOI metrics for roads for the 
 different radii:
 
 ```{r plot_zoi_roads}
@@ -255,23 +255,23 @@ different radii:
 plot(zoi_roads)
 ```
 
-Here the ZoI of the nearest feature has a similar interpretation to the point data
-example. The ZoI in a given site represents the influence of the nearest road segment, which
+Here the ZOI of the nearest feature has a similar interpretation to the point data
+example. The ZOI in a given site represents the influence of the nearest road segment, which
 decay with the distance to this road segment.
 
-In contrast, the cumulative ZoI now does not represent the number of different roads
+In contrast, the cumulative ZOI now does not represent the number of different roads
 in a neighborhood, but the number of pixels of roads (i.e., proportional to the 
-road length) within a given neighborhood. For the ZoI of 1000 m-radius, for instance,
-a site with a cumulative ZoI of `40` means that there are 40 pixels of roads in a circle of 
+road length) within a given neighborhood. For the ZOI of 1000 m-radius, for instance,
+a site with a cumulative ZOI of `40` means that there are 40 pixels of roads in a circle of 
 1000 m radius around this site (but remember this is not a simple count but an 
 exponentially-weighted count of the number of road pixels). If multiplied by the 
 pixel size and divided by the size of the neighborhood ($\pi \cdot r^2$), the cumulative
-ZoI metric represents the exponentially-weighted density of roads at 1000 m scale.
+ZOI metric represents the exponentially-weighted density of roads at 1000 m scale.
 
 ## Area infrastructure
 
 We do not present an example here, but for infrastructure represented as polygons or areas
-the same reasoning and interpretation for the ZoI of the linear infrastructure might
+the same reasoning and interpretation for the ZOI of the linear infrastructure might
 be applied. 
 
 # Some technical remarks
@@ -282,7 +282,7 @@ wish to represent. Some remarks are made below:
 
 ## Think what is relevant for your ecological system and question
 
-ZoI metrics must be computed according to the ecological system and ecological
+ZOI metrics must be computed according to the ecological system and ecological
 indicators, to the research
 or assessment questions and their hypotheses, as well as to the type of data these
 measures of zones of influence will be associated to.
@@ -290,10 +290,10 @@ measures of zones of influence will be associated to.
 ## Choose well the pixel size and how to represent infrastructure
 
 The representation of infrastructure in raster format, as input for the computation 
-of ZoI metrics, must take into account what is the resolution of the data. For very fine
+of ZOI metrics, must take into account what is the resolution of the data. For very fine
 resolution maps (small pixel size), input infrastructure raster maps might be binary,
 with each pixel representing a feature or feature segment. For large areas, though,
-the computation of ZoI metrics might be computationally and time consuming (but 
+the computation of ZOI metrics might be computationally and time consuming (but 
 see the 
 [alternative computation in GRASS GIS](https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html) 
 for these cases!). In contrast, as the
@@ -301,9 +301,9 @@ input maps have a rougher resolution (larger pixel size), one must think if the 
 infrastructure raster maps should be binary or represent counts of infrastructure
 features.
 
-## Choose well the values for the radius of the ZoI
+## Choose well the values for the radius of the ZOI
 
-The extent of the study area and the ZoIs to be evaluated must be carefully selected
+The extent of the study area and the ZOIs to be evaluated must be carefully selected
 when they are used to annotate ecological data and assess cumulative impacts on
 species or ecological processes (Jackson & Fahrig, 2015).
 
@@ -312,14 +312,14 @@ of the extent of the study area (Vistnes & Nellemann, 2008). Skarin & Åhman (20
 showed that, depending of the temporal and spatial range of
 the study, the same type of infrastructure might vary in their effect on biological 
 response variables, from no effect to positive or negative effects. Second, 
-depending on the response variable, the range of ZoI
+depending on the response variable, the range of ZOI
 radii evaluated should encompass at least the range size or the average 
 dispersal distance of the species
 under study (Jackson & Fahrig, 2012). This is needed to ensure that the 
-“true” ZoI at which the ecological
-process being measured is affected is included among the possible ZoI, 
+“true” ZOI at which the ecological
+process being measured is affected is included among the possible ZOI, 
 and avoid that conclusions based
-on an estimated ZoI that is wrong mislead management and conservation 
+on an estimated ZOI that is wrong mislead management and conservation 
 policies based on that scientific
 inference (e.g. Jackson & Fahrig, 2015).
 

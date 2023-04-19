@@ -15,15 +15,15 @@ knitr::opts_chunk$set(
 ```
 
 
-The computation of zones of influence (ZoI) in useful to assess whether the effect of 
+The computation of zones of influence (ZOI) in useful to assess whether the effect of 
 a given anthropogenic infrastructure, disturbance, or landscape variable affect
 an ecological response variable beyond its spatial delimitation. Computing zones of 
 influence for large maps with fine resolution though, is tricky because of computing and
 memory limitations in processing raster maps in R. To deal with that, the `oneimpact`
-package offers tools to compute the ZoI in [GRASS GIS](https://grass.osgeo.org/), a
+package offers tools to compute the ZOI in [GRASS GIS](https://grass.osgeo.org/), a
 powerful, open-source , using the package [`rgrass7`](https://rsbivand.github.io/rgrass/) 
 to link R and GRASS. Here we provide an example and some comments on how to
-compute ZoI metrics in GRASS GIS via R.
+compute ZOI metrics in GRASS GIS via R.
 
 For an introduction to the zone of influence approach in R, look at the 
 [Getting started](https://ninanor.github.io/oneimpact/articles/oneimpact.html) and
@@ -32,10 +32,10 @@ introdutory vignettes.
 
 # Overview
 
-To compute ZoI metrics in GRASS GIS,
-we can use the same function used to compute ZoI in R, `calc_zoi()` (or 
+To compute ZOI metrics in GRASS GIS,
+we can use the same function used to compute ZOI in R, `calc_zoi()` (or 
 `calc_zoi_nearest()` and `calc_zoi_cumulative` for only the nearest and cumulative
-ZoI metrics), adding a parameter `where = "GRASS"`. However, the computation in GRASS GIS 
+ZOI metrics), adding a parameter `where = "GRASS"`. However, the computation in GRASS GIS 
 is slighly different from doing the same in R. Here are some key differences:
 
 - raster processing is made in GRASS GIS, so it requires an active connection between
@@ -46,17 +46,17 @@ the GRASS GIS location/mapset R is connected to. This might be done through the
 - once the input raster maps are loaded in GRASS, the input to the `calc_zoi()`
 function is not a raster object in R but a string with the name of the map in the
 GRASS mapset;
-- after processing, ZoI maps are saved within the GRASS GIS location and mapset.
+- after processing, ZOI maps are saved within the GRASS GIS location and mapset.
 To retrieve them, one must use the `rgrass7` pacakge to import the maps into R
 or outside to a working folder.
 
-Below we show how to do these steps to compute the ZoI and provide a few comments.
+Below we show how to do these steps to compute the ZOI and provide a few comments.
 
 # Establishing a connection between R and GRASS
 
 ## Downloading and installing GRASS GIS
 
-The first requirement to compute ZoI metrics in GRASS is to have GRASS GIS installed.
+The first requirement to compute ZOI metrics in GRASS is to have GRASS GIS installed.
 GRASS can be freely downloaded and installed in most operational systems 
 (Windows, Linux, MacOS). For more information on installations, please see the official
 [GRASS Downloads webpage](https://grass.osgeo.org/download/). The website also
@@ -195,7 +195,7 @@ on the connection between R and GRASS on Windows.
 
 ## Loading input maps into GRASS
 
-Before computing the ZoI metrics, the input infrastructure or disturbance maps must
+Before computing the ZOI metrics, the input infrastructure or disturbance maps must
 be loaded into GRASS. If the maps are already open in our R session, it is possible
 to write them into our GRASS mapset using the `rgrass7::write_RAST()` function:
 
@@ -235,12 +235,12 @@ rgrass7::execGRASS("r.in.gdal", input = f,
 ```
 
 
-## Computing the ZoI
+## Computing the ZOI
 
-Now, computing the ZoI is very similar to the procedure in R with the `calc_zoi()`
+Now, computing the ZOI is very similar to the procedure in R with the `calc_zoi()`
 function. We will here
-compute both the ZoI of the nearest feature and the cumutive ZoI for cabins
-using a ZoI with a linear decay (i.e. Bartlett) shape and radii of 500 and 1000 m. 
+compute both the ZOI of the nearest feature and the cumutive ZOI for cabins
+using a ZOI with a linear decay (i.e. Bartlett) shape and radii of 500 and 1000 m. 
 Importantly, here the main input `x` for the `calc_zoi()` funcion is a string
 with the name of the map within the GRASS mapset (or a vector strings for multiple maps).
 To inform R that we wish to make processing in GRASS, we must set `where = "GRASS"`:
@@ -266,14 +266,14 @@ Notice also that the `g_overwrite` parameter was used to guarantee that, if ther
 maps with similar names in the GRASS GIS mapset, they will be overwritten. Other parameters
 to control how `calc_zoi()` is computed in GRASS are available, all following starting 
 with `g_`. For instance, the name of the output map (or pattern in the output names, when there
-is more than one map or ZoI radius) might be determined using the `g_output_map_name` parameter.
-If no parameter is specified, the input map name is used, together with the ZoI metric, shape, and radius,
+is more than one map or ZOI radius) might be determined using the `g_output_map_name` parameter.
+If no parameter is specified, the input map name is used, together with the ZOI metric, shape, and radius,
 to create the name of the output maps. For more information on GRASS GIS options for 
-ZoI computation, see the documentation for `calc_zoi_nearest()` and `calc_zoi_cumulative()`.
+ZOI computation, see the documentation for `calc_zoi_nearest()` and `calc_zoi_cumulative()`.
 
 # Retrieving outputs from GRASS
 
-Once the ZoI maps are calculated, we can retrieve them to R using the function
+Once the ZOI maps are calculated, we can retrieve them to R using the function
 `rgrass7::read_RAST()`. By default, this function reads the rasters as a 
 `SpatialGridDataFrame` object from the `sp` package. Here we prefer to specify
 `return_format = "terra"`, in case which the output is a *terra* `SpatRaster` object.
@@ -297,15 +297,15 @@ cabins_zoi_cumulative[[4]][] <- as.numeric(cabins_zoi_cumulative[[4]][])
 ```
 
 
-Now we can plot the ZoI metrics computed in GRASS:
+Now we can plot the ZOI metrics computed in GRASS:
 
 ```{r}
-# plot ZoI metrics
+# plot ZOI metrics
 terra::plot(cabins_zoi_cumulative)
 ```
 
 From this point, the `oneimpact` vignette [Getting started](https://ninanor.github.io/oneimpact/articles/oneimpact.html) shows how it is
-possible to annotate biological data with the ZoI variables computed for different
+possible to annotate biological data with the ZOI variables computed for different
 variables to prepare data for a multi-scale analysis on the effects of infrastructure
 and anthropogenic disturbance on biological responses (see also Niebuhr et al, 
 *submitted*).
@@ -315,7 +315,7 @@ and anthropogenic disturbance on biological responses (see also Niebuhr et al,
 ## Different algorithms to compute the cumulative zone of influence
 
 In GRASS GIS, different algorithms might be used for the computation of 
-neighborhood analyses, which are the basis for the cumulative ZoI calculation.
+neighborhood analyses, which are the basis for the cumulative ZOI calculation.
 The following GRASS tools are available to be used in `calc_zoi()` in GRASS:
 `r.resamp.filter`, `r.mfilter`, or `r.neighbors`. The module to be used is
 controlled by the parameter `g_module`. Each of these algorithms provide different
@@ -324,7 +324,7 @@ capabilities and flexibility:
 - `r.resamp.filter` seems to be the fastest one
 in most cases, but has less flexibility in the choice of the zone of influence
 shapes. The algorithm calculates the weighted density of features, which
-might be rescaled to the cumulative ZoI if the appropriate scaling factor
+might be rescaled to the cumulative ZOI if the appropriate scaling factor
 (calculated from the weight matrix) is provided. Currently only the
 filters `type = "bartlett"` and `type = "box"` are implemented in
 `oneimpact`. More
@@ -334,7 +334,7 @@ information about the algorithm
 is slower than `r.resamp.filter` but much faster than
 `r.neighbors`, and allows a flexible choice of the shape of the zone of
 influence (the wight matrix shape). `r.mfilter` is then the most indicated
-in terms of a balance between flexibility in the choice of the ZoI shape
+in terms of a balance between flexibility in the choice of the ZOI shape
 and computation efficiency.
 The only inconvenient of `r.mfilter` is that it
 creates an edge effect with no information in the outer cells of a raster
@@ -345,17 +345,17 @@ See \url{https://github.com/OSGeo/grass/issues/2184} for more details about
 this issue, and [this link](https://grass.osgeo.org/grass82/manuals/r.mfilter.html)
 for more information on this tool.
 - `r.neighbors` is considerably slower than the other algorithms (from 10 to
-100 times), but allows a flexible choice of the ZoI shape. Contrary to
+100 times), but allows a flexible choice of the ZOI shape. Contrary to
 `r.resamp.filter` and `r.mfilter`, which can only perform a sum of pixel
-values weighted by the input filter or ZoI, `r.neighbors` might
+values weighted by the input filter or ZOI, `r.neighbors` might
 calculate many other statistical summaries within the window of analysis,
 such as mean, median, standard deviation etc. In principle, though, the sum
-is enough to compute the cumulative ZoI as formulated in Niebuhr et al. (*submitted*)
+is enough to compute the cumulative ZOI as formulated in Niebuhr et al. (*submitted*)
 and proposed here.
 
 ## Different measures of distance to compute the zone of influence of the nearest feature
 
-The metrics of ZoI of the nearest feature are based on maps of distance form each 
+The metrics of ZOI of the nearest feature are based on maps of distance form each 
 pixel in the landscape to the nearest feature. They are computed in GRASS through the
 [r.grow.distance](https://grass.osgeo.org/grass78/manuals/r.grow.distance.html)
 tool. This tool allows the computation of the distance to the nearest feature based
@@ -369,7 +369,7 @@ Find more information at the GRASS GIS documentation for this function
 
 ## Additional ancillary functions
 
-Additional examples for the computation of the ZoI in GRASS can be 
+Additional examples for the computation of the ZOI in GRASS can be 
 found in the documentation of the `calc_zoi_nearest()`
 and `calc_zoi_cumulative()` functions. The `oneimpact` package also provides a 
 few other ancillary functions to help processing maps within GRASS:
@@ -377,7 +377,7 @@ few other ancillary functions to help processing maps within GRASS:
 - The function `grass_binarize()` transforms continuous maps into binary maps
 based on `breaks` to define discrete categories. The output consists of maps with
 1 for values above the `break` and 0 for values below it. It might be used for 
-preparing inputs to compute the ZoI based on continuous layers.
+preparing inputs to compute the ZOI based on continuous layers.
 - The function `grass_v2rast_count()` rasterizes vectors within GRASS 
 by counting the number of features in each pixel. This is usefull for large maps
 which are hard to be rasterized within R. See the 
