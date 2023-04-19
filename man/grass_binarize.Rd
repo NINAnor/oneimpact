@@ -67,7 +67,7 @@ habitat-matrix maps in the context of landscape ecology. It can
 also be used to produce binary maps form maps with only one category (and
 all the rest as NULL/no-data). It requires an active connection between
 the R session and a GRASS GIS location and mapset
-(through the package \link{rgrass7}), and that the input map is already loaded
+(through the package \link{rgrass}), and that the input map is already loaded
 within this GRASS GIS mapset.
 }
 \details{

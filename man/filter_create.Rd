@@ -33,9 +33,9 @@ should correspond to; or a raster object (\code{SpatRaster} from the \link{terra
 package or \code{RasterLayer}, \code{RasterBrick}, or \code{RasterStack} from the
 \code{raster} package) from which such resolution can be extracted.}
 
-\item{radius}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZoI) radius,
+\item{radius}{\verb{[numeric(1)=NULL]} \cr Zone of Influence (ZOI) radius,
 in map units (preferentially meters).
-The ZoI radius is the distance, scale, or buffer size around a
+The ZOI radius is the distance, scale, or buffer size around a
 feature up to which we consider there is
 an effect or influence of an infrastructure or variable. In \code{filter_create},
 the interpretation of the
@@ -66,12 +66,12 @@ error for the other types of filters.
 Shape of the Zone of Influence of weight matrix. It can be any of:
 \itemize{
 \item \code{"circle"}, \code{"threshold"}, \code{"threshold_decay"}, \code{"step"} or \code{"step_decay"}
-for a threshold decay ZoI;
-\item \code{"exp_decay"} for exponential decay ZoI;
-\item \code{"Gauss"}, \code{"gaussian"}, or \code{"gaussian_decay"} for Gaussian decay ZoI;
+for a threshold decay ZOI;
+\item \code{"exp_decay"} for exponential decay ZOI;
+\item \code{"Gauss"}, \code{"gaussian"}, or \code{"gaussian_decay"} for Gaussian decay ZOI;
 \item \code{"bartlett"}, \code{"bartlett_decay"}, \code{"linear_decay"}, or \code{"tent_decay"}
-for linear decay ZoI;
-\item \code{"rectangle"} or \code{"box"} for a rectangular ZoI.
+for linear decay ZOI;
+\item \code{"rectangle"} or \code{"box"} for a rectangular ZOI.
 There might be some correspondence between the weight matrix \code{type}
 in \code{filter_create} and other similar functions (e.g. \code{type = "rectangle"}
 and \code{type = "boxcar"} in \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}} or
@@ -83,8 +83,8 @@ define these matrices is different between functions.
 
 \item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr For non-vanishing filters
 (e.g. \code{exp_decay}, \code{gaussian_decay}), this value is used to set the relationship
-between the ZoI radius and the decay functions:
-\code{radius} is defined as the minimum distance \code{x} at which the ZoI assumes values
+between the ZOI radius and the decay functions:
+\code{radius} is defined as the minimum distance \code{x} at which the ZOI assumes values
 below \code{zoi_limit}. The default is 0.05. This parameter is used only
 if \code{radius} is not \code{NULL}.}
 
@@ -92,26 +92,26 @@ if \code{radius} is not \code{NULL}.}
 function, in meters. By definition, the half life is
 the distance where the exponential decay function reaches 0.5 of its
 maximum value. For the \code{exp_decay} function,
-if the ZoI radius parameter is null (\code{radius = NULL}), the value of the
+if the ZOI radius parameter is null (\code{radius = NULL}), the value of the
 exponential half life (\code{half_life = log(2)/lambda}) can used to parameterize the
 exponential decay function. See details in \code{\link[=zoi_functions]{zoi_functions()}}.}
 
 \item{zoi_hl_ratio}{\verb{[numeric(1)=6]} \cr For the \code{exp_decay} function,
-if both the ZoI radius \code{radius} and \code{zoi_hl_ratio} are given and
+if both the ZOI radius \code{radius} and \code{zoi_hl_ratio} are given and
 \code{half_life} is \code{NULL}, this value is used
-to set the ZoI radius (and \code{zoi_limit} is ignored).
+to set the ZOI radius (and \code{zoi_limit} is ignored).
 \code{zoi_hl_ratio} is the ratio between the
-ZoI radius value and the half life of the exponential function.
+ZOI radius value and the half life of the exponential function.
 For instance, if \code{radius = 1200} and \code{zoi_hl_ratio = 6}, this means
-\code{half_life} is 200. As a consequence, the exponential decay ZoI function
-decreases to 0.5 at distance 200, and the ZoI radius = 1200
+\code{half_life} is 200. As a consequence, the exponential decay ZOI function
+decreases to 0.5 at distance 200, and the ZOI radius = 1200
 is defined as the distance
-at which the ZoI decreases to 0.5**6 = 0.015625.}
+at which the ZOI decreases to 0.5**6 = 0.015625.}
 
 \item{sigma}{\verb{[numeric(1)=NULL]} \cr Standard deviation of the Gaussian
 function. It related to the Gaussian decay rate \eqn{\lambda} as
-\code{lambda = 1/(2*sigma^2)}. Only considered to compute the ZoI
-for the \code{gaussian_decay} function when the ZoI radius parameter is null
+\code{lambda = 1/(2*sigma^2)}. Only considered to compute the ZOI
+for the \code{gaussian_decay} function when the ZOI radius parameter is null
 (\code{radius = NULL}).}
 
 \item{min_intensity}{\verb{[numeric(1)=0.01]} \cr Minimum intensity of the
@@ -137,7 +137,7 @@ interval $\link{0,1}$. If \code{normalize = TRUE}, the divisor is set to \code{n
 \item{round_vals}{\verb{[numeric(1)=NULL]} \cr Number of digits for rounding the weights
 in the output matrix. If \code{NULL} (default), weights are not rounded.}
 
-\item{save_txt}{\verb{[logical(1)=FALSE]} \cr Should the ZoI matrix be saved in an external
+\item{save_txt}{\verb{[logical(1)=FALSE]} \cr Should the ZOI matrix be saved in an external
 text file? If \code{FALSE} (default), the output matrix is just printed within the R session.}
 
 \item{save_format}{\verb{[character(1)="GRASS_rmfilter"]\{"GRASS_rmfilter", "raw"\}} \cr
@@ -161,27 +161,27 @@ the documentation of the \href{https://grass.osgeo.org/grass78/manuals/r.mfilter
 }
 \value{
 A matrix with the weight values. In the context of cumulative impact assessment, we call it a
-zone of influence (ZoI) matrix used to compute the cumulative zone of influence. If \code{save_txt = TRUE},
+zone of influence (ZOI) matrix used to compute the cumulative zone of influence. If \code{save_txt = TRUE},
 the matrix is saved in an output text file, e.g. to be used with external software.
 }
 \description{
 This function creates matrices of weights following different
 functions to be used in neighborhood analyses for rasters. In the context of
-cumulative impact analysis, they represent the Zone of Influence (ZoI) of each
-infrastructure point/pixel, to be used to calculate the cumulative ZoI.
+cumulative impact analysis, they represent the Zone of Influence (ZOI) of each
+infrastructure point/pixel, to be used to calculate the cumulative ZOI.
 It is possible to export these matrices as text files, for use with external
 software such as the \code{r.mfilter} module within GRASS GIS.
 }
 \details{
-The function creates \eqn{n} x \eqn{n} ZoI or weight matrices based on
-functions with different shapes and parameterized with the ZoI radius, where
+The function creates \eqn{n} x \eqn{n} ZOI or weight matrices based on
+functions with different shapes and parameterized with the ZOI radius, where
 \eqn{n} is the dimension of the matrix.
 For some functions (e.g. threshold decay, linear decay),
-the size of the matrix is defined by the ZoI radius, in meters,
+the size of the matrix is defined by the ZOI radius, in meters,
 given the intended resolution (parameter \code{r}), potentially adding new lines
 and columns with value zero to keep \eqn{n} an odd number.
 For non-vanishing function (e.g. exponential or Gaussian decay),
-even though the function is parameterized with the ZoI radius the size of
+even though the function is parameterized with the ZOI radius the size of
 the matrix can go beyond this radius. In this case, the size of the matrix
 \eqn{n} is defined either by a minimum intensity function value
 (parameter \code{min_intensity}) or by a maximum distance for
@@ -270,8 +270,8 @@ plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
 }
 }
 \seealso{
-See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes and
-\code{\link[=filter_save]{filter_save()}} for options to save the ZoI matrix as a text file. \cr
+See \code{\link[=zoi_functions]{zoi_functions()}} for some ZOI function shapes and
+\code{\link[=filter_save]{filter_save()}} for options to save the ZOI matrix as a text file. \cr
 See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
 \code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
 See

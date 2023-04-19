@@ -20,52 +20,52 @@ plot_zoi1d(
 \item{points}{\verb{[numeric]} \cr Vector of values in the x axis where the infrastructure are located,
 in 1 dimension
 (more broadly, the location of sources of disturbance or spatial variables, or the point of
-origin of the ZoI functions).}
+origin of the ZOI functions).}
 
-\item{radius}{\verb{[numeric(1)]} \cr Radius of the zone of influence (ZoI),
-the distance at which the ZoI vanishes or goes below a given minimum limit value.
+\item{radius}{\verb{[numeric(1)]} \cr Radius of the zone of influence (ZOI),
+the distance at which the ZOI vanishes or goes below a given minimum limit value.
 See \link{zoi_functions} for details.}
 
-\item{fun}{\verb{[function]} \cr A decay function that represents the Zone of Influence (ZoI).
-Different functions might represent different shapes for the decay of the ZoI.
+\item{fun}{\verb{[function]} \cr A decay function that represents the Zone of Influence (ZOI).
+Different functions might represent different shapes for the decay of the ZOI.
 See \link{zoi_functions} for some examples.}
 
 \item{zoi_metric}{\verb{[character(1)="nearest"]\{"nearest", "cumulative"\}} \cr
-Which metric of zone of influence should be plotted. If \code{"nearest"}(default), the ZoI of
-the nearest feature is plotted. If \code{"cumulative"}, the cumulative ZoI is plotted.}
+Which metric of zone of influence should be plotted. If \code{"nearest"}(default), the ZOI of
+the nearest feature is plotted. If \code{"cumulative"}, the cumulative ZOI is plotted.}
 
 \item{range_plot}{\verb{[numeric(2)=c(0,12)]} \cr A vector \code{c(xmin, xmax)} with the x range of
-the ZoI plot.}
+the ZOI plot.}
 
 \item{step}{\verb{[numeric(1)=0.01]} \cr Size of the step increment used to define the series
-of x positions for which the ZoI is computed, within the x range defined by \code{range_plot}.}
+of x positions for which the ZOI is computed, within the x range defined by \code{range_plot}.}
 
 \item{na.rm}{\verb{[logical(1)=TRUE]} \cr Should \code{NA} values be removed when computing
-either the sum (for the cumulative ZoI) or the maximum (for the ZoI of the nearest
+either the sum (for the cumulative ZOI) or the maximum (for the ZOI of the nearest
 feature)?}
 
 \item{return_df}{\verb{[logical(1)=FALSE]} \cr If TRUE, a \code{data.frame} with \code{x} values and their
-corresponding ZoI values is returned, besides the plot.}
+corresponding ZOI values is returned, besides the plot.}
 
-\item{...}{Additional parameters passed to the ZoI decay function \code{fun}.}
+\item{...}{Additional parameters passed to the ZOI decay function \code{fun}.}
 }
 \value{
 A \code{ggplot} object with the nearest or cumulative influence plot.
 If \code{return_df = TRUE}, it returns a list with the \code{ggplot} object and a \code{data.frame}  with
-values for \code{x} (position in 1d space) and \code{y} (ZoI value).
+values for \code{x} (position in 1d space) and \code{y} (ZOI value).
 }
 \description{
-Plots the functions to represent the zone of influence (ZoI) in 1 dimensional space, for illustration.
+Plots the functions to represent the zone of influence (ZOI) in 1 dimensional space, for illustration.
 When there is more than one value for \code{points} (the location of infrastructure
-or sources of disturbance), two metrics might be plotted: the ZoI of the nearest feature or the
-cumulative ZoI. The ZoI of the nearest feature corresponds to the maximum ZoI value from all
-infrastructure at each position. The cumulative ZoI corresponds to the sum of the ZoI
+or sources of disturbance), two metrics might be plotted: the ZOI of the nearest feature or the
+cumulative ZOI. The ZOI of the nearest feature corresponds to the maximum ZOI value from all
+infrastructure at each position. The cumulative ZOI corresponds to the sum of the ZOI
 of all infrastructure at each position.
 }
 \details{
-In practice, the \code{plot_zoi1d()} computes the ZoI value for each feature
+In practice, the \code{plot_zoi1d()} computes the ZOI value for each feature
 whose locations in 1 dimension are defined by \code{points} and calculates the maximum
-(ZoI of the nearest) or sum (cumulative ZoI) of all values. This is done
+(ZOI of the nearest) or sum (cumulative ZOI) of all values. This is done
 for a series of points in 1 dimensional space in the range \code{range_plot} (with
 steps defined by \code{step}) and plotted.
 

@@ -47,7 +47,7 @@ environments.
 Notice that, different from \code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}}, the input maps \code{x}
 must have zero as background values, instead of NA. In R it is possible to
 account for NA background values by setting \code{zeroAsNA = TRUE} for the computation
-of the cumulative ZoI.
+of the cumulative ZOI.
 In GRASS, maps without NA as background might be changed into maps with 0 as
 background to be used in  \code{calc_zoi_cumulative()}
 through \href{https://grass.osgeo.org/grass78/manuals/r.mapcalc.html}{raster algebra}
@@ -57,9 +57,9 @@ and e.g. through the use of the module
 \item{radius}{\verb{[numeric(1)=100]} \cr Radius or scale of the moving
 window for neighborhood analysis, used to calculate the cumulative zoi and
 density. The radius represent
-the distance at which the ZoI vanishes or goes below a given minimum limit value
+the distance at which the ZOI vanishes or goes below a given minimum limit value
 \code{zoi_limit}. It can be a single value or a vector of values, in which case
-several cumulative ZoI or density maps (one for each radius) are created.
+several cumulative ZOI or density maps (one for each radius) are created.
 For \code{type = "circle"}, the \code{radius} corresponds to the radius of the
 circle filter. For \code{type = "Gauss"} and \code{type = "exp_decay"}, \code{radius}
 corresponds to the distance where the Gaussian or exponential decay function
@@ -73,13 +73,13 @@ for more details on the zone of influence function shapes and parameters.}
 
 \item{type}{\verb{[character(1)="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold", "step", "mfilter"\}} \cr
 Type of filter (shape of the zone of influence) used to calculate the
-cumulative ZoI or density. See details.}
+cumulative ZOI or density. See details.}
 
 \item{where}{\verb{[character(1)="R"]\{"R", "GRASS"\}} \cr Where should the
 computation be done? Default is \code{"R"}. If \code{where = "GRASS"}, the R session
 must be linked to an open GRASS GIS session in a specific location and mapset.}
 
-\item{output_type}{\verb{[character(1)="cumulative_zoi"]\{"cumulative_zoi", "density"\}} \cr If \code{output_type = "cumulative_zoi"} (default), the ZoI weight
+\item{output_type}{\verb{[character(1)="cumulative_zoi"]\{"cumulative_zoi", "density"\}} \cr If \code{output_type = "cumulative_zoi"} (default), the ZOI weight
 matrix not not normalized, i.e. the maximum value of the weight matrix at the
 central pixel value is always 1. This means the values of the input map are
 summed (considering a decay with distance within the neighborhood) and the
@@ -89,8 +89,8 @@ in the outmap map generally lower than 1.}
 
 \item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr For non-vanishing functions
 (e.g. \code{exp_decay}, \code{gaussian_decay}), this value is used to set the relationship
-between the ZoI radius and the decay functions:
-\code{radius} is defined as the minimum distance at which the ZoI assumes values
+between the ZOI radius and the decay functions:
+\code{radius} is defined as the minimum distance at which the ZOI assumes values
 below \code{zoi_limit}. The default is 0.05. This parameter is used only
 if \code{radius} is not \code{NULL}.}
 
@@ -111,7 +111,7 @@ applicable for exponential and Gaussian decay functions. See
 representing the minimum and
 maximum extent in x and y for the final output, in the format c(min,max).
 It is intended to keep only a region of interest but consider the
-surroundings when calculating the cumulative ZoI or density. This might be
+surroundings when calculating the cumulative ZOI or density. This might be
 especially useful for example in the use of the \code{r.mfilter} algorithm in
 GRASS, in which the edges of the region are excluded from the computation.
 The default is to keep the same extent of the input raster.}
@@ -124,20 +124,20 @@ through the \code{\link[terra:focal]{terra::focal()}} function. Only used when \
 
 \item{g_module}{\verb{[character(1)="r.mfilter"]\{"r.mfilter", "r.resamp.filter", "r.neighbors"\}} \cr
 If \code{where = "GRASS"}, which algorithm should be used to compute the cumulative
-ZoI? See details for their description.}
+ZOI? See details for their description.}
 
 \item{g_parallel}{\verb{[logical(1)=TRUE]} \cr If the \code{r.mfilter} tool is used for
-computing the cumulative ZoI in GRASS GIS, \code{g_parallel} tells if parallelization
+computing the cumulative ZOI in GRASS GIS, \code{g_parallel} tells if parallelization
 should be used. Default is \code{TRUE}. The option is ignored for other GRASS tools
 (parameter \code{g_module}) and for computation in R (\code{where = "R"}).}
 
 \item{g_output_map_name}{\verb{[character(1)=NULL]} \cr Name of the output map. Only
 used when \code{where = "GRASS"}. If \code{NULL} (default), a standard name is created
-based on the name of the input map \code{x}, the ZoI shape \code{type}, and the ZoI
+based on the name of the input map \code{x}, the ZOI shape \code{type}, and the ZOI
 radius \code{radius}.}
 
 \item{g_input_as_region}{\verb{[logical(1)=TRUE]} \cr Should the input map \code{x} be
-used to redefine the working GRASS region before cumulative ZoI calculation?
+used to redefine the working GRASS region before cumulative ZOI calculation?
 If \code{TRUE}, \code{x} is used to define the region with \code{g.region}. If \code{FALSE},
 the region previously defined in the GRASS GIS session is used for computation.}
 
@@ -159,39 +159,39 @@ or \code{\link[terra:focal]{terra::focal()}}.}
 If the calculations are performed in R (\code{where = "R"}),
 a \code{RasterLayer} or \link{SpatRaster} (according to the input \code{x} map)
 with the cumulative zone of influence or density of features. While the
-cumulative ZoI uses a ZoI/weight matrix rescaled to 1 at the central pixel
+cumulative ZOI uses a ZOI/weight matrix rescaled to 1 at the central pixel
 (creating values in the output map which might go well beyond 1), the
-density of features uses a normalized ZoI/weight matrix (with all values
+density of features uses a normalized ZOI/weight matrix (with all values
 summing 1), what created values smaller than one in the output map.
 if multiple \code{radius} values are given, a \code{RasterBrick} or multi-layer
-\code{SpatRaster}, with the cumulative ZoI or density maps for each ZoI radius. \cr
+\code{SpatRaster}, with the cumulative ZOI or density maps for each ZOI radius. \cr
 If the computation is done in GRASS GIS, the output is the name of
 the output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-\code{\link[rgrass7:readRAST]{rgrass7::read_RAST()}} or export them outside GRASS using the
+\code{\link[rgrass:readRAST]{rgrass::read_RAST()}} or export them outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \description{
 This function takes in a raster with locations or counts of
 infrastructure
 and calculates a raster (or set of rasters, in case there is more the one
-value for \code{radius}) representing the cumulative zone of influence (ZoI)
+value for \code{radius}) representing the cumulative zone of influence (ZOI)
 or density of features in space. The process is done through a spatial
 filter/moving window/neighborhood analysis. The zones of influence
 (or weight matrices) are defined by functions that decay with the distance
 from each infrastructure feature and their rate of decay is controlled by the
-ZoI radius (\code{radius}), which defines how far the influence of an infrastructure
-feature goes. By using moving window analyses, the cumulative ZoI account for
+ZOI radius (\code{radius}), which defines how far the influence of an infrastructure
+feature goes. By using moving window analyses, the cumulative ZOI account for
 the sum of the influence of multiple features across space, weighted by
-the distance to these features according the the ZoI shape.
-For more details on the ZoI functions, see \code{\link[=zoi_functions]{zoi_functions()}}.
+the distance to these features according the the ZOI shape.
+For more details on the ZOI functions, see \code{\link[=zoi_functions]{zoi_functions()}}.
 
 The procedure might be computed in both R and GRASS GIS. In R, the
 neighborhood analysis is done with the \code{\link[terra:focal]{terra::focal()}} function. In GRASS,
 different modules might be used for the computation: \code{r.resamp.filter},
 \code{r.mfilter}, or \code{r.neighbors}. See details for their differences. In GRASS, it
 requires an active connection between the R session and a GRASS GIS
-location and mapset (through the package \link{rgrass7}), and that the input
+location and mapset (through the package \link{rgrass}), and that the input
 maps are already loaded within this GRASS GIS mapset.
 If the calculations are done in R, the input is a (set of) raster map(s)
 and the function returns another (set of) raster map(s). If the calculations
@@ -199,7 +199,7 @@ are done within GRASS GIS, the input is the name of a raster map already
 loaded in a GRASS GIS location and mapset, and the function returns
 only the name of the output map. This map is stored in the the GRASS GIS
 location/mapset, and might be retrieved to R through the
-\code{\link[rgrass7:readRAST]{rgrass7::read_RAST()}} function or exported outside GRASS using the
+\code{\link[rgrass:readRAST]{rgrass::read_RAST()}} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \section{Details}{
@@ -212,7 +212,7 @@ We recommend that the input raster has a metric projection, so that distances
 and zones of influence are based on distance to infrastructure measured in meters.
 \subsection{Zone of Influence functions and weight matrices}{
 
-The neighborhood analysis to define the cumulative ZoI can be
+The neighborhood analysis to define the cumulative ZOI can be
 computed with different functions/filters. The options currently implemented
 are:
 \itemize{
@@ -261,7 +261,7 @@ capabilities and flexibility.
 \item \code{r.resamp.filter} seems to be the fastest one
 in most cases, but has less flexibility in the choice of the zone of influence
 function. The algorithm calculates the weighted density of features, which
-might be rescaled to the cumulative ZoI if the appropriate scaling factor
+might be rescaled to the cumulative ZOI if the appropriate scaling factor
 (calculated from the weight matrix) is provided. Currently only the
 filters \code{type = "bartlett"} and \code{type = "box"} are implemented. More
 information about the algorithm
@@ -269,7 +269,7 @@ information about the algorithm
 \item \code{r.mfilter} is slower than \code{r.resamp.filter} but much faster than
 \code{r.neighbors}, and allows a flexible choice of the shape of the zone of
 influence (the wight matrix shape). \code{r.mfilter} is then the most indicated
-in terms of a balance between flexibility in the choice of the ZoI shape
+in terms of a balance between flexibility in the choice of the ZOI shape
 and computation efficiency.
 The only inconvenient of \code{r.mfilter} is that it
 creates an edge effect with no information in the outer cells of a raster
@@ -278,9 +278,9 @@ matrix), so if it is used the users should add a buffer area
 \eqn{ge radius} around the input raster map, to avoid such edge effects.
 See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 \item \code{r.neighbors} is considerably slower than the other algorithms (from 10 to
-100 times), but allows a flexible choice of the ZoI shape. Contrary to
+100 times), but allows a flexible choice of the ZOI shape. Contrary to
 \code{r.resamp.filter} and \code{r.mfilter}, which can only perform a sum of pixel
-values weighted by the input filter or ZoI, \code{r.neighbors} might
+values weighted by the input filter or ZOI, \code{r.neighbors} might
 calculate many other statistical summaries within the window of analysis,
 such as mean, median, standard deviation etc.
 }
@@ -488,7 +488,7 @@ rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
 # rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
 }
 \seealso{
-See \code{\link[=zoi_functions]{zoi_functions()}} for some ZoI function shapes and
+See \code{\link[=zoi_functions]{zoi_functions()}} for some ZOI function shapes and
 \code{\link[=filter_create]{filter_create()}} for options to create weight matrices. \cr
 See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
 \code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
