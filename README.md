@@ -8,23 +8,23 @@
 `oneimpact` provides tools for the assessment of cumulative impacts of multiple infrastructure and land use modifications in ecological studies.
 The tools use R interface but the main calculations might be run in both R and GRASS GIS. The tools available so far are:
 
-### Zone of influence (ZoI) decay functions
+### Zone of influence (ZOI) decay functions
 
-- zoi_functions: a set of decay zone of influence functions to characterize different shapes of the ZoI around infrastructure, 
+- zoi_functions: a set of decay zone of influence functions to characterize different shapes of the ZOI around infrastructure, 
 parameterized based on the zone of influence radius. The functions implemented so far are: threshold (`threshold_decay` or `step_decay`),
 linear decay (`linear_decay` or `bartlett_decay` or `tent_decay`), exponential decay (`exp_decay`), or Gaussian decay 
 (`gaussian_decay` or `half_norm_decay`).
-- `plot_zoi1d`: plot ZoI in 1 dimensional space for multiple points infrastructure, using both the ZoI of the nearest
-feature and the cumulative ZoI metric.
+- `plot_zoi1d`: plot ZOI in 1 dimensional space for multiple points infrastructure, using both the ZOI of the nearest
+feature and the cumulative ZOI metric.
 
 
-### Compute zones of influence (ZoI):
+### Compute zones of influence (ZOI):
 
 - `calc_zoi_nearest`: Calculate the zone of influence from the nearest infrastructure, according to multiple possible 
 decay functions and zones of influence radii.
 - `calc_zoi_cumulative`: Calculate the cumulative zone of influence of multiple features, according to multiple possible 
 decay functions and zones of influence radii.
-- `calc_zoi`: Calculate both the the ZoI of the nearest infrastructure and the cumulative ZoI, at multiple
+- `calc_zoi`: Calculate both the the ZOI of the nearest infrastructure and the cumulative ZOI, at multiple
 scales or zones of influence radii.
 
 ### Spatial filters:
