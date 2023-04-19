@@ -22,7 +22,7 @@ Imports:
     dplyr, 
     tibble, 
     purrr, 
-    rgrass7, 
+    rgrass, 
     terra, 
     sf, 
     ggplot2, 

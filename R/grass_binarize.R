@@ -7,7 +7,7 @@
 #' also be used to produce binary maps form maps with only one category (and
 #' all the rest as NULL/no-data). It requires an active connection between
 #' the R session and a GRASS GIS location and mapset
-#' (through the package [rgrass7]), and that the input map is already loaded
+#' (through the package [rgrass]), and that the input map is already loaded
 #' within this GRASS GIS mapset.
 #'
 #' For a similar procedure within R, use the function [landscapetools::util_binarize()]
@@ -88,10 +88,10 @@ grass_binarize <- function(x,
     if(input_as_region) {
       if(verbose) {
         msg  <- "Important: the GRASS GIS computational is being reset to the extent of the input map `x`."
-        rgrass7::execGRASS("g.message", message = msg)
+        rgrass::execGRASS("g.message", message = msg)
       }
 
-      rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
+      rgrass::execGRASS("g.region", raster = x, flags = flags_region)
     }
 
     # nulls
@@ -99,7 +99,7 @@ grass_binarize <- function(x,
 
       # copy input
       inter_map = "inter_map" # intermediate map
-      rgrass7::execGRASS("g.copy",
+      rgrass::execGRASS("g.copy",
                          parameters = list(raster = paste0(x, ",", inter_map)),
                          flags = flags)
 
@@ -109,7 +109,7 @@ grass_binarize <- function(x,
       if(!is.null(setnull)) parms <- append(parms, list(setnull = setnull))
       if(!verbose) qq <- "quiet" else qq <- c()
       # run r.null
-      rgrass7::execGRASS("r.null", parameters = parms, flags = qq)
+      rgrass::execGRASS("r.null", parameters = parms, flags = qq)
 
       x <- inter_map
     }
@@ -118,7 +118,7 @@ grass_binarize <- function(x,
     out <- out_name[i]
 
     expr = sprintf("if(A >= %f, %d, %d)", breaks[i], bin_values[2], bin_values[1])
-    rgrass7::execGRASS("r.mapcalc.simple",
+    rgrass::execGRASS("r.mapcalc.simple",
                        expression = expr,
                        a = x,
                        output = out,
@@ -128,7 +128,7 @@ grass_binarize <- function(x,
 
   # remove intermediate map
   if(!(is.null(null) & is.null(setnull))) {
-    rgrass7::execGRASS("g.remove", type = "raster", name = "inter_map",
+    rgrass::execGRASS("g.remove", type = "raster", name = "inter_map",
                        flags = "f")
   }
 

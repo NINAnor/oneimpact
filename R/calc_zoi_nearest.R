@@ -16,7 +16,7 @@
 #'
 #' The procedure might be computed in both R and GRASS GIS. In GRASS, it
 #' requires an active connection between the R session and a GRASS GIS
-#' location and mapset (through the package [rgrass7]), and that the input
+#' location and mapset (through the package [rgrass]), and that the input
 #' maps are already loaded within this GRASS GIS mapset.
 #' If the calculations are done in R, the input is a (set of) raster map(s)
 #' and the function returns another (set of) raster map(s). If the calculations
@@ -24,7 +24,7 @@
 #' loaded in a GRASS GIS location and mapset, and the function returns
 #' only the name of the output map. This map is stored in the GRASS GIS
 #' location/mapset, and might be retrieved to R through the
-#' [rgrass7::read_RAST()] function or exported outside GRASS using the
+#' [rgrass::read_RAST()] function or exported outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
 #' @details
@@ -213,7 +213,7 @@
 #' If the computation is done in GRASS GIS, the output is name of
 #' the output raster map(s) within the GRASS GIS location and mapset of the
 #' current session. The user can retrieve these maps to R using
-#' [rgrass7::read_RAST] or export them outside GRASS using the
+#' [rgrass::read_RAST] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
 #' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes. \cr
@@ -489,35 +489,35 @@ calc_zoi_nearest_grass <- function(
 
   # region
   if(g_input_as_region)
-    rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
+    rgrass::execGRASS("g.region", raster = x, flags = flags_region)
   if(!is.null(extent_x_cut))
-    rgrass7::execGRASS("g.region", w = extent_x_cut[1], e = extent_x_cut[2],
+    rgrass::execGRASS("g.region", w = extent_x_cut[1], e = extent_x_cut[2],
                        align = x, flags = flags_region)
   if(!is.null(extent_y_cut))
-    rgrass7::execGRASS("g.region", s = extent_y_cut[1], n = extent_y_cut[2],
+    rgrass::execGRASS("g.region", s = extent_y_cut[1], n = extent_y_cut[2],
                        align = x, flags = flags_region)
 
   # check if zero should be replaced by NA
   if(zeroAsNA) {
     # print message
-    if(verbose) rgrass7::execGRASS("g.message", message = "Setting zeros as NULL data...")
+    if(verbose) rgrass::execGRASS("g.message", message = "Setting zeros as NULL data...")
     # copy map and use r.null
     temp_null_map <- "temp_set_null_input"
     # copy map
-    rgrass7::execGRASS("g.copy", raster = paste0(x, ",", temp_null_map), flags = flags)
+    rgrass::execGRASS("g.copy", raster = paste0(x, ",", temp_null_map), flags = flags)
     # set nulls
-    rgrass7::execGRASS("r.null", map = temp_null_map, setnull = "0")
+    rgrass::execGRASS("r.null", map = temp_null_map, setnull = "0")
     # check if it should be deleted afterwards
     if(g_remove_intermediate)
       to_remove <- c(to_remove, temp_null_map)
   }
 
   # print message
-  if(verbose) rgrass7::execGRASS("g.message", message = "Calculating Euclidean distance...")
+  if(verbose) rgrass::execGRASS("g.message", message = "Calculating Euclidean distance...")
   # set input
   if(zeroAsNA) input_euc <- temp_null_map else input_euc <- x
   # calculate
-  rgrass7::execGRASS("r.grow.distance", input = input_euc, distance = out_euclidean,
+  rgrass::execGRASS("r.grow.distance", input = input_euc, distance = out_euclidean,
                      metric = g_dist_metric, flags = flags)
   # check if it should be deleted afterwards
   # check if the layer already exists first; if not, remove it in the end.
@@ -643,16 +643,16 @@ calc_zoi_nearest_grass <- function(
     }
 
     # print message
-    if(verbose) rgrass7::execGRASS("g.message", message = out_message)
+    if(verbose) rgrass::execGRASS("g.message", message = out_message)
     # set region
     if(g_input_as_region)
-      rgrass7::execGRASS("g.region", raster = out_euclidean, flags = flags_region)
+      rgrass::execGRASS("g.region", raster = out_euclidean, flags = flags_region)
 
     # compute ZoI
     for(ii in seq_along(expression_influence)) {
 
-      if(g_print_expression) rgrass7::execGRASS("g.message", message = expression_influence[ii])
-      rgrass7::execGRASS("r.mapcalc.simple", expression = expression_influence[ii],
+      if(g_print_expression) rgrass::execGRASS("g.message", message = expression_influence[ii])
+      rgrass::execGRASS("r.mapcalc.simple", expression = expression_influence[ii],
                          a = out_euclidean, output = out_influence[ii], flags = flags)
     }
 
@@ -662,7 +662,7 @@ calc_zoi_nearest_grass <- function(
   remove_flags = ifelse(verbose, "f", c("f", "quiet"))
   if(g_remove_intermediate)
     if(length(to_remove) > 0)
-      rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
+      rgrass::execGRASS("g.remove", type = "rast", name = to_remove,
                          flags = remove_flags)
 
   # return only names

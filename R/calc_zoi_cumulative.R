@@ -19,7 +19,7 @@
 #' different modules might be used for the computation: `r.resamp.filter`,
 #' `r.mfilter`, or `r.neighbors`. See details for their differences. In GRASS, it
 #' requires an active connection between the R session and a GRASS GIS
-#' location and mapset (through the package [rgrass7]), and that the input
+#' location and mapset (through the package [rgrass]), and that the input
 #' maps are already loaded within this GRASS GIS mapset.
 #' If the calculations are done in R, the input is a (set of) raster map(s)
 #' and the function returns another (set of) raster map(s). If the calculations
@@ -27,7 +27,7 @@
 #' loaded in a GRASS GIS location and mapset, and the function returns
 #' only the name of the output map. This map is stored in the the GRASS GIS
 #' location/mapset, and might be retrieved to R through the
-#' [rgrass7::read_RAST()] function or exported outside GRASS using the
+#' [rgrass::read_RAST()] function or exported outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
 #' @details # Details
@@ -247,7 +247,7 @@
 #' If the computation is done in GRASS GIS, the output is the name of
 #' the output raster map(s) within the GRASS GIS location and mapset of the
 #' current session. The user can retrieve these maps to R using
-#' [rgrass7::read_RAST()] or export them outside GRASS using the
+#' [rgrass::read_RAST()] or export them outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
 #' @seealso See [oneimpact::zoi_functions()] for some ZoI function shapes and
@@ -534,7 +534,7 @@ calc_zoi_cumulative_grass <- function(
 
   # start by setting the region
   if(g_input_as_region)
-    rgrass7::execGRASS("g.region", raster = x, flags = flags_region)
+    rgrass::execGRASS("g.region", raster = x, flags = flags_region)
 
   # Differently from the R version, here we do not check if the input map
   # is binary or if it has NA values
@@ -542,13 +542,13 @@ calc_zoi_cumulative_grass <- function(
 
   if(zeroAsNA) {
     # print message
-    if(verbose) rgrass7::execGRASS("g.message", message = "Setting zeros as NULL data...")
+    if(verbose) rgrass::execGRASS("g.message", message = "Setting zeros as NULL data...")
     # copy map and use r.null
     set_null_map <- "temp_set_null_input"
     # copy map
-    rgrass7::execGRASS("g.copy", raster = paste0(x, ",", set_null_map), flags = flags)
+    rgrass::execGRASS("g.copy", raster = paste0(x, ",", set_null_map), flags = flags)
     # set nulls
-    rgrass7::execGRASS("r.null", map = set_null_map, null = "0")
+    rgrass::execGRASS("r.null", map = set_null_map, null = "0")
     # define input
     input_bin <- set_null_map
     # check if it should be deleted afterwards
@@ -582,7 +582,7 @@ calc_zoi_cumulative_grass <- function(
   }
 
   # get resolution
-  region <- rgrass7::gmeta()
+  region <- rgrass::gmeta()
   resolution <- region$nsres
 
   allowed_modules <- c("r.resamp.filter", "r.mfilter", "r.neighbors")
@@ -705,9 +705,9 @@ calc_zoi_cumulative_grass <- function(
         # region
         # set region
         if(g_input_as_region)
-          rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
+          rgrass::execGRASS("g.region", raster = parm$input, flags = flags_region)
         # calculate
-        rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
+        rgrass::execGRASS(g_module, parameters = parm, flags = flags)
 
         # rescale to the cumulative ZoI, if this is the intended final output
         if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
@@ -723,7 +723,7 @@ calc_zoi_cumulative_grass <- function(
           print(expr)
 
           # calculate ZoI map
-          out_final <- rgrass7::execGRASS("r.mapcalc", expression = expr,
+          out_final <- rgrass::execGRASS("r.mapcalc", expression = expr,
                                           flags = flags)
         }
       }
@@ -749,9 +749,9 @@ calc_zoi_cumulative_grass <- function(
       # region
       # set region
       if(g_input_as_region)
-        rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
+        rgrass::execGRASS("g.region", raster = parm$input, flags = flags_region)
       # calculate
-      rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
+      rgrass::execGRASS(g_module, parameters = parm, flags = flags)
 
       # rescale to the cumulative ZoI, if this is the intended final output
       if(output_type %in% c("cumulative_zoi", "zoi", "cumulative")) {
@@ -767,7 +767,7 @@ calc_zoi_cumulative_grass <- function(
         print(expr)
 
         # calculate ZoI map
-        out_final <- rgrass7::execGRASS("r.mapcalc", expression = expr,
+        out_final <- rgrass::execGRASS("r.mapcalc", expression = expr,
                                         flags = flags)
       }
     }
@@ -894,9 +894,9 @@ calc_zoi_cumulative_grass <- function(
         # region
         # set region
         if(g_input_as_region)
-          rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
+          rgrass::execGRASS("g.region", raster = parm$input, flags = flags_region)
         # calculate
-        rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
+        rgrass::execGRASS(g_module, parameters = parm, flags = flags)
       }
 
     } else {
@@ -911,9 +911,9 @@ calc_zoi_cumulative_grass <- function(
       # region
       # set region
       if(g_input_as_region)
-        rgrass7::execGRASS("g.region", raster = parm$input, flags = flags_region)
+        rgrass::execGRASS("g.region", raster = parm$input, flags = flags_region)
       # calculate
-      rgrass7::execGRASS(g_module, parameters = parm, flags = flags)
+      rgrass::execGRASS(g_module, parameters = parm, flags = flags)
 
     }
   }
@@ -927,7 +927,7 @@ calc_zoi_cumulative_grass <- function(
   remove_flags = ifelse(verbose, "f", c("f", "quiet"))
   if(g_remove_intermediate)
     if(length(to_remove) > 0)
-      rgrass7::execGRASS("g.remove", type = "rast", name = to_remove,
+      rgrass::execGRASS("g.remove", type = "rast", name = to_remove,
                          flags = remove_flags)
 
   # return only names

@@ -24,7 +24,7 @@ grass_find_layer <- function(list_patterns,
 
   # get all raster layers from GRASS, if this is not an input
   if(is.null(layers_grass))
-    layers_grass <- rgrass7::execGRASS("g.list", type = type,
+    layers_grass <- rgrass::execGRASS("g.list", type = type,
                                        pattern = pattern,
                                        mapset = mapset, intern = TRUE)
 
