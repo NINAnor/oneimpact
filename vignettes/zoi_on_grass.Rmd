@@ -203,7 +203,7 @@ to write them into our GRASS mapset using the `rgrass::write_RAST()` function:
 # write raster into GRASS
 rgrass::write_RAST(cabins_count, 
                    vname = "cabins_count", # name of the map in GRASS
-                   flags = c("o", "quiet"))
+                   flags = c("o", "quiet", "overwrite"))
 ```
 
 In some cases, there might be small, negligible differences between the GRASS location
