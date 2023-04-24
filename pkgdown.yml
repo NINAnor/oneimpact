@@ -1,11 +1,11 @@
-pandoc: 2.7.3
-pkgdown: 2.0.6
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   computing_zoi: computing_zoi.html
   oneimpact: oneimpact.html
   zoi_on_grass: zoi_on_grass.html
-last_built: 2022-10-31T11:40Z
+last_built: 2023-04-24T20:58Z
 urls:
   reference: https://ninanor.github.io/oneimpact/reference
   article: https://ninanor.github.io/oneimpact/articles

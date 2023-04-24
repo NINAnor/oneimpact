@@ -3,7 +3,7 @@
 space. isolation() creates random points in a landscape and calculates
 the nearest neighbor distance from each of them to another set
 of points passed as input, x. mean_isolation() calculates the
-average isolation calculated through isolation()."><title>Isolation and mean isolation of points in space — isolation • oneimpact</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Isolation and mean isolation of points in space — isolation"><meta property="og:description" content="Measures of isolation and mean isolation to a set of points in
+average isolation calculated through isolation()."><title>Isolation and mean isolation of points in space — isolation • oneimpact</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Isolation and mean isolation of points in space — isolation"><meta property="og:description" content="Measures of isolation and mean isolation to a set of points in
 space. isolation() creates random points in a landscape and calculates
 the nearest neighbor distance from each of them to another set
 of points passed as input, x. mean_isolation() calculates the
@@ -119,25 +119,25 @@ null cells if necessary, in an approach similar to set_points_sample.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_points.html">set_points</a></span><span class="op">(</span>n_features <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"random"</span>, centers <span class="op">=</span> <span class="fl">1</span>, width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu">isolation</span><span class="op">(</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.044363662 0.086524732 0.043310914 0.020290784 0.016665253 0.073244308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.023438548 0.035755345 0.021460248 0.016433297 0.067457162 0.005984589</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.050525908 0.059098323 0.062885672 0.056915093 0.079004127 0.037007268</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.038396872 0.043961391 0.062491011 0.047545330 0.033705483 0.041599617</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.013502477 0.015322765 0.034657272 0.053125740 0.072077923 0.016862371</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.035352343 0.060664004 0.077966319 0.055408905 0.007223014 0.039133745</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.004533636 0.037324395 0.032870718 0.042566972 0.016160428 0.053604996</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.019076173 0.022047021 0.000144411 0.043388879 0.114510087 0.058807165</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.068670228 0.039580327 0.024366468 0.037152536 0.027195803 0.018789979</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.070196707 0.072792287 0.034214631 0.039276524 0.034498330 0.052391760</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.076359610 0.035260610 0.022342533 0.107291970 0.048984008 0.097057513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.015546955 0.034241730 0.059795004 0.108514023 0.048331821 0.054160056</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.008606539 0.075744576 0.071256089 0.046055588 0.061386057 0.062097813</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.075972182 0.017486473 0.047645133 0.063087333 0.070327111 0.032597813</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.019467538 0.064974741 0.028471357 0.059922300 0.033800095 0.060404753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.060226999 0.063733202 0.049613336 0.082981762 0.021583371 0.026424449</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.106301804 0.145352804 0.038735882 0.084733226 0.062290385</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.004960471 0.112252449 0.074490489 0.019106471 0.082788074 0.050972474</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.090642726 0.057383789 0.032277365 0.038567244 0.032410366 0.043627230</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.062164369 0.041980764 0.032166251 0.029532729 0.026318686 0.047606911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.024578967 0.061631233 0.057316687 0.113156855 0.034622139 0.083379914</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.023117323 0.084360442 0.030519127 0.041586301 0.081617922 0.037586452</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.068277942 0.056171014 0.036069812 0.052538890 0.026408247 0.027467016</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 0.043492897 0.102808450 0.016433711 0.039423692 0.115348939 0.053818458</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.038179360 0.056591014 0.062909672 0.031187452 0.043799512 0.085419184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 0.067180111 0.028720516 0.068384089 0.063221722 0.078891388 0.058197442</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 0.054371152 0.098140164 0.086168629 0.080506377 0.087828311 0.017443626</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 0.088408729 0.062526695 0.098245947 0.052525748 0.031317909 0.108032004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 0.023405766 0.093758075 0.111138398 0.035877623 0.038414679 0.104878067</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 0.109264642 0.032992863 0.020217257 0.033802268 0.058313234 0.089854989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 0.074976632 0.049055643 0.113538307 0.049925530 0.058303681 0.073886713</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.031843944 0.042915584 0.031894609 0.034671438 0.076280256 0.019799743</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 0.033031041 0.050615978 0.054798886 0.085539727 0.005813859 0.016591239</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 0.061634188 0.132894852 0.067391444 0.045803948 0.092805158</span>
 <span class="r-in"><span><span class="fu">mean_isolation</span><span class="op">(</span><span class="va">pts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0484057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05460599</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -149,7 +149,7 @@ null cells if necessary, in an approach similar to set_points_sample.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
     </footer></div>

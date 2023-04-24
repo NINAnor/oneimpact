@@ -8,10 +8,10 @@
 <meta name="description" content="oneimpact">
 <title>Computing zones of influence for different types of variable • oneimpact</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing zones of influence for different types of variable">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing zones of influence for different types of variable">
 <meta property="og:description" content="oneimpact">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -70,7 +70,8 @@
 
 
 
-<script src="computing_zoi_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Computing zones of influence for different types of variable</h1>
             
@@ -81,19 +82,52 @@
 
     
     
-<p>Zones of influence (ZoI) represent how the influence of anthropogenic infrastructure or disturbance spreads in space. When there are multiple features of a given type of infrastructure or disturbance in a landscape, <code>oneimpact</code> allows the computation of two metrics to represent the zone of influence: the ZoI of the nearest feature, which accounts only for the influence of the feature nearest to each site in space; and the cumulative ZoI of multiple features, which account for the sum of the influence of nearby features. Zones of influence can be computed for different types of variable, represented as points (e.g. houses, tourist cabins, wind turbines), lines (e.g. roads, railways, power lines), or polygons (e.g. mines, urban areas, agricultural areas or polygons of any land use type). Here we provide examples of computation of the ZoI metrics for point and linear infrastructure, and we explain a few technical details that must be dealt with for the correct creation of input raster maps and the calculation of the ZoI. Along this vignette we refer mostly to anthropogenic infrastructure, but the same might be applied to anthropogenic disturbance, land cover types, or most spatial and landscape variables that can be discretized.</p>
-<p>For an introduction to the zone of influence approach in R and details on how to use computed ZoI maps to annotate biological data and prepare it for analysis, look at the <a href="https://ninanor.github.io/oneimpact/articles/oneimpact.html">Getting started</a> introdutory vignette.</p>
+<p>Zones of influence (ZOI) represent how the influence of anthropogenic
+infrastructure or disturbance spreads in space. When there are multiple
+features of a given type of infrastructure or disturbance in a
+landscape, <code>oneimpact</code> allows the computation of two metrics
+to represent the zone of influence: the ZOI of the nearest feature,
+which accounts only for the influence of the feature nearest to each
+site in space; and the cumulative ZOI of multiple features, which
+account for the sum of the influence of nearby features. Zones of
+influence can be computed for different types of variable, represented
+as points (e.g. houses, tourist cabins, wind turbines), lines
+(e.g. roads, railways, power lines), or polygons (e.g. mines, urban
+areas, agricultural areas or polygons of any land use type). Here we
+provide examples of computation of the ZOI metrics for point and linear
+infrastructure, and we explain a few technical details that must be
+dealt with for the correct creation of input raster maps and the
+calculation of the ZOI. Along this vignette we refer mostly to
+anthropogenic infrastructure, but the same might be applied to
+anthropogenic disturbance, land cover types, or most spatial and
+landscape variables that can be discretized.</p>
+<p>For an introduction to the zone of influence approach in R and
+details on how to use computed ZOI maps to annotate biological data and
+prepare it for analysis, look at the <a href="https://ninanor.github.io/oneimpact/articles/oneimpact.html">Getting
+started</a> introdutory vignette.</p>
 <div class="section level2">
 <h2 id="preparing-the-input-data">Preparing the input data<a class="anchor" aria-label="anchor" href="#preparing-the-input-data"></a>
 </h2>
-<p>ZoI metrics in <code>oneimpact</code> use raster data as input, i.e. matrix representations of where the infrastructure or disturbance sources are located. In these input raster maps, each cell or pixel represents if there are infrastructure and possibly the number of infrastructure in each site within the landscape. Both raster maps from the <code>raster</code> or the <code>terra</code> package can be used as input for the ZoI calculation. We start by showing the preparation of input maps for two types of infrastructure: private tourist cabins and main roads, using a sample landscape from Southern Norway.</p>
+<p>ZOI metrics in <code>oneimpact</code> use raster data as input,
+i.e. matrix representations of where the infrastructure or disturbance
+sources are located. In these input raster maps, each cell or pixel
+represents if there are infrastructure and possibly the number of
+infrastructure in each site within the landscape. Both raster maps from
+the <code>raster</code> or the <code>terra</code> package can be used as
+input for the ZOI calculation. We start by showing the preparation of
+input maps for two types of infrastructure: private tourist cabins and
+main roads, using a sample landscape from Southern Norway.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># for processing with geodata</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># for processing with geodata</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="loading-the-data">Loading the data<a class="anchor" aria-label="anchor" href="#loading-the-data"></a>
 </h3>
-<p>Let’s say our infrastructure data is in vector format, as it is common for maps of this type. We’ll load the two vector data sets from the <code>oneimpact</code> package, then rasterize it to be able to compute the ZoI metrics. Both loading and rasterizing maps can be accomplished e.g. with the package <code>terra</code>.</p>
+<p>Let’s say our infrastructure data is in vector format, as it is
+common for maps of this type. We’ll load the two vector data sets from
+the <code>oneimpact</code> package, then rasterize it to be able to
+compute the ZOI metrics. Both loading and rasterizing maps can be
+accomplished e.g. with the package <code>terra</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load cabins vector data</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_cabins.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
@@ -110,7 +144,10 @@
 <span><span class="co">#&gt;  values      :     1       161   604     1</span></span>
 <span><span class="co">#&gt;                    2       161   604     1</span></span>
 <span><span class="co">#&gt;                    3       161   604     1</span></span></code></pre></div>
-<p>We see the cabins data set present 6875 cabins spread in the sample landscape used here. The data set has information for the type of building and municipality where each feature is located. We can visualize the cabins to have an idea of how they are distributed:</p>
+<p>We see the cabins data set present 6875 cabins spread in the sample
+landscape used here. The data set has information for the type of
+building and municipality where each feature is located. We can
+visualize the cabins to have an idea of how they are distributed:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
@@ -131,7 +168,9 @@
 <span><span class="co">#&gt;  values      :     0 "Jondalsveien"      publ        high     1</span></span>
 <span><span class="co">#&gt;                    0 "Jondalsveien"      publ        high     1</span></span>
 <span><span class="co">#&gt;                    0 "Jondalsveien"      publ        high     1</span></span></code></pre></div>
-<p>We see the data set comprises 1880 road segments of different sizes, each of which is also classified according to the road name, whether the road is public or private, and if the road traffic is high or low.</p>
+<p>We see the data set comprises 1880 road segments of different sizes,
+each of which is also classified according to the road name, whether the
+road is public or private, and if the road traffic is high or low.</p>
 <p>Now we plot the roads data set:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads_vect</span><span class="op">)</span></span></code></pre></div>
@@ -140,13 +179,29 @@
 <div class="section level3">
 <h3 id="rasterizing-the-data">Rasterizing the data<a class="anchor" aria-label="anchor" href="#rasterizing-the-data"></a>
 </h3>
-<p>Producing the input raster in an important step to correctly characterize the zone of influence. What we want to produce here are maps that best represent how infrastructure is distributed in space. To this end, it is important to pay attention to what is the resolution (pixel size) of the raster map to be produced. There are two main cases that must highlighted:</p>
+<p>Producing the input raster in an important step to correctly
+characterize the zone of influence. What we want to produce here are
+maps that best represent how infrastructure is distributed in space. To
+this end, it is important to pay attention to what is the resolution
+(pixel size) of the raster map to be produced. There are two main cases
+that must highlighted:</p>
 <ul>
-<li>If the resolution if fine enough that only one feature is located or crosses each pixel (small pixels compared to the size of infrastructure features), the input raster might be set as a binary variable, where value 1 represent the presence of infrastructure or disturbance and 0 (or <code>NA</code>) represent its absence.<br>
+<li>If the resolution if fine enough that only one feature is located or
+crosses each pixel (small pixels compared to the size of infrastructure
+features), the input raster might be set as a binary variable, where
+value 1 represent the presence of infrastructure or disturbance and 0
+(or <code>NA</code>) represent its absence.<br>
 </li>
-<li>If the resolution is rougher so that several infrastructure or disturbance sources might be found within the same pixel (larger pixels compared to the size of infrastructure features), the input raster should be set as a count of features within each pixel.</li>
+<li>If the resolution is rougher so that several infrastructure or
+disturbance sources might be found within the same pixel (larger pixels
+compared to the size of infrastructure features), the input raster
+should be set as a count of features within each pixel.</li>
 </ul>
-<p>Here we will follow these different approaches for different types of infrastructure. To have a basis for rasterization, we load the raster maps of cabins in the study area. We do not use it directly though; we just use it to define the resolution of the output raster maps in the rasterization process.</p>
+<p>Here we will follow these different approaches for different types of
+infrastructure. To have a basis for rasterization, we load the raster
+maps of cabins in the study area. We do not use it directly though; we
+just use it to define the resolution of the output raster maps in the
+rasterization process.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load vase raster data</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
@@ -154,7 +209,19 @@
 <div class="section level4">
 <h4 id="input-rasters-for-point-data">Input rasters for point data<a class="anchor" aria-label="anchor" href="#input-rasters-for-point-data"></a>
 </h4>
-<p>In our example of point data, the cabins data set, there are regions in the sample landscape in which more than one cabins can be found. In this context, two input raster may be prepared: either a binary map showing if cabins are present or not, or a map showing the number of cabins per pixel. Which input map should be used depends on the ecological indicator being assessed and the hypotheses around it. As illustration, we’ll compute here a map representing the count of cabins. We’ll rasterize the vector map using the function <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize()</a></code> from the <code>terra</code> package, filling the information in each pixel with the count of features within them (function <code>fun = length</code>). We also fill the background areas (pixels with no cabins) with value zero, since that is not default in the <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> function.</p>
+<p>In our example of point data, the cabins data set, there are regions
+in the sample landscape in which more than one cabins can be found. In
+this context, two input raster may be prepared: either a binary map
+showing if cabins are present or not, or a map showing the number of
+cabins per pixel. Which input map should be used depends on the
+ecological indicator being assessed and the hypotheses around it. As
+illustration, we’ll compute here a map representing the count of cabins.
+We’ll rasterize the vector map using the function
+<code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize()</a></code> from the <code>terra</code> package, filling
+the information in each pixel with the count of features within them
+(function <code>fun = length</code>). We also fill the background areas
+(pixels with no cabins) with value zero, since that is not default in
+the <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rasterize cabins counting the number of features in each pixel</span></span>
 <span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">cabins_vect</span>, <span class="va">r</span>, fun <span class="op">=</span> <span class="va">length</span><span class="op">)</span></span>
@@ -166,11 +233,11 @@
 <span><span class="co">#&gt; dimensions  : 361, 478, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs </span></span>
-<span><span class="co">#&gt; source      : memory </span></span>
-<span><span class="co">#&gt; name        : cabins </span></span>
-<span><span class="co">#&gt; min value   :      0 </span></span>
-<span><span class="co">#&gt; max value   :      8</span></span></code></pre></div>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; source(s)   : memory</span></span>
+<span><span class="co">#&gt; name        : V1 </span></span>
+<span><span class="co">#&gt; min value   :  0 </span></span>
+<span><span class="co">#&gt; max value   :  8</span></span></code></pre></div>
 <p>Now we plot the map to visualize the result:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span></span></code></pre></div>
@@ -179,7 +246,12 @@
 <div class="section level4">
 <h4 id="input-rasters-for-linear-data">Input rasters for linear data<a class="anchor" aria-label="anchor" href="#input-rasters-for-linear-data"></a>
 </h4>
-<p>For linear infrastructure or disturbance, the same reasoning can be applied. However, it is maybe less common to have multiple roads or railways in a single pixel, unless the is a crossroad of several features or the pixel size is large. In this case, then, we create a binary input raster, where 1 represents the presence of roads and <code>NA</code> represent the absence of roads in the pixel.</p>
+<p>For linear infrastructure or disturbance, the same reasoning can be
+applied. However, it is maybe less common to have multiple roads or
+railways in a single pixel, unless the is a crossroad of several
+features or the pixel size is large. In this case, then, we create a
+binary input raster, where 1 represents the presence of roads and
+<code>NA</code> represent the absence of roads in the pixel.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rasterize roads into a binary map 1/NA</span></span>
 <span><span class="va">roads</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">roads_vect</span>, <span class="va">r</span><span class="op">)</span></span>
@@ -189,8 +261,8 @@
 <span><span class="co">#&gt; dimensions  : 361, 478, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs </span></span>
-<span><span class="co">#&gt; source      : memory </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; name        : layer </span></span>
 <span><span class="co">#&gt; min value   :     1 </span></span>
 <span><span class="co">#&gt; max value   :     1</span></span></code></pre></div>
@@ -198,23 +270,45 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_roads_rast-1.png" width="700"></p>
-<p>Note that here we did not fill the background of the map (areas without roads) with zero but kept the <code>NA</code> values. We did so on purpose to illustrate the use of the <code>zeroAsNA</code> parameter when computing the ZoI below.</p>
+<p>Note that here we did not fill the background of the map (areas
+without roads) with zero but kept the <code>NA</code> values. We did so
+on purpose to illustrate the use of the <code>zeroAsNA</code> parameter
+when computing the ZOI below.</p>
 </div>
 <div class="section level4">
 <h4 id="input-rasters-for-polygon-data">Input rasters for polygon data<a class="anchor" aria-label="anchor" href="#input-rasters-for-polygon-data"></a>
 </h4>
-<p>For infrastructure, disturbance, or spatial variables represented as polygons or areas, one can use the same approach as for linear data. If we have a vector of urban areas, for instance, they might be rasterized into binary raster with <code>1-0</code> or <code>1-NA</code> values. If we already have a rastr map (e.g. a land use or land cover map), specific classes can be separated into dummy variables representing the presence/absence of the class in each pixel.</p>
+<p>For infrastructure, disturbance, or spatial variables represented as
+polygons or areas, one can use the same approach as for linear data. If
+we have a vector of urban areas, for instance, they might be rasterized
+into binary raster with <code>1-0</code> or <code>1-NA</code> values. If
+we already have a rastr map (e.g. a land use or land cover map),
+specific classes can be separated into dummy variables representing the
+presence/absence of the class in each pixel.</p>
 </div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="computing-the-zoi">Computing the ZoI<a class="anchor" aria-label="anchor" href="#computing-the-zoi"></a>
+<h2 id="computing-the-zoi">Computing the ZOI<a class="anchor" aria-label="anchor" href="#computing-the-zoi"></a>
 </h2>
-<p>To compute the ZoI, we’ll use the <code><a href="../reference/calc_zoi.html">calc_zoi()</a></code> function from the <code>oneimpact</code> package. <code><a href="../reference/calc_zoi.html">calc_zoi()</a></code> might accommodate the calculation of both the ZoI of the nearest feature (when the parameter <code>zoi_metric</code> is <code>"nearest"</code>) and the cumulative ZoI of multiple features (when <code>zoi_metric = "cumulative"</code>), or both (the default, if <code>zoi_metric = "all"</code>). It is also possible to control the shape and the radius of the ZoI through the parameters <code>type</code> and <code>radius</code>, respectively.</p>
+<p>To compute the ZOI, we’ll use the <code><a href="../reference/calc_zoi.html">calc_zoi()</a></code> function
+from the <code>oneimpact</code> package. <code><a href="../reference/calc_zoi.html">calc_zoi()</a></code> might
+accommodate the calculation of both the ZOI of the nearest feature (when
+the parameter <code>zoi_metric</code> is <code>"nearest"</code>) and the
+cumulative ZOI of multiple features (when
+<code>zoi_metric = "cumulative"</code>), or both (the default, if
+<code>zoi_metric = "all"</code>). It is also possible to control the
+shape and the radius of the ZOI through the parameters <code>type</code>
+and <code>radius</code>, respectively.</p>
 <div class="section level3">
 <h3 id="point-infrastructure">Point infrastructure<a class="anchor" aria-label="anchor" href="#point-infrastructure"></a>
 </h3>
-<p>First we compute the zone of influence variables for our point example data, the cabins data set. We use an exponential decay ZoI with radii of 500 and 1000 m. Since the background of the input map is <code>0</code>, we set the parameter <code>zeroAsNA = TRUE</code> (default), which means we do need to treat background zero values as <code>NA</code>:</p>
+<p>First we compute the zone of influence variables for our point
+example data, the cabins data set. We use an exponential decay ZOI with
+radii of 500 and 1000 m. Since the background of the input map is
+<code>0</code>, we set the parameter <code>zeroAsNA = TRUE</code>
+(default), which means we do need to treat background zero values as
+<code>NA</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute both Zoi metrics with exponential decay, radius = 500 and 1000 m</span></span>
 <span><span class="co"># since the background is NA, we use zeroAsNA = FALSE</span></span>
@@ -228,28 +322,45 @@
 <span><span class="co">#&gt; dimensions  : 361, 478, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs </span></span>
-<span><span class="co">#&gt; sources     : memory  (2 layers) </span></span>
-<span><span class="co">#&gt;               memory  </span></span>
-<span><span class="co">#&gt;               memory  </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, zoi_cum~ecay500, zoi_cum~cay1000 </span></span>
-<span><span class="co">#&gt; min values  :    1.460438e-09,    3.821568e-05,         0.00000,          0.0000 </span></span>
-<span><span class="co">#&gt; max values  :    1.000000e+00,    1.000000e+00,        51.57446,        112.6539</span></span></code></pre></div>
-<p>Since we opted to compute both ZoI metrics (<code>zoi_metric = "all"</code> by default, if nothing else is specified) using two different radii, the resulting raster is composed of <span class="math inline">\(\verb|2 x 2 = 4|\)</span> layers. Below we plot these layers to visualize the different spatial patterns:</p>
+<span><span class="co">#&gt; min values  :     1.46044e-09,     3.82157e-05,         0.00000,          0.0000 </span></span>
+<span><span class="co">#&gt; max values  :     1.00000e+00,     1.00000e+00,        51.57446,        112.6539</span></span></code></pre></div>
+<p>Since we opted to compute both ZOI metrics
+(<code>zoi_metric = "all"</code> by default, if nothing else is
+specified) using two different radii, the resulting raster is composed
+of <span class="math inline">\(\verb|2 x 2 = 4|\)</span> layers. Below
+we plot these layers to visualize the different spatial patterns:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_cabins</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_zoi_cabins-1.png" width="700"></p>
-<p>The figure shows the two measures of the ZoI of the nearest feature in the row above (for radius = 500 and 1000 m) and the two measures of the cumulative ZoI below. Note that, while both ZoI metrics equivalently represent the <strong>influence</strong> of the infrastructure in its surroudings, each metric has a slightly different interpretation:</p>
+<p>The figure shows the two measures of the ZOI of the nearest feature
+in the row above (for radius = 500 and 1000 m) and the two measures of
+the cumulative ZOI below. Note that, while both ZOI metrics equivalently
+represent the <strong>influence</strong> of the infrastructure in its
+surroudings, each metric has a slightly different interpretation:</p>
 <ul>
-<li>The ZoI of the nearest feature varies between 0 and 1, and represents <strong>the decay in the influence of the cabins with distance</strong>, accounting only for the nearest one. In this context, it does not matter if the cabins are clustered or isolated in space.</li>
-<li>The cumulative ZoI corresponds to a <strong>(exponentially-weighted) count of cabins</strong> within 500 m and 1000 m radii, being a measure of the number of cabins affecting a given site. Therefore, this metric can reach much higher values than 1.</li>
+<li>The ZOI of the nearest feature varies between 0 and 1, and
+represents <strong>the decay in the influence of the cabins with
+distance</strong>, accounting only for the nearest one. In this context,
+it does not matter if the cabins are clustered or isolated in
+space.</li>
+<li>The cumulative ZOI corresponds to a <strong>(exponentially-weighted)
+count of cabins</strong> within 500 m and 1000 m radii, being a measure
+of the number of cabins affecting a given site. Therefore, this metric
+can reach much higher values than 1.</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="linear-infrastructure">Linear infrastructure<a class="anchor" aria-label="anchor" href="#linear-infrastructure"></a>
 </h3>
-<p>Now we compute the zone of influence variables for our linear example data, the roads data set. We again use an exponential decay ZoI with radii of 1000 and 2000 m. Since the background of the input map is <code>NA</code>, we now need to set the parameter <code>zeroAsNA = FALSE</code>:</p>
+<p>Now we compute the zone of influence variables for our linear example
+data, the roads data set. We again use an exponential decay ZOI with
+radii of 1000 and 2000 m. Since the background of the input map is
+<code>NA</code>, we now need to set the parameter
+<code>zeroAsNA = FALSE</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute both Zoi metrics with Gaussian decay, radius = 500 and 1000 m</span></span>
 <span><span class="co"># since the background is NA, we use zeroAsNA = FALSE</span></span>
@@ -263,55 +374,108 @@
 <span><span class="co">#&gt; dimensions  : 361, 478, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs </span></span>
-<span><span class="co">#&gt; sources     : memory  (2 layers) </span></span>
-<span><span class="co">#&gt;               memory  </span></span>
-<span><span class="co">#&gt;               memory  </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; source(s)   : memory</span></span>
 <span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, zoi_cum~ecay500, zoi_cum~cay1000 </span></span>
-<span><span class="co">#&gt; min values  :    2.151268e-24,     1.46672e-12,         0.00000,         0.00000 </span></span>
-<span><span class="co">#&gt; max values  :    1.000000e+00,     1.00000e+00,        11.56858,        28.16008</span></span></code></pre></div>
-<p>We again have four layers representing the two ZoI metrics for roads for the different radii:</p>
+<span><span class="co">#&gt; min values  :    2.151265e-24,    1.466719e-12,         0.00000,         0.00000 </span></span>
+<span><span class="co">#&gt; max values  :    1.000000e+00,    1.000000e+00,        11.56858,        28.16008</span></span></code></pre></div>
+<p>We again have four layers representing the two ZOI metrics for roads
+for the different radii:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_roads</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_zoi_roads-1.png" width="700"></p>
-<p>Here the ZoI of the nearest feature has a similar interpretation to the point data example. The ZoI in a given site represents the influence of the nearest road segment, which decay with the distance to this road segment.</p>
-<p>In contrast, the cumulative ZoI now does not represent the number of different roads in a neighborhood, but the number of pixels of roads (i.e., proportional to the road length) within a given neighborhood. For the ZoI of 1000 m-radius, for instance, a site with a cumulative ZoI of <code>40</code> means that there are 40 pixels of roads in a circle of 1000 m radius around this site (but remember this is not a simple count but an exponentially-weighted count of the number of road pixels). If multiplied by the pixel size and divided by the size of the neighborhood (<span class="math inline">\(\pi \cdot r^2\)</span>), the cumulative ZoI metric represents the exponentially-weighted density of roads at 1000 m scale.</p>
+<p>Here the ZOI of the nearest feature has a similar interpretation to
+the point data example. The ZOI in a given site represents the influence
+of the nearest road segment, which decay with the distance to this road
+segment.</p>
+<p>In contrast, the cumulative ZOI now does not represent the number of
+different roads in a neighborhood, but the number of pixels of roads
+(i.e., proportional to the road length) within a given neighborhood. For
+the ZOI of 1000 m-radius, for instance, a site with a cumulative ZOI of
+<code>40</code> means that there are 40 pixels of roads in a circle of
+1000 m radius around this site (but remember this is not a simple count
+but an exponentially-weighted count of the number of road pixels). If
+multiplied by the pixel size and divided by the size of the neighborhood
+(<span class="math inline">\(\pi \cdot r^2\)</span>), the cumulative ZOI
+metric represents the exponentially-weighted density of roads at 1000 m
+scale.</p>
 </div>
 <div class="section level3">
 <h3 id="area-infrastructure">Area infrastructure<a class="anchor" aria-label="anchor" href="#area-infrastructure"></a>
 </h3>
-<p>We do not present an example here, but for infrastructure represented as polygons or areas the same reasoning and interpretation for the ZoI of the linear infrastructure might be applied.</p>
+<p>We do not present an example here, but for infrastructure represented
+as polygons or areas the same reasoning and interpretation for the ZOI
+of the linear infrastructure might be applied.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="some-technical-remarks">Some technical remarks<a class="anchor" aria-label="anchor" href="#some-technical-remarks"></a>
 </h2>
-<p>For all types of infrastructure and spatial variable, we recommend users to think before computing and modeling about which are the type of influence measure they wish to represent. Some remarks are made below:</p>
+<p>For all types of infrastructure and spatial variable, we recommend
+users to think before computing and modeling about which are the type of
+influence measure they wish to represent. Some remarks are made
+below:</p>
 <div class="section level3">
 <h3 id="think-what-is-relevant-for-your-ecological-system-and-question">Think what is relevant for your ecological system and question<a class="anchor" aria-label="anchor" href="#think-what-is-relevant-for-your-ecological-system-and-question"></a>
 </h3>
-<p>ZoI metrics must be computed according to the ecological system and ecological indicators, to the research or assessment questions and their hypotheses, as well as to the type of data these measures of zones of influence will be associated to.</p>
+<p>ZOI metrics must be computed according to the ecological system and
+ecological indicators, to the research or assessment questions and their
+hypotheses, as well as to the type of data these measures of zones of
+influence will be associated to.</p>
 </div>
 <div class="section level3">
 <h3 id="choose-well-the-pixel-size-and-how-to-represent-infrastructure">Choose well the pixel size and how to represent infrastructure<a class="anchor" aria-label="anchor" href="#choose-well-the-pixel-size-and-how-to-represent-infrastructure"></a>
 </h3>
-<p>The representation of infrastructure in raster format, as input for the computation of ZoI metrics, must take into account what is the resolution of the data. For very fine resolution maps (small pixel size), input infrastructure raster maps might be binary, with each pixel representing a feature or feature segment. For large areas, though, the computation of ZoI metrics might be computationally and time consuming (but see the <a href="https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html">alternative computation in GRASS GIS</a> for these cases!). In contrast, as the input maps have a rougher resolution (larger pixel size), one must think if the input infrastructure raster maps should be binary or represent counts of infrastructure features.</p>
+<p>The representation of infrastructure in raster format, as input for
+the computation of ZOI metrics, must take into account what is the
+resolution of the data. For very fine resolution maps (small pixel
+size), input infrastructure raster maps might be binary, with each pixel
+representing a feature or feature segment. For large areas, though, the
+computation of ZOI metrics might be computationally and time consuming
+(but see the <a href="https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html">alternative
+computation in GRASS GIS</a> for these cases!). In contrast, as the
+input maps have a rougher resolution (larger pixel size), one must think
+if the input infrastructure raster maps should be binary or represent
+counts of infrastructure features.</p>
 </div>
 <div class="section level3">
-<h3 id="choose-well-the-values-for-the-radius-of-the-zoi">Choose well the values for the radius of the ZoI<a class="anchor" aria-label="anchor" href="#choose-well-the-values-for-the-radius-of-the-zoi"></a>
+<h3 id="choose-well-the-values-for-the-radius-of-the-zoi">Choose well the values for the radius of the ZOI<a class="anchor" aria-label="anchor" href="#choose-well-the-values-for-the-radius-of-the-zoi"></a>
 </h3>
-<p>The extent of the study area and the ZoIs to be evaluated must be carefully selected when they are used to annotate ecological data and assess cumulative impacts on species or ecological processes (Jackson &amp; Fahrig, 2015).</p>
-<p>First, the impact of infrastructure on ecological processes might differ depending of the extent of the study area (Vistnes &amp; Nellemann, 2008). Skarin &amp; Åhman (2014) showed that, depending of the temporal and spatial range of the study, the same type of infrastructure might vary in their effect on biological response variables, from no effect to positive or negative effects. Second, depending on the response variable, the range of ZoI radii evaluated should encompass at least the range size or the average dispersal distance of the species under study (Jackson &amp; Fahrig, 2012). This is needed to ensure that the “true” ZoI at which the ecological process being measured is affected is included among the possible ZoI, and avoid that conclusions based on an estimated ZoI that is wrong mislead management and conservation policies based on that scientific inference (e.g. Jackson &amp; Fahrig, 2015).</p>
+<p>The extent of the study area and the ZOIs to be evaluated must be
+carefully selected when they are used to annotate ecological data and
+assess cumulative impacts on species or ecological processes (Jackson
+&amp; Fahrig, 2015).</p>
+<p>First, the impact of infrastructure on ecological processes might
+differ depending of the extent of the study area (Vistnes &amp;
+Nellemann, 2008). Skarin &amp; Åhman (2014) showed that, depending of
+the temporal and spatial range of the study, the same type of
+infrastructure might vary in their effect on biological response
+variables, from no effect to positive or negative effects. Second,
+depending on the response variable, the range of ZOI radii evaluated
+should encompass at least the range size or the average dispersal
+distance of the species under study (Jackson &amp; Fahrig, 2012). This
+is needed to ensure that the “true” ZOI at which the ecological process
+being measured is affected is included among the possible ZOI, and avoid
+that conclusions based on an estimated ZOI that is wrong mislead
+management and conservation policies based on that scientific inference
+(e.g. Jackson &amp; Fahrig, 2015).</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Jackson, H. B., &amp; Fahrig, L. (2012). What size is a biologically relevant landscape? Landscape Ecology, 27(7), 929–941. </p>
-<p>Jackson, H. B., &amp; Fahrig, L. (2015). Are ecologists conducting research at the optimal scale? Global Ecology and Biogeography, 24(1), 52–63. </p>
-<p>Skarin, A., &amp; Åhman, B. (2014). Do human activity and infrastructure disturb domesticated reindeer? The need for the reindeer’s perspective. Polar Biology, 37(7), 1041–1054. </p>
-<p>Vistnes, I., &amp; Nellemann, C. (2008). The matter of spatial and temporal scales: A review of reindeer and caribou response to human activity. Polar Biology, 31(4), 399–407. </p>
+<p>Jackson, H. B., &amp; Fahrig, L. (2012). What size is a biologically
+relevant landscape? Landscape Ecology, 27(7), 929–941. </p>
+<p>Jackson, H. B., &amp; Fahrig, L. (2015). Are ecologists conducting
+research at the optimal scale? Global Ecology and Biogeography, 24(1),
+52–63. </p>
+<p>Skarin, A., &amp; Åhman, B. (2014). Do human activity and
+infrastructure disturb domesticated reindeer? The need for the
+reindeer’s perspective. Polar Biology, 37(7), 1041–1054. </p>
+<p>Vistnes, I., &amp; Nellemann, C. (2008). The matter of spatial and
+temporal scales: A review of reindeer and caribou response to human
+activity. Polar Biology, 31(4), 399–407. </p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -326,7 +490,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
     </footer>
