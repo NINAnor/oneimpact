@@ -3,7 +3,10 @@
 on:
   push:
     branches: [main, master]
-    tags: ['*']
+  pull_request:
+    branches: [main, master]
+  release:
+    types: [published]
 
 name: pkgdown
 
@@ -23,7 +26,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: pkgdown
+          extra-packages: any::pkgdown, local::.
           needs: website
 
       - name: Install R dependencies not on CRAN
@@ -40,7 +43,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq grass grass-dev grass-doc wget
 
-      - name: Deploy package
+      - name: Build site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+
+      - name: Deploy to GitHub pages
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
