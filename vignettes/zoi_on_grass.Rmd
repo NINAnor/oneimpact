@@ -21,7 +21,7 @@ an ecological response variable beyond its spatial delimitation. Computing zones
 influence for large maps with fine resolution though, is tricky because of computing and
 memory limitations in processing raster maps in R. To deal with that, the `oneimpact`
 package offers tools to compute the ZOI in [GRASS GIS](https://grass.osgeo.org/), a
-powerful, open-source , using the package [`rgrass7`](https://rsbivand.github.io/rgrass/) 
+powerful, open-source , using the package [`rgrass`](https://rsbivand.github.io/rgrass/) 
 to link R and GRASS. Here we provide an example and some comments on how to
 compute ZOI metrics in GRASS GIS via R.
 
@@ -42,12 +42,12 @@ is slighly different from doing the same in R. Here are some key differences:
 the R session and a GRASS GIS location and mapset;
 - the input raster maps representing infrastructure or disturbance might be loaded into
 the GRASS GIS location/mapset R is connected to. This might be done through the
-`rgrass7` package;
+`rgrass` package;
 - once the input raster maps are loaded in GRASS, the input to the `calc_zoi()`
 function is not a raster object in R but a string with the name of the map in the
 GRASS mapset;
 - after processing, ZOI maps are saved within the GRASS GIS location and mapset.
-To retrieve them, one must use the `rgrass7` pacakge to import the maps into R
+To retrieve them, one must use the `rgrass` pacakge to import the maps into R
 or outside to a working folder.
 
 Below we show how to do these steps to compute the ZOI and provide a few comments.
@@ -79,7 +79,7 @@ for more information on the GRASS database and location structure.
 ### Running GRASS from R
 
 When connecting R to GRASS, R might be connected to a given GRASS location and mapset
-through the function `rgrass7::initGRASS()`. One must provide to this call the folder where the 
+through the function `rgrass::initGRASS()`. One must provide to this call the folder where the 
 GRASS GIS executable files are found (parameter `gisBase`), as well as the folder where
 the project is located (parameter `gisDbase`), the location name (parameter `location`)
 and the mapset name (parameter `mapset`). The function might be used to connect to an 
@@ -94,7 +94,7 @@ for more information). We first load this data set.
 ```{r load_cabins}
 # load packages
 library(oneimpact)
-library(rgrass7) # for connecting R and GRASS
+library(rgrass) # for connecting R and GRASS
 library(terra) # for geodata in R
 
 # load cabins raster data into R
@@ -119,13 +119,13 @@ gisDB <- "." # create location and mapset in the working directory
 loc <- "test_location/" # name of the location
 ms <- "PERMANENT" # name of the mapset
 # create grass db and connect
-rgrass7::initGRASS(gisBase = grassdir,
-                   SG = cabins_count, # use map to define location projection
-                   home = tempdir(),
-                   gisDbase = gisDB,
-                   location = loc,
-                   mapset = ms,
-                   override = TRUE, )
+rgrass::initGRASS(gisBase = grassdir,
+                  SG = cabins_count, # use map to define location projection
+                  home = tempdir(),
+                  gisDbase = gisDB,
+                  location = loc,
+                  mapset = ms,
+                  override = TRUE, )
 ```
 
 Notice that, in the code above, a few additional parameters were filled. First, 
@@ -137,11 +137,11 @@ since the data might be lost after the connection to GRASS is closed.
 
 As a proof to check if the connection between R and GRASS is active, the `initGRASS()`
 function shows a series of information about the grass database and location. The
-same might be checked at any time by using the `rgrass7::gmeta()` function:
+same might be checked at any time by using the `rgrass::gmeta()` function:
 
 ```{r check_grass, eval=FALSE}
 # check grass connection
-rgrass7::gmeta()
+rgrass::gmeta()
 ```
 
 This command shows all the information on the grass database, location, mapset, and
@@ -158,7 +158,7 @@ of the GRASS GIS tools. More information on GRASS computational regions can be f
 
 Another option is to open a GRASS GIS session and run R within the GRASS shell.
 Too know more about this option, please look at these GRASS GIS 
-[wiki](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7).
+[wiki](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass).
 
 ## Notes in GRASS installation and connections on Windows
 
@@ -186,8 +186,8 @@ as well as many other packages (QGIS, GDAL/OGR, and more). Here it is possible t
 GRASS GIS to install and choose many other installation setting besides the default.
 
 When GRASS is installed through OSGeo4W, though, R must be opened from the OSGeo4W shell
-for the connection between R and GRASS to work through the `rgrass7` package. See the
-documentation for the `rgrass7::initGRASS()` function and
+for the connection between R and GRASS to work through the `rgrass` package. See the
+documentation for the `rgrass::initGRASS()` function and
 [this issue](https://github.com/NINAnor/oneimpact/issues/10) for more information
 on the connection between R and GRASS on Windows.
 
@@ -197,13 +197,13 @@ on the connection between R and GRASS on Windows.
 
 Before computing the ZOI metrics, the input infrastructure or disturbance maps must
 be loaded into GRASS. If the maps are already open in our R session, it is possible
-to write them into our GRASS mapset using the `rgrass7::write_RAST()` function:
+to write them into our GRASS mapset using the `rgrass::write_RAST()` function:
 
 ```{r write_raster1, warning=FALSE, error=FALSE, message=FALSE}
 # write raster into GRASS
-rgrass7::write_RAST(cabins_count, 
-                    vname = "cabins_count", # name of the map in GRASS
-                    flags = c("o", "quiet"))
+rgrass::write_RAST(cabins_count, 
+                   vname = "cabins_count", # name of the map in GRASS
+                   flags = c("o", "quiet"))
 ```
 
 In some cases, there might be small, negligible differences between the GRASS location
@@ -217,7 +217,7 @@ Another way of loading a map into a GRASS location and mapset directly from a fo
 in your computer, without the need to pre-load it into R, is to use the 
 [`r.in.gdal`](https://grass.osgeo.org/grass82/manuals/r.out.gdal.html) or 
 [`r.import`](https://grass.osgeo.org/grass82/manuals/r.import.html) GRASS tools through 
-the `rgrass7::execGRASS()` function. The function `execGRASS()` provides a way of 
+the `rgrass::execGRASS()` function. The function `execGRASS()` provides a way of 
 running GRASS modules and addons directly, as if we were running them through the GRASS
 console.
 
@@ -229,9 +229,9 @@ f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact")
 f
 
 # load this file to the GRASS mapset
-rgrass7::execGRASS("r.in.gdal", input = f, 
-                   output = "cabins_count", # name of the map in GRASS
-                   flags = c("overwrite", "o"))
+rgrass::execGRASS("r.in.gdal", input = f, 
+                  output = "cabins_count", # name of the map in GRASS
+                  flags = c("overwrite", "o"))
 ```
 
 
@@ -274,15 +274,15 @@ ZOI computation, see the documentation for `calc_zoi_nearest()` and `calc_zoi_cu
 # Retrieving outputs from GRASS
 
 Once the ZOI maps are calculated, we can retrieve them to R using the function
-`rgrass7::read_RAST()`. By default, this function reads the rasters as a 
+`rgrass::read_RAST()`. By default, this function reads the rasters as a 
 `SpatialGridDataFrame` object from the `sp` package. Here we prefer to specify
 `return_format = "terra"`, in case which the output is a *terra* `SpatRaster` object.
 
 ```{r retrieve_maps, warning=FALSE, error=FALSE, message=FALSE}
 # retireve maps
-cabins_zoi_cumulative <- rgrass7::read_RAST(zoi_metrics, 
-                                            return_format = "terra",
-                                            flags = "quiet")
+cabins_zoi_cumulative <- rgrass::read_RAST(zoi_metrics, 
+                                           return_format = "terra",
+                                           flags = "quiet")
 cabins_zoi_cumulative
 ```
 
