@@ -101,7 +101,7 @@
 #' creates an edge effect with no information in the outer cells of a raster
 #' (the number of cells correspond to `radius` or half the size of the weight
 #' matrix), so if it is used the users should add a buffer area
-#' \eqn{ge radius} around the input raster map, to avoid such edge effects.
+#' >= `radius` around the input raster map, to avoid such edge effects.
 #' See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 #' - `r.neighbors` is considerably slower than the other algorithms (from 10 to
 #' 100 times), but allows a flexible choice of the ZOI shape. Contrary to
@@ -201,7 +201,7 @@
 #' especially useful for example in the use of the `r.mfilter` algorithm in
 #' GRASS, in which the edges of the region are excluded from the computation.
 #' The default is to keep the same extent of the input raster.
-#' @param na.policy `[character(1)="omit"] \cr Can be used to determine the
+#' @param na.policy `[character(1)="omit"]` \cr Can be used to determine the
 #' cells of `x` for which focal values should be computed. Must be one of "all"
 #' (compute for all cells), "only" (only for cells that are NA) or "omit"
 #' (skip cells that are NA). Note that the value of this argument does not
