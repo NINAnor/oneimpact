@@ -136,58 +136,59 @@ map.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># not run</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># libraries</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://grass.osgeo.org/" class="external-link">rgrass7</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># libraries</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsbivand.github.io/rgrass/" class="external-link">rgrass</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Load vector data</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_cabins.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cabins_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Load referemce raster data - for creation of GRASS project</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Load vector data</span></span></span>
+<span class="r-in"><span>  <span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_cabins.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">cabins_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Load referemce raster data - for creation of GRASS project</span></span></span>
+<span class="r-in"><span>  <span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># connect to grass gis 7.8 and create grass location</span></span></span>
-<span class="r-in"><span><span class="co"># For linux or within OSGeo4W shell</span></span></span>
-<span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass78 --config path"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># If you used the standalone installer in Windows</span></span></span>
-<span class="r-in"><span><span class="co"># grassdir &lt;- "C:\Programs\GRASS GIS 7.8" # Correct if the path is different</span></span></span>
+<span class="r-in"><span>  <span class="co"># connect to grass gis and create grass location</span></span></span>
+<span class="r-in"><span>  <span class="co"># For linux or within OSGeo4W shell</span></span></span>
+<span class="r-in"><span>  <span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass --config path"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># grassdir &lt;- system("grass78 --config path", intern = TRUE) # for GRASS 7.8</span></span></span>
+<span class="r-in"><span>  <span class="co"># If you used the standalone installer in Windows</span></span></span>
+<span class="r-in"><span>  <span class="co"># grassdir &lt;- "C:\Programs\GRASS GIS 7.8" # Correct if the path GRASS version or path is different</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"."</span> <span class="co"># create location and mapset in the working directory</span></span></span>
-<span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span> <span class="co"># name of the location</span></span></span>
-<span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"PERMANENT"</span> <span class="co"># name of the mapset</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">initGRASS</span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
-<span class="r-in"><span>                   SG <span class="op">=</span> <span class="va">cabins</span>, <span class="co"># use map to define location projection</span></span></span>
-<span class="r-in"><span>                   home <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                   override <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
-<span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
-<span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"."</span> <span class="co"># create location and mapset in the working directory</span></span></span>
+<span class="r-in"><span>  <span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span> <span class="co"># name of the location</span></span></span>
+<span class="r-in"><span>  <span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"PERMANENT"</span> <span class="co"># name of the mapset</span></span></span>
+<span class="r-in"><span>  <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/initGRASS.html" class="external-link">initGRASS</a></span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
+<span class="r-in"><span>                    SG <span class="op">=</span> <span class="va">cabins</span>, <span class="co"># use map to define location projection</span></span></span>
+<span class="r-in"><span>                    home <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    override <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                    gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
+<span class="r-in"><span>                    location <span class="op">=</span> <span class="va">loc</span>,</span></span>
+<span class="r-in"><span>                    mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># add map to GRASS</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">write_VECT</span><span class="op">(</span><span class="va">cabins_vect</span>, vname <span class="op">=</span> <span class="st">"cabins_vect"</span>, flags <span class="op">=</span> <span class="st">"o"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># add map to GRASS</span></span></span>
+<span class="r-in"><span>  <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readVECT.html" class="external-link">write_VECT</a></span><span class="op">(</span><span class="va">cabins_vect</span>, vname <span class="op">=</span> <span class="st">"cabins_vect"</span>, flags <span class="op">=</span> <span class="st">"o"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># set region</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">execGRASS</span><span class="op">(</span><span class="st">"g.region"</span>, vector <span class="op">=</span> <span class="va">cabins_vect</span>, res <span class="op">=</span> <span class="st">"100"</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># set region</span></span></span>
+<span class="r-in"><span>  <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html" class="external-link">execGRASS</a></span><span class="op">(</span><span class="st">"g.region"</span>, vector <span class="op">=</span> <span class="va">cabins_vect</span>, res <span class="op">=</span> <span class="st">"100"</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># rasterize with count, creating a new temp_vector</span></span></span>
-<span class="r-in"><span><span class="va">cabins_count_name</span> <span class="op">&lt;-</span> <span class="fu">grass_v2rast_count</span><span class="op">(</span><span class="st">"cabins_vect"</span>, output <span class="op">=</span> <span class="st">"cabins_count"</span>,</span></span>
-<span class="r-in"><span>                                        verbose <span class="op">=</span> <span class="cn">TRUE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># rasterize with count, creating a new temp_vector</span></span></span>
+<span class="r-in"><span>  <span class="va">cabins_count_name</span> <span class="op">&lt;-</span> <span class="fu">grass_v2rast_count</span><span class="op">(</span><span class="st">"cabins_vect"</span>, output <span class="op">=</span> <span class="st">"cabins_count"</span>,</span></span>
+<span class="r-in"><span>                                          verbose <span class="op">=</span> <span class="cn">TRUE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># rasterize with count, without creating a temporary vector</span></span></span>
-<span class="r-in"><span><span class="va">cabins_count_name</span> <span class="op">&lt;-</span> <span class="fu">grass_v2rast_count</span><span class="op">(</span><span class="va">cabins_vect_name</span>, output <span class="op">=</span> <span class="st">"cabins_count"</span>,</span></span>
-<span class="r-in"><span>                                        column <span class="op">=</span> <span class="st">"value"</span>,</span></span>
-<span class="r-in"><span>                                        verbose <span class="op">=</span> <span class="cn">TRUE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># rasterize with count, without creating a temporary vector</span></span></span>
+<span class="r-in"><span>  <span class="va">cabins_count_name</span> <span class="op">&lt;-</span> <span class="fu">grass_v2rast_count</span><span class="op">(</span><span class="va">cabins_vect_name</span>, output <span class="op">=</span> <span class="st">"cabins_count"</span>,</span></span>
+<span class="r-in"><span>                                          column <span class="op">=</span> <span class="st">"value"</span>,</span></span>
+<span class="r-in"><span>                                          verbose <span class="op">=</span> <span class="cn">TRUE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># visualize</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">read_RAST</span><span class="op">(</span><span class="va">cabins_count_name</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Number of private cabins"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># visualize</span></span></span>
+<span class="r-in"><span>  <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">cabins_count_name</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Number of private cabins"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># remove rasters created</span></span></span>
-<span class="r-in"><span><span class="co"># to_remove_vect &lt;- c(test_region_name, cabins_vect_name)</span></span></span>
-<span class="r-in"><span><span class="co"># to_remove_rast &lt;- c(cabins_count_name)</span></span></span>
-<span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")</span></span></span>
-<span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")</span></span></span>
+<span class="r-in"><span>  <span class="co"># remove rasters created</span></span></span>
+<span class="r-in"><span>  <span class="co"># to_remove_vect &lt;- c(test_region_name, cabins_vect_name)</span></span></span>
+<span class="r-in"><span>  <span class="co"># to_remove_rast &lt;- c(cabins_count_name)</span></span></span>
+<span class="r-in"><span>  <span class="co"># rgrass::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")</span></span></span>
+<span class="r-in"><span>  <span class="co"># rgrass::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>

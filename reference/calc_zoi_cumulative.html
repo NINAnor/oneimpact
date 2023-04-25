@@ -274,7 +274,13 @@ The default is to keep the same extent of the input raster.</p></dd>
 
 
 <dt>na.policy</dt>
-<dd><p><code>[character(1)="omit"] \cr Can be used to determine the cells of </code>x<code>for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are NA) or "omit" (skip cells that are NA). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use na.rm=TRUE to ignore cells that are NA for that). See [terra::focal()] for details. Only used when</code>where = "R"`.</p></dd>
+<dd><p><code>[character(1)="omit"]</code> <br> Can be used to determine the
+cells of <code>x</code> for which focal values should be computed. Must be one of "all"
+(compute for all cells), "only" (only for cells that are NA) or "omit"
+(skip cells that are NA). Note that the value of this argument does not
+affect which cells around each focal cell are included in the computations
+(use na.rm=TRUE to ignore cells that are NA for that). See <code><a href="https://rdrr.io/pkg/terra/man/focal.html" class="external-link">terra::focal()</a></code>
+for details. Only used when <code>where = "R"</code>.</p></dd>
 
 
 <dt>na.rm</dt>
@@ -423,10 +429,8 @@ and computation efficiency.
 The only inconvenient of <code>r.mfilter</code> is that it
 creates an edge effect with no information in the outer cells of a raster
 (the number of cells correspond to <code>radius</code> or half the size of the weight
-matrix), so if it is used the users should add a buffer area
-\(ge radius\) around the input raster map, to avoid such edge effects.
-See <a href="https://github.com/OSGeo/grass/issues/2184" class="external-link">https://github.com/OSGeo/grass/issues/2184</a> for more details.</p></li>
-<li><p><code>r.neighbors</code> is considerably slower than the other algorithms (from 10 to
+matrix), so if it is used the users should add a buffer area</p></li>
+</ul><p>= radius around the input raster map, to avoid such edge effects.See <a href="https://github.com/OSGeo/grass/issues/2184" class="external-link">https://github.com/OSGeo/grass/issues/2184</a> for more details.</p><ul><li><p><code>r.neighbors</code> is considerably slower than the other algorithms (from 10 to
 100 times), but allows a flexible choice of the ZOI shape. Contrary to
 <code>r.resamp.filter</code> and <code>r.mfilter</code>, which can only perform a sum of pixel
 values weighted by the input filter or ZOI, <code>r.neighbors</code> might
@@ -503,37 +507,89 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#--------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Running calc_zoi_cumulative through GRASS GIS</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://grass.osgeo.org/" class="external-link">rgrass7</a></span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(rgrass7):</span> there is no package called ‘rgrass7’</span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsbivand.github.io/rgrass/" class="external-link">rgrass</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: XML</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GRASS GIS interface loaded with GRASS version: (GRASS not running)</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Load raster data</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># connect to grass gis 7.8 and create grass location</span></span></span>
+<span class="r-in"><span><span class="co"># connect to grass gis and create grass location</span></span></span>
 <span class="r-in"><span><span class="co"># For linux or within OSGeo4W shell</span></span></span>
-<span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass78 --config path"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">grassdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="st">"grass --config path"</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># grassdir &lt;- system("grass78 --config path", intern = TRUE) # for GRASS 7.8</span></span></span>
 <span class="r-in"><span><span class="co"># If you used the standalone installer in Windows</span></span></span>
-<span class="r-in"><span><span class="co"># grassdir &lt;- "C:\Programs\GRASS GIS 7.8" # Correct if the path is different</span></span></span>
+<span class="r-in"><span><span class="co"># grassdir &lt;- "C:\Programs\GRASS GIS 7.8" # Correct if the path GRASS version or path is different</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">gisDB</span> <span class="op">&lt;-</span> <span class="st">"."</span> <span class="co"># create location and mapset in the working directory</span></span></span>
 <span class="r-in"><span><span class="va">loc</span> <span class="op">&lt;-</span> <span class="st">"ETRS_33N/"</span> <span class="co"># name of the location</span></span></span>
 <span class="r-in"><span><span class="va">ms</span> <span class="op">&lt;-</span> <span class="st">"PERMANENT"</span> <span class="co"># name of the mapset</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">initGRASS</span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
-<span class="r-in"><span>                   SG <span class="op">=</span> <span class="va">cabins</span>, <span class="co"># use map to define location projection</span></span></span>
-<span class="r-in"><span>                   home <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                   override <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                   gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
-<span class="r-in"><span>                   location <span class="op">=</span> <span class="va">loc</span>,</span></span>
-<span class="r-in"><span>                   mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘rgrass7’</span>
+<span class="r-in"><span><span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/initGRASS.html" class="external-link">initGRASS</a></span><span class="op">(</span>gisBase <span class="op">=</span> <span class="va">grassdir</span>,</span></span>
+<span class="r-in"><span>                  SG <span class="op">=</span> <span class="va">cabins</span>, <span class="co"># use map to define location projection</span></span></span>
+<span class="r-in"><span>                  home <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  override <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                  gisDbase <span class="op">=</span> <span class="va">gisDB</span>,</span></span>
+<span class="r-in"><span>                  location <span class="op">=</span> <span class="va">loc</span>,</span></span>
+<span class="r-in"><span>                  mapset <span class="op">=</span> <span class="va">ms</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> gisdbase    . </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> location    ETRS_33N/ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mapset      PERMANENT </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rows        361 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> columns     478 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> north       6658900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> south       6622800 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> west        146900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> east        194700 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nsres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ewres       100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PROJCRS["unknown",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     BASEGEOGCRS["grs80",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         DATUM["European Terrestrial Reference System 1989",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ELLIPSOID["Geodetic_Reference_System_1980",6378137,298.257222101,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 LENGTHUNIT["metre",1]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",6258]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PRIMEM["Greenwich",0,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9122]]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     CONVERSION["Transverse Mercator",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         METHOD["Transverse Mercator",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",9807]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Latitude of natural origin",0,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8801]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Longitude of natural origin",15,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8802]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["Scale factor at natural origin",0.9996,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             SCALEUNIT["unity",1],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8805]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False easting",500000,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8806]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         PARAMETER["False northing",0,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ID["EPSG",8807]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[Cartesian,2],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["easting",east,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["northing",north,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9001]]]] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># define map name within GRASS GIS</span></span></span>
 <span class="r-in"><span><span class="va">cabins_g</span> <span class="op">&lt;-</span> <span class="st">"cabins_example"</span></span></span>
 <span class="r-in"><span><span class="co"># add file to GRASS GIS mapset</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">write_RAST</span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"o"</span>, <span class="st">"overwrite"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘rgrass7’</span>
+<span class="r-in"><span><span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">write_RAST</a></span><span class="op">(</span><span class="va">cabins</span>, <span class="va">cabins_g</span>, flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"o"</span>, <span class="st">"overwrite"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Over-riding projection check</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Importing raster map &lt;cabins_example&gt;...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> SpatRaster read into GRASS using r.in.gdal from file</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check</span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span>, col <span class="op">=</span> <span class="st">"black"</span>,</span></span>
@@ -542,9 +598,21 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># define region in GRASS GIS</span></span></span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">execGRASS</span><span class="op">(</span><span class="st">"g.region"</span>, raster <span class="op">=</span> <span class="va">cabins_g</span>,</span></span>
-<span class="r-in"><span>                   flags <span class="op">=</span> <span class="st">"p"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘rgrass7’</span>
+<span class="r-in"><span><span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html" class="external-link">execGRASS</a></span><span class="op">(</span><span class="st">"g.region"</span>, raster <span class="op">=</span> <span class="va">cabins_g</span>,</span></span>
+<span class="r-in"><span>                  flags <span class="op">=</span> <span class="st">"p"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> projection: 99 (unknown)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> zone:       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> datum:      etrs89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ellipsoid:  grs80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> north:      6658900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> south:      6622800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> west:       146900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> east:       194700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nsres:      100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ewres:      100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rows:       361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cols:       478</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cells:      172558</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># Guarantee input map is binary (zeros as background)</span></span></span>
@@ -552,19 +620,20 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="co"># Input map name within GRASS GIS - binary map</span></span></span>
 <span class="r-in"><span><span class="va">cabins_bin_g</span> <span class="op">&lt;-</span> <span class="fu"><a href="grass_binarize.html">grass_binarize</a></span><span class="op">(</span><span class="va">cabins_g</span>, breaks <span class="op">=</span> <span class="fl">1</span>, output <span class="op">=</span> <span class="st">"cabins_example_bin"</span>,</span></span>
 <span class="r-in"><span>                               null <span class="op">=</span> <span class="fl">0</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>error in running command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseGRASS(cmd, legacyExec = legacyExec):</span> The command</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    g.copy --interface-description</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> could not be run (127), and produced the error message:</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span>    sh: 1: g.copy: not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;inter_map&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check input</span></span></span>
-<span class="r-in"><span><span class="va">cabins_bin</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">read_RAST</span><span class="op">(</span><span class="st">"cabins_example_bin"</span>, return_format <span class="op">=</span> <span class="st">"terra"</span>, NODATA <span class="op">=</span> <span class="fl">255</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘rgrass7’</span>
+<span class="r-in"><span><span class="va">cabins_bin</span> <span class="op">&lt;-</span> <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="st">"cabins_example_bin"</span>, return_format <span class="op">=</span> <span class="st">"terra"</span>, NODATA <span class="op">=</span> <span class="fl">255</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb1db0d005.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lightyellow"</span>, <span class="st">"black"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Binarized map of cabins"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_bin' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># Using 'r.mfilter' algorithm (default)</span></span></span>
@@ -576,7 +645,9 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                g_overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                                verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cabins_bin_g' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZOI for 1000, shape exp_decay..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_exp_decay1000&gt;</span>
 <span class="r-in"><span><span class="co"># Bartlett decay</span></span></span>
 <span class="r-in"><span><span class="va">barlett_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
 <span class="r-in"><span>                                    radius <span class="op">=</span> <span class="fl">1000</span>,</span></span>
@@ -584,7 +655,9 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                    where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                    g_overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                                    verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cabins_bin_g' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZOI for 1000, shape bartlett..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_bartlett1000&gt;</span>
 <span class="r-in"><span><span class="co"># Gaussian decay</span></span></span>
 <span class="r-in"><span><span class="va">gauss_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
@@ -592,7 +665,9 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                  g_overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                                  verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cabins_bin_g' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZOI for 1000, shape Gauss..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_Gauss1000&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Threshold decay (circle, step)</span></span></span>
 <span class="r-in"><span><span class="va">threshold_name</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
@@ -601,19 +676,47 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                      where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                      g_overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                                      verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cabins_bin_g' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZOI for 1000, shape threshold..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_zoi_cumulative_threshold1000&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">all_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">exp_name</span>, <span class="va">barlett_name</span>, <span class="va">gauss_name</span>, <span class="va">threshold_name</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'exp_name' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cabins_example_bin_zoi_cumulative_exp_decay1000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "cabins_example_bin_zoi_cumulative_bartlett1000" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "cabins_example_bin_zoi_cumulative_Gauss1000"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "cabins_example_bin_zoi_cumulative_threshold1000"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># visualize</span></span></span>
-<span class="r-in"><span><span class="va">cabins_zoi_cumulative</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">read_RAST</span><span class="op">(</span><span class="va">all_names</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘rgrass7’</span>
+<span class="r-in"><span><span class="va">cabins_zoi_cumulative</span> <span class="op">&lt;-</span> <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">all_names</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb7acf8c88.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb39768e4.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb7ed16abd.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb2a6f9911.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Exponential decay 1000m"</span>, <span class="st">"Bartlett decay 1000m"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Gaussian decay 1000m"</span>, <span class="st">"Threshold decay 1000m"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_zoi_cumulative</span>, main <span class="op">=</span> <span class="va">title_plot</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_zoi_cumulative' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-9.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># calculate density vs cumulative ZoI</span></span></span>
@@ -623,14 +726,21 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                  where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                  g_overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                                  verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cabins_bin_g' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating density for 1000, shape exp_decay..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Writing raster map &lt;cabins_example_bin_density_exp_decay1000&gt;</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">cabins_density</span> <span class="op">&lt;-</span> <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">read_RAST</span><span class="op">(</span><span class="va">exp_name_d</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘rgrass7’</span>
+<span class="r-in"><span><span class="va">cabins_density</span> <span class="op">&lt;-</span> <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">exp_name_d</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb6a53af8b.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_zoi_cumulative</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">cabins_density</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>            main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZoI"</span>, <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'cabins_zoi_cumulative' not found</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-10.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># Using 'r.resamp.filter' algorithm</span></span></span>
@@ -644,10 +754,17 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                             g_module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
 <span class="r-in"><span>                                             g_overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                                             verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cabins_bin_g' not found</span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">read_RAST</span><span class="op">(</span><span class="va">rectangle_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating density for 1000, shape box..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-in"><span><span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">rectangle_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Rectangle ZoI 1000m"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (cond) .Internal(C_tryCatchHelper(addr, 1L, cond)))(structure(list(message = "there is no package called ‘rgrass7’",     call = loadNamespace(x), package = "rgrass7", lib.loc = NULL), class = c("packageNotFoundError", "error", "condition"))):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': there is no package called ‘rgrass7’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb3c0cd024.grd&gt; created.</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-11.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># bartlett</span></span></span>
 <span class="r-in"><span><span class="va">bartlett_resamp_filt</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
@@ -658,10 +775,20 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                            g_module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
 <span class="r-in"><span>                                            g_overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                                            verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'cabins_bin_g' not found</span>
-<span class="r-in"><span><span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">read_RAST</span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating cumulative ZOI for 1000, shape bartlett..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Rescaling from density to cumulative ZOI..."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cabins_example_bin_zoi_cumulative_bartlett1000 = cabins_example_bin_zoi_cumulative_bartlett1000_temp/0.0095562598354124"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_bin_zoi_cumulative_bartlett1000_temp&gt;</span>
+<span class="r-in"><span><span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Bartlett ZoI 1000m"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (cond) .Internal(C_tryCatchHelper(addr, 1L, cond)))(structure(list(message = "there is no package called ‘rgrass7’",     call = loadNamespace(x), package = "rgrass7", lib.loc = NULL), class = c("packageNotFoundError", "error", "condition"))):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': there is no package called ‘rgrass7’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpNaEm9W/file25eb15ab75de.grd&gt; created.</span>
+<span class="r-plt img"><img src="calc_zoi_cumulative-12.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># not run</span></span></span>
 <span class="r-in"><span><span class="co"># Gaussian - to be implemented!</span></span></span>
@@ -673,15 +800,15 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span>                                           where <span class="op">=</span> <span class="st">"GRASS"</span>,</span></span>
 <span class="r-in"><span>                                           module <span class="op">=</span> <span class="st">"r.resamp.filter"</span>,</span></span>
 <span class="r-in"><span>                                           overwrite <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu">rgrass7</span><span class="fu">::</span><span class="fu">read_RAST</span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># remove rasters created</span></span></span>
 <span class="r-in"><span><span class="co"># to_remove_rast &lt;- unique(c(all_names, exp_name_d,</span></span></span>
 <span class="r-in"><span><span class="co">#                            rectangle_resamp_filt, bartlett_resamp_filt))</span></span></span>
-<span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")</span></span></span>
-<span class="r-in"><span><span class="co"># rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")</span></span></span>
+<span class="r-in"><span><span class="co"># rgrass::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")</span></span></span>
+<span class="r-in"><span><span class="co"># rgrass::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
