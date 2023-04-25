@@ -30,8 +30,7 @@
 #' [rgrass::read_RAST()] function or exported outside GRASS using the
 #' `r.out.gdal` module, for instance.
 #'
-#' @details # Details
-#'
+#' @details
 #' The input raster is supposed to
 #' represent the location of point, line, or polygon infrastructure
 #' (e.g. houses, roads, mining areas), but any landscape variable whose

@@ -22,7 +22,7 @@ A raster object (or collection of rasters) with values rescaled to
 a given range (e.g. to the interval \link{0,1}).
 }
 \description{
-Rescales raster values to a given range.
+Rescales raster values to a given range (by default, to the range \link{0,1}).
 }
 \examples{
 library(terra)

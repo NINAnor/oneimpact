@@ -116,7 +116,13 @@ especially useful for example in the use of the \code{r.mfilter} algorithm in
 GRASS, in which the edges of the region are excluded from the computation.
 The default is to keep the same extent of the input raster.}
 
-\item{na.policy}{\verb{[character(1)="omit"] \\cr Can be used to determine the cells of }x\verb{for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are NA) or "omit" (skip cells that are NA). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use na.rm=TRUE to ignore cells that are NA for that). See [terra::focal()] for details. Only used when}where = "R"`.}
+\item{na.policy}{\verb{[character(1)="omit"]} \cr Can be used to determine the
+cells of \code{x} for which focal values should be computed. Must be one of "all"
+(compute for all cells), "only" (only for cells that are NA) or "omit"
+(skip cells that are NA). Note that the value of this argument does not
+affect which cells around each focal cell are included in the computations
+(use na.rm=TRUE to ignore cells that are NA for that). See \code{\link[terra:focal]{terra::focal()}}
+for details. Only used when \code{where = "R"}.}
 
 \item{na.rm}{\verb{[logical(1)=FALSE]} \cr Should missing values be removed for
 filtering calculations? Option for the neighborhood analysis performed
@@ -202,7 +208,7 @@ location/mapset, and might be retrieved to R through the
 \code{\link[rgrass:readRAST]{rgrass::read_RAST()}} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
-\section{Details}{
+\details{
 The input raster is supposed to
 represent the location of point, line, or polygon infrastructure
 (e.g. houses, roads, mining areas), but any landscape variable whose
@@ -275,8 +281,8 @@ The only inconvenient of \code{r.mfilter} is that it
 creates an edge effect with no information in the outer cells of a raster
 (the number of cells correspond to \code{radius} or half the size of the weight
 matrix), so if it is used the users should add a buffer area
-\eqn{ge radius} around the input raster map, to avoid such edge effects.
-See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
+}= radius around the input raster map, to avoid such edge effects.See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
+\itemize{
 \item \code{r.neighbors} is considerably slower than the other algorithms (from 10 to
 100 times), but allows a flexible choice of the ZOI shape. Contrary to
 \code{r.resamp.filter} and \code{r.mfilter}, which can only perform a sum of pixel
@@ -286,7 +292,6 @@ such as mean, median, standard deviation etc.
 }
 }
 }
-
 \examples{
 # Running calc_zoi_cumulative through R
 library(terra)
@@ -333,34 +338,35 @@ plot(c(cumzoi_exp[[3]], density_exp),
 
 #--------------------
 # Running calc_zoi_cumulative through GRASS GIS
-library(rgrass7)
+library(rgrass)
 library(terra)
 
 # Load raster data
 f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 cabins <- terra::rast(f)
 
-# connect to grass gis 7.8 and create grass location
+# connect to grass gis and create grass location
 # For linux or within OSGeo4W shell
-grassdir <- system("grass78 --config path", intern = TRUE)
+grassdir <- system("grass --config path", intern = TRUE)
+# grassdir <- system("grass78 --config path", intern = TRUE) # for GRASS 7.8
 # If you used the standalone installer in Windows
-# grassdir <- "C:\\Programs\\GRASS GIS 7.8" # Correct if the path is different
+# grassdir <- "C:\\Programs\\GRASS GIS 7.8" # Correct if the path GRASS version or path is different
 
 gisDB <- "." # create location and mapset in the working directory
 loc <- "ETRS_33N/" # name of the location
 ms <- "PERMANENT" # name of the mapset
-rgrass7::initGRASS(gisBase = grassdir,
-                   SG = cabins, # use map to define location projection
-                   home = tempdir(),
-                   override = TRUE,
-                   gisDbase = gisDB,
-                   location = loc,
-                   mapset = ms)
+rgrass::initGRASS(gisBase = grassdir,
+                  SG = cabins, # use map to define location projection
+                  home = tempdir(),
+                  override = TRUE,
+                  gisDbase = gisDB,
+                  location = loc,
+                  mapset = ms)
 
 # define map name within GRASS GIS
 cabins_g <- "cabins_example"
 # add file to GRASS GIS mapset
-rgrass7::write_RAST(cabins, cabins_g, flags = c("o", "overwrite"))
+rgrass::write_RAST(cabins, cabins_g, flags = c("o", "overwrite"))
 
 # check
 terra::plot(cabins, col = "black",
@@ -368,8 +374,8 @@ terra::plot(cabins, col = "black",
 
 #---
 # define region in GRASS GIS
-rgrass7::execGRASS("g.region", raster = cabins_g,
-                   flags = "p")
+rgrass::execGRASS("g.region", raster = cabins_g,
+                  flags = "p")
 
 #---
 # Guarantee input map is binary (zeros as background)
@@ -379,7 +385,7 @@ cabins_bin_g <- grass_binarize(cabins_g, breaks = 1, output = "cabins_example_bi
                                null = 0, overwrite = TRUE)
 
 # check input
-cabins_bin <- rgrass7::read_RAST("cabins_example_bin", return_format = "terra", NODATA = 255)
+cabins_bin <- rgrass::read_RAST("cabins_example_bin", return_format = "terra", NODATA = 255)
 
 plot(cabins_bin, col = c("lightyellow", "black"),
      main = "Binarized map of cabins")
@@ -420,7 +426,7 @@ threshold_name <- calc_zoi_cumulative(x = cabins_bin_g,
 (all_names <- c(exp_name, barlett_name, gauss_name, threshold_name))
 
 # visualize
-cabins_zoi_cumulative <- rgrass7::read_RAST(all_names, return_format = "terra")
+cabins_zoi_cumulative <- rgrass::read_RAST(all_names, return_format = "terra")
 
 title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
                 "Gaussian decay 1000m", "Threshold decay 1000m")
@@ -435,7 +441,7 @@ exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
                                   g_overwrite = TRUE,
                                   verbose = TRUE)
 
-cabins_density <- rgrass7::read_RAST(exp_name_d, return_format = "terra")
+cabins_density <- rgrass::read_RAST(exp_name_d, return_format = "terra")
 
 terra::plot(c(cabins_zoi_cumulative[[1]], cabins_density),
             main = c("Cumulative ZoI", "Density"))
@@ -452,7 +458,7 @@ rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                              g_module = "r.resamp.filter",
                                              g_overwrite = TRUE,
                                              verbose = TRUE)
-rgrass7::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
+rgrass::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
   plot(main = "Rectangle ZoI 1000m")
 
 # bartlett
@@ -464,7 +470,7 @@ bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                             g_module = "r.resamp.filter",
                                             g_overwrite = TRUE,
                                             verbose = TRUE)
-rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
+rgrass::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
   plot(main = "Bartlett ZoI 1000m")
 
 # not run
@@ -477,15 +483,15 @@ rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
                                            where = "GRASS",
                                            module = "r.resamp.filter",
                                            overwrite = TRUE, quiet = FALSE)
-  rgrass7::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
+  rgrass::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
     plot()
 }
 
 # remove rasters created
 # to_remove_rast <- unique(c(all_names, exp_name_d,
 #                            rectangle_resamp_filt, bartlett_resamp_filt))
-# rgrass7::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")
-# rgrass7::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
+# rgrass::execGRASS("g.remove", type = "vect", name = to_remove_vect, flags = "f")
+# rgrass::execGRASS("g.remove", type = "rast", name = to_remove_rast, flags = "f")
 }
 \seealso{
 See \code{\link[=zoi_functions]{zoi_functions()}} for some ZOI function shapes and
