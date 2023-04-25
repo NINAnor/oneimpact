@@ -1,6 +1,6 @@
 #' Rescale raster values
 #'
-#' Rescales raster values to a given range.
+#' Rescales raster values to a given range (by default, to the range [0,1]).
 #'
 #' @param x `[SpatRaster]` \cr Raster object or colletion of rasters whose values
 #' will be rescaled.
