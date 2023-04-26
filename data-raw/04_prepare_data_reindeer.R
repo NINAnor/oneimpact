@@ -22,9 +22,10 @@ reindeer_raw <- readr::read_delim(file_reindeer, delim = "\t",
 
 # reproject data to UTM 33N to match with enviornmental data
 reindeer <- amt::make_track(reindeer_raw, utm_x, utm_y, acquisition_time,
-                            crs = sp::CRS("+init=epsg:25832"), all_cols = TRUE) |>
-  amt::transform_coords(crs_to = sp::CRS("+init=epsg:25833")) |>
-  dplyr::rename(x = x_, y = y_, t = t_)
+                            crs = 25832, all_cols = TRUE) |>
+  amt::transform_coords(crs_to = 25833) |>
+  dplyr::rename(x = x_, y = y_, t = t_) |>
+  dplyr::arrange(original_animal_id, t)
 
 # save
 usethis::use_data(reindeer, overwrite = TRUE)
