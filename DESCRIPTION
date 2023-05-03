@@ -1,8 +1,8 @@
 Package: oneimpact
 Type: Package
-Title: Tools for the assessment of cumulative impacts of anthropogenic 
-    disturbance in ecological studies
-Version: 0.1.0
+Title: Tools for the assessment of the cumulative impacts of anthropogenic 
+    features in ecological studies
+Version: 0.1.1
 Authors@R: c(
     person("Bernardo", "Niebuhr", email = "bernardo_brandaum@yahoo.com.br",
         role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0453-315X")),
@@ -11,9 +11,9 @@ Authors@R: c(
     person("Bram", "van Moorter", email = "bram.van.moorter@nina.no",
         role = "aut", comment = c(ORCID = "0000-0002-3196-1993")))
 Description: The package presents a set of tools to assess cumulative impacts
-    of anthropogenic infrastructure and activity on biodiversity. This includes
-    tools to calculate the zone of influence (ZoI) of infrastructure as well as 
-    tools for model fitting, estimation of the effect size and ZoI, and 
+    of anthropogenic features and activity on biodiversity. This includes
+    tools to calculate the zone of influence (ZOI) of anthropogenic variables as well as 
+    tools for model fitting, estimation of the effect size and ZOI, and 
     ancillary functions. The functions dealing with spatial data processing can 
     be run in both R and GRASS GIS, using R as an interface.
 Depends:
