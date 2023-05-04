@@ -80,5 +80,5 @@ between R and GRASS GIS is made through the [`rgrass7`](https://github.com/rsbiv
 
   - Please [report any issues or bugs](https://github.com/NINAnor/oneimpact/issues/new/).
   - License: GPL3
-  - Get citation information for `oneimpact` in R running `citation(package = 'oneimpact')`
+  - Get citation information for `oneimpact` in R running `citation(package = 'oneimpact')`, or check the reference [here](https://ninanor.github.io/oneimpact/authors.html#citation).
   - Contributions are mostly welcome!

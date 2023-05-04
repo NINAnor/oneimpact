@@ -2,7 +2,7 @@ citHeader("To cite oneimpact in publications use:")
 
 citEntry(
   entry    = "Article",
-  title    = {"Estimating the cumulative impact and zone of influence of anthropogenic infrastructure on biodiversity"},
+  title    = {"Estimating the cumulative impact and zone of influence of anthropogenic features on biodiversity"},
   author   = personList(as.person("Bernardo B. Niebuhr"),
         as.person("Bram van Moorter"),
         as.person("Audun Stien"),
@@ -13,15 +13,15 @@ citEntry(
         as.person("Moudud Alam"),
         as.person("Anna Skarin"),
         as.person("Manuela Panzacchi")),
-  journal  = {"bioRxiv"},
-  year     = {"2022"},
-  volume   = {"2022.06.14.495994"},
+  journal  = {"Methods in Ecology and Evolution"},
+  year     = {"2023"},
+  volume   = {""},
   number   = {},
   pages    = {},
-  url      = {"https://doi.org/10.1101/2022.06.14.495994"},
+  url      = {""},
   textVersion = paste("Niebuhr, B. B., Moorter, B. V., Stien, A., Tveraa, T., Strand, O., Langeland, K.,",
-                      "Sandström, P., Alam, M., Skarin, A., & Panzacchi, M. (2022). Estimating the cumulative",
-                      "impact and zone of influence of anthropogenic infrastructure on biodiversity.",
-                      "https://www.biorxiv.org/content/10.1101/2022.06.14.495994v1"
+                      "Sandström, P., Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating the cumulative",
+                      "impact and zone of influence of anthropogenic features on biodiversity.",
+                      "Methods in Ecology and Evolution."
   )
 )
