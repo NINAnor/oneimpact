@@ -25,16 +25,16 @@ Imports:
     rgrass, 
     terra, 
     sf, 
+    glmnet,
+    maxnet,
+    survival,
     ggplot2, 
     scales
 Suggests:
+    amt,
     raster,
-    landscapetools,
-    smoothie,
     knitr,
-    rmarkdown,
-    mobsim,
-    NLMR
+    rmarkdown
 Remotes:
     MoBiodiv/mobsim,
     ropensci/NLMR
