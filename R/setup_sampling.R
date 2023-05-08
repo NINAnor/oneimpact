@@ -23,6 +23,7 @@
 #' sampling_params <- set_sampling_params(1000, 10, 1000)
 #' # set train, test, and validation sets
 #' set_validation_sampling(spst, seed = 1234, sampling_params)
+#' # comment
 #'
 #' @export
 set_validation_sampling <- function(spStrat, seed = 1234, sampling_params){
