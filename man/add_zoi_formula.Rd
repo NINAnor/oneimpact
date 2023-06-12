@@ -4,14 +4,44 @@
 \alias{add_zoi_formula}
 \title{Adds ZOI radii to formula}
 \usage{
-add_zoi_formula(f, zoi_radius, pattern = "XXX")
+add_zoi_formula(
+  f,
+  zoi_radius,
+  type = NULL,
+  pattern = "XXX",
+  separator = "_",
+  grid = FALSE
+)
+}
+\arguments{
+\item{f}{A formula to be fitted in a statistical model.}
+
+\item{zoi_radius}{\verb{[numeric]} \cr A vector of radii for the zone of influence, to be added to
+the formula.}
+
+\item{type}{Shape(s) of the ZOI}
+
+\item{pattern}{Pattern to be replaced in the formula, corresponding to the ZOI radii or
+ZOI shapes and radii.}
+
+\item{separator}{Separator to be used between type and zoi_radius, when \code{type}
+is provided. Default is "_".}
+
+\item{grid}{logical. Whether or not the grid with all ZOI radii and shape values
+should be returned.}
 }
 \description{
-Adds multiple radii for zone of influence variable to a formula, to be fitted in
+Adds multiple radii for a zone of influence variable to a formula, to be fitted in
 a statistical model.
 }
 \examples{
+# multiple radii
 f <- case_ ~ strata(step_id_) + sl_*startpt_roadsXXX + sl_*startpt_cabinsXXX
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), pattern = "XXX")
+
+# multiple radii and shapes
+f <- case_ ~ strata(step_id_) + sl_*startpt_roadsXXX + sl_*startpt_cabinsXXX
+add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = "_exp_decay", pattern = "XXX")
+add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("_exp_decay", "_threshold"), pattern = "XXX")
 
 }
