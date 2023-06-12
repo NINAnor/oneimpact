@@ -7,7 +7,7 @@
 extract_response_strata(f, other_vars = F)
 }
 \arguments{
-\item{f}{Formula}
+\item{f}{Formula for model fitting.}
 
 \item{other_vars}{logical. If true, all the (other) explanatory variables are also
 appended to the output, separated from the responde and strata variables.}
