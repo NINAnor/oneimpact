@@ -86,5 +86,5 @@ plot(data_annotated_v[data_annotated_v$case_ == F], col = "grey", cex = 0.3)
 points(data_annotated_v[data_annotated_v$case_ == T], col = "red", cex = 0.3)
 }
 \references{
-amt::remove_incomplete_strata
+\code{\link[amt:remove_incomplete_strata]{amt::remove_incomplete_strata()}}
 }

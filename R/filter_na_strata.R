@@ -12,17 +12,18 @@
 #'
 #' @example examples/filter_na_strata_example.R
 #'
-#' @references amt::remove_incomplete_strata
+#' @references [amt::remove_incomplete_strata()]
 #'
 #' @export
 filter_na_strata <- function(f, data){
 
   # removes missing data in any columns
-  data_clean <- na.omit(data[,all.vars(f)])
+  # this removes too much data!! for now we do not do it here.
+  data_clean <- data #na.omit(data[,all.vars(f)])
   # get strata variable
-  strat <- extract_case_strata(f)$strata
+  strat <- extract_response_strata(f)$strata
   # get case - response variable
-  cas <- extract_case_strata(f)$case
+  cas <- extract_response_strata(f)$response
   # split data.frame by stratum
   lp <- tidyr::nest(data_clean[,c(cas, strat)], .by = tidyselect::all_of(strat))
 
