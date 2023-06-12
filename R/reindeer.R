@@ -35,6 +35,8 @@
 #'
 #' Dataset: \url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.rg0v3}
 #'
+#' @usage data(reindeer)
+#'
 #' @examples
 #' library(tibble)
 #' data("reindeer")

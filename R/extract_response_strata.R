@@ -1,6 +1,6 @@
 #' Separates the reponse variable, the strata variable (), and other variables in a statistical formula
 #'
-#' @param f Formula
+#' @param f Formula for model fitting.
 #' @param other_vars logical. If true, all the (other) explanatory variables are also
 #' appended to the output, separated from the responde and strata variables.
 #'

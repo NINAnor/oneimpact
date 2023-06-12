@@ -27,6 +27,9 @@ reindeer <- amt::make_track(reindeer_raw, utm_x, utm_y, acquisition_time,
   dplyr::rename(x = x_, y = y_, t = t_) |>
   dplyr::arrange(original_animal_id, t)
 
+reindeer <- tibble::as_tibble(reindeer)
+class(reindeer)
+
 # save
 usethis::use_data(reindeer, overwrite = TRUE)
 # now we document by hand

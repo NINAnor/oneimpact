@@ -29,7 +29,7 @@ Comparison of methods to assess and characterize migratory movements. J Anim Eco
 Dataset: \url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.rg0v3}
 }
 \usage{
-reindeer
+data(reindeer)
 }
 \description{
 A dataset containing GPS positions for wild reindeer (\emph{Rangifer tarandus tarandus}) in
