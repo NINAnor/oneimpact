@@ -68,32 +68,3 @@ set_validation_sampling <- function(spStrat, seed = 1234, sampling_params){
 
   return(spStrat$set)
 }
-
-#' Set sampling parameters
-#'
-#' This function sets the sampling parameters.
-#'
-#' @param max_validation_size_blockH0 = 1000,
-#' @param max_number_blockH1 = 10,
-#' @param max_fit_size 1000
-#'
-#' @returns List of sampling parameters for the spatial stratified cross-validation,
-#' with size of blocks of H0, H1, and H2.
-#'
-#' @examples
-#' set_sampling_params(1000, 10, 1000)
-#'
-#' @export
-set_sampling_params <- function(max_validation_size_blockH0 = 1000,
-                                max_number_blockH1 = 10,
-                                max_fit_size = 1000) {
-
-  # Create list
-  sampling_params <- list()
-  # Set parameters
-  sampling_params$max_validation_size_blockH0 <- max_validation_size_blockH0
-  sampling_params$max_number_blockH1 <- max_number_blockH1
-  sampling_params$max_fit_size <- max_fit_size
-
-  sampling_params
-}

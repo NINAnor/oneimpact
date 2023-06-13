@@ -34,5 +34,6 @@ spst <- spat_strat(reindeer, block_size = 10000, coords = c("x", "y"))
 sampling_params <- set_sampling_params(1000, 10, 1000)
 # set train, test, and validation sets
 set_validation_sampling(spst, seed = 1234, sampling_params)
+# comment
 
 }
