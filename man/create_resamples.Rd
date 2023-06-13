@@ -8,6 +8,11 @@ create_resamples(
   y,
   times = 10,
   p = c(0.4, 0.2, 0.2),
+  max_size_validation_blockH0 = 1000,
+  max_number_fit_blockH1 = 15,
+  sp_strat = NULL,
+  colH0 = NULL,
+  H0setup = c("LAO", "LOO")[1],
   list = TRUE,
   replace = TRUE
 )
@@ -17,7 +22,16 @@ create_resamples(
 
 \item{times}{the number of partitions or samples to create}
 
-\item{p}{a 3 element vector with the percentage of data that goes to training, validation, and test}
+\item{p}{a 3 element vector with the percentage of data that goes to training (H1), test (H2), and validation (H0)}
+
+\item{sp_strat}{Default is NULL. If not NULL, the result of spat_strat() should be used here.}
+
+\item{colH0}{Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
+population, or study area, used for validating the predictions of the fitted model.}
+
+\item{H0setup}{Setup for the H0 (validate) block. Either "LAO" (Leave-a-small-bit-of-All-Out) or "LOO"
+(Leave-One-Out). For instance, if H0 corresponds to the animal populations, "LAO" will keep some observations
+of each and all populations in the H0 (validation) set.}
 
 \item{list}{logical - should the results be in lists (TRUE) or matrices with the number of rows equal to
 floor(p * length(y)) and times columns.}
@@ -26,15 +40,48 @@ floor(p * length(y)) and times columns.}
 }
 \description{
 The function creates samples of the data to be included for three different
-model blocks: train (fitting), validating, and testing models.
+model blocks: train (fitting), test (calibrate), and validate.
 By default, samples are created through bootstrapping, i.e. with replacement. This means
 data observations can be repeated within a given sample block, but observations included
 in one block are necessarily excluded from the other blocks (e.g. observations selected
-for test will be absent from train and validation blocks).
+for validation will be absent from train and test blocks).
 }
 \examples{
+# random sampling, no validation block H0
 y <- runif(200)
 samples <- create_resamples(y, p = c(0.4, 0.2, 0.2), times = 5)
 samples
+
+# with validation block H0
+data(reindeer)
+library(terra)
+library(amt)
+
+# random sampling, with validation block H0
+samples <- create_resamples(1:nrow(reindeer), times = 5,
+                            p = c(0.2, 0.2, 0.2),
+                            max_size_validation_blockH0 = 1000,
+                            colH0 = reindeer$original_animal_id,
+                            list = FALSE)
+samples
+
+# spatially stratified sampling, with validation block H0
+spst <- spat_strat(reindeer, coords = c("x", "y"), colH0 = "original_animal_id",
+                   all_cols = F)
+samples <- create_resamples(1:nrow(reindeer), times = 5,
+                            p = c(0.2, 0.2, 0.2),
+                            max_number_fit_blockH1 = 20,
+                            sp_strat = spst,
+                            colH0 = "blockH0")
+samples
+sum(is.na(samples$test[[1]]))
+sapply(samples$train, function(x) sum(is.na(x)))
+sapply(samples$test, function(x) sum(is.na(x)))
+
+# small number of blocks or too high p[1] might incur in errors
+samples <- create_resamples(1:nrow(reindeer), times = 10,
+                            max_number_fit_blockH1 = 3,
+                            sp_strat = spst,
+                            colH0 = "blockH0")
 
 }

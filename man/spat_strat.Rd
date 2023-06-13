@@ -21,7 +21,8 @@ spat_strat(
 \arguments{
 \item{x}{Points, in sf, SpatialPoints, or terra - points to be spatially stratified}
 
-\item{colH0}{Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual, population, or study area}
+\item{colH0}{Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
+population, or study area, used for testing the predictions of the fitted model.}
 
 \item{k}{Number of parts for k-fold cross validation within H1 hierarchical level - to set the penalty parameter}
 
@@ -45,13 +46,15 @@ input data \code{x}.}
 \value{
 A \code{data.frame} with the number of the blocks at hierarchical levels H0, H1, and H2.
 If \code{x} is a \code{data.frame} and
-
-Implement for input = data.frame
-#terra::vect(data\link{data$case==1,}, geom = c("x", "y"))
-Implement method for track object - already have crsPut H0 here as well.
 }
 \description{
 Hierarchical levels H0, H1, and H2.
+}
+\note{
+Implement for input = data.frame
+#terra::vect(data\link{data$case==1,}, geom = c("x", "y"))
+Implement method for track object - already have crs
+Put H0 here as well.
 }
 \examples{
 data(reindeer)
@@ -60,7 +63,7 @@ library(amt)
 spat_strat(reindeer, block_size = 5000, coords = c("x", "y"))
 
 spst <- spat_strat(reindeer, coords = c("x", "y"), colH0 = "original_animal_id",
-                   all_cols = TRUE)
+                   all_cols = F)
 # Visualize level H0 - individuals
 spst_vect <- terra::vect(spst, geom = c("x", "y"))
 terra::plot(spst_vect, "blockH0")
