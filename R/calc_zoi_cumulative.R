@@ -31,6 +31,8 @@
 #' `r.out.gdal` module, for instance.
 #'
 #' @details
+#'
+#' # Details
 #' The input raster is supposed to
 #' represent the location of point, line, or polygon infrastructure
 #' (e.g. houses, roads, mining areas), but any landscape variable whose

@@ -34,7 +34,7 @@ create_resamples <- function (y, times = 10,
 
   # set matrices
   # 3 matrices, for train, test, and validate
-  indexes <- sapply(N, function(n) matrix(0, ncol = times, nrow = n))
+  indexes <- lapply(N, function(n) matrix(0, ncol = times, nrow = n))
 
   # sample
   # first validate, then train and test, mutually exclusive

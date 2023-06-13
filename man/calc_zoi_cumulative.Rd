@@ -208,7 +208,7 @@ location/mapset, and might be retrieved to R through the
 \code{\link[rgrass:readRAST]{rgrass::read_RAST()}} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
-\details{
+\section{Details}{
 The input raster is supposed to
 represent the location of point, line, or polygon infrastructure
 (e.g. houses, roads, mining areas), but any landscape variable whose
@@ -292,6 +292,7 @@ such as mean, median, standard deviation etc.
 }
 }
 }
+
 \examples{
 # Running calc_zoi_cumulative through R
 library(terra)
