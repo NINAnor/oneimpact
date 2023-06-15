@@ -16,20 +16,24 @@ fit_net_clogit <- function(f, data,
 
   # filter out NAs and strata with only 1s or 0s
   data <- filter_na_strata(f, data)
+  # case
+  vars <- extract_response_strata(f)
+  case <- vars$response
   # get variable referring to strata
-  strat <- extract_response_strata(f)$strata
+  strat <- vars$strata
 
   # separate data for fitting, calibration, and validation
-  train_data  <- data_annotated[data_annotated[[strat]] %in% data_case1[[strat]][samples$train[[i]]], ]
-  test_data <- data_annotated[data_annotated[[strat]] %in% data_case1[[strat]][samples$test[[i]]], ]
-  validate_data <- data_annotated[data_annotated[[strat]] %in% data_case1[[strat]][samples$validate[[i]]], ]
+  train_data  <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$train[[i]]], ]
+  test_data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$test[[i]]], ]
+  validate_data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[i]]], ]
 
   # perform penalized regression with glmnet
   # use glmnet.cv?
   fit <- net_clogit(f, train_data,
                     alpha = 1,
                     type.measure = "deviance",
-                    na.action = na.action)
+                    na.action = na.action,
+                    ...)
 
   # get variables
   wcols <- extract_response_strata(f, other_vars = TRUE)
