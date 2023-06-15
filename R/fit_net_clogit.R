@@ -1,80 +1,99 @@
 #' Fits a conditional logistic regression/SSF/iSSF using glmnet in a train-validate-test setup
 #'
-#'
+#' @param ... Options for net_clogit and glmnet
 #'
 #' @name fit_net_clogit
 #' @export
-fit_net_clogit <- function(f, data, spStrat, sampling_params, i = 0,
-                           kernel_vars = c("step_length", "ta"), out_dir = NULL) {
-  # set points as train, test, and validation
-  spStrat$set <- set_validation_sampling(spStrat = spStrat, seed = i,
-                                         sampling_params = sampling_params)
-  # get only sampled points
-  spStrat <- spStrat[!is.na(spStrat$set),]
+fit_net_clogit <- function(f, data,
+                           samples, i = 1,
+                           kernel_vars = c("step_length", "ta"),
+                           metric = c(conditionalBoyce, somersD, AUC)[[1]],
+                           out_dir_file = NULL,
+                           na.action = "na.pass",
+                           ...) {
+
+  # should the sampling be here within the function?
 
   # filter out NAs and strata with only 1s or 0s
   data <- filter_na_strata(f, data)
   # get variable referring to strata
   strat <- extract_response_strata(f)$strata
-  ###### get number of positions per stratum and filter by that???
 
   # separate data for fitting, calibration, and validation
-  data_fit <- data[data[[strat]] %in% spStrat$id[spStrat$set == "fitting"],]
-  data_cal <- data[data[[strat]] %in% spStrat$id[spStrat$set == "calibration"],]
-  data_val <- data[data[[strat]] %in% spStrat$id[spStrat$set == "validation"],]
+  train_data  <- data_annotated[data_annotated[[strat]] %in% data_case1[[strat]][samples$train[[i]]], ]
+  test_data <- data_annotated[data_annotated[[strat]] %in% data_case1[[strat]][samples$test[[i]]], ]
+  validate_data <- data_annotated[data_annotated[[strat]] %in% data_case1[[strat]][samples$validate[[i]]], ]
 
   # perform penalized regression with glmnet
   # use glmnet.cv?
-  fit <- net_issf(f, data_fit)
+  fit <- net_clogit(f, train_data,
+                    alpha = 1,
+                    type.measure = "deviance",
+                    na.action = na.action)
 
   # get variables
   wcols <- extract_response_strata(f, other_vars = TRUE)
   f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$other_vars))
 
-  # Calibration with conditionalBoyce index
-  # does not work fro cv.glmnet
-  predVals <- model.matrix(f2, data_cal) %*% coef(fit) # multiple fits?
-  #predict.glmnet(fit, data_cal, type = "response")??
-  # compute conditional Boyce for all lambda parameters
-  d <- apply(predVals, 2, function(x = x, y = y, strat = strat){
-    conditionalBoyce(data.frame(x = x, y = y, strat = strat), errors=F)},
-    y = data_cal[[wcols$response]], strat = data_cal[[wcols$strata]])
+  #----
+  # Variable selection step
 
+  # Calibration with conditionalBoyce index (recalled metric here)
+  # does not work fro cv.glmnet
+  # predict.glmnet(fit, test_data, type = "response")??
+  pred_vals <- model.matrix(f2, test_data) %*% coef(fit) # multiple fits?
+  # compute conditional Boyce for all lambda parameters
+  d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
+    metric(data.frame(x = x, y = y, strat = strat), errors=F)},
+    y = test_data[[wcols$response]], strat = test_data[[wcols$strata]])
+
+  # best lambda
   #plot(fit$lambda, d)
   fit$lambda[which.max(d)]
 
+  # initiate results object
+  results <- list()
+  results$lambda <- fit$lambda[which.max(d)] # lambda
+  results$coef <- matrix(coef(fit)[,which.max(d)]) # coefficients
+  rownames(results$coef) <- names(coef(fit)[,which.max(d)])
+  results$var_names <- names(coef(fit)[,which.max(d)]) # variable names
+
   # get predicted values based on the training and testing data
-  fitVals <- model.matrix(f2, data_fit) %*% matrix(coef(fit)[,which.max(d)])
-  predVals <- model.matrix(f2, data_cal) %*% matrix(coef(fit)[,which.max(d)])
+  train_pred_vals <- model.matrix(f2, train_data) %*% results$coef
+  test_pred_vals <- model.matrix(f2, test_data) %*% results$coef
 
   # save results
-  results <- list()
-  results$coef <- matrix(coef(fit)[,which.max(d)]) # coefficients
-  results$var_names <- names(coef(fit)[,which.max(d)]) # variable names
-  results$lambda <- fit$lambda[which.max(d)] # lambda
-  results$fit_score <- conditionalBoyce(data.frame(x = fitVals,
-                                                   y = data_fit[[wcols$response]],
-                                                   strat = data_fit[[wcols$strata]]))
+  results$fit_score <- metric(data.frame(x = train_pred_vals,
+                                                   y = train_data[[wcols$response]],
+                                                   strat = train_data[[wcols$strata]]))
   results$calibration_score <- max(d)
 
-  # Validation
-  3
+  #----
+  # Validation step
+  val_pred_vals <- model.matrix(f2, validate_data) %*% results$coef
+  val <- data.frame(x = val_pred_vals,
+                    y = validate_data[[wcols$response]],
+                    strat = validate_data[[wcols$strata]])
+  # val <- split(val, samples$blockH0[sort(match(val$strat, spStrat$id))])
+  val <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
+  results$validation_score <- unlist(lapply(val, metric))
 
   # Validation habitat only
-  predVals_kernel <- kernel_prediction(f, data_val,
-                                       kernel_vars = kernel_vars,
-                                       coefs=coef(fit)[,which.max(d)])
+  pred_vals_kernel <- kernel_prediction(f, validate_data,
+                                        kernel_vars = kernel_vars,
+                                        coefs = results$coef[,1])
 
-  predVals_habitat <- predVals - predVals_kernel # does it make sense??
-  test <- data.frame(x = predVals_habitat, y = data_val[[wcols$response]],
-                     strat = data_val[[wcols$strata]])
-  test <- split(test, spStrat$blockH0[match(test$strat, spStrat$id)])
-  results$habitat_validation_score <- unlist(lapply(test, conditionalBoyce))
+  pred_vals_habitat <- val_pred_vals - pred_vals_kernel # does it make sense??
+  hab <- data.frame(x = pred_vals_habitat,
+                    y = validate_data[[wcols$response]],
+                    strat = validate_data[[wcols$strata]])
+  hab <- split(hab, samples$blockH0[match(hab$strat, validate_data[[wcols$strata]])])
+  results$habitat_validation_score <- unlist(lapply(hab, metric))
   #plot(results$validation_score, results$habitat_validation_score)
 
-  if (!is.null(out_dir)){
-    save(results, file=paste0(out_dir, "spat_strat_issf_i", i, ".rda"))
-  }else{
+  if (!is.null(out_dir_file)){
+    save(results, file = paste0(out_dir_file, "_i", i, ".rda"))
+  } else {
     return(results)
   }
 }
