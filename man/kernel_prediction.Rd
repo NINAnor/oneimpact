@@ -4,7 +4,7 @@
 \alias{kernel_prediction}
 \title{Prediction based only on step length terms}
 \usage{
-kernel_prediction(f, data, kernel_vars = c("step_length", "TA"), coefs)
+kernel_prediction(f, data, kernel_vars = c("step_length", "ta"), coefs)
 }
 \description{
 Prediction based only on step length terms

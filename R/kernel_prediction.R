@@ -2,13 +2,18 @@
 #'
 #' @export
 kernel_prediction <- function(f, data,
-                              kernel_vars = c("step_length", "TA"), coefs){
+                              kernel_vars = c("step_length", "ta"),
+                              coefs){
 
+  # get movement/kernel variables from the formula
+  # ignoring the interactions
   all_vars <- attr(terms(f), "term.labels")
-  kernel_vars <- all_vars[unlist(lapply(kernel_vars, function(x)grep(x, all_vars)))]
-  kernel_vars <- kernel_vars[!grepl(":", kernel_vars)]
+  kernel_variables <- all_vars[grepl(paste(kernel_vars, collapse = "|"), all_vars)]
+  kernel_variables <- kernel_variables[!grepl(":", kernel_variables)]
 
-  f2 <- as.formula(paste0(extract_case_strata(f, other_vars=F)$case, " ~ -1+", paste0(kernel_vars, collapse = "+")))
-  predVals <- model.matrix(f2, data) %*% coefs[match(kernel_vars, names(coefs))]
-  return(predVals)
+  # returning prediction of only this variables, based on the fitted coefficients
+  f2 <- as.formula(paste0(extract_response_strata(f, other_vars = F)$response, " ~ -1 + ",
+                          paste0(kernel_variables, collapse = "+")))
+  pred_vals_kernel <- model.matrix(f2, data) %*% coefs[match(kernel_variables, names(coefs))]
+  return(pred_vals_kernel)
 }
