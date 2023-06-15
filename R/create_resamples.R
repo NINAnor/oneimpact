@@ -84,6 +84,8 @@ create_resamples <- function (y, times = 10,
   # random sampling
   if(is.null(sp_strat)) {
 
+    print("Starting random sampling...")
+
     #-------------------------
     # random sampling, no validation level H0
     if(is.null(colH0)) {
@@ -166,6 +168,8 @@ create_resamples <- function (y, times = 10,
   #-------------------------
   # spatially stratified sampling
   if(!is.null(sp_strat)) {
+
+    print("Starting sampling with spatial stratification...")
 
     #-------------------------
     # spatially stratified sampling, no validation level H0
