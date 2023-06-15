@@ -79,10 +79,10 @@
 #' Comparison of methods to assess and characterize migratory movements. J Anim Ecol,
 #' 85: 54-68. \url{https://doi.org/10.1111/1365-2656.12449}.
 #'
-#' @usage data(reindeer_annotated)
+#' @usage data(reindeer_ssf)
 #'
 #' @examples
 #' library(tibble)
-#' data("reindeer_annotated")
+#' data("reindeer_ssf")
 #'
-"reindeer_annotated"
+"reindeer_ssf"
