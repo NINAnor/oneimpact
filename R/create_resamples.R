@@ -275,23 +275,35 @@ create_resamples <- function (y, times = 10,
   } # end of spatial stratification condition
 
   # Organize the output
-  if (list) {
-    out <- lapply(indexes, function(x) {
-      out_samp <- as.data.frame(x, stringsAsFactors = TRUE)
-      attributes(out_samp) <- NULL
-      names(out_samp) <- oneimpact:::pretty_seq(out_samp)
-      out_samp
-    })
-    names(out) <- c("train", "test", "validate")
-  }
-  else {
-    out <- lapply(indexes, function(x) {
-      out_samp <- x
-      colnames(out_samp) <- oneimpact:::pretty_seq(1:ncol(out_samp))
-      out_samp
-    })
-    names(out) <- c("train", "test", "validate")
-  }
+  # First we had the possibility of returning it in either the list or the matrix type
+  # However, we added the blockH0 in the output, so we keep only the list output
+  # if (list) {
+  #   out <- lapply(indexes, function(x) {
+  #     out_samp <- as.data.frame(x, stringsAsFactors = TRUE)
+  #     attributes(out_samp) <- NULL
+  #     names(out_samp) <- oneimpact:::pretty_seq(out_samp)
+  #     out_samp
+  #   })
+  #   names(out) <- c("train", "test", "validate")
+  #   out$blockH0 <- colH0
+  # }
+  # else {
+  #   out <- lapply(indexes, function(x) {
+  #     out_samp <- x
+  #     colnames(out_samp) <- oneimpact:::pretty_seq(1:ncol(out_samp))
+  #     out_samp
+  #   })
+  #   names(out) <- c("train", "test", "validate")
+  # }
+  out <- lapply(indexes, function(x) {
+    out_samp <- as.data.frame(x, stringsAsFactors = TRUE)
+    attributes(out_samp) <- NULL
+    names(out_samp) <- oneimpact:::pretty_seq(out_samp)
+    out_samp
+  })
+  names(out) <- c("train", "test", "validate")
+  out$blockH0 <- colH0
+
   out
 }
 
