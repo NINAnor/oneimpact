@@ -19,7 +19,9 @@ spat_strat(
 )
 }
 \arguments{
-\item{x}{Points, in sf, SpatialPoints, or terra - points to be spatially stratified}
+\item{x}{Vector of points to be spatially stratified, in \link{sf}, \link[sp:SpatialPoints]{sp::SpatialPoints}, or \link[terra:SpatVector-class]{terra::SpatVector}.
+If a \code{data.frame}, the columns corresponding to the (x,y) coordinates must be given in
+\code{coords}.}
 
 \item{colH0}{Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
 population, or study area, used for testing the predictions of the fitted model.}

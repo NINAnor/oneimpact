@@ -13,7 +13,9 @@
 #' Implement method for track object - already have crs
 #' Put H0 here as well.
 #'
-#' @param x Points, in sf, SpatialPoints, or terra - points to be spatially stratified
+#' @param x Vector of points to be spatially stratified, in [sf], [sp::SpatialPoints], or [terra::SpatVector].
+#' If a `data.frame`, the columns corresponding to the (x,y) coordinates must be given in
+#' `coords`.
 #' @param colH0 Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
 #' population, or study area, used for testing the predictions of the fitted model.
 #' @param col_id id of the rows
