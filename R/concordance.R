@@ -24,7 +24,7 @@ conditionalBoyce <- function(x,
   }
   if (warnings){
     if (rng[1] != rng[2]) warning("Not all strata have the same length.")
-    if (nrow(test) < (rng[1]-1)) warning(paste0("Only ", nrow(test), " bins contain observations, the correlation is likely not reliable."))
+    if (length(lx) > 1 & nrow(test) < (rng[1]-1)) warning(paste0("Only ", nrow(test), " bins contain observations, the correlation is likely not reliable."))
   }
 
   # compute correlation
