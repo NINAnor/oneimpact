@@ -33,7 +33,7 @@ net_logit <- function(f, data,
 
   # check data before fitting
   if (anyNA(data)) stop("NA values in data table. Please remove them and rerun.")
-  if (anyNA(p)) stop("NA values in the response. Please remove them and rerun.")
+  if (anyNA(Y)) stop("NA values in the response. Please remove them and rerun.")
 
   # fit the model
   fit <- glmnet::glmnet(X, Y, family = "binomial",

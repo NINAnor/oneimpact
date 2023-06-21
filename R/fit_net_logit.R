@@ -2,7 +2,7 @@
 #'
 #' @param ... Options for net_logit and glmnet
 #'
-#' @rdname fit_net_logit
+#' @name fit_net_logit
 #' @export
 fit_net_logit <- function(f, data,
                           samples, i = 1,
@@ -108,23 +108,23 @@ fit_net_logit <- function(f, data,
 #' @export
 fit_net_rsf <- fit_net_logit
 
-#' Fit multiple logistic regression/RSF models with penalized regression in a train-validate-test setup
+#' Fit a bag of logistic regression/RSF models with penalized regression in a train-validate-test setup
 #'
 #' @param ... Options for net_logit and glmnet
 #' @param mc.cores Only relevant if `parallel == "mclapply"`. If `parallel == "foreach"`, cores must
 #' be assigned before running `fit_multi_net_logit()` using [parallel::makeCluster()] and
 #' [doParallel::registerDoParallel()].
 #'
-#' @rdname fit_multi_net_logit
+#' @name bag_fit_net_logit
 #' @export
-fit_bag_net_logit <- function(f, data,
-                                samples,
-                                metric = c(conditionalBoyce, somersD, AUC)[[1]],
-                                out_dir_file = NULL,
-                                na.action = "na.pass",
-                                parallel = c(FALSE, "foreach", "mclapply")[1],
-                                mc.cores = 2L,
-                                ...) {
+bag_fit_net_logit <- function(f, data,
+                              samples,
+                              metric = c(conditionalBoyce, somersD, AUC)[[1]],
+                              out_dir_file = NULL,
+                              na.action = "na.pass",
+                              parallel = c(FALSE, "foreach", "mclapply")[1],
+                              mc.cores = 2L,
+                              ...) {
 
   # If there is parallel implementation with forach
   if(parallel == "foreach") {
