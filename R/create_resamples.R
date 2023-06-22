@@ -7,18 +7,32 @@
 #' in one block are necessarily excluded from the other blocks (e.g. observations selected
 #' for validation will be absent from train and test blocks).
 #'
-#' @param y a vector of outcomes.
-#' @param times the number of partitions or samples to create
-#' @param p a 3 element vector with the percentage of data that goes to training (H1), test (H2), and validation (H0)
-#' @param sp_strat Default is NULL. If not NULL, the result of spat_strat() should be used here.
-#' @param colH0 Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
-#' population, or study area, used for validating the predictions of the fitted model.
+#' @param y `[vector]` \cr A vector of outcomes.
+#' @param times `[numeric(1)=10]` \cr The number of partitions or samples to create.
+#' @param p `[numeric(3)=c(0.4,0.2,0.2)]` \cr A 3 element numeric vector with the percentage of data that goes to
+#' fitting/training (H1), testing (H2), and validation (H0). Values should be between 0 and 1 and should
+#' not sum more than 1.
+#' @param max_size_validation_blockH0 `[numeric(1)=1000]` \cr Maximum size of the validation block H0.
+#' Used to limit the number of observations in the validation set, to keep fitting relatively
+#' fast and avoid sampling too many observations of the block H0 levels with more observations,
+#' for imbalanced data sets.
+#' @param max_number_fit_blockH1 `[numeric(1)=15]` \cr Maximum number of levels or blocks H1 to be used
+#' for model fitting/training.
+#' @param sp_strat `[data.frame]` \cr Default is `NULL`. If not `NULL`, the `data.frame` resulting
+#' from spat_strat() should be used here.
+#' @param colH0 `[numeric,character,vector]` \cr Column number or name to define the IDs of the H0 level -
+#' the one with ecological meaning, e.g. individual, population, or study area, used for validating the
+#' predictions of the fitted model. If `sp_strat` is provided,
+#' `colH0` is a string with the column name (or the column number) in the `sp_strat` table.
+#' If `sp_strat = NULL`, `colH0` is a vector of H0 values with the same length as `y`.
+#' If `colH0 = NULL` (Default), no H0 level is defined.
 #' @param H0setup Setup for the H0 (validate) block. Either "LAO" (Leave-a-small-bit-of-All-Out) or "LOO"
 #' (Leave-One-Out). For instance, if H0 corresponds to the animal populations, "LAO" will keep some observations
 #' of each and all populations in the H0 (validation) set.
 #' @param list logical - should the results be in lists (TRUE) or matrices with the number of rows equal to
 #' floor(p * length(y)) and times columns.
-#' @param replace whether to perform the bootstrap sampling with or without replacement (Default = TRUE).
+#' @param replace `[logical(1)=TRUE]` \cr Whether to perform the bootstrap sampling with or without
+#' replacement (Default is `TRUE`).
 #'
 #' @examples
 #' # random sampling, no validation block H0

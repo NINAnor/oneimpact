@@ -18,16 +18,31 @@ create_resamples(
 )
 }
 \arguments{
-\item{y}{a vector of outcomes.}
+\item{y}{\verb{[vector]} \cr A vector of outcomes.}
 
-\item{times}{the number of partitions or samples to create}
+\item{times}{\verb{[numeric(1)=10]} \cr The number of partitions or samples to create.}
 
-\item{p}{a 3 element vector with the percentage of data that goes to training (H1), test (H2), and validation (H0)}
+\item{p}{\verb{[numeric(3)=c(0.4,0.2,0.2)]} \cr A 3 element numeric vector with the percentage of data that goes to
+fitting/training (H1), testing (H2), and validation (H0). Values should be between 0 and 1 and should
+not sum more than 1.}
 
-\item{sp_strat}{Default is NULL. If not NULL, the result of spat_strat() should be used here.}
+\item{max_size_validation_blockH0}{\verb{[numeric(1)=1000]} \cr Maximum size of the validation block H0.
+Used to limit the number of observations in the validation set, to keep fitting relatively
+fast and avoid sampling too many observations of the block H0 levels with more observations,
+for imbalanced data sets.}
 
-\item{colH0}{Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
-population, or study area, used for validating the predictions of the fitted model.}
+\item{max_number_fit_blockH1}{\verb{[numeric(1)=15]} \cr Maximum number of levels or blocks H1 to be used
+for model fitting/training.}
+
+\item{sp_strat}{\verb{[data.frame]} \cr Default is \code{NULL}. If not \code{NULL}, the \code{data.frame} resulting
+from spat_strat() should be used here.}
+
+\item{colH0}{\verb{[numeric,character,vector]} \cr Column number or name to define the IDs of the H0 level -
+the one with ecological meaning, e.g. individual, population, or study area, used for validating the
+predictions of the fitted model. If \code{sp_strat} is provided,
+\code{colH0} is a string with the column name (or the column number) in the \code{sp_strat} table.
+If \code{sp_strat = NULL}, \code{colH0} is a vector of H0 values with the same length as \code{y}.
+If \code{colH0 = NULL} (Default), no H0 level is defined.}
 
 \item{H0setup}{Setup for the H0 (validate) block. Either "LAO" (Leave-a-small-bit-of-All-Out) or "LOO"
 (Leave-One-Out). For instance, if H0 corresponds to the animal populations, "LAO" will keep some observations
@@ -36,7 +51,8 @@ of each and all populations in the H0 (validation) set.}
 \item{list}{logical - should the results be in lists (TRUE) or matrices with the number of rows equal to
 floor(p * length(y)) and times columns.}
 
-\item{replace}{whether to perform the bootstrap sampling with or without replacement (Default = TRUE).}
+\item{replace}{\verb{[logical(1)=TRUE]} \cr Whether to perform the bootstrap sampling with or without
+replacement (Default is \code{TRUE}).}
 }
 \description{
 The function creates samples of the data to be included for three different
