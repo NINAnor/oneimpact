@@ -8,6 +8,7 @@ spat_strat(
   x,
   colH0 = NULL,
   colID = NULL,
+  H1_as_H0 = FALSE,
   k = 4,
   block_size = 10000,
   buffer = 1000,
@@ -23,8 +24,15 @@ spat_strat(
 If a \code{data.frame}, the columns corresponding to the (x,y) coordinates must be given in
 \code{coords}.}
 
-\item{colH0}{Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
-population, or study area, used for testing the predictions of the fitted model.}
+\item{colH0}{\verb{[numeric,character=NULL]} \cr Column number or name to define the ids of the H0 level
+\itemize{
+\item the one with ecological meaning, e.g. individual, population, or study area, used for validating
+the predictions of the fitted models. Default is \code{NULL}, in which case there is no block H0 defined.
+}}
+
+\item{H1_as_H0}{\verb{[logical(1)=FALSE]} \cr Whether the spatial blocks of level H1 should be used
+as the block H0, in case no block H0 is provided (if \code{colH0 = NULL}). This parameter is ignored
+if \code{colH0} is provided.}
 
 \item{k}{Number of parts for k-fold cross validation within H1 hierarchical level - to set the penalty parameter}
 
@@ -43,7 +51,10 @@ input data \code{x}.}
 
 \item{save_grid}{Should the grid which defines the H1 and H2 blocks be saved?}
 
-\item{col_id}{id of the rows}
+\item{col_id}{\verb{[numeric,character=NULL]} Column number of name with the ID of the rows of the
+data observations. In step-selection analysis, this should be the column showing the
+number of the strata of each step. For resource selection analysis and environmental niche modeling,
+this might be the}
 }
 \value{
 A \code{data.frame} with the number of the blocks at hierarchical levels H0, H1, and H2.

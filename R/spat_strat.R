@@ -16,9 +16,16 @@
 #' @param x Vector of points to be spatially stratified, in [sf], [sp::SpatialPoints], or [terra::SpatVector].
 #' If a `data.frame`, the columns corresponding to the (x,y) coordinates must be given in
 #' `coords`.
-#' @param colH0 Column number or name to define the ids of the H0 level - the one with ecological meaning, e.g. individual,
-#' population, or study area, used for testing the predictions of the fitted model.
-#' @param col_id id of the rows
+#' @param colH0 `[numeric,character=NULL]` \cr Column number or name to define the ids of the H0 level
+#' - the one with ecological meaning, e.g. individual, population, or study area, used for validating
+#' the predictions of the fitted models. Default is `NULL`, in which case there is no block H0 defined.
+#' @param col_id `[numeric,character=NULL]` Column number of name with the ID of the rows of the
+#' data observations. In step-selection analysis, this should be the column showing the
+#' number of the strata of each step. For resource selection analysis and environmental niche modeling,
+#' this might be the
+#' @param H1_as_H0 `[logical(1)=FALSE]` \cr Whether the spatial blocks of level H1 should be used
+#' as the block H0, in case no block H0 is provided (if `colH0 = NULL`). This parameter is ignored
+#' if `colH0` is provided.
 #' @param k Number of parts for k-fold cross validation within H1 hierarchical level - to set the penalty parameter
 #' @param block_size size (side of a square) of the blocks for H2 level. H1 level blocks size are defined as sqrt(k)*block_size.
 #' @param buffer `max_step_length` buffer around the points, to make sure all points are included
@@ -55,6 +62,7 @@
 spat_strat <- function(x,
                        colH0 = NULL,
                        colID = NULL,
+                       H1_as_H0 = FALSE,
                        k = 4,
                        block_size = 10000,
                        buffer = 1000,
@@ -86,8 +94,15 @@ spat_strat <- function(x,
 
   # set blockH0 according to column colH0 and class of input x
   if(is.null(colH0)) {
-    blockH0 <- NA_integer_
+
+    if(H1_as_H0) {
+      blockH0 <- blocks[["blockH1"]]
+    } else {
+      blockH0 <- NA_integer_
+    }
+
   } else{
+
     if(all(class(x) != "SpatVector")) {
       blockH0  <- x[[colH0]]
     } else {
