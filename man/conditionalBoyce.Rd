@@ -19,3 +19,9 @@ conditionalBoyce(
 \description{
 Computes the conditional Boyce index for model evaluation
 }
+\details{
+\code{AUC} is the implementation of the computation of the Area Under the Curva as related
+to the Sommers'D index,
+as described in https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf.
+\code{proc_AUC} uses the \code{\link[pROC:auc]{pROC::auc()}} function.
+}

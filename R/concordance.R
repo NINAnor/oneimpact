@@ -3,6 +3,11 @@
 #' @param x A data.frame with three columns: x, the predicted values; y, the case variable
 #' (use vs. available, 1/0); and strat, the stratum.
 #'
+#' @details `AUC` is the implementation of the computation of the Area Under the Curva as related
+#' to the Sommers'D index,
+#' as described in https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf.
+#' `proc_AUC` uses the [pROC::auc()] function.
+#'
 #' @export
 conditionalBoyce <- function(x,
                              method=c("pearson", "kendall", "spearman")[1],
@@ -71,3 +76,14 @@ AUC <- function(x,
 # Default cost for binomial outcomes in boot::cv.glm
 cost <- function(r, pi = 0, na.rm = TRUE) mean(abs(r-pi) > 0.5, na.rm = na.rm)
 
+# Different version of the AUC, using an external package
+#' @rdname concordance_indices
+#' @export
+proc_AUC <- function(x,
+                 errors = TRUE,
+                 warnings = TRUE) {
+  suppressWarnings({
+    auc_val <- as.numeric(pROC::auc(pROC::roc(x$y, x$x, quiet = TRUE)))
+  })
+  auc_val
+}

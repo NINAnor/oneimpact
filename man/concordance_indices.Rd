@@ -4,11 +4,14 @@
 \alias{concordance_indices}
 \alias{somersD}
 \alias{AUC}
+\alias{proc_AUC}
 \title{Computes concordance indices for model evaluation}
 \usage{
 somersD(x, errors = TRUE, warnings = TRUE)
 
 AUC(x, errors = TRUE, warnings = TRUE)
+
+proc_AUC(x, errors = TRUE, warnings = TRUE)
 }
 \description{
 These functions compute different concordance indices.
