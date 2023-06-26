@@ -10,7 +10,7 @@ fit_net_logit(
   data,
   samples,
   i = 1,
-  metric = c(conditionalBoyce, somersD, AUC)[[1]],
+  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...
@@ -21,7 +21,7 @@ fit_net_rsf(
   data,
   samples,
   i = 1,
-  metric = c(conditionalBoyce, somersD, AUC)[[1]],
+  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...

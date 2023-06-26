@@ -6,7 +6,7 @@
 #' @export
 fit_net_logit <- function(f, data,
                           samples, i = 1,
-                          metric = c(conditionalBoyce, somersD, AUC)[[1]],
+                          metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
                           out_dir_file = NULL,
                           na.action = "na.pass",
                           ...) {
@@ -22,10 +22,30 @@ fit_net_logit <- function(f, data,
     data <- data[!is.na(data[[wcols$response]]),]
   }
 
+  # relevant columns
+  all_vars <- all.vars(f)
+
   # separate data for fitting, calibration, and validation
-  train_data  <- data[samples$train[[i]], ]
-  test_data <- data[samples$test[[i]], ]
-  validate_data <- data[samples$validate[[i]], ]
+  train_data  <- data[samples$train[[i]], all_vars]
+  test_data <- data[samples$test[[i]], all_vars]
+  validate_data <- data[samples$validate[[i]], all_vars]
+
+  # check NAs
+  if(anyNA(train_data)) {
+    train_data <- na.omit(train_data)
+    nNA <- length(na.action(train_data))
+    warning(paste0(nNA, " missing observations were removed from the test set. ", nrow(train_data), " observations were kept."))
+  }
+  if(anyNA(test_data)) {
+    test_data <- na.omit(test_data)
+    nNA <- length(na.action(test_data))
+    warning(paste0(nNA, " missing observations were removed from the test set. ", nrow(test_data), " observations were kept."))
+  }
+  if(anyNA(validate_data)) {
+    validate_data <- na.omit(validate_data)
+    nNA <- length(na.action(validate_data))
+    warning(paste0(nNA, " missing observations were removed from the test set. ", nrow(validate_data), " observations were kept."))
+  }
 
   # perform penalized regression with glmnet
   # use glmnet.cv?
@@ -36,8 +56,8 @@ fit_net_logit <- function(f, data,
                    ...)
 
   # get variables
-  # f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$other_vars)) # should we remove the intercept?
-  f2 <- as.formula(paste0(wcols$response, " ~ ", wcols$other_vars))
+  f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$other_vars)) # should we remove the intercept?
+  #f2 <- as.formula(paste0(wcols$response, " ~ ", wcols$other_vars))
 
   #----
   # Variable selection step
@@ -45,7 +65,7 @@ fit_net_logit <- function(f, data,
   # Calibration with conditionalBoyce index (recalled metric here)
   # does not work fro cv.glmnet
   # predict.glmnet(fit, test_data, type = "response")??
-  pred_vals <- model.matrix(f2, test_data) %*% coef(fit) # multiple fits?
+  pred_vals <- model.matrix(f2, test_data) %*% coef(fit)[-1,] # multiple fits?
   # compute conditional Boyce for all lambda parameters
   # here it is just Boyce
 
@@ -64,30 +84,35 @@ fit_net_logit <- function(f, data,
   # initiate results object
   results <- list()
   results$lambda <- fit$lambda[which.max(d)] # lambda
-  results$coef <- matrix(coef(fit)[,which.max(d)]) # coefficients
-  rownames(results$coef) <- names(coef(fit)[,which.max(d)])
-  results$var_names <- names(coef(fit)[,which.max(d)]) # variable names
+  results$coef <- matrix(coef(fit)[-1,which.max(d)]) # coefficients
+  rownames(results$coef) <- names(coef(fit)[-1,which.max(d)])
+  results$var_names <- names(coef(fit)[-1,which.max(d)]) # variable names
 
   # get predicted values based on the training and testing data
   train_pred_vals <- model.matrix(f2, train_data) %*% results$coef
   test_pred_vals <- model.matrix(f2, test_data) %*% results$coef
 
   # save results
-  results$fit_score <- metric(data.frame(x = train_pred_vals,
+  results$train_score <- metric(data.frame(x = train_pred_vals,
                                          y = train_data[[wcols$response]],
-                                         strat = rep(1, nrow(test_data))))
-  results$calibration_score <- max(d)
+                                         strat = rep(1, nrow(train_data))))
+  results$test_score <- max(d)
 
   #----
   # Validation step
   val_pred_vals <- model.matrix(f2, validate_data) %*% results$coef
   val <- data.frame(x = val_pred_vals,
                     y = validate_data[[wcols$response]],
-                    strat = rep(1, nrow(test_data)))
+                    strat = rep(1, nrow(validate_data)))
   # val <- split(val, samples$blockH0[sort(match(val$strat, spStrat$id))])
   if(!is.null(samples$blockH0)) {
-    val <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
-    results$validation_score <- unlist(lapply(val, metric))
+
+    val2 <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
+    if(length(val2) == 0) {
+      val2 <- split(val, samples$blockH0[samples$validate[[i]]])
+    }
+    results$validation_score <- unlist(lapply(val2, metric))
+
   } else {
     results$validation_score <- metric(val)
   }
@@ -96,6 +121,9 @@ fit_net_logit <- function(f, data,
   # no habitat validation score
   results$habitat_validation_score <- NULL
   #plot(results$validation_score, results$habitat_validation_score)
+
+  # metric
+  results$metric <- metric
 
   if (!is.null(out_dir_file)){
     save(results, file = paste0(out_dir_file, "_i", i, ".rda"))
@@ -124,6 +152,7 @@ bag_fit_net_logit <- function(f, data,
                               na.action = "na.pass",
                               parallel = c(FALSE, "foreach", "mclapply")[1],
                               mc.cores = 2L,
+                              verbose = FALSE,
                               ...) {
 
   # If there is parallel implementation with forach
@@ -153,7 +182,7 @@ bag_fit_net_logit <- function(f, data,
       warnings(paste0("Parallel fitting of the models using 'mclapply' requires the packages ", paste(packs, collapse = ","),
                       " to be loaded and cores to be assigned. Please check it."))
     # check if cores were assigned
-    fitted_list <- parallel::mclapply(1:length(samples$train), mc.cores =  mc.cores, function(i) {
+    fitted_list <- parallel::mclapply(1:length(samples$train), function(i) {
       fit_net_logit(f = f,
                     data = data,
                     samples = samples,
@@ -162,13 +191,14 @@ bag_fit_net_logit <- function(f, data,
                     out_dir_file = out_dir_file,
                     na.action = na.action,
                     ...)
-    })
+    }, mc.cores =  mc.cores)
   }
 
   # Common loop if parallel = FALSE
   if(parallel == FALSE) {}
   fitted_list <- list()
   for(i in 1:length(samples$train)) {
+    if(verbose) print(paste0("Fitting sample ", i, "/", length(samples$train), "..."))
     fitted_list[[i]] <- fit_net_logit(f = f,
                                       data = data,
                                       samples = samples,

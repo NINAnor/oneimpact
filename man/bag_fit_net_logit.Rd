@@ -13,6 +13,7 @@ bag_fit_net_logit(
   na.action = "na.pass",
   parallel = c(FALSE, "foreach", "mclapply")[1],
   mc.cores = 2L,
+  verbose = FALSE,
   ...
 )
 }
