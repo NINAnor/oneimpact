@@ -12,7 +12,7 @@ fit_net_clogit(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC)[[1]],
+  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...
@@ -24,7 +24,7 @@ fit_net_ssf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC)[[1]],
+  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...
@@ -36,7 +36,7 @@ fit_net_issf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC)[[1]],
+  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...
