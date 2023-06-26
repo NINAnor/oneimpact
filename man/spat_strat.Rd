@@ -54,7 +54,7 @@ input data \code{x}.}
 \item{col_id}{\verb{[numeric,character=NULL]} Column number of name with the ID of the rows of the
 data observations. In step-selection analysis, this should be the column showing the
 number of the strata of each step. For resource selection analysis and environmental niche modeling,
-this might be the}
+this might be the row id, for instance.}
 }
 \value{
 A \code{data.frame} with the number of the blocks at hierarchical levels H0, H1, and H2.

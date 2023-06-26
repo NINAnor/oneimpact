@@ -22,7 +22,7 @@
 #' @param col_id `[numeric,character=NULL]` Column number of name with the ID of the rows of the
 #' data observations. In step-selection analysis, this should be the column showing the
 #' number of the strata of each step. For resource selection analysis and environmental niche modeling,
-#' this might be the
+#' this might be the row id, for instance.
 #' @param H1_as_H0 `[logical(1)=FALSE]` \cr Whether the spatial blocks of level H1 should be used
 #' as the block H0, in case no block H0 is provided (if `colH0 = NULL`). This parameter is ignored
 #' if `colH0` is provided.
@@ -124,7 +124,7 @@ spat_strat <- function(x,
 
   # add to original data.frame
   if(any(class(x) %in% c("data.frame")) & all_cols) {
-    sp_strat <- cbind(x, sp_strat[-1])
+    sp_strat <- cbind(x, sp_strat)
   }
 
   sp_strat
