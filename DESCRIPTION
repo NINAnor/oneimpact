@@ -29,7 +29,8 @@ Imports:
     maxnet,
     survival,
     ggplot2, 
-    scales
+    scales,
+    pROC
 Suggests:
     amt,
     raster,
