@@ -81,8 +81,7 @@ create_resamples <- function (y, times = 10,
                               colH0 = NULL,
                               H0setup = c("LAO", "LOO")[1],
                               list = TRUE,
-                              replace = TRUE)
-{
+                              replace = TRUE) {
   if (inherits(y, "Surv"))
     y <- y[, "time"]
 
@@ -254,7 +253,11 @@ create_resamples <- function (y, times = 10,
           train <- sort(sample(train_set$id, N[1]))
         } else {
           train <- sort(train_set$id)
-          if(length(train) < N[1]) warning("The size of the train/fitting set is smaller than intended; you should check and possibly decrease the value of p[1] and/or increase the value of max_number_fit_blockH1.")
+          if(length(train) < N[1]) {
+            train <- c(train, rep(NA, N[1]))[1:N[1]]
+            warning("The size of the train/fitting set is smaller than intended; you should check and possibly decrease the value of p[1] and/or increase the value of max_number_fit_blockH1.")
+            warning("Replacing the missing test observations by NA. This should be avoided.")
+          }
         }
 
         # test/calibrate
@@ -321,6 +324,9 @@ create_resamples <- function (y, times = 10,
   })
   names(out) <- c("train", "test", "validate")
   out$blockH0 <- colH0
+  if(is.null(colH0)) out$blockH0 <- NULL
+  if(is.null(sp_strat)) out$sp_strat_id <- NULL else
+    out$sp_strat_id <- sp_strat$id
 
   out
 }
