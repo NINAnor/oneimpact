@@ -13,6 +13,8 @@ fit_net_clogit(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  standardize = c("internal", FALSE)[1],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...
@@ -25,6 +27,8 @@ fit_net_ssf(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  standardize = c("internal", FALSE)[1],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...
@@ -37,6 +41,8 @@ fit_net_issf(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  standardize = c("internal", FALSE)[1],
   out_dir_file = NULL,
   na.action = "na.pass",
   ...
