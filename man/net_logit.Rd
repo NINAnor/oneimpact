@@ -10,6 +10,7 @@ net_logit(
   data,
   alpha = 1,
   type.measure = "deviance",
+  standardize = TRUE,
   na.action = "na.pass",
   ...
 )
@@ -19,6 +20,7 @@ net_rsf(
   data,
   alpha = 1,
   type.measure = "deviance",
+  standardize = TRUE,
   na.action = "na.pass",
   ...
 )

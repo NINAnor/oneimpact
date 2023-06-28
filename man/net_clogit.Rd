@@ -11,6 +11,7 @@ net_clogit(
   data,
   alpha = 1,
   type.measure = "deviance",
+  standardize = TRUE,
   na.action = "na.pass",
   ...
 )
@@ -20,6 +21,7 @@ net_ssf(
   data,
   alpha = 1,
   type.measure = "deviance",
+  standardize = TRUE,
   na.action = "na.pass",
   ...
 )
@@ -29,6 +31,7 @@ net_issf(
   data,
   alpha = 1,
   type.measure = "deviance",
+  standardize = TRUE,
   na.action = "na.pass",
   ...
 )

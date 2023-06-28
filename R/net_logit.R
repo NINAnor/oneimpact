@@ -16,6 +16,7 @@
 net_logit <- function(f, data,
                       alpha = 1,
                       type.measure = "deviance",
+                      standardize = TRUE,
                       na.action = "na.pass", ...) {
 
   # NA option
@@ -37,7 +38,10 @@ net_logit <- function(f, data,
 
   # fit the model
   fit <- glmnet::glmnet(X, Y, family = "binomial",
-                        alpha = alpha, type.measure = type.measure, ...)
+                        alpha = alpha,
+                        type.measure = type.measure,
+                        standardize = standardize,
+                        ...)
 
   # return the fitted model
   return(fit)
