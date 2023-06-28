@@ -1,6 +1,5 @@
 #' Summary of a bag of models
 #'
-#' @param f Formula (full).
 #' @param data Input data (whole dataset)
 #' @param score2weight Function to set validation scores into weights, with two arguments:
 #' x, the result of one model of the bag, and col, the column to be used for setting the
@@ -9,7 +8,7 @@
 #' `"habitat_validation_score"`.
 #'
 #' @export
-bag_models <- function(f, fitted, data,
+bag_models <- function(fitted, data,
                        score2weight = NULL,
                        weights_col = c("validation_score", "habitat_validation_score")[1],
                        score_threshold = 0.7,
@@ -36,15 +35,27 @@ bag_models <- function(f, fitted, data,
     }
   }
 
+  # initialize result
   result <- list()
 
   #lres <- lapply(i, function(i){load(paste0(out_dir, "spat_strat_issf_i", i, ".rda")); return(results)})
-  lres <- fitted
+  lres <- fitted$models
+
+  # Bag composed of n models
+  result$n <- fitted$n
 
   # formula
-  result$formula <- f
+  result$formula <- f <- fitted$formula
   wcols <- extract_response_strata(f, other_vars = TRUE)
   result$mm_formula <- as.formula(paste0(wcols$case, " ~ -1+", wcols$other_vars))
+
+  # method
+  # assuming all models follow the same method, must be changed to lapply if not
+  result$method <- fitted$method
+  # metric
+  result$metric <- fitted$metric
+
+  # should we unstandardize the coefs here!?!
 
   # synthesize results
   result$coef <- do.call("cbind", lapply(lres, function(x) { x$coef } ))
@@ -95,8 +106,8 @@ bag_models <- function(f, fitted, data,
   names(data_summary_ch) <- all_vars[classes != "numeric"]
   result$data_summary <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
 
-  # metric
-  result$metric <- lres[[1]]$metric
+  # identification of numeric covariates
+  result$numeric_covs <- fitted$numeric_covs
 
   return(result)
 }

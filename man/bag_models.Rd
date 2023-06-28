@@ -5,7 +5,6 @@
 \title{Summary of a bag of models}
 \usage{
 bag_models(
-  f,
   fitted,
   data,
   score2weight = NULL,
@@ -16,8 +15,6 @@ bag_models(
 )
 }
 \arguments{
-\item{f}{Formula (full).}
-
 \item{data}{Input data (whole dataset)}
 
 \item{score2weight}{Function to set validation scores into weights, with two arguments:
