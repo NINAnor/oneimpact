@@ -4,7 +4,7 @@
 \alias{plot_importance}
 \title{Plot variable importance}
 \usage{
-plot_importance(importance, remove_threshold = 0)
+plot_importance(importance, remove_threshold = 0, normalize = TRUE)
 }
 \arguments{
 \item{importance}{\verb{[numeric]} \cr Numeric vector showing the importance score of
@@ -13,6 +13,10 @@ each variable, resulting from \code{\link[=variable_importance]{variable_importa
 \item{remove_threshold}{\verb{[numeric(1)=0]} \cr Only importance scores above this
 level will be plotted. Default is 0, in case which all null variables will be
 removed. To plot all variables, set remove_threshold as -1 or any other negative value.}
+
+\item{normalize}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE}, the variable importance scores are
+dividing the the maximum score, so that the score of the most important variable
+is set to 1.}
 }
 \description{
 Plot variable importance

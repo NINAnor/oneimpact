@@ -7,18 +7,52 @@
 variable_importance(
   x,
   data,
+  samples = NULL,
   type = c("drop", "permutation")[1],
-  nb_permutations = 100,
+  n_permutations = 100,
   order = c("desc", "asc", FALSE)[1],
-  plot = TRUE,
+  variable_block = NULL,
+  plot = FALSE,
   remove_threshold = 0
 )
 }
 \arguments{
-\item{x}{\code{list} \cr Bag of models, result of \code{\link[=bag_models]{bag_models()}}. It contains
+\item{x}{\verb{[list]} \cr Bag of models, result of \code{\link[=bag_models]{bag_models()}}. It contains
 multiple information from the models, such as formula, weights, coefficients,
 and metric used to evaluate the models.}
+
+\item{data}{\verb{[data.frame]} \cr Complete data set to which the models were applied.}
+
+\item{type}{\verb{[character(1)="drop"]\{"drop", "permutation"\}} \cr Type of computation
+for variable importance. If \code{type = "drop"} (default), each variable is dropped from
+the model at a time and the variation in model evaluation metric is computed.
+If \code{type = "permutation"}, the observations of each variable are permutated and the
+variation in the model evaluation metric is computed.}
+
+\item{n_permutations}{\verb{[numeric(1)=100]} \cr Number of permutations, if
+\code{type = "permutation"}.}
+
+\item{order}{\verb{[character,logical(1)="desc"]\{"desc", "asc", FALSE\}} \cr Whether or
+not to order the output variables according to descending (\code{order = "desc"}) or
+ascending order of variable importance (\code{order = "asc"}). If \code{FALSE}, the variables
+are shown in the same order as present in the bag of models, \code{x}.}
+
+\item{plot}{\verb{[logical(1)=FALSE]} \cr Should variable importance be plotted? Default
+is \code{FALSE}.}
+
+\item{remove_threshold}{\verb{[numeric(1)]} \cr Threshold for excluding variable with
+little importance in the variable importance plot (i.e. only considered if \code{plot = TRUE}).
+See more in \code{\link[=plot_importance]{plot_importance()}}.}
 }
 \description{
-Computes variable importance
+Computation of variable importance from a bag of models. Variable importance can
+be computed either by dropping variables or through permutation of the variables values
+(parameter \code{type}), typically by evaluating the effects on the model evaluation metric
+in the validation set(s). If \code{type = "drop"}, each variable is dropped from the model
+at a time and the variation in model evaluation metric is computed. If \code{type = "permutation"},
+The observations of each variable are permutated and the variation in model evaluation
+metric is computed.
+}
+\seealso{
+For plotting variable importance, see \code{\link[=plot_importance]{plot_importance()}}.
 }
