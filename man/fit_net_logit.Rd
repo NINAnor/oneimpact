@@ -11,8 +11,10 @@ fit_net_logit(
   samples,
   i = 1,
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-  out_dir_file = NULL,
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  standardize = c("internal", FALSE)[1],
   na.action = "na.pass",
+  out_dir_file = NULL,
   ...
 )
 
@@ -22,14 +24,37 @@ fit_net_rsf(
   samples,
   i = 1,
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-  out_dir_file = NULL,
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  standardize = c("internal", FALSE)[1],
   na.action = "na.pass",
+  out_dir_file = NULL,
   ...
 )
 }
 \arguments{
+\item{f}{\verb{[formula]} \cr Formula to be fitted.}
+
+\item{data}{\verb{[data.frame]} \cr Complete data set to be analyzed.}
+
+\item{samples}{\verb{[list]} \cr List of samples with at least three elements: train, test,
+and validate. Each elements might have several elements, each representing
+the lines of \code{data} to be sampled for each resample. Typically, this is computed by
+the function \code{\link[=create_resamples]{create_resamples()}}.}
+
+\item{metric}{\verb{[function]\{conditionalBoyce, SomersD, AUC, proc_AUC\}} \cr Function
+representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
+somersD, AUC, and proc_AUC. A user-defined function might be provided, with a condition that
+it must be maximized to find the best fit model.}
+
+\item{standardize}{\verb{[logical(1)=TRUE]} \cr Logical flag for predictor variable standardization,
+prior to fitting the model sequence. The coefficients are always returned on the original scale.
+Default is standardize=TRUE. If variables are in the same units already, you might not wish to
+standardize them.}
+
 \item{...}{Options for net_logit and glmnet}
 }
 \description{
-Fit logistic regression/RSF with penalized regression in a train-validate-test setup
+By default, \code{\link[=fit_net_logit]{fit_net_logit()}} does not standardize predictor variables. If you want numeric variables
+to be standardized, you can either use \verb{[bag_git_net_logit()]} with parameter \code{standardize = TRUE}
+or provide an already standardized data set as input.
 }

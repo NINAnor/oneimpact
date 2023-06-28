@@ -1,5 +1,23 @@
 #' Fit logistic regression/RSF with penalized regression in a train-validate-test setup
 #'
+#' By default, [fit_net_logit()] does not standardize predictor variables. If you want numeric variables
+#' to be standardized, you can either use `[bag_git_net_logit()]` with parameter `standardize = TRUE`
+#' or provide an already standardized data set as input.
+#'
+#' @param f `[formula]` \cr Formula to be fitted.
+#' @param data `[data.frame]` \cr Complete data set to be analyzed.
+#' @param samples `[list]` \cr List of samples with at least three elements: train, test,
+#' and validate. Each elements might have several elements, each representing
+#' the lines of `data` to be sampled for each resample. Typically, this is computed by
+#' the function [oneimpact::create_resamples()].
+#' @param metric `[function]{conditionalBoyce, SomersD, AUC, proc_AUC}` \cr Function
+#' representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
+#' somersD, AUC, and proc_AUC. A user-defined function might be provided, with a condition that
+#' it must be maximized to find the best fit model.
+#' @param standardize `[logical(1)=TRUE]` \cr Logical flag for predictor variable standardization,
+#' prior to fitting the model sequence. The coefficients are always returned on the original scale.
+#' Default is standardize=TRUE. If variables are in the same units already, you might not wish to
+#' standardize them.
 #' @param ... Options for net_logit and glmnet
 #'
 #' @name fit_net_logit
@@ -7,9 +25,15 @@
 fit_net_logit <- function(f, data,
                           samples, i = 1,
                           metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-                          out_dir_file = NULL,
+                          method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+                          standardize = c("internal", FALSE)[1],
                           na.action = "na.pass",
+                          out_dir_file = NULL,
                           ...) {
+
+  # add parameter checks
+  sd_options <- c("internal", "external", FALSE)
+  if(!(standardize %in% sd_options)) stop(paste0("Invalid parameter 'standardize'. It should be one of ", paste(sd_options, collapse = ","), "."))
 
   # should the sampling be here within the function?
 
@@ -22,13 +46,10 @@ fit_net_logit <- function(f, data,
     data <- data[!is.na(data[[wcols$response]]),]
   }
 
-  # relevant columns
-  all_vars <- all.vars(f)
-
   # separate data for fitting, calibration, and validation
-  train_data  <- data[samples$train[[i]], all_vars]
-  test_data <- data[samples$test[[i]], all_vars]
-  validate_data <- data[samples$validate[[i]], all_vars]
+  train_data  <- data[samples$train[[i]], ]
+  test_data <- data[samples$test[[i]], ]
+  validate_data <- data[samples$validate[[i]], ]
 
   # check NAs
   if(anyNA(train_data)) {
@@ -47,11 +68,20 @@ fit_net_logit <- function(f, data,
     warning(paste0(nNA, " missing observations were removed from the test set. ", nrow(validate_data), " observations were kept."))
   }
 
+  # set standardize parameter to be used in glmnet call
+  if(standardize != "internal") {
+    std <- FALSE
+  } else {
+    std <- TRUE
+  }
+
+
   # perform penalized regression with glmnet
   # use glmnet.cv?
   fit <- net_logit(f, train_data,
                    alpha = 1,
                    type.measure = "deviance",
+                   standardize = std,
                    na.action = na.action,
                    ...)
 
@@ -81,7 +111,7 @@ fit_net_logit <- function(f, data,
   #plot(fit$lambda, d)
   fit$lambda[which.max(d)]
 
-  # initiate results object
+  # initialize results
   results <- list()
   results$lambda <- fit$lambda[which.max(d)] # lambda
   results$coef <- matrix(coef(fit)[-1,which.max(d)]) # coefficients
@@ -94,8 +124,8 @@ fit_net_logit <- function(f, data,
 
   # save results
   results$train_score <- metric(data.frame(x = train_pred_vals,
-                                         y = train_data[[wcols$response]],
-                                         strat = rep(1, nrow(train_data))))
+                                           y = train_data[[wcols$response]],
+                                           strat = rep(1, nrow(train_data))))
   results$test_score <- max(d)
 
   #----
@@ -122,11 +152,9 @@ fit_net_logit <- function(f, data,
   results$habitat_validation_score <- NULL
   #plot(results$validation_score, results$habitat_validation_score)
 
-  # metric
-  results$metric <- metric
-
+  # whether to save the results externally
   if (!is.null(out_dir_file)){
-    save(results, file = paste0(out_dir_file, "_i", i, ".rda"))
+    saveRDS(results, file = paste0(out_dir_file, "_i", i, ".rds"))
   } else {
     return(results)
   }
@@ -142,18 +170,71 @@ fit_net_rsf <- fit_net_logit
 #' @param mc.cores Only relevant if `parallel == "mclapply"`. If `parallel == "foreach"`, cores must
 #' be assigned before running `fit_multi_net_logit()` using [parallel::makeCluster()] and
 #' [doParallel::registerDoParallel()].
+#' @param standardize internal = internal glmnet standaridization, i.e. using glmnet with argument standardize = TRUE.
+#' This also standardizes dummy variables, but returns the estimated coefficients back to the original scale.
+#' This however can cause baises in the estimates because of the bias-variance tradeoff that L1 and L1 regularization
+#' methods try to minimize.
+#' See more info in https://stackoverflow.com/questions/17887747/how-does-glmnets-standardize-argument-handle-dummy-variables
+#' external = glmnet is called with argument standardize = FALSE, but standization is done by the
+#' bag_fit_net_logit function. Return coefs in the original scale?? Implement.
+#' If FALSE, no standardization of predictors is done.
 #'
 #' @name bag_fit_net_logit
 #' @export
 bag_fit_net_logit <- function(f, data,
                               samples,
                               metric = c(conditionalBoyce, somersD, AUC)[[1]],
-                              out_dir_file = NULL,
+                              standardize = c("internal", "external", FALSE)[1],
+                              method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
                               na.action = "na.pass",
+                              out_dir_file = NULL,
                               parallel = c(FALSE, "foreach", "mclapply")[1],
                               mc.cores = 2L,
                               verbose = FALSE,
                               ...) {
+
+  # get variables
+  wcols <- extract_response_strata(f, other_vars = TRUE)
+  # First we standardize covariates
+  # relevant columns
+  all_vars <- all.vars(f)
+  all_covars <- all_vars[grep(wcols$response, all_vars, invert = TRUE)]
+
+  # get predictors
+  data_covs <- data[, all_covars]
+  # select numeric predictors to be standardized
+  numeric_covs <- (sapply(data_covs, class) == "numeric")
+  # standardize
+  if(standardize == "external") {
+    data_covs_num <- data_covs[, numeric_covs]
+    # standardize
+    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
+    # register mean and sd
+    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
+      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+    rownames(covs_mean_sd) <- colnames(data_covs_num)
+    colnames(covs_mean_sd) <- c("mean", "sd")
+    # merge standardized predictors with non numeric predictors
+    data_covs_std <- cbind(data_covs[, !numeric_covs], data.frame(do.call("cbind", data_covs_num_std)))
+    data_covs_std <- data_covs_std[,order(c(which(!numeric_covs), which(numeric_covs)))]
+    colnames(data_covs_std) <- colnames(data_covs)
+    data <- cbind(data[wcols$response], data_covs_std)
+  } else {
+    data <- data[, all_vars]
+  }
+
+  # initiate results object
+  results <- list()
+  results$n <- length(samples$train)
+  results$formula <- f
+  results$method <- method
+  results$metric <- metric
+  # standarized means and sd
+  if(standardize == "external") {
+    results$covariate_mean_sd <- covs_mean_sd
+  } else {
+    results$covariate_mean_sd <- NULL
+  }
 
   # If there is parallel implementation with forach
   if(parallel == "foreach") {
@@ -169,8 +250,10 @@ bag_fit_net_logit <- function(f, data,
                                                 samples = samples,
                                                 i = i,
                                                 metric = metric,
-                                                out_dir_file = out_dir_file,
+                                                method = method,
+                                                standardize = standardize,
                                                 na.action = na.action,
+                                                out_dir_file = out_dir_file,
                                                 ...)
                                 }
   }
@@ -188,8 +271,10 @@ bag_fit_net_logit <- function(f, data,
                     samples = samples,
                     i = i,
                     metric = metric,
-                    out_dir_file = out_dir_file,
+                    method = method,
+                    standardize = standardize,
                     na.action = na.action,
+                    out_dir_file = out_dir_file,
                     ...)
     }, mc.cores =  mc.cores)
   }
@@ -204,12 +289,23 @@ bag_fit_net_logit <- function(f, data,
                                       samples = samples,
                                       i = i,
                                       metric = metric,
-                                      out_dir_file = out_dir_file,
+                                      method = method,
+                                      standardize = standardize,
                                       na.action = na.action,
+                                      out_dir_file = out_dir_file,
                                       ...)
   }
 
   names(fitted_list) <- names(samples$train)
   # define new class?
-  fitted_list
+  results$models <- fitted_list
+
+  # Add info about the covariates - type
+  results$numeric_covs <- numeric_covs
+
+  ##############
+  # if standardize == "external", we should unstandardize the coefs here!
+  # implement that later
+
+  results
 }
