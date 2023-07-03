@@ -1,5 +1,7 @@
 #' Summary of a bag of models
 #'
+#' ### Add option to read the models from a set of rds/rda files.
+#'
 #' @param data Input data (whole dataset)
 #' @param score2weight Function to set validation scores into weights, with two arguments:
 #' x, the result of one model of the bag, and col, the column to be used for setting the
@@ -47,7 +49,7 @@ bag_models <- function(fitted, data,
   # formula
   result$formula <- f <- fitted$formula
   wcols <- extract_response_strata(f, other_vars = TRUE)
-  result$mm_formula <- as.formula(paste0(wcols$case, " ~ -1+", wcols$other_vars))
+  result$mm_formula <- as.formula(paste0(wcols$response, " ~ -1+", wcols$other_vars))
 
   # method
   # assuming all models follow the same method, must be changed to lapply if not
@@ -109,6 +111,10 @@ bag_models <- function(fitted, data,
   # identification of numeric covariates
   result$numeric_covs <- fitted$numeric_covs
 
+  # set class
+  class(result) <- c("bag", "list")
+  # class(result) <- "bag"
+
   return(result)
 }
 
@@ -122,8 +128,9 @@ data_summary_char <- function(x){
   tab <- table(x)
   tab <- tab[order(tab)]
   nam <- names(tab)
-  y <- c(nam[1], rep(NA_character_, 3), nam[which(abs(tab - median(tab)) == min(abs(tab - median(tab))))[1]],
-         rep(NA_character_, 3), nam[length(tab)], rep(NA_character_, 2))
+  mode <- nam[which(abs(tab - median(tab)) == min(abs(tab - median(tab))))[1]]
+  y <- c(nam[1], rep(mode, 3), mode,
+         rep(mode, 3), nam[length(tab)], rep(mode, 2))
   names(y) <- c("min", paste0(c(1, 2.5, 25, 50, 75, 97.5, 99), "%"),
                 "max", "mean", "sd")
   return(y)

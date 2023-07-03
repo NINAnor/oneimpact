@@ -25,5 +25,6 @@ scores. See the argument \code{weights_col}.}
 \code{"habitat_validation_score"}.}
 }
 \description{
-Summary of a bag of models
+\subsection{Add option to read the models from a set of rds/rda files.}{
+}
 }
