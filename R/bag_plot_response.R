@@ -12,24 +12,32 @@ bag_plot_response <- function(x,
                               zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
                               ci = TRUE,
                               wQ_probs = c(0.025, 0.5, 0.975),
-                              baseline=NULL,
+                              baseline = c("median", "mean", "zero")[1],
                               zoi = FALSE,
                               zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
                               ggplot = T,
                               plot_mean = TRUE,
                               plot_median = TRUE,
+                              n_features = 1,
                               normalize = c(FALSE, "mean", "median", "ci")[1],
                               logx=F,
                               ylim=NULL){
 
   # baselines for plotting and predicting!! mean? median?
   # define the baseline
-  if (is.null(baseline)){
-    baseline <- x$data_summary[5,]
-  }
-  if (baseline[1] == "zero"){
-    baseline <- x$data_summary[5,]
-    baseline[1,] <- 0
+  if (baseline[1] == "median"){
+    baseline <- x$data_summary[rownames(x$data_summary) == "50%",]
+  } else {
+    if(baseline[1] == "mean") {
+      baseline <- x$data_summary[rownames(x$data_summary) == "mean",]
+    } else {
+      if (baseline[1] == "zero"){
+        baseline <- x$data_summary[5,]
+        baseline[1,] <- 0
+      } else {
+        stop(paste0("Invalid 'baseline' parameter: ", baseline, ". Pleas re-define."))
+      }
+    }
   }
 
   # is the variable a ZOI variable?
@@ -50,7 +58,7 @@ bag_plot_response <- function(x,
     # compute ZOI for the intended distances
     dfvar2 <- dfvar[,rep(1, length(zoi_radii))]
     dfvar2 <- as.data.frame(do.call("cbind", lapply(c(1:ncol(dfvar2)), function(i) {
-      oneimpact::dist_decay(dfvar2[,i], radius = zoi_radii[i], type = zoi_shape) })))
+      n_features*oneimpact::dist_decay(dfvar2[,i], radius = zoi_radii[i], type = zoi_shape) })))
     names(dfvar2) <- zois#paste0(names(dfvar)[1], zoi_radii)
 
     # cumulative vars
@@ -65,7 +73,7 @@ bag_plot_response <- function(x,
 
   # make sure prediction works even if categorical variables are constant
   # get that from the summary instead of dat, where from? maybe a new object
-  for(i in which(!x$numeric_covs)) newdata[,i] <- factor(newdata[,i], levels = sort(unique(data[,names(x$numeric_covs[i])]))) # maybe different condition and specification with levels if it is a factor
+  for(i in which(!x$numeric_covs)) newdata[,i+1] <- factor(newdata[,i+1], levels = sort(unique(data[,names(x$numeric_covs[i])]))) # maybe different condition and specification with levels if it is a factor
 
   # predict for new data set
   pred <- bag_predict(x, newdata, type = type, wMean = T, wQ_probs = wQ_probs)
