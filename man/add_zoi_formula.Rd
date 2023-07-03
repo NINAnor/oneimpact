@@ -9,6 +9,7 @@ add_zoi_formula(
   zoi_radius,
   type = NULL,
   pattern = "XXX",
+  cumulative = NULL,
   separator = "_",
   grid = FALSE
 )
@@ -23,6 +24,9 @@ the formula.}
 
 \item{pattern}{Pattern to be replaced in the formula, corresponding to the ZOI radii or
 ZOI shapes and radii.}
+
+\item{cumulative}{= NULL. Possible: "cumulative", "nearest" (if this is to be set by the
+user, otherwise it should be taken from the variable name)}
 
 \item{separator}{Separator to be used between type and zoi_radius, when \code{type}
 is provided. Default is "_".}
@@ -43,5 +47,20 @@ add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), pattern = "XXX")
 f <- case_ ~ strata(step_id_) + sl_*startpt_roadsXXX + sl_*startpt_cabinsXXX
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = "_exp_decay", pattern = "XXX")
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("_exp_decay", "_threshold"), pattern = "XXX")
+
+# grid
+f <- case_ ~ strata(step_id_) + land_use + sl_*startpt_roads_XXX + sl_*startpt_cabins_XXX
+add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("exp_decay", "threshold"), pattern = "XXX",
+                grid = TRUE, cumulative = "nearest")
+
+# grid 2
+f <- case_ ~ strata(step_id_) + sl_*startpt_roads_cumulative_XXX + sl_*startpt_cabins_nearest_XXX
+add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("exp_decay", "threshold"), pattern = "XXX",
+                grid = TRUE)
+
+# grid 3
+f <- case_ ~ strata(step_id_) + sl_*startpt_roads_XXX + sl_*startpt_cabins_XXX
+add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("nearest_exp_decay", "cumulative_exp_decay"), pattern = "XXX",
+                grid = TRUE)
 
 }
