@@ -202,7 +202,7 @@ plot_weights <- function(x, pattern = "*", remove_low = 0, remove_high = Inf, no
     df <- data.frame(var = factor(names(w_coef), levels = names(wgt_coef), ordered = TRUE),
                      coef = wgt_coef)
     # filter thresholds
-    df <- df[abs(df$coef) >= remove_threshold & abs(df$coef) < remove_high,]
+    df <- df[abs(df$coef) >= remove_low & abs(df$coef) < remove_high,]
 
     # plot
     p <- ggplot2::ggplot(data = df, ggplot2::aes(x = var, y = coef)) +
