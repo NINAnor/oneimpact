@@ -82,8 +82,6 @@ cost <- function(r, pi = 0, na.rm = TRUE) mean(abs(r-pi) > 0.5, na.rm = na.rm)
 proc_AUC <- function(x,
                  errors = TRUE,
                  warnings = TRUE) {
-  suppressWarnings({
-    auc_val <- as.numeric(pROC::auc(pROC::roc(x$y, x$x, quiet = TRUE)))
-  })
+  auc_val <- as.numeric(pROC::auc(pROC::roc(x$y, x$x, quiet = TRUE)))
   auc_val
 }
