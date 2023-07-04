@@ -8,8 +8,14 @@
 #' @param model \cr Fitted model, i.e. the object created by a model fit funtion
 #' such as "lm", "glm", or "coxph".
 #' @param data \cr The original `data.frame` with the data used to fit the model.
+#' @param bag
+#' @param standardize `[logical(1)=TRUE]` If `TRUE` (Default), the coefficients are standardized.
+#' If `FALSE`, the coefficients are standardized. Only numeric coefficients are
+#' standardized.
 #'
 #' @returns A vector of rescaled coefficients for the input model.
+#'
+#' @name rescale_coefficients
 #'
 #' @examples
 #' library(dplyr)
@@ -28,24 +34,27 @@
 #' coef(lm(Sepal.Length ~ Petal.Length + Species, data = iris))
 #'
 #' @export
-rescale_coefficients <- function(model, data) {
-
-  if("glm" %in% class(model))
-    beta <- rescale_coefs.glm(model, data)
-
-  if("lm" %in% class(model))
-    beta <- rescale_coefs.lm(model, data)
-
-  if("coxph" %in% class(model))
-    beta <- rescale_coefs.coxph(model, data)
-
-  beta
-}
 # rescale_coefficients <- function(model, data) {
-#   UseMethod("rescale_coefs")
+#
+#   if("glm" %in% class(model)) {
+#     beta <- rescale_coefs.glm(model, data)
+#   } else {
+#     if("lm" %in% class(model))
+#       beta <- rescale_coefs.lm(model, data)
+#   }
+#
+#   if("coxph" %in% class(model))
+#     beta <- rescale_coefs.coxph(model, data)
+#
+#   beta
 # }
+rescale_coefficients <- function(...) {
+  UseMethod("rescale_coefficients")
+}
 
-rescale_coefs.coxph <- function(model, data) {
+#' @rdname rescale_coefficients
+#' @export
+rescale_coefficients.coxph <- function(model, data, ...) {
 
   # model inputs
   # m_vars <- all.vars(model$formula)[-1] # remove reponse variable
@@ -67,7 +76,9 @@ rescale_coefs.coxph <- function(model, data) {
   beta
 }
 
-rescale_coefs.lm <- function(model, data) {
+#' @rdname rescale_coefficients
+#' @export
+rescale_coefficients.lm <- function(model, data, ...) {
 
   # model inputs
   m_vars <- all.vars(attr(model$terms, "variables"))[-1] # remove reponse variable
@@ -94,7 +105,9 @@ rescale_coefs.lm <- function(model, data) {
   beta
 }
 
-rescale_coefs.glm <- function(model, data) {
+#' @rdname rescale_coefficients
+#' @export
+rescale_coefficients.glm <- function(model, data, ...) {
 
   # model inputs
   m_vars <- all.vars(model$formula)[-1] # remove reponse variable
@@ -121,7 +134,50 @@ rescale_coefs.glm <- function(model, data) {
   beta
 }
 
+#' @rdname rescale_coefficients
+#' @export
+rescale_coefficients.bag  <- function(bag, data, tostd = TRUE, ...) {
 
-# model = multifits$fits[[1]]$models[[6]]
-# data = dat
-# beta = coef(model)
+  # covariates
+  m_covars <- all.vars(bag$mm_formula)[-1]
+
+  # model matrix with data
+  M <- stats::model.matrix(bag$mm_formula, data)
+
+  # variables and terms
+  terms_order <- attributes(M)$assign
+  terms_order <- terms_order[terms_order > 0]
+  vars_formula <- rep(m_covars, times = unname(table(terms_order)))
+  numeric_vars_order <- rep(bag$numeric_covs, times = unname(table(terms_order)))
+  # numeric variables in the formula
+  m_covars_num <- m_covars[bag$numeric_covs]
+  vars_formula_num <- vars_formula[vars_formula %in% m_covars_num]
+
+  # coefficients
+  coef <- bag$coef
+
+  # SDs
+  sds <- bag$data_summary
+  sds <- sds[rownames(sds) == "sd", colnames(sds) %in% m_covars]
+  sds_all <- unlist(rep(sds, unname(table(terms_order)))) |>
+    as.numeric()
+  sds_all[numeric_vars_order == FALSE] <- 1
+  names(sds_all) <- vars_formula
+
+  # standardized coefs
+  if(tostd)
+    new_coef <- to_std(coef, sds_all) else
+      new_coef <- from_std(coef, sds_all)
+
+  new_coef
+}
+
+# function to standardize coefficients that are not standardized
+# here coef and sd should be the same length
+to_std <- function(coef, sd) {
+  coef * sd
+}
+
+from_std <- function(coef, sd) {
+  coef / sd
+}
