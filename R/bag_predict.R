@@ -34,8 +34,9 @@ bag_predict <- function(x,
   # if wMean is providade, the weighted mean is computed
   # if none is provided, the raw prediction is shown
   if (!is.null(wQ_probs)){
-    preddf <- data.frame(t(apply(pred, 1, DescTools::Quantile, weights = NULL,
-                                 #weights = x$weights
+    preddf <- data.frame(t(apply(pred, 1, DescTools::Quantile, #weights = NULL,
+                                 weights = x$weights,
+                                 type = 5,
                                  probs=wQ_probs)))
     ########### error here
     # 50: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) :
