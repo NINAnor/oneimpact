@@ -9,9 +9,11 @@ net_logit(
   f,
   data,
   alpha = 1,
+  penalty.factor = NULL,
   type.measure = "deviance",
   standardize = TRUE,
   na.action = "na.pass",
+  func = c("glmnet", "cv.glmnet")[1],
   ...
 )
 
@@ -19,9 +21,11 @@ net_rsf(
   f,
   data,
   alpha = 1,
+  penalty.factor = NULL,
   type.measure = "deviance",
   standardize = TRUE,
   na.action = "na.pass",
+  func = c("glmnet", "cv.glmnet")[1],
   ...
 )
 }

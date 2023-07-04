@@ -15,9 +15,12 @@
 #' @export
 net_logit <- function(f, data,
                       alpha = 1,
+                      penalty.factor = NULL,
                       type.measure = "deviance",
                       standardize = TRUE,
-                      na.action = "na.pass", ...) {
+                      na.action = "na.pass",
+                      func = c("glmnet", "cv.glmnet")[1],
+                      ...) {
 
   # NA option
   options(na.action = na.action)
@@ -26,7 +29,7 @@ net_logit <- function(f, data,
   wcols <- extract_response_strata(f, other_vars = TRUE)
 
   # formula with no intercept
-  ff <- as.formula(paste0(wcols$case, " ~ -1 + ", wcols$other_vars))
+  ff <- as.formula(paste0(wcols$reponse, " ~ -1 + ", wcols$other_vars))
   # explanatory variables
   X <- model.matrix(ff, data)
   # response variable
@@ -36,12 +39,25 @@ net_logit <- function(f, data,
   if (anyNA(data)) stop("NA values in data table. Please remove them and rerun.")
   if (anyNA(Y)) stop("NA values in the response. Please remove them and rerun.")
 
+  if(is.null(penalty.factor))
+    penalty.factor <- rep(1, ncol(X))
+
   # fit the model
-  fit <- glmnet::glmnet(X, Y, family = "binomial",
-                        alpha = alpha,
-                        type.measure = type.measure,
-                        standardize = standardize,
-                        ...)
+  if(func == "glmnet") {
+    fit <- glmnet::glmnet(X, Y, family = "binomial",
+                          alpha = alpha,
+                          penalty.factor = penalty.factor,
+                          type.measure = type.measure,
+                          standardize = standardize,
+                          ...)
+  } else {
+    fit <- glmnet::cv.glmnet(X, Y, family = "binomial",
+                             alpha = alpha,
+                             penalty.factor = penalty.factor,
+                             type.measure = type.measure,
+                             standardize = standardize,
+                             ...)
+  }
 
   # return the fitted model
   return(fit)
