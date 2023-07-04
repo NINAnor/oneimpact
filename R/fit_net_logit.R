@@ -18,6 +18,10 @@
 #' prior to fitting the model sequence. The coefficients are always returned on the original scale.
 #' Default is standardize=TRUE. If variables are in the same units already, you might not wish to
 #' standardize them.
+#' @param out_dir_file `[character(1)=NULL]` \cr String with the prefix of the file name (and
+#' the folder) where the result of each model will be saved. E.g. if `out_dir_file = "output/test_"`,
+#' the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
+#' folder "output".
 #' @param ... Options for net_logit and glmnet
 #'
 #' @name fit_net_logit
@@ -25,17 +29,23 @@
 fit_net_logit <- function(f, data,
                           samples, i = 1,
                           metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-                          method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+                          method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+                          alpha = NULL,
+                          penalty.factor = NULL,
                           standardize = c("internal", FALSE)[1],
+                          predictor_grid = NULL,
+                          lasso_decay_type = c(log, function(x) x/1000)[[1]],
                           na.action = "na.pass",
                           out_dir_file = NULL,
                           ...) {
 
-  # add parameter checks
+  # parameter checks
   sd_options <- c("internal", "external", FALSE)
-  if(!(standardize %in% sd_options)) stop(paste0("Invalid parameter 'standardize'. It should be one of ", paste(sd_options, collapse = ","), "."))
-
-  # should the sampling be here within the function?
+  if(!(standardize %in% sd_options))
+    stop(paste0("Invalid parameter 'standardize'. It should be one of ", paste(sd_options, collapse = ","), "."))
+  method_options <- c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")
+  if(!(grepl(paste(method_options, collapse = "|"), method[1], ignore.case = TRUE)))
+    stop(paste0("Invalid parameter 'method'. It should be one of ", paste(method_options, collapse = ","), "."))
 
   # get variables
   wcols <- extract_response_strata(f, other_vars = TRUE)
@@ -75,11 +85,81 @@ fit_net_logit <- function(f, data,
     std <- TRUE
   }
 
+  # set method - alpha
+  if(is.null(alpha)) {
+    # If Lasso
+    if(grepl("Lasso", method[1], ignore.case = TRUE)) {
+      alpha <- 1
+    } else {
+      # If Ridge
+      if(grepl("Ridge", method[1], ignore.case = TRUE)) {
+        alpha <- 0
+      }
+    }
+  }
+
+  # set method - penalties
+  if(is.null(penalty.factor)) {
+
+    # check
+    # variable grid to define penalties
+    if(is.null(predictor_grid)) {
+      if(grepl("DecayAdaptiveLasso", method[1], ignore.case = TRUE)) {
+        stop("If 'method' is 'DecayAdaptiveLasso', the parameter 'predictor_grid' must be provided.")
+      }
+    }
+
+    # if Decay
+    if(grepl("Decay", method[1], ignore.case = TRUE)) {
+
+      # formula
+      ff <- as.formula(paste0("~ -1 +", wcols$other_vars))
+      covars <- all.vars(ff)
+      # model matrix with data
+      M <- stats::model.matrix(ff, data)
+
+      # variables and terms
+      terms_order <- attributes(M)$assign
+      terms_order <- terms_order[terms_order > 0]
+      # vars_formula <- rep(covars, times = unname(table(terms_order)))
+      # ZOI and nonZOI variables in the model matrix
+      mm_is_zoi <- rep(predictor_grid$is_zoi, times = unname(table(terms_order)))
+      mm_zoi_radius <- rep(predictor_grid$zoi_radius, times = unname(table(terms_order)))
+      # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
+
+      # set penalty factor
+      penalty.factor <- ifelse(vars_is_zoi, lasso_decay_type(predictor_grid$zoi_radius), 1)
+      names(penalty.factor) <- colnames(M)
+
+    } else {
+      if(tolower(method[1]) == "adaptivelasso") {
+
+        # fit
+        ridge_fit <- net_logit(f, train_data,
+                               alpha = 0,
+                               type.measure = "deviance",
+                               standardize = std,
+                               na.action = na.action,
+                               ...)
+        # get variables
+        f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$other_vars))
+        # calibration
+        pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit)[-1,] # multiple fits?
+        d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
+          metric(data.frame(x = x, y = y, strat = strat), errors=F)},
+          y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
+        coef_weights <- matrix(coef(ridge_fit)[-1,which.max(d)]) # coefficients
+
+        penalty.factor <- 1/coef_weights
+      }
+    }
+  }
 
   # perform penalized regression with glmnet
   # use glmnet.cv?
   fit <- net_logit(f, train_data,
-                   alpha = 1,
+                   alpha = alpha,
+                   penalty.factor = penalty.factor,
                    type.measure = "deviance",
                    standardize = std,
                    na.action = na.action,
@@ -185,7 +265,10 @@ bag_fit_net_logit <- function(f, data,
                               samples,
                               metric = c(conditionalBoyce, somersD, AUC)[[1]],
                               standardize = c("internal", "external", FALSE)[1],
-                              method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+                              method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+                              alpha = NULL,
+                              penalty.factor = NULL,
+                              predictor_grid = NULL,
                               na.action = "na.pass",
                               out_dir_file = NULL,
                               parallel = c(FALSE, "foreach", "mclapply")[1],
@@ -252,6 +335,7 @@ bag_fit_net_logit <- function(f, data,
                                                 metric = metric,
                                                 method = method,
                                                 standardize = standardize,
+                                                predictor_grid = predictor_grid,
                                                 na.action = na.action,
                                                 out_dir_file = out_dir_file,
                                                 ...)
@@ -273,6 +357,7 @@ bag_fit_net_logit <- function(f, data,
                     metric = metric,
                     method = method,
                     standardize = standardize,
+                    predictor_grid = predictor_grid,
                     na.action = na.action,
                     out_dir_file = out_dir_file,
                     ...)
@@ -291,6 +376,7 @@ bag_fit_net_logit <- function(f, data,
                                       metric = metric,
                                       method = method,
                                       standardize = standardize,
+                                      predictor_grid = predictor_grid,
                                       na.action = na.action,
                                       out_dir_file = out_dir_file,
                                       ...)

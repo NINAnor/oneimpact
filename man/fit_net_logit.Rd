@@ -11,8 +11,12 @@ fit_net_logit(
   samples,
   i = 1,
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  alpha = NULL,
+  penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
+  predictor_grid = NULL,
+  lasso_decay_type = c(log, function(x) x/1000)[[1]],
   na.action = "na.pass",
   out_dir_file = NULL,
   ...
@@ -24,8 +28,12 @@ fit_net_rsf(
   samples,
   i = 1,
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  alpha = NULL,
+  penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
+  predictor_grid = NULL,
+  lasso_decay_type = c(log, function(x) x/1000)[[1]],
   na.action = "na.pass",
   out_dir_file = NULL,
   ...
@@ -50,6 +58,11 @@ it must be maximized to find the best fit model.}
 prior to fitting the model sequence. The coefficients are always returned on the original scale.
 Default is standardize=TRUE. If variables are in the same units already, you might not wish to
 standardize them.}
+
+\item{out_dir_file}{\verb{[character(1)=NULL]} \cr String with the prefix of the file name (and
+the folder) where the result of each model will be saved. E.g. if \code{out_dir_file = "output/test_"},
+the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
+folder "output".}
 
 \item{...}{Options for net_logit and glmnet}
 }
