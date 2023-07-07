@@ -176,7 +176,7 @@ create_resamples <- function (y, times = 10,
   } # end of condition for random sampling
 
   #-------------------------
-  # sapial sampling, with level H0
+  # spatial sampling, with level H0
 
   #-------------------------
   # spatially stratified sampling
@@ -202,7 +202,7 @@ create_resamples <- function (y, times = 10,
         # validate
         # (sample validation block from populations (i.e. blockH0))
         # split by H0 level
-        blocksH0 <- split(sp_strat, sp_strat$blockH0)
+        blocksH0 <- split(sp_strat, sp_strat[[colH0]])
         # LAO
         # sample pts in each pop/level - controlling for too imbalanced levels using max_size_validation_blockH0
         # size is also controlled by the proportion of the whole data set for validation, p[3]
@@ -228,7 +228,7 @@ create_resamples <- function (y, times = 10,
         index_train_test <- sp_strat$id |>
           setdiff(val)
         # split by blockH1
-        sp_strat_train_test <- sp_strat[index_train_test,] # remove rows for validation
+        sp_strat_train_test <- sp_strat[sp_strat$id %in% index_train_test,] # remove rows for validation
 
         # set blocks H1 to be sampled
         blocksH1 <- split(sp_strat_train_test, sp_strat_train_test$blockH1)
@@ -323,7 +323,13 @@ create_resamples <- function (y, times = 10,
     out_samp
   })
   names(out) <- c("train", "test", "validate")
-  out$blockH0 <- colH0
+
+  if(length(colH0) == 1) {
+    out$blockH0 <- blocks[[colH0]]
+  } else {
+    out$blockH0 <- colH0
+  }
+
   if(is.null(colH0)) out$blockH0 <- NULL
   if(is.null(sp_strat)) out$sp_strat_id <- NULL else
     out$sp_strat_id <- sp_strat$id
