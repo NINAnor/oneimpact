@@ -7,7 +7,7 @@
 #' @export
 bag_predict <- function(x,
                         newdata,
-                        type = c("linear", "exponential")[2],
+                        type = c("linear", "exponential", "logit")[1],
                         wMean = T,
                         wQ_probs = NULL,
                         include = "all") {
@@ -54,7 +54,18 @@ bag_predict <- function(x,
   }
 
   # should result be in linear or exp scale?
-  if (type=="exponential") { preddf <- exp(preddf) }
+  if (type == "exponential") {
+    preddf <- exp(preddf)
+  } else {
+    if (type == "logit") {
+      preddf <- 1 / (1 + exp(-preddf))#log(preddf/(1-preddf))
+    } else {
+      if (type == "cloglog") {
+        preddf <- 1 - exp(-exp(preddf))#log(preddf/(1-preddf))
+      }
+    }
+  }
+
 
   # return prediction
   return(preddf)
