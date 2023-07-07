@@ -9,6 +9,7 @@
 #' @param weights_col Column to use for scores. One of `"validation_score"` or
 #' `"habitat_validation_score"`.
 #'
+#' @name bag_models
 #' @export
 bag_models <- function(fitted, data,
                        score2weight = NULL,
@@ -28,13 +29,7 @@ bag_models <- function(fitted, data,
 
   # weighing function for scores
   if (is.null(weights_function)){
-    weights_function <- function(x){
-      x <- x-min(x, na.rm = T)
-      x <- x/max(x, na.rm = T)
-      x <- x^2
-      x <- x/sum(x, na.rm = T)
-      return(x)
-    }
+    weights_function <- w_strech_maxmin_squared
   }
 
   # initialize result
@@ -140,3 +135,26 @@ data_summary_char <- function(x){
 #   uniqv <- unique(v)
 #   uniqv[which.max(tabulate(match(v, uniqv)))]
 # }
+
+#-----------------
+# Weighting functions
+
+#' @rdname bag_models
+#' @export
+w_strech_maxmin_squared <- function(x){
+  x <- x-min(x, na.rm = T)
+  x <- x/max(x, na.rm = T)
+  x <- x^2
+  x <- x/sum(x, na.rm = T)
+  return(x)
+}
+
+#' @rdname bag_models
+#' @export
+w_strech_max_squared <- function(x){
+  # x <- x-min(x, na.rm = T)
+  x <- x/max(x, na.rm = T)
+  x <- x^2
+  x <- x/sum(x, na.rm = T)
+  return(x)
+}

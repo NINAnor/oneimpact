@@ -2,6 +2,8 @@
 % Please edit documentation in R/bag_models.R
 \name{bag_models}
 \alias{bag_models}
+\alias{w_strech_maxmin_squared}
+\alias{w_strech_max_squared}
 \title{Summary of a bag of models}
 \usage{
 bag_models(
@@ -13,6 +15,10 @@ bag_models(
   weights_function = NULL,
   out_dir
 )
+
+w_strech_maxmin_squared(x)
+
+w_strech_max_squared(x)
 }
 \arguments{
 \item{data}{Input data (whole dataset)}
