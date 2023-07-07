@@ -1,15 +1,48 @@
 #' Plot responses from a bag of models
 #'
 #' @param x `[list]` \cr A bag of models, resulting from a call to [oneimpact::bag_models()].
+#' @param dfvar `[data.frame]` \cr A data.frame with the values of the variables one wants to vary.
+#' All other variables are set to their mean or median (this is set by the parameter `baseline`).
+#' The column names of the dataframe might correspond exactly to the model covariates or to
+#' parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).
+#' @param data `[data.frame]` \cr The original data used for model fitting. Used only for
+#' taking the categories of the categorical variables.
+#' @param type `[character(1)="linear"]{"linear", "exponential"}`
 #' @param wQ_probs a three element with lower, mid, and higher weighted quantiles to be computed
 #' @param ci Should variation or confidence intervals be plotted?
 #'
 #' @export
-bag_plot_response <- function(x,
+plot_response <- function(x,
+                          dfvar,
+                          data,
+                          type = c("linear", "exponential")[2],
+                          zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
+                          which_cumulative = "cumulative",
+                          ci = TRUE,
+                          wQ_probs = c(0.025, 0.5, 0.975),
+                          baseline = c("median", "mean", "zero")[1],
+                          zoi = FALSE,
+                          zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
+                          ggplot = T,
+                          plot_mean = TRUE,
+                          plot_median = TRUE,
+                          n_features = 1,
+                          normalize = c(FALSE, "mean", "median", "ci")[1],
+                          logx=F,
+                          ylim=NULL){
+
+  UseMethod("plot_response")
+
+}
+
+
+#' @export
+plot_response.bag <- function(x,
                               dfvar,
                               data,
                               type = c("linear", "exponential")[2],
                               zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
+                              which_cumulative = "cumulative",
                               ci = TRUE,
                               wQ_probs = c(0.025, 0.5, 0.975),
                               baseline = c("median", "mean", "zero")[1],
@@ -57,8 +90,10 @@ bag_plot_response <- function(x,
 
     # compute ZOI for the intended distances
     dfvar2 <- dfvar[,rep(1, length(zoi_radii))]
+    is_cumulative <- grepl(pattern = which_cumulative, zois)
     dfvar2 <- as.data.frame(do.call("cbind", lapply(c(1:ncol(dfvar2)), function(i) {
-      n_features*oneimpact::dist_decay(dfvar2[,i], radius = zoi_radii[i], type = zoi_shape) })))
+      n_feat <- ifelse(is_cumulative[i], n_features, 1)
+      n_feat*oneimpact::dist_decay(dfvar2[,i], radius = zoi_radii[i], type = zoi_shape) })))
     names(dfvar2) <- zois#paste0(names(dfvar)[1], zoi_radii)
 
     # cumulative vars
@@ -92,7 +127,7 @@ bag_plot_response <- function(x,
           if(normalize == "mean") range_y <- range(df$y_mean[-1]) else
             if(normalize == "median") range_y <- range(df$y[-1]) else
               range_y <- range(df[-1,2:ncol(df)])
-          df[2:ncol(df)] <- do.call("cbind", lapply(2:ncol(df), function(i) (df[,i] - range_y[1])/(diff(range_y))))
+            df[2:ncol(df)] <- do.call("cbind", lapply(2:ncol(df), function(i) (df[,i] - range_y[1])/(diff(range_y))))
         }
 
         # plot
@@ -110,7 +145,8 @@ bag_plot_response <- function(x,
           plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
                                                        y = y_mean),
                                           color='green')
-        plt <- plt + ggplot2::labs(x = names(dfvar), y = "Output", title = "")
+
+        plt <- plt + ggplot2::labs(x = ifelse(zoi, "Distance (m)", names(dfvar)), y = "Output", title = "")
       }
       # if (ncol(dfvar)==2){
       #   df <- data.frame(x=dfvar[,1], grp=as.factor(newdata[,names(dfvar)[2]]), y=pred$mid, y_lower = pred$lower, y_upper=pred$higher, y2=pred$mean)
@@ -132,17 +168,17 @@ bag_plot_response <- function(x,
         plt <- ggplot2::ggplot(df)
         if(ci)
           plt <- plt + ggplot2::geom_ribbon(ggplot2::aes(x = x,
-                                            ymin = y_lower,
-                                            ymax = y_upper),
-                               fill='blue', alpha=0.5)
+                                                         ymin = y_lower,
+                                                         ymax = y_upper),
+                                            fill='blue', alpha=0.5)
         if(plot_median)
           plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
-                                          y = y),
-                             color='blue')
+                                                       y = y),
+                                          color='blue')
         if(plot_mean)
           plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
-                                          y = y_mean),
-                             color='green')
+                                                       y = y_mean),
+                                          color='green')
         plt <- plt + ggplot2::labs(x = names(dfvar), y = "Output", title = "")
 
       }
