@@ -128,7 +128,7 @@ fit_net_logit <- function(f, data,
       # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
 
       # set penalty factor
-      penalty.factor <- ifelse(vars_is_zoi, lasso_decay_type(predictor_grid$zoi_radius), 1)
+      penalty.factor <- ifelse(mm_is_zoi, lasso_decay_type(mm_zoi_radius), 1)
       names(penalty.factor) <- colnames(M)
 
     } else {
@@ -263,7 +263,7 @@ fit_net_rsf <- fit_net_logit
 #' @export
 bag_fit_net_logit <- function(f, data,
                               samples,
-                              metric = c(conditionalBoyce, somersD, AUC)[[1]],
+                              metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
                               standardize = c("internal", "external", FALSE)[1],
                               method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
                               alpha = NULL,
@@ -328,17 +328,17 @@ bag_fit_net_logit <- function(f, data,
     # check if cores were assigned
     fittedl <- foreach::foreach(i = 1:length(samples$train),
                                 .packages = "oneimpact") %dopar% {
-                                  fit_net_logit(f = f,
-                                                data = data,
-                                                samples = samples,
-                                                i = i,
-                                                metric = metric,
-                                                method = method,
-                                                standardize = standardize,
-                                                predictor_grid = predictor_grid,
-                                                na.action = na.action,
-                                                out_dir_file = out_dir_file,
-                                                ...)
+                                  try(fit_net_logit(f = f,
+                                                    data = data,
+                                                    samples = samples,
+                                                    i = i,
+                                                    metric = metric,
+                                                    method = method,
+                                                    standardize = standardize,
+                                                    predictor_grid = predictor_grid,
+                                                    na.action = na.action,
+                                                    out_dir_file = out_dir_file,
+                                                    ...))
                                 }
   }
 
@@ -350,17 +350,17 @@ bag_fit_net_logit <- function(f, data,
                       " to be loaded and cores to be assigned. Please check it."))
     # check if cores were assigned
     fitted_list <- parallel::mclapply(1:length(samples$train), function(i) {
-      fit_net_logit(f = f,
-                    data = data,
-                    samples = samples,
-                    i = i,
-                    metric = metric,
-                    method = method,
-                    standardize = standardize,
-                    predictor_grid = predictor_grid,
-                    na.action = na.action,
-                    out_dir_file = out_dir_file,
-                    ...)
+      try(fit_net_logit(f = f,
+                        data = data,
+                        samples = samples,
+                        i = i,
+                        metric = metric,
+                        method = method,
+                        standardize = standardize,
+                        predictor_grid = predictor_grid,
+                        na.action = na.action,
+                        out_dir_file = out_dir_file,
+                        ...))
     }, mc.cores =  mc.cores)
   }
 
@@ -369,17 +369,17 @@ bag_fit_net_logit <- function(f, data,
   fitted_list <- list()
   for(i in 1:length(samples$train)) {
     if(verbose) print(paste0("Fitting sample ", i, "/", length(samples$train), "..."))
-    fitted_list[[i]] <- fit_net_logit(f = f,
-                                      data = data,
-                                      samples = samples,
-                                      i = i,
-                                      metric = metric,
-                                      method = method,
-                                      standardize = standardize,
-                                      predictor_grid = predictor_grid,
-                                      na.action = na.action,
-                                      out_dir_file = out_dir_file,
-                                      ...)
+    fitted_list[[i]] <- try(fit_net_logit(f = f,
+                                          data = data,
+                                          samples = samples,
+                                          i = i,
+                                          metric = metric,
+                                          method = method,
+                                          standardize = standardize,
+                                          predictor_grid = predictor_grid,
+                                          na.action = na.action,
+                                          out_dir_file = out_dir_file,
+                                          ...))
   }
 
   names(fitted_list) <- names(samples$train)
