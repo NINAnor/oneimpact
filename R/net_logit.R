@@ -1,13 +1,23 @@
 #' Fits a logistic regression/RSF using glmnet
 #'
-#' @param f formula
-#' @param data data
+#' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
+#' @param data `[data.frame,tibble]` \cr Data set used to fir the data.
 #' @param alpha Default is L1-regularization (Lasso regression), with `alpha = 1`.
 #' L2-regularization (Ridge regression) is done with `alpha = 0`, and elastic-net regression
 #' is performed for any `alpha` value between `0` and `1`. For more details, see the
-#' [glmnet::glmnet()] documentation.
-#' @param na.action Default is `"na.pass"`, i.e. rows with NAs are not automatically
+#' [glmnet::glmnet()] documentation. For Adaptive and Decay Adaptive Lasso, keep `alpha = 1`.
+#' @param penalty.factor `[numeric,vector=NULL]` \cr Vector of penalty factors to be used for Adaptive Lasso
+#' fitting. The vector might have the same length as the the number of columns given by the model matrix,
+#' `model.matrix(f, data)`. Default is `NULL`, in case the same penalty is applied to all variables.
+#' @param type.measure `[character(1)="deviance"]` \cr Type of measure to evaluate the model internally
+#' in [glmnet::glmnet()]. For logistic and conditional logistic regression, it is by default `"deviance"`.
+#' @param standardize
+#' @param na.action `[character(1)="na.pass"]` \cr Default is `"na.pass"`, i.e. rows with NAs are not automatically
 #' removed from the `model.matrix` used for fitting.
+#' @param func `[character(1)="glmnet"]{"glmnet", "cv.glmnet"}` \cr The function to be used for
+#' fitting. Default is [glmnet::glmnet()]. The second option is [glmnet::cv.glmnet()] which
+#' already performs the cross-validation and might include the variable selection/callibration
+#' within.
 #'
 #' Check option parallel = TRUE from glmnet.
 #'
@@ -39,6 +49,7 @@ net_logit <- function(f, data,
   if (anyNA(data)) stop("NA values in data table. Please remove them and rerun.")
   if (anyNA(Y)) stop("NA values in the response. Please remove them and rerun.")
 
+  # set penalty factors if NULL
   if(is.null(penalty.factor))
     penalty.factor <- rep(1, ncol(X))
 

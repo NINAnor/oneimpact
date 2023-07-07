@@ -30,17 +30,29 @@ net_rsf(
 )
 }
 \arguments{
-\item{f}{formula}
+\item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
 
-\item{data}{data}
+\item{data}{\verb{[data.frame,tibble]} \cr Data set used to fir the data.}
 
 \item{alpha}{Default is L1-regularization (Lasso regression), with \code{alpha = 1}.
 L2-regularization (Ridge regression) is done with \code{alpha = 0}, and elastic-net regression
 is performed for any \code{alpha} value between \code{0} and \code{1}. For more details, see the
-\code{\link[glmnet:glmnet]{glmnet::glmnet()}} documentation.}
+\code{\link[glmnet:glmnet]{glmnet::glmnet()}} documentation. For Adaptive and Decay Adaptive Lasso, keep \code{alpha = 1}.}
 
-\item{na.action}{Default is \code{"na.pass"}, i.e. rows with NAs are not automatically
-removed from the \code{model.matrix} used for fitting.
+\item{penalty.factor}{\verb{[numeric,vector=NULL]} \cr Vector of penalty factors to be used for Adaptive Lasso
+fitting. The vector might have the same length as the the number of columns given by the model matrix,
+\code{model.matrix(f, data)}. Default is \code{NULL}, in case the same penalty is applied to all variables.}
+
+\item{type.measure}{\verb{[character(1)="deviance"]} \cr Type of measure to evaluate the model internally
+in \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. For logistic and conditional logistic regression, it is by default \code{"deviance"}.}
+
+\item{na.action}{\verb{[character(1)="na.pass"]} \cr Default is \code{"na.pass"}, i.e. rows with NAs are not automatically
+removed from the \code{model.matrix} used for fitting.}
+
+\item{func}{\verb{[character(1)="glmnet"]\{"glmnet", "cv.glmnet"\}} \cr The function to be used for
+fitting. Default is \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. The second option is \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} which
+already performs the cross-validation and might include the variable selection/callibration
+within.
 
 Check option parallel = TRUE from glmnet.}
 }
