@@ -184,33 +184,3 @@ plot_importance <- function(importance, remove_threshold = 0, normalize = TRUE) 
   p
 
 }
-
-plot_weights <- function(x, pattern = "*", remove_low = 0, remove_high = Inf, normalize = FALSE) {
-
-  # weighted coefs
-  w_coef <- x$coef %*% x$weights
-
-  # subset
-  w_coef <- w_coef[grepl(pattern, rownames(w_coef)),]
-
-  # normalization
-  if(normalize)
-    wgt_coef <- w_coef/max(w_coef) else
-      wgt_coef <- w_coef
-
-    # data frame
-    df <- data.frame(var = factor(names(w_coef), levels = names(wgt_coef), ordered = TRUE),
-                     coef = wgt_coef)
-    # filter thresholds
-    df <- df[abs(df$coef) >= remove_low & abs(df$coef) < remove_high,]
-
-    # plot
-    p <- ggplot2::ggplot(data = df, ggplot2::aes(x = var, y = coef)) +
-      ggplot2::geom_bar(stat="identity", fill="steelblue") +
-      # scale_y_continuous(trans='log10') +
-      ggplot2::theme_minimal() +
-      ggplot2::coord_flip() +
-      ggplot2::labs(x = "Variable", y = "Weighted coefficients")
-    print(p)
-}
-

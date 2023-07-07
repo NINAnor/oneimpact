@@ -9,7 +9,11 @@ plot_coef(
   terms = "all",
   models = 1:bag$n,
   weighted = TRUE,
-  what = c("all_models", "average")[1]
+  what = c("all_models", "average")[1],
+  plot_type = c("bars", "points", "histogram")[1],
+  remove_low = 0,
+  remove_high = Inf,
+  show_legend = FALSE
 )
 }
 \description{
