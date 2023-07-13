@@ -45,7 +45,7 @@ net_issf(
 \arguments{
 \item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
 
-\item{data}{\verb{[data.frame,tibble]} \cr Data set used to fir the data.}
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.}
 
 \item{alpha}{Default is L1-regularization (Lasso regression), with \code{alpha = 1}.
 L2-regularization (Ridge regression) is done with \code{alpha = 0}, and elastic-net regression

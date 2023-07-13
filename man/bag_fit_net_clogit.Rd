@@ -9,20 +9,35 @@ bag_fit_net_clogit(
   data,
   samples,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC)[[1]],
-  out_dir_file = NULL,
+  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  standardize = c("internal", "external", FALSE)[1],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  alpha = NULL,
+  penalty.factor = NULL,
+  predictor_grid = NULL,
   na.action = "na.pass",
+  out_dir_file = NULL,
   parallel = c(FALSE, "foreach", "mclapply")[1],
   mc.cores = 2L,
+  verbose = FALSE,
   ...
 )
 }
 \arguments{
+\item{standardize}{internal = internal glmnet standaridization, i.e. using glmnet with argument standardize = TRUE.
+This also standardizes dummy variables, but returns the estimated coefficients back to the original scale.
+This however can cause baises in the estimates because of the bias-variance tradeoff that L1 and L1 regularization
+methods try to minimize.
+See more info in https://stackoverflow.com/questions/17887747/how-does-glmnets-standardize-argument-handle-dummy-variables
+external = glmnet is called with argument standardize = FALSE, but standization is done by the
+bag_fit_net_logit function. Return coefs in the original scale?? Implement.
+If FALSE, no standardization of predictors is done.}
+
 \item{mc.cores}{Only relevant if \code{parallel == "mclapply"}. If \code{parallel == "foreach"}, cores must
 be assigned before running \code{fit_multi_net_logit()} using \code{\link[parallel:makeCluster]{parallel::makeCluster()}} and
 \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}.}
 
-\item{...}{Options for net_logit and glmnet}
+\item{...}{Options for net_clogit and glmnet}
 }
 \description{
 Fit a bag of conditional logistic regression/SSF/iSSF models with penalized regression in a train-validate-test setup

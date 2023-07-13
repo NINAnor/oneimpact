@@ -1,7 +1,7 @@
 #' Fits a conditional logistic regression/SSF/iSSF using glmnet
 #'
 #' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
-#' @param data `[data.frame,tibble]` \cr Data set used to fir the data.
+#' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
 #' @param alpha Default is L1-regularization (Lasso regression), with `alpha = 1`.
 #' L2-regularization (Ridge regression) is done with `alpha = 0`, and elastic-net regression
 #' is performed for any `alpha` value between `0` and `1`. For more details, see the

@@ -13,10 +13,14 @@ fit_net_clogit(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  alpha = NULL,
+  penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
-  out_dir_file = NULL,
+  predictor_grid = NULL,
+  lasso_decay_type = c(log, function(x) x/1000)[[1]],
   na.action = "na.pass",
+  out_dir_file = NULL,
   ...
 )
 
@@ -27,10 +31,14 @@ fit_net_ssf(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  alpha = NULL,
+  penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
-  out_dir_file = NULL,
+  predictor_grid = NULL,
+  lasso_decay_type = c(log, function(x) x/1000)[[1]],
   na.action = "na.pass",
+  out_dir_file = NULL,
   ...
 )
 
@@ -41,16 +49,49 @@ fit_net_issf(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
-  method = c("Lasso", "Rigdge", "AdaptiveLasso", "AdaptiveLassoZOI", "ElasticNet")[1],
+  method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  alpha = NULL,
+  penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
-  out_dir_file = NULL,
+  predictor_grid = NULL,
+  lasso_decay_type = c(log, function(x) x/1000)[[1]],
   na.action = "na.pass",
+  out_dir_file = NULL,
   ...
 )
 }
 \arguments{
-\item{...}{Options for net_clogit and glmnet}
+\item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
+
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.}
+
+\item{samples}{\verb{[list]} \cr List of samples with at least three elements: train, test,
+and validate. Each elements might have several elements, each representing
+the lines of \code{data} to be sampled for each resample. Typically, this is computed by
+the function \code{\link[=create_resamples]{create_resamples()}}.}
+
+\item{kernel_vars}{\verb{[vector,character=c("step_length", "ta")]} \cr Vector of strings with the names of the variables related
+to the movement kernel, included in the model (for instance, \code{"step_length"} and \code{"turning_angle"})}
+
+\item{metric}{\verb{[function]\{conditionalBoyce, SomersD, AUC, proc_AUC\}} \cr Function
+representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
+somersD, AUC, and proc_AUC. A user-defined function might be provided, with a condition that
+it must be maximized to find the best fit model.}
+
+\item{standardize}{\verb{[logical(1)=TRUE]} \cr Logical flag for predictor variable standardization,
+prior to fitting the model sequence. The coefficients are always returned on the original scale.
+Default is standardize=TRUE. If variables are in the same units already, you might not wish to
+standardize them.}
+
+\item{out_dir_file}{\verb{[character(1)=NULL]} \cr String with the prefix of the file name (and
+the folder) where the result of each model will be saved. E.g. if \code{out_dir_file = "output/test_"},
+the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
+folder "output".}
+
+\item{...}{Options for net_logit and glmnet}
 }
 \description{
-Fits a conditional logistic regression/SSF/iSSF using glmnet in a train-validate-test setup
+By default, \code{\link[=fit_net_clogit]{fit_net_clogit()}} does not standardize predictor variables. If you want numeric variables
+to be standardized, you can either use \verb{[bag_git_net_clogit()]} with parameter \code{standardize = TRUE}
+or provide an already standardized data set as input.
 }
