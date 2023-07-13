@@ -4,8 +4,8 @@
 #' to be standardized, you can either use `[bag_git_net_logit()]` with parameter `standardize = TRUE`
 #' or provide an already standardized data set as input.
 #'
-#' @param f `[formula]` \cr Formula to be fitted.
-#' @param data `[data.frame]` \cr Complete data set to be analyzed.
+#' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
+#' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
 #' @param samples `[list]` \cr List of samples with at least three elements: train, test,
 #' and validate. Each elements might have several elements, each representing
 #' the lines of `data` to be sampled for each resample. Typically, this is computed by
@@ -50,7 +50,7 @@ fit_net_logit <- function(f, data,
   # get variables
   wcols <- extract_response_strata(f, other_vars = TRUE)
 
-  # filter out NAs and strata with only 1s or 0s
+  # filter out NAs
   if(anyNA(data[[wcols$response]])) {
     warning("NAs detected in the response variable. Removing them for model fitting.")
     data <- data[!is.na(data[[wcols$response]]),]
@@ -278,6 +278,7 @@ bag_fit_net_logit <- function(f, data,
 
   # get variables
   wcols <- extract_response_strata(f, other_vars = TRUE)
+
   # First we standardize covariates
   # relevant columns
   all_vars <- all.vars(f)
@@ -335,6 +336,8 @@ bag_fit_net_logit <- function(f, data,
                                                     metric = metric,
                                                     method = method,
                                                     standardize = standardize,
+                                                    alpha = alpha,
+                                                    penalty.factor = penalty.factor,
                                                     predictor_grid = predictor_grid,
                                                     na.action = na.action,
                                                     out_dir_file = out_dir_file,
@@ -357,6 +360,8 @@ bag_fit_net_logit <- function(f, data,
                         metric = metric,
                         method = method,
                         standardize = standardize,
+                        alpha = alpha,
+                        penalty.factor = penalty.factor,
                         predictor_grid = predictor_grid,
                         na.action = na.action,
                         out_dir_file = out_dir_file,
@@ -376,6 +381,8 @@ bag_fit_net_logit <- function(f, data,
                                           metric = metric,
                                           method = method,
                                           standardize = standardize,
+                                          alpha = alpha,
+                                          penalty.factor = penalty.factor,
                                           predictor_grid = predictor_grid,
                                           na.action = na.action,
                                           out_dir_file = out_dir_file,

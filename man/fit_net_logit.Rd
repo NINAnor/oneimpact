@@ -40,9 +40,9 @@ fit_net_rsf(
 )
 }
 \arguments{
-\item{f}{\verb{[formula]} \cr Formula to be fitted.}
+\item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
 
-\item{data}{\verb{[data.frame]} \cr Complete data set to be analyzed.}
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.}
 
 \item{samples}{\verb{[list]} \cr List of samples with at least three elements: train, test,
 and validate. Each elements might have several elements, each representing
