@@ -32,9 +32,7 @@ net_rsf(
 \arguments{
 \item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
 
-\item{data}{\verb{[data.frame,tibble]} \cr Data set used to fir the data.}
-
-\item{alpha}{Default is L1-regularization (Lasso regression), with \code{alpha = 1}.
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.#' @param alpha Default is L1-regularization (Lasso regression), with \code{alpha = 1}.
 L2-regularization (Ridge regression) is done with \code{alpha = 0}, and elastic-net regression
 is performed for any \code{alpha} value between \code{0} and \code{1}. For more details, see the
 \code{\link[glmnet:glmnet]{glmnet::glmnet()}} documentation. For Adaptive and Decay Adaptive Lasso, keep \code{alpha = 1}.}

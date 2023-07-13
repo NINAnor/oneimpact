@@ -370,23 +370,24 @@ bag_fit_net_logit <- function(f, data,
   }
 
   # Common loop if parallel = FALSE
-  if(parallel == FALSE) {}
-  fitted_list <- list()
-  for(i in 1:length(samples$train)) {
-    if(verbose) print(paste0("Fitting sample ", i, "/", length(samples$train), "..."))
-    fitted_list[[i]] <- try(fit_net_logit(f = f,
-                                          data = data,
-                                          samples = samples,
-                                          i = i,
-                                          metric = metric,
-                                          method = method,
-                                          standardize = standardize,
-                                          alpha = alpha,
-                                          penalty.factor = penalty.factor,
-                                          predictor_grid = predictor_grid,
-                                          na.action = na.action,
-                                          out_dir_file = out_dir_file,
-                                          ...))
+  if(parallel == FALSE) {
+    fitted_list <- list()
+    for(i in 1:length(samples$train)) {
+      if(verbose) print(paste0("Fitting sample ", i, "/", length(samples$train), "..."))
+      fitted_list[[i]] <- try(fit_net_logit(f = f,
+                                            data = data,
+                                            samples = samples,
+                                            i = i,
+                                            metric = metric,
+                                            method = method,
+                                            standardize = standardize,
+                                            alpha = alpha,
+                                            penalty.factor = penalty.factor,
+                                            predictor_grid = predictor_grid,
+                                            na.action = na.action,
+                                            out_dir_file = out_dir_file,
+                                            ...))
+    }
   }
 
   names(fitted_list) <- names(samples$train)
