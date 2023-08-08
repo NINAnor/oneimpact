@@ -4,12 +4,14 @@
 \alias{bag_models}
 \alias{w_strech_maxmin_squared}
 \alias{w_strech_max_squared}
+\alias{score2weight_mean}
+\alias{score2weight_invmean}
 \title{Summary of a bag of models}
 \usage{
 bag_models(
   fitted,
   data,
-  score2weight = NULL,
+  score2weight = score2weight_invmean,
   weights_col = c("validation_score", "habitat_validation_score")[1],
   score_threshold = 0.7,
   weights_function = NULL,
@@ -19,6 +21,10 @@ bag_models(
 w_strech_maxmin_squared(x)
 
 w_strech_max_squared(x)
+
+score2weight_mean(x, col = "validation_score", score_threshold = 0.7)
+
+score2weight_invmean(x, col = "validation_score", score_threshold = 0.7)
 }
 \arguments{
 \item{data}{Input data (whole dataset)}
