@@ -12,6 +12,7 @@ variable_importance(
   n_permutations = 100,
   order = c("desc", "asc", FALSE)[1],
   variable_block = NULL,
+  metric = NULL,
   plot = FALSE,
   remove_threshold = 0
 )
@@ -22,6 +23,12 @@ multiple information from the models, such as formula, weights, coefficients,
 and metric used to evaluate the models.}
 
 \item{data}{\verb{[data.frame]} \cr Complete data set to which the models were applied.}
+
+\item{samples}{\verb{[list]} \cr List of samples used to fit the models in the bag.
+The list contains at least three elements: train, test,
+and validate. Each elements might have several elements, each representing
+the lines of \code{data} to be sampled for each resample. Typically, this is computed by
+the function \code{\link[=create_resamples]{create_resamples()}}.}
 
 \item{type}{\verb{[character(1)="drop"]\{"drop", "permutation"\}} \cr Type of computation
 for variable importance. If \code{type = "drop"} (default), each variable is dropped from

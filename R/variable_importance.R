@@ -17,6 +17,11 @@
 #' the model at a time and the variation in model evaluation metric is computed.
 #' If `type = "permutation"`, the observations of each variable are permutated and the
 #' variation in the model evaluation metric is computed.
+#' @param samples `[list]` \cr List of samples used to fit the models in the bag.
+#' The list contains at least three elements: train, test,
+#' and validate. Each elements might have several elements, each representing
+#' the lines of `data` to be sampled for each resample. Typically, this is computed by
+#' the function [oneimpact::create_resamples()].
 #' @param n_permutations `[numeric(1)=100]` \cr Number of permutations, if
 #' `type = "permutation"`.
 #' @param order `[character,logical(1)="desc"]{"desc", "asc", FALSE}` \cr Whether or
@@ -38,17 +43,27 @@ variable_importance <- function(x,
                                 n_permutations = 100,
                                 order = c("desc", "asc", FALSE)[1],
                                 variable_block = NULL,
+                                metric = NULL,
                                 plot = FALSE,
                                 remove_threshold = 0) {
   # get info
   f <- x$formula
   wghts <- x$weights
   coefs <- x$coef
-  metric <- x$metric
+  if(is.null(metric)) metric <- x$metric
+
+  # case
+  case <- extract_response_strata(f)$response
+  # strata?
+  strat <- extract_response_strata(f)$strata
 
   # should training data be used?
   if(!is.null(samples)) {
-    data <- data[samples$validate[[1]],]
+    if(strat == "") {
+      data <- data[samples$validate[[1]],]
+    } else {
+      data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[1]]],]
+    }
     ## here we select the first sample; it could be for all, and an average over samples
     # or for all data altogether, with not samples
     ### change here for conditional logistic regression
@@ -61,9 +76,8 @@ variable_importance <- function(x,
   # model matrix, prediction, y and strata
   mm <- model.matrix(x$mm_formula, data)
   pred <- as.vector((mm %*% coefs) %*% wghts)
-  y <- data[,extract_response_strata(f)$response]
+  y <- data[, case]
 
-  strat <- extract_response_strata(f)$strata
   if(strat == "") {
     strat <- 1
   } else {
@@ -86,7 +100,7 @@ variable_importance <- function(x,
     }
 
   }
-  test <- ifelse(test>baseline, baseline, test)
+  test <- ifelse(test > baseline, baseline, test)
   test <- baseline - test
   test <- test/baseline
   test <- test/sum(test)
