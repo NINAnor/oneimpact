@@ -10,7 +10,7 @@ bag_fit_net_logit(
   samples,
   metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
   standardize = c("internal", "external", FALSE)[1],
-  method = c("Lasso", "Rigdge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   predictor_grid = NULL,
