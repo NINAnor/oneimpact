@@ -85,7 +85,10 @@ bag_models <- function(fitted, data,
   result$weights <- unlist(lapply(lres[!err], score2weight, col = weights_col, score_threshold = score_threshold))
   result$weights <- weights_function(result$weights)
   if(anyNA(result$weights)) {
-    warning("At least one resample has NaN weight. Please check the models' validation scores the the 'score_threshold' parameter.")
+    warning("At least one resample has NaN weight. Please check the models' validation scores and the 'score_threshold' parameter.")
+  }
+  if(all(is.na(result$weights))) {
+    warning("All resamples have NaN weight. Please check the models' validation scores and possibly increase the 'score_threshold' parameter.")
   }
 
   # average validation scores
@@ -183,7 +186,7 @@ w_strech_max_squared <- function(x){
 #' @rdname bag_models
 #' @export
 score2weight_mean <- function(x, col = "validation_score", score_threshold = 0.7){
-  x <- x[[weights_col]]
+  x <- x[[col]]
   x <- mean(x, na.rm = TRUE)
   x <- ifelse(x < score_threshold, 0, x) #set poorly validated models to zero
   return(x)
@@ -192,7 +195,7 @@ score2weight_mean <- function(x, col = "validation_score", score_threshold = 0.7
 #' @rdname bag_models
 #' @export
 score2weight_invmean <- function(x, col = "validation_score", score_threshold = 0.7){
-  x <- x[[weights_col]]
+  x <- x[[col]]
   x <- 1/mean(1/x, na.rm = TRUE)
   x <- ifelse(x < score_threshold, 0, x) #set poorly validated models to zero
   return(x)
