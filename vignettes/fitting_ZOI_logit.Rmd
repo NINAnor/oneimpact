@@ -76,12 +76,12 @@ f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
 zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX", 
                       type = c("cumulative_exp_decay", "nearest_exp_decay"),
-                      separator = "_", grid = TRUE)
+                      separator = "_", predictor_table = TRUE)
 
 # get formula
 f <- ff$formula
-# grid for usage later to map ZOI-like type variables
-grid_zoi <- ff$grid
+# predictor_table for usage later to map ZOI-like type variables
+predictor_table_zoi <- ff$predictor_table
 ```
 
 Contrary to the traditional sub-set model approach, in which only one ZOI predictor is kept in the model at a time and multiple models are fitted and compared, here we keep all the terms in the formula and use a penalized regression approach to both select the variables and fit the model.
@@ -90,10 +90,10 @@ Contrary to the traditional sub-set model approach, in which only one ZOI predic
 f
 ```
 
-The `add_zoi_formula()` function can also produce a grid `data.frame`, which specifies characteristics of the covariates in the model - e.g. whether they are ZOI metrics or not, which type (cumulative, nearest), which radii. This is helpful to treat the ZOI variables differently in the model interpretation, to aggregate ZOI terms related to the same type of infrastructure, but also to define the term penalties in the "Decay Adaptive Lasso" apprach.
+The `add_zoi_formula()` function can also produce a `predictor_table` `data.frame`, which specifies characteristics of the covariates in the model - e.g. whether they are ZOI metrics or not, which type (cumulative, nearest), which radii. This is helpful to treat the ZOI variables differently in the model interpretation, to aggregate ZOI terms related to the same type of infrastructure, but also to define the term penalties in the "Decay Adaptive Lasso" approach.
 
-```{r grid}
-head(grid_zoi)
+```{r predictor_table}
+head(predictor_table)
 ```
 
 ### Setting samples
@@ -674,12 +674,12 @@ In the Decay Adaptive Lasso, only the ZOI variables are penalized differently. B
 
 ## Fitting the model
 
-The adaptive Lasso if fitted using the parameter `method = "DecayAdaptiveLasso"` in `fit_net_logit` and `bag_fit_net_logit`. An extra parameter is needed here: a grid matrix stating whether a each of the terms in the formula is or not a ZOI variable and the radius of the ZOI. We use the variable grid `grid_zoi` which is also output of the `add_zoi_formula()` function.
+The adaptive Lasso if fitted using the parameter `method = "DecayAdaptiveLasso"` in `fit_net_logit` and `bag_fit_net_logit`. An extra parameter is needed here: a `predictor_table` matrix stating whether a each of the terms in the formula is or not a ZOI variable and the radius of the ZOI. We use the variable table `predictor_table` which is also output of the `add_zoi_formula()` function.
 
 ```{r fit1model_dal}
 mod <- fit_net_logit(f, dat, samples, i = 1, metric = proc_AUC,
                      method = "DecayAdaptiveLasso",
-                     predictor_grid = grid_zoi)
+                     predictor_table = predictor_table)
 ```
 
 We can see that this method squeezes many more coefficients to zero, compared to the Lasso, but less than the AdaptiveLasso.
@@ -698,7 +698,7 @@ fittedl <- bag_fit_net_logit(f, dat,
                              standardize = "internal", # glmnet does the standardization of covariates
                              metric = proc_AUC, # use pROC::AUC
                              method = "DecayAdaptiveLasso",
-                             predictor_grid = grid_zoi,
+                             predictor_table = predictor_table,
                              parallel = FALSE)
 toc()
 

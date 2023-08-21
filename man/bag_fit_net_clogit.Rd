@@ -14,7 +14,7 @@ bag_fit_net_clogit(
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
-  predictor_grid = NULL,
+  predictor_table = NULL,
   na.action = "na.pass",
   out_dir_file = NULL,
   parallel = c(FALSE, "foreach", "mclapply")[1],

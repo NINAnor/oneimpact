@@ -33,7 +33,7 @@ fit_net_logit <- function(f, data,
                           alpha = NULL,
                           penalty.factor = NULL,
                           standardize = c("internal", FALSE)[1],
-                          predictor_grid = NULL,
+                          predictor_table = NULL,
                           lasso_decay_type = c(log, function(x) x/1000)[[1]],
                           na.action = "na.pass",
                           out_dir_file = NULL,
@@ -103,9 +103,9 @@ fit_net_logit <- function(f, data,
 
     # check
     # variable grid to define penalties
-    if(is.null(predictor_grid)) {
+    if(is.null(predictor_table)) {
       if(grepl("DecayAdaptiveLasso", method[1], ignore.case = TRUE)) {
-        stop("If 'method' is 'DecayAdaptiveLasso', the parameter 'predictor_grid' must be provided.")
+        stop("If 'method' is 'DecayAdaptiveLasso', the parameter 'predictor_table' must be provided.")
       }
     }
 
@@ -123,8 +123,8 @@ fit_net_logit <- function(f, data,
       terms_order <- terms_order[terms_order > 0]
       # vars_formula <- rep(covars, times = unname(table(terms_order)))
       # ZOI and nonZOI variables in the model matrix
-      mm_is_zoi <- rep(predictor_grid$is_zoi, times = unname(table(terms_order)))
-      mm_zoi_radius <- rep(predictor_grid$zoi_radius, times = unname(table(terms_order)))
+      mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
+      mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
       # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
 
       # set penalty factor
@@ -268,7 +268,7 @@ bag_fit_net_logit <- function(f, data,
                               method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
                               alpha = NULL,
                               penalty.factor = NULL,
-                              predictor_grid = NULL,
+                              predictor_table = NULL,
                               na.action = "na.pass",
                               out_dir_file = NULL,
                               parallel = c(FALSE, "foreach", "mclapply")[1],
@@ -338,7 +338,7 @@ bag_fit_net_logit <- function(f, data,
                                                     standardize = standardize,
                                                     alpha = alpha,
                                                     penalty.factor = penalty.factor,
-                                                    predictor_grid = predictor_grid,
+                                                    predictor_table = predictor_table,
                                                     na.action = na.action,
                                                     out_dir_file = out_dir_file,
                                                     ...))
@@ -362,7 +362,7 @@ bag_fit_net_logit <- function(f, data,
                         standardize = standardize,
                         alpha = alpha,
                         penalty.factor = penalty.factor,
-                        predictor_grid = predictor_grid,
+                        predictor_table = predictor_table,
                         na.action = na.action,
                         out_dir_file = out_dir_file,
                         ...))
@@ -383,7 +383,7 @@ bag_fit_net_logit <- function(f, data,
                                             standardize = standardize,
                                             alpha = alpha,
                                             penalty.factor = penalty.factor,
-                                            predictor_grid = predictor_grid,
+                                            predictor_table = predictor_table,
                                             na.action = na.action,
                                             out_dir_file = out_dir_file,
                                             ...))

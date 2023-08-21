@@ -7,36 +7,47 @@
 add_zoi_formula(
   f,
   zoi_radius,
-  type = NULL,
+  type = "",
   pattern = "XXX",
-  cumulative = NULL,
+  cumulative = "",
   separator = "_",
-  grid = FALSE
+  predictor_table = FALSE
 )
 }
 \arguments{
-\item{f}{A formula to be fitted in a statistical model.}
+\item{f}{\verb{[formula]} \cr A formula to be fitted in a statistical model. Here we do not need
+the actual name of each term, but all ZOI variables whose radius/scale shall be fitted might
+be added with a pattern, e.g. "road_traffic_zoiXXXX".}
 
-\item{zoi_radius}{\verb{[numeric]} \cr A vector of radii for the zone of influence, to be added to
-the formula.}
+\item{zoi_radius}{\verb{[numeric,vector]} \cr A vector of radii/scales for the zone of influence,
+to be added to the formula.}
 
-\item{type}{Shape(s) of the ZOI}
+\item{type}{\verb{[character=""]} \cr Shape(s) of the ZOI (or vector of shapes if more than one),
+to be added to the terms name.}
 
-\item{pattern}{Pattern to be replaced in the formula, corresponding to the ZOI radii or
-ZOI shapes and radii.}
+\item{pattern}{\verb{[character]} \cr Pattern to be replaced in the formula, corresponding to the ZOI
+radii or ZOI shapes and radii.}
 
-\item{cumulative}{= NULL. Possible: "cumulative", "nearest" (if this is to be set by the
-user, otherwise it should be taken from the variable name)}
+\item{cumulative}{\verb{[character=""]\{"cumulative", "nearest"\}} \cr Default is \code{NULL}. String to be added to the ZOI terms
+corresponding on whether the variable represents the ZOI of the nearest feature (\code{cumulative = "nearest"})
+or the cumulative ZOI (\code{cumulative = "cumulative"}). If \code{""} (default), the type of ZOI is taken from the
+variable name, already given in the formula.}
 
-\item{separator}{Separator to be used between type and zoi_radius, when \code{type}
-is provided. Default is "_".}
+\item{separator}{\verb{[character(1)="_"]} \cr Separator to be used between type and zoi_radius, when \code{type}
+is provided. Default is \code{"_"}.}
 
-\item{grid}{logical. Whether or not the grid with all ZOI radii and shape values
-should be returned.}
+\item{predictor_table}{\verb{[logical(1)=FALSE]} \cr logical. Whether or not a table should be returned
+with info of all ZOI radii, shape values, and formula terms, together with info from other non-ZOI predictors.}
+}
+\value{
+A list with both the final \code{formula} with all ZOI radii and shapes and
+a table with the predictor information (if \code{predictor_table = TRUE}).
 }
 \description{
 Adds multiple radii for a zone of influence variable to a formula, to be fitted in
-a statistical model.
+a statistical model. If \code{predictor_table = TRUE}, it also returns a table with information
+about each predictor (e.g. whether or not it is a ZOI variable, which radius and shape, to
+what type of infrastructure it corresponds), to be used in the modeling.
 }
 \examples{
 # multiple radii
@@ -48,19 +59,19 @@ f <- case_ ~ strata(step_id_) + sl_*startpt_roadsXXX + sl_*startpt_cabinsXXX
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = "_exp_decay", pattern = "XXX")
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("_exp_decay", "_threshold"), pattern = "XXX")
 
-# grid
+# predictor_table - adding only the nearest ZOI
 f <- case_ ~ strata(step_id_) + land_use + sl_*startpt_roads_XXX + sl_*startpt_cabins_XXX
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("exp_decay", "threshold"), pattern = "XXX",
-                grid = TRUE, cumulative = "nearest")
+                predictor_table = TRUE, cumulative = "nearest")
 
-# grid 2
+# predictor_table 2 - adding both nearest and cumulative ZOI
 f <- case_ ~ strata(step_id_) + sl_*startpt_roads_cumulative_XXX + sl_*startpt_cabins_nearest_XXX
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("exp_decay", "threshold"), pattern = "XXX",
-                grid = TRUE)
+                predictor_table = TRUE)
 
-# grid 3
+# predictor_table 3 - adding the nearest/cumulative metric within the type argument
 f <- case_ ~ strata(step_id_) + sl_*startpt_roads_XXX + sl_*startpt_cabins_XXX
 add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("nearest_exp_decay", "cumulative_exp_decay"), pattern = "XXX",
-                grid = TRUE)
+                predictor_table = TRUE)
 
 }
