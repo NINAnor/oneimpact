@@ -369,23 +369,23 @@ bag_fit_net_clogit <- function(f, data,
       warnings(paste0("Parallel fitting of the models using 'foreach' requires the packages ", paste(packs, collapse = ","),
                       " to be loaded and cores to be assigned. Please check it."))
     # check if cores were assigned
-    fittedl <- foreach::foreach(i = 1:length(samples$train),
-                                .packages = "oneimpact") %dopar% {
-                                  try(fit_net_clogit(f = f,
-                                                     data = data,
-                                                     samples = samples,
-                                                     i = i,
-                                                     kernel_vars = kernel_vars,
-                                                     metric = metric,
-                                                     method = method,
-                                                     standardize = standardize,
-                                                     alpha = alpha,
-                                                     penalty.factor = penalty.factor,
-                                                     predictor_table = predictor_table,
-                                                     na.action = na.action,
-                                                     out_dir_file = out_dir_file,
-                                                     ...))
-                                }
+    fitted_list <- foreach::foreach(i = 1:length(samples$train),
+                                    .packages = "oneimpact") %dopar% {
+                                      try(fit_net_clogit(f = f,
+                                                         data = data,
+                                                         samples = samples,
+                                                         i = i,
+                                                         kernel_vars = kernel_vars,
+                                                         metric = metric,
+                                                         method = method,
+                                                         standardize = standardize,
+                                                         alpha = alpha,
+                                                         penalty.factor = penalty.factor,
+                                                         predictor_table = predictor_table,
+                                                         na.action = na.action,
+                                                         out_dir_file = out_dir_file,
+                                                         ...))
+                                    }
   }
 
   # If there is parallel implementation with forach
@@ -438,6 +438,9 @@ bag_fit_net_clogit <- function(f, data,
   names(fitted_list) <- names(samples$train)
   # define new class?
   results$models <- fitted_list
+
+  ## TO DO
+  # unstandardize coeffients if standarize = "external"
 
   # Add info about the covariates - type
   results$numeric_covs <- numeric_covs

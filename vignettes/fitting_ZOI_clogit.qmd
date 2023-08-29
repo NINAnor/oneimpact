@@ -301,7 +301,7 @@ The estimated coefficients from the models in the bag can be seen as:
 ```{r coef1}
 # coefficients - already unstandardized by the fit_net_logit function
 bag_summary$coef |> 
-  head(10)
+  head(35)
 ```
 
 If we want to use the standardized coefficients (for comparison between variables), we can use the function `oneimpact::rescale_coefficients()`.
