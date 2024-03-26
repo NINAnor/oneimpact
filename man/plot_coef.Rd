@@ -13,6 +13,7 @@ plot_coef(
   plot_type = c("bars", "points", "histogram")[1],
   remove_low = 0,
   remove_high = Inf,
+  order_zoi_radius = FALSE,
   show_legend = FALSE
 )
 }
