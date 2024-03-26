@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Here we reanalyze the resource selection function based on reindeer movement data used in Niebuhr et al. 2023 to estimate the ZOI and the cumulative impacts of tourism infrastructure on reindeer habitat selection.
 
-Add a plot of the area and the GPS points.
+![GPS data from wild reindeer in summer in the Hardangervidda wild reindeer population in southern Norway](reindeer_gps_points_hardanger_summer.png)
 
 Add description of the data. GPS points generated with 3h fix rate. 1 used location for each 9 random locations. 115 female reindeer. Annotated with data on land cover (NORUT map), four PCAs representing bio-geo-climatic variation, and the ZOI of the nearest and cumulative ZOI of infrastructure types. The infrastructures considered are: private cabins and public tourism resorts.
 
@@ -45,7 +45,7 @@ library(oneimpact)
 library(glmnet)
 library(ggplot2)
 
-# aux
+# aux - for getting processing times
 library(tictoc)
 
 # load data
@@ -57,7 +57,7 @@ dat <- reindeer_rsf
 colnames(dat)
 ```
 
-The data set "reindeer_rsf" in the `oneimpact` package contains the wild reindeer data used to fit the resource selection functions using the cumulative ZOI approach in Niebuhr et al. 2023. The response variable `use` is a binary variable showing where a given location was used (1) or not (0, a random location within the population area). The GPS used and available positions were annotated with information on land cover (column `NORUTreclass`), bio-geo-climatic PCAs (columns `norway_pca_klima_axis` 1 to 4) and the zone of influence of private cabins and public resorts (columns starting with `private_cabins` and `public_cabins_high`, respectively). Zone of influence variables include both the ZOI of of the nearest feature and the cumulative ZOI, with radii from 100 m to 20 km. For illustration, we only kept ZOI variables with exponential decay shape.
+The data set "reindeer_rsf" in the `oneimpact` package contains the wild reindeer data used to fit the resource selection functions using the cumulative ZOI approach in Niebuhr et al. 2023. The response variable `use` is a binary variable showing where a given location was used (1) or not (0, a random location within the population area). The GPS used and available positions were annotated with information on land cover (column `NORUTreclass`), bio-geo-climatic PCAs (columns `norway_pca_klima_axis` 1 to 4) and the zone of influence of private cabins and public resorts (columns starting with `private_cabins` and `public_cabins_high`, respectively). Zone of influence variables include both the ZOI of the nearest feature and the cumulative ZOI, with radii from 100 m to 20 km. For illustration, we only kept ZOI variables with exponential decay shape.
 
 The predictor variables are not standardized - this is done within the fitting process.
 
@@ -93,12 +93,12 @@ f
 The `add_zoi_formula()` function can also produce a `predictor_table` `data.frame`, which specifies characteristics of the covariates in the model - e.g. whether they are ZOI metrics or not, which type (cumulative, nearest), which radii. This is helpful to treat the ZOI variables differently in the model interpretation, to aggregate ZOI terms related to the same type of infrastructure, but also to define the term penalties in the "Decay Adaptive Lasso" approach.
 
 ```{r predictor_table}
-head(predictor_table)
+head(predictor_table_zoi, 10)
 ```
 
 ### Setting samples
 
-As in other machine learning workflows, as partition the data into sets used to fit (or train) the model, calibrate (or test), and validate. Here this is done for a bootstrap aggregation (bagging) procedure, so not necessarily all data must be used at a time. We use the function `oneimpact::create_resamples()` to this purpose, where we define the number of times we-ll do resampling (parameter `times`) and the proportion of the data observation that goes into fitting, calibration, and validation (parameter `p`). For simplicity, we start performing random sampling.
+As in other machine learning workflows, as partition the data into sets used to fit (or train) the model, calibrate (or test), and validate. Here this is done for a bootstrap aggregation (bagging) procedure, so not necessarily all data must be used at a time. We use the function `oneimpact::create_resamples()` for this purpose, where we define the number of times we-ll do resampling (i.e., the size of the bag, parameter `times`) and the proportion of the data observation that goes into fitting, calibration, and validation (parameter `p`). For simplicity, we start performing random sampling.
 
 ```{r samples}
 # sampling - random sampling
@@ -112,7 +112,7 @@ samples <- create_resamples(y = dat$use,
 The object `samples` is a list of three elements: a list of sets (defined by the row numbers in the original dataset) that will be used for model fitting (`samples$train`), for variable selection/calibration (`samples$test`), and for model valiation (`samples$validate`).
 
 ```{r samples2}
-str(samples)
+str(samples, max.level = 1)
 ```
 
 ## Fitting the model
@@ -123,13 +123,13 @@ To fit one single model (e.g. the one corresponding to the first resample above)
 mod <- fit_net_logit(f, dat, samples, i = 1, metric = proc_AUC)
 ```
 
-We can just examine teh structure of the output object now. It is a list with the selected lambda parameter (useful in case the model must be re-run), a matrix of estimated coefficients for each of the terms in the formula, the names of the variables included in the `model.matrix`, and scores for fit/train, calibration/test, and validation sets. The score is set by the parameter `metric` in the `fit_net_logit` function, which represents a function used for model .
+We can just examine the structure of the output object now. It is a list with the selected lambda parameter (useful in case the model must be re-run), a matrix of estimated coefficients for each of the terms in the formula, the names of the variables included in the `model.matrix`, and scores for fit/train, calibration/test, and validation sets. The score is set by the parameter `metric` in the `fit_net_logit` function, which represents a function used for model .
 
 ```{r 1model}
 str(mod)
 ```
 
-Most interestingly, we are here interested in bootstrapping from the whole data set and producing a bag of models. In this case, we can use the function `oneimpact::bag_fit_net_logit()` which fits all the models and produces a list with all the outputs. After fitting, the function `oneimpact::bag_models()` can be used to organize the output of each model in a single "bag" object, of the class `bag`.
+We are here interested not only in one single model, but in bootstrapping from the whole data set and producing a bag of models. In this case, we can use the function `oneimpact::bag_fit_net_logit()` which fits all the models and produces a list with all the outputs. After fitting, the function `oneimpact::bag_models()` can be used to organize the output of each model in a single "bag" object, of the class `bag`.
 
 ```{r bag_of_models, warning=FALSE}
 # fit multiple models
@@ -142,7 +142,8 @@ fittedl <- bag_fit_net_logit(f, dat,
 toc()
 
 # bag models in a single object
-bag_summary <- bag_models(fittedl, dat, weights_function = w_strech_max_squared)
+bag_summary <- bag_models(fittedl, dat, score_threshold = 0.7,
+                          weights_function = w_strech_max_squared)
 ```
 
 The resulting bag of models is a list which include the number of models run `n`, the original formula fitted (`formula`), the fitting method (`method`), the validation metric function (`function`), a matrix of coefficients (`coef`) and the validation scores (`validation_score`) for all models.
@@ -154,6 +155,7 @@ str(bag_summary)
 ```
 
 **Explain better the default weighing function and the options here**
+**Plot of weights/scores**
 
 ## Interpreting the model
 
@@ -207,7 +209,9 @@ plot_importance(importance_block2)
 
 ### Model coefficients
 
-The estimated coefficients from the models in the bag can be seen as:
+The estimated coefficients from the models in the bag can be seen as in the `coef`
+element of the bag. It contains the coefficient of each model/resample of the bag,
+for each term of the formula: 
 
 ```{r coef1}
 # coefficients - already unstandardized by the fit_net_logit function
@@ -223,7 +227,11 @@ rescale_coefficients(bag_summary, dat) |>
   head(10)
 ```
 
-What is really going to be used for prediction, however, are the weighted coefficients. To understand that, it is important to understand that the model weights in the bag are defined based on the validation scores, and they balance the contribution of the coefficients of each model. Here we see the validation scores and weights:
+What is really going to be used for prediction, however, are the weighted coefficients. 
+To understand that, it is important to understand that the model weights in the bag are 
+defined based on the validation scores, and they balance the contribution of the coefficients 
+of each model. Below we see the validation scores and weights. We see that all models
+perform relatively well, which means all of them are given a relative similar weight:
 
 ```{r coef3}
 # weights and weighted coefficients
@@ -255,15 +263,18 @@ plot_coef(bag_summary, terms = "private_cabins_cumulative",
 plot_coef(bag_summary, terms = "private_cabins_cumulative", models = 1:3)
 ```
 
-We can also plot the raw or weighted average coefficients.
+We can also plot the raw or weighted average coefficients. This can be done for all
+terms, or for terms of one specific type of variable. In this case, for ZOI variables,
+it is advisable to order them according to the ZOI radius with the option
+`order_zoi_radius = TRUE`.
 
 ```{r coef6}
 # plot weighted average coefs
 plot_coef(bag_summary, what = "average")
 plot_coef(bag_summary, what = "average", terms = "public_cabins", 
-          plot_type = "points")
+          plot_type = "points", order_zoi_radius = TRUE)
 plot_coef(bag_summary, what = "average", terms = "public_cabins", 
-          plot_type = "points") + ylim(-50, 50)
+          plot_type = "points", order_zoi_radius = TRUE) + ylim(-50, 50)
 
 # plot raw coefficients, no weighing
 # plot_coef(bag_summary, weighted = FALSE, what = "average")
@@ -364,9 +375,6 @@ plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
 # 150 features
 plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
               wQ_probs = wQ_probs, n_features = 150, plot_mean = FALSE, logx = TRUE)
-# 500
-plot_response(bag_summary, dfvar, dat, type = "exponential", zoi = TRUE, ci = TRUE,
-              wQ_probs = wQ_probs, n_features = 500, plot_mean = FALSE, logx = TRUE)
 ```
 
 We see that as the number of cabins increase, the cumulative ZOI of private cabins also increases. Different from the statistical approach in Niebuhr et al. 2023, here not only the effect size but the effective radius of the ZOI also changes with the number of features.
@@ -467,7 +475,6 @@ importance <- variable_importance(bag_summary, dat, type = "drop",
 # importance <- importance[order(-importance)]
 plot_importance(importance)
 plot_importance(importance, remove_threshold = 5e-3) # remove vars with too low score from plot
-plot_importance(importance[order(names(importance))]) # original sequence
 ```
 
 ```{r variable_importance2_al}
@@ -511,9 +518,6 @@ bag_summary$weights
 # plot_coef(bag_summary) # all models, all terms
 
 # different plots
-plot_coef(bag_summary, terms = "private_cabins_cumulative")
-plot_coef(bag_summary, terms = "private_cabins_cumulative", 
-          plot_type = "points")
 plot_coef(bag_summary, terms = "private_cabins_cumulative", 
           plot_type = "histogram")
 ```
@@ -622,7 +626,7 @@ plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
               wQ_probs = wQ_probs, n_features = 150, plot_mean = FALSE, logx = TRUE)
 # 500
 plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
-              wQ_probs = wQ_probs, n_features = 500, plot_mean = FALSE, logx = TRUE)
+              wQ_probs = wQ_probs, n_features = 300, plot_mean = FALSE, logx = TRUE)
 ```
 
 #### Public resorts
@@ -648,7 +652,7 @@ plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
               wQ_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = TRUE)
 # 3 feature
 plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
-              wQ_probs = wQ_probs, n_features = 3, plot_mean = FALSE, logx = TRUE)
+              wQ_probs = wQ_probs, n_features = 2, plot_mean = FALSE, logx = TRUE)
 ```
 
 And the overall effect of public resorts:
@@ -672,6 +676,26 @@ Here we perform the same fitting shown above, but using the Decay Adaptive Lasso
 
 In the Decay Adaptive Lasso, only the ZOI variables are penalized differently. Besides, they are penalized in an increasing order - with penalty factors increasing with the radius of the the ZOI. The assumption is that as the distance increases, the effect of a given infrastructure is expected to decrease, until it vanishes at some point.
 
+```{r}
+# formula initial structure
+f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+  NORUTreclass + poly(norway_pca_klima_axis1, 2, raw = TRUE) + 
+  poly(norway_pca_klima_axis2, 2, raw = TRUE) +
+  norway_pca_klima_axis3 + norway_pca_klima_axis4
+
+# add ZOI terms to the formula
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000)
+ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX", 
+                      type = c("cumulative_exp_decay", "nearest_exp_decay"),
+                      separator = "_", predictor_table = TRUE)
+
+# get formula
+f <- ff$formula
+# predictor_table for usage later to map ZOI-like type variables
+predictor_table_zoi <- ff$predictor_table
+```
+
+
 ## Fitting the model
 
 The adaptive Lasso if fitted using the parameter `method = "DecayAdaptiveLasso"` in `fit_net_logit` and `bag_fit_net_logit`. An extra parameter is needed here: a `predictor_table` matrix stating whether a each of the terms in the formula is or not a ZOI variable and the radius of the ZOI. We use the variable table `predictor_table` which is also output of the `add_zoi_formula()` function.
@@ -679,7 +703,7 @@ The adaptive Lasso if fitted using the parameter `method = "DecayAdaptiveLasso"`
 ```{r fit1model_dal}
 mod <- fit_net_logit(f, dat, samples, i = 1, metric = proc_AUC,
                      method = "DecayAdaptiveLasso",
-                     predictor_table = predictor_table)
+                     predictor_table = predictor_table_zoi)
 ```
 
 We can see that this method squeezes many more coefficients to zero, compared to the Lasso, but less than the AdaptiveLasso.
@@ -698,7 +722,7 @@ fittedl <- bag_fit_net_logit(f, dat,
                              standardize = "internal", # glmnet does the standardization of covariates
                              metric = proc_AUC, # use pROC::AUC
                              method = "DecayAdaptiveLasso",
-                             predictor_table = predictor_table,
+                             predictor_table = predictor_table_zoi,
                              parallel = FALSE)
 toc()
 
@@ -721,7 +745,6 @@ importance <- variable_importance(bag_summary, dat, type = "drop",
 # importance <- importance[order(-importance)]
 plot_importance(importance)
 plot_importance(importance, remove_threshold = 5e-3) # remove vars with too low score from plot
-plot_importance(importance[order(names(importance))]) # original sequence
 ```
 
 ```{r variable_importance2_dal}
@@ -920,5 +943,3 @@ plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
 plot_response(bag_summary, dfvar, dat, type = "logit", zoi = TRUE, ci = TRUE,
               wQ_probs = wQ_probs, n_features = 2, plot_mean = FALSE, logx = TRUE)
 ```
-
-# Using spatially stratified sampling
