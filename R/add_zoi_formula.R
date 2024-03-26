@@ -65,7 +65,7 @@ add_zoi_formula <- function(f, zoi_radius,
   f3 <- strsplit(f2$other_vars, split="+", fixed = T)[[1]] |>
     sapply(trimws, USE.NAMES = FALSE)
   # add zoi_radius
-  if(type == "") {
+  if(any(type == "")) {
     grid_zoi <- expand.grid(zoi_radius, type = NA, f3)
     f3 <- unique(apply(grid_zoi, 1,
                        function(x, y){ gsub(y, as.numeric(x[1]), x[3])}, y = pattern))
