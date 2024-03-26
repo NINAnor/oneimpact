@@ -45,7 +45,8 @@ a table with the predictor information (if \code{predictor_table = TRUE}).
 }
 \description{
 Adds multiple radii for a zone of influence variable to a formula, to be fitted in
-a statistical model. If \code{predictor_table = TRUE}, it also returns a table with information
+a statistical model. It returns the complete formula with all variables and ZOI radii.
+If \code{predictor_table = TRUE}, it also returns a table with information
 about each predictor (e.g. whether or not it is a ZOI variable, which radius and shape, to
 what type of infrastructure it corresponds), to be used in the modeling.
 }

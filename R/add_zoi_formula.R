@@ -1,7 +1,8 @@
 #' Adds ZOI radii to formula
 #'
 #' Adds multiple radii for a zone of influence variable to a formula, to be fitted in
-#' a statistical model. If `predictor_table = TRUE`, it also returns a table with information
+#' a statistical model. It returns the complete formula with all variables and ZOI radii.
+#' If `predictor_table = TRUE`, it also returns a table with information
 #' about each predictor (e.g. whether or not it is a ZOI variable, which radius and shape, to
 #' what type of infrastructure it corresponds), to be used in the modeling.
 #'
@@ -65,7 +66,7 @@ add_zoi_formula <- function(f, zoi_radius,
   f3 <- strsplit(f2$other_vars, split="+", fixed = T)[[1]] |>
     sapply(trimws, USE.NAMES = FALSE)
   # add zoi_radius
-  if(type == "") {
+  if(any(type == "")) {
     grid_zoi <- expand.grid(zoi_radius, type = NA, f3)
     f3 <- unique(apply(grid_zoi, 1,
                        function(x, y){ gsub(y, as.numeric(x[1]), x[3])}, y = pattern))
