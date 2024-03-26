@@ -10,6 +10,7 @@ plot_coef <- function(bag, terms = "all",
                       what = c("all_models", "average")[1],
                       plot_type = c("bars", "points", "histogram")[1],
                       remove_low = 0, remove_high = Inf,
+                      order_zoi_radius = FALSE,
                       show_legend = FALSE) {
 
   # get the coefficients for a subset of models
@@ -23,6 +24,12 @@ plot_coef <- function(bag, terms = "all",
       coef <- coef[terms,]
     } else {
       coef <- coef[grepl(terms, rownames(coef)),]
+
+      # check if it is ZOI variables and they should be ordered
+      if(order_zoi_radius) {
+        radii <- as.numeric(gsub("\\D", "", rownames(coef)))
+        coef <- coef[order(radii),]
+      }
     }
 
   }
@@ -90,6 +97,7 @@ plot_coef <- function(bag, terms = "all",
   df$signal <- ifelse(df$y > 0, "positive", ifelse(df$y < 0, "negative", "null"))
   # filter thresholds
   df <- df[abs(df$y) >= remove_low & abs(df$y) < remove_high,]
+  df$x <- factor(df$x, levels = unique(df$x))
 
   # plot type
   if(plot_type == "bars") {
