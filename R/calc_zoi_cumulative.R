@@ -472,11 +472,15 @@ calc_zoi_cumulative_r <- function(
   }
 
   # rename cumulative zoi layer
+  # get number of layers
+  if(use_terra) nl <- terra::nlyr(r0) else raster::nlayers(r0)
+
+  if(nl > 1) pre <- names(r0) else pre <- ""
   if(type == "mfilter") {
-    if(!is.list(radius)) name <- "zoi_cumulative" else
-      name <- paste0("zoi_cumulative", 1:length(radius))
+    if(!is.list(radius)) name <- paste0(pre, "_zoi_cumulative") else
+      name <- paste0(pre, "_zoi_cumulative", 1:length(radius))
   } else {
-    name <- paste0("zoi_cumulative_", type, radius)
+    name <- paste0(pre, "_zoi_cumulative_", type, radius)
   }
 
   names(cumulative_r) <- name
