@@ -12,7 +12,7 @@ fit_net_clogit(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
@@ -30,7 +30,7 @@ fit_net_ssf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
@@ -48,7 +48,7 @@ fit_net_issf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
@@ -73,9 +73,9 @@ the function \code{\link[=create_resamples]{create_resamples()}}.}
 \item{kernel_vars}{\verb{[vector,character=c("step_length", "ta")]} \cr Vector of strings with the names of the variables related
 to the movement kernel, included in the model (for instance, \code{"step_length"} and \code{"turning_angle"})}
 
-\item{metric}{\verb{[function]\{conditionalBoyce, SomersD, AUC, proc_AUC\}} \cr Function
+\item{metric}{\verb{[function]\{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC\}} \cr Function
 representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
-somersD, AUC, and proc_AUC. A user-defined function might be provided, with a condition that
+conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
 it must be maximized to find the best fit model.}
 
 \item{standardize}{\verb{[logical(1)=TRUE]} \cr Logical flag for predictor variable standardization,

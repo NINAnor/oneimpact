@@ -8,8 +8,9 @@ bag_fit_net_clogit(
   f,
   data,
   samples,
+  subset_samples = 1:length(samples$train),
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
   standardize = c("internal", "external", FALSE)[1],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
@@ -38,6 +39,9 @@ be assigned before running \code{fit_multi_net_logit()} using \code{\link[parall
 \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}.}
 
 \item{...}{Options for net_clogit and glmnet}
+
+\item{subset}{\verb{[vector]} \cr Vector of samples to be run (e.g. \code{c(1,2,4,5)} or \code{3:10}).
+By default, all the samples in \code{samples} are run.}
 }
 \description{
 Fit a bag of conditional logistic regression/SSF/iSSF models with penalized regression in a train-validate-test setup
