@@ -139,19 +139,26 @@ rescale_coefficients.glm <- function(model, data, ...) {
 rescale_coefficients.bag  <- function(bag, data, tostd = TRUE, ...) {
 
   # covariates
-  m_covars <- all.vars(bag$mm_formula)[-1]
+  m_covars <- all.vars(bag$formula_no_strata, unique = F)[-1]
+  # are they numeric?
+  repeated <- m_covars[which(duplicated(m_covars))]
+  rep_times <- ifelse(names(bag$numeric_covs) %in% repeated, 2, 1) ## CORRECT IF THERE ARE MORE THAN TWO TERMS WITH THE SAME VARIABLE
+  numeric_covs <- rep(bag$numeric_covs, times = rep_times)
 
   # model matrix with data
-  M <- stats::model.matrix(bag$mm_formula, data)
+  M <- stats::model.matrix(bag$formula_no_strata, data)
 
   # variables and terms
   terms_order <- attributes(M)$assign
   terms_order <- terms_order[terms_order > 0]
   vars_formula <- rep(m_covars, times = unname(table(terms_order)))
-  numeric_vars_order <- rep(bag$numeric_covs, times = unname(table(terms_order)))
+  numeric_vars_order <- rep(numeric_covs, times = unname(table(terms_order)))
   # numeric variables in the formula
-  m_covars_num <- m_covars[bag$numeric_covs]
+  m_covars_num <- m_covars[numeric_covs]
   vars_formula_num <- vars_formula[vars_formula %in% m_covars_num]
+
+  # terms_order <- table(m_covars)
+  # terms_order <- terms_order[order(match(names(terms_order), m_covars))]
 
   # coefficients
   coef <- bag$coef
@@ -159,10 +166,14 @@ rescale_coefficients.bag  <- function(bag, data, tostd = TRUE, ...) {
   # SDs
   sds <- bag$data_summary
   sds <- sds[rownames(sds) == "sd", colnames(sds) %in% m_covars]
-  sds_all <- unlist(rep(sds, unname(table(terms_order)))) |>
-    as.numeric()
+  # sds_all <- unlist(rep(sds, unname(table(terms_order)))) |>
+  #   as.numeric()
+  sds_all <- sds[match(vars_formula, colnames(sds))]
+  # sds_all <- unlist(rep(sds, terms_order)) |>
+  #   as.numeric()
   sds_all[numeric_vars_order == FALSE] <- 1
   names(sds_all) <- vars_formula
+  sds_all <- unlist(sds_all)
 
   # standardized coefs
   if(tostd)
