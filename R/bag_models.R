@@ -12,7 +12,7 @@
 #' @name bag_models
 #' @export
 bag_models <- function(fitted, data,
-                       score2weight = score2weight_invmean,
+                       score2weight = score2weight_min_invmean,
                        weights_col = c("validation_score", "habitat_validation_score")[1],
                        score_threshold = 0.7,
                        weights_function = NULL,
@@ -20,7 +20,7 @@ bag_models <- function(fitted, data,
 
   # function to transform scores to weights, if none is provided
   if (is.null(score2weight)){
-    score2weight <- score2weight_invmean
+    score2weight <- score2weight_min_invmean
   }
 
   # weighing function for scores
@@ -39,8 +39,8 @@ bag_models <- function(fitted, data,
 
   # formula
   result$formula <- f <- fitted$formula
-  wcols <- extract_response_strata(f, other_vars = TRUE)
-  result$mm_formula <- as.formula(paste0(wcols$response, " ~ -1+", wcols$other_vars))
+  wcols <- extract_response_strata(f, covars = TRUE)
+  result$formula_no_strata <- as.formula(paste0(wcols$response, " ~ -1+", wcols$covars))
 
   # method
   # assuming all models follow the same method, must be changed to lapply if not
@@ -61,11 +61,11 @@ bag_models <- function(fitted, data,
   # number of errors
   result$n_errors <- sum(err)
   # final number of valid models
-  result$n_final <- result$n - result$n_errors
-  if(result$n_final == 1) {
+  result$n_no_errors <- result$n - result$n_errors
+  if(result$n_no_errors == 1) {
     warning("Only one model in the bag was succefully fitted. The results will be based on this single model.")
   } else {
-    if(result$n_final < 1) {
+    if(result$n_no_errors < 1) {
       stop("No models were succefully fitted. Please check and re-fit the models.")
     }
   }
@@ -73,30 +73,47 @@ bag_models <- function(fitted, data,
   # should we unstandardize the coefs here!?!
 
   # synthesize results
-  result$coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coef } ))
-  colnames(result$coef) <- names(lres[!err])
-  result$var_names <- lres[!err][[1]]$var_names
-  result$fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$fit_score} ))
-  result$calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$calibration_score} ))
-  result$validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$validation_score} ))
-  result$habitat_validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$habitat_validation_score} ))
+  coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coef } ))
+  colnames(coef) <- names(lres[!err])
+  var_names <- lres[!err][[1]]$var_names
+  fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$fit_score} ))
+  calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$calibration_score} ))
+  validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$validation_score} ))
+  habitat_validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$habitat_validation_score} ))
 
   # weights
-  result$weights <- unlist(lapply(lres[!err], score2weight, col = weights_col, score_threshold = score_threshold))
-  result$weights <- weights_function(result$weights)
-  if(anyNA(result$weights)) {
+  weights <- unlist(lapply(lres[!err], score2weight, col = weights_col, score_threshold = score_threshold))
+  weights <- weights_function(weights)
+  if(anyNA(weights)) {
     warning("At least one resample has NaN weight. Please check the models' validation scores and the 'score_threshold' parameter.")
   }
-  if(all(is.na(result$weights))) {
-    warning("All resamples have NaN weight. Please check the models' validation scores and possibly increase the 'score_threshold' parameter.")
+  if(all(is.na(weights))) {
+    stop("All resamples have NaN weight. Please check the models' validation scores and possibly increase the 'score_threshold' parameter.")
   }
+
+  # One way
+  weights_matrix <- matrix(rep(weights, each = nrow(coef)), nrow = nrow(coef))
+  wcoef <- coef * as.vector(weights_matrix) # each model
+  # Another way, it seems it is slower
+  # wcoef <- weights(t(coef) * weights)
+  # wcoef[,apply(wcoef, 2, sum) != 0, drop = FALSE]
+
+  result$coef <- coef
+  result$wcoef <- wcoef
+  result$var_names <- var_names
+  result$fit_score <- fit_score
+  result$calibration_score <- calibration_score
+  result$validation_score <- validation_score
+  result$habitat_validation_score <- habitat_validation_score
+  result$weights <- weights
+  result$n_above_threshold <- sum(weights > 0)
 
   # average validation scores
   if(nrow(result$validation_score) > 1) {
-    result$validation_score_summary <- data.frame(min = apply(result$validation_score,2,min,na.rm = TRUE),
-                                                  median = apply(result$validation_score,2,median,na.rm = TRUE),
-                                                  mean = apply(result$validation_score,2,mean,na.rm = TRUE),
-                                                  max = apply(result$validation_score,2,max,na.rm = TRUE))
+    result$validation_score_summary <- data.frame(min = apply(result$validation_score, 2, min,na.rm = TRUE),
+                                                  median = apply(result$validation_score, 2, median,na.rm = TRUE),
+                                                  mean = apply(result$validation_score, 2, mean,na.rm = TRUE),
+                                                  max = apply(result$validation_score, 2, max,na.rm = TRUE))
   } else {
     result$validation_score_summary <- data.frame(median = apply(result$validation_score,2,mean,na.rm = TRUE))
   }
@@ -104,31 +121,35 @@ bag_models <- function(fitted, data,
   #apply(result$validation_score_summary, 2, mean)
 
   # weighted validation
+  result$weighted_validation_score <-  result$validation_score %*% result$weights
+  colnames(result$weighted_validation_score) <- "weighted_validation_score"
+
   if(nrow(result$validation_score) > 1) {
-    result$avg_weighted_validation_score <- cbind(
-      apply(result$validation_score,2,min, na.rm = TRUE) %*% result$weights,
-      apply(result$validation_score,2,median,na.rm = TRUE) %*% result$weights,
-      apply(result$validation_score,2,mean,na.rm = TRUE) %*% result$weights,
-      apply(result$validation_score,2,max,na.rm = TRUE) %*% result$weights)
-    colnames(result$avg_weighted_validation_score) <- c("min", "median", "mean", "max")
+
+    result$weighted_validation_score_summary <- cbind(
+      apply(result$validation_score, 2, min, na.rm = TRUE) %*% result$weights,
+      apply(result$validation_score, 2, median,na.rm = TRUE) %*% result$weights,
+      apply(result$validation_score, 2, mean,na.rm = TRUE) %*% result$weights,
+      apply(result$validation_score, 2, max,na.rm = TRUE) %*% result$weights)
+    colnames(result$weighted_validation_score_summary) <- c("min", "median", "mean", "max")
   } else {
-    result$avg_weighted_validation_score <-
+    result$weighted_validation_score_summary <-
       apply(result$validation_score,2,min,na.rm = TRUE) %*% result$weights
-    colnames(result$avg_weighted_validation_score) <- "mean"
+    colnames(result$weighted_validation_score_summary) <- "mean"
   }
 
   # covariates summary
-  all_vars <- all.vars(result$mm_formula)
+  all_vars <- all.vars(result$formula_no_strata)
   classes <- sapply(data[,all_vars], class)
   # numeric variables
-  data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all.vars(result$mm_formula)[classes == "numeric"]])), 2, data_summary))
+  data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes == "numeric"]])), 2, data_summary))
   # character variables - use mode
-  data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all.vars(result$mm_formula)[classes != "numeric"]])), 2, data_summary_char))
+  data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes != "numeric"]])), 2, data_summary_char))
   names(data_summary_ch) <- all_vars[classes != "numeric"]
   result$data_summary <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
 
   # identification of numeric covariates
-  result$numeric_covs <- fitted$numeric_covs
+  result$numeric_covs <- fitted$numeric_covs[!(names(fitted$numeric_covs) == wcols$strata)]
 
   # set class
   class(result) <- c("bag", "list")
@@ -194,9 +215,26 @@ score2weight_mean <- function(x, col = "validation_score", score_threshold = 0.7
 
 #' @rdname bag_models
 #' @export
+score2weight_min_mean <- function(x, col = "validation_score", score_threshold = 0.7){
+  # x = lres[[14]]
+  x <- x[[col]]
+  x <- ifelse(any(x < score_threshold), 0, mean(x, na.rm = TRUE)) #set poorly validated models to zero
+  return(x)
+}
+
+#' @rdname bag_models
+#' @export
 score2weight_invmean <- function(x, col = "validation_score", score_threshold = 0.7){
   x <- x[[col]]
   x <- 1/mean(1/x, na.rm = TRUE)
   x <- ifelse(x < score_threshold, 0, x) #set poorly validated models to zero
+  return(x)
+}
+
+#' @rdname bag_models
+#' @export
+score2weight_min_invmean <- function(x, col = "validation_score", score_threshold = 0.7){
+  x <- x[[col]]
+  x <- ifelse(any(x < score_threshold), 0, 1/mean(1/x, na.rm = TRUE)) #set poorly validated models to zero
   return(x)
 }
