@@ -8,6 +8,8 @@ add_zoi_layers(layers, zoi_radius, name = NULL, pattern = NULL)
 }
 \description{
 This function uses a vector of variable names and a vector of ZOI radii to create
+a \code{data.frame} with all combinations of variable names and zoi radii, to ease
+listing or accessing them from GRASS GIS or for setting up a model formula.
 }
 \examples{
 # attaching zoi_radius to the end

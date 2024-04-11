@@ -1,6 +1,8 @@
 #' Create ZOI layer names as strings for data annotation
 #'
 #' This function uses a vector of variable names and a vector of ZOI radii to create
+#' a `data.frame` with all combinations of variable names and zoi radii, to ease
+#' listing or accessing them from GRASS GIS or for setting up a model formula.
 #'
 #' @examples
 #' # attaching zoi_radius to the end
