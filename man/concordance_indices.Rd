@@ -2,19 +2,39 @@
 % Please edit documentation in R/concordance.R
 \name{concordance_indices}
 \alias{concordance_indices}
-\alias{somersD}
+\alias{conditionalBoyce}
+\alias{conditionalSomersD}
+\alias{conditionalAUC}
 \alias{AUC}
-\alias{proc_AUC}
-\title{Computes concordance indices for model evaluation}
+\title{Computes the conditional Boyce index for model evaluation}
 \usage{
-somersD(x, errors = TRUE, warnings = TRUE)
+conditionalBoyce(
+  x,
+  method = c("pearson", "kendall", "spearman")[1],
+  plotit = FALSE,
+  errors = TRUE,
+  warnings = TRUE
+)
+
+conditionalSomersD(x, errors = TRUE, warnings = TRUE)
+
+conditionalAUC(x, errors = TRUE, warnings = TRUE)
 
 AUC(x, errors = TRUE, warnings = TRUE)
-
-proc_AUC(x, errors = TRUE, warnings = TRUE)
+}
+\arguments{
+\item{x}{A data.frame with three columns: x, the predicted values; y, the case variable
+(use vs. available, 1/0); and strat, the stratum.}
 }
 \description{
 These functions compute different concordance indices.
+}
+\details{
+The function \code{\link[=conditionalAUC]{conditionalAUC()}} is the implementation of the computation of the Area Under the Curve as related
+to the Sommers'D index, as described in https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf.
+It is implemented by accounting for strata, ideal for conditional logistic regression.
+The function \code{\link[=AUC]{AUC()}} uses the \code{\link[pROC:auc]{pROC::auc()}} function and does not account for strata.
+Functions conditionalBoyce and conditionalSomersD both account for strata.
 }
 \references{
 https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
