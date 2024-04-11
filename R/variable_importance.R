@@ -51,6 +51,8 @@ variable_importance <- function(x,
   wghts <- x$weights
   coefs <- x$coef
   if(is.null(metric)) metric <- x$metric
+  # set sample(s)
+  ss <- 1
 
   # case
   case <- extract_response_strata(f)$response
@@ -60,9 +62,9 @@ variable_importance <- function(x,
   # should training data be used?
   if(!is.null(samples)) {
     if(strat == "") {
-      data <- data[samples$validate[[1]],]
+      data <- data[samples$validate[[ss]],]
     } else {
-      data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[1]]],]
+      data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[ss]]],]
     }
     ## here we select the first sample; it could be for all, and an average over samples
     # or for all data altogether, with not samples
@@ -74,7 +76,7 @@ variable_importance <- function(x,
   }
 
   # model matrix, prediction, y and strata
-  mm <- model.matrix(x$mm_formula, data)
+  mm <- model.matrix(x$formula_no_strata, data)
   pred <- as.vector((mm %*% coefs) %*% wghts)
   y <- data[, case]
 
@@ -84,19 +86,27 @@ variable_importance <- function(x,
     strat <- data[,strat]
   }
 
-  baseline <- metric(data.frame(x=pred, y, strat))
+  baseline <- metric(data.frame(x = pred, y, strat))
 
-  if (type=="permutation"){
-    test <- unlist(lapply(c(1:ncol(mm)), permutated_concordance, mm=mm, y=y, strat=strat,
-                          coefs=coefs, wghts=wghts, n_permutations=n_permutations,
-                          metric = metric))
-  }else{
+  if (type == "permutation"){
     if(is.null(variable_block)) {
-      test <- unlist(lapply(c(1:ncol(mm)), dropped_concordance, mm=mm, y=y, strat=strat,
-                            coefs=coefs, wghts=wghts, metric = metric))
+      test <- unlist(lapply(c(1:ncol(mm)), permutated_concordance, mm = mm, y = y, strat = strat,
+                            coefs = coefs, wghts = wghts, n_permutations = n_permutations,
+                            baseline_pred = pred, metric = metric))
     } else {
-      test <- unlist(lapply(c(1:length(unique(variable_block))), dropped_concordance, mm=mm, y=y, strat=strat,
-                            coefs=coefs, wghts=wghts, metric = metric, variable_block = variable_block))
+      test <- unlist(lapply(c(1:ncol(mm)), permutated_concordance, mm = mm, y = y, strat = strat,
+                            coefs = coefs, wghts = wghts, n_permutations = n_permutations,
+                            baseline_pred = pred, metric = metric, variable_block = variable_block))
+    }
+  } else {
+    if(is.null(variable_block)) {
+      test <- unlist(lapply(c(1:ncol(mm)), dropped_concordance, mm = mm, y = y, strat = strat,
+                            coefs = coefs, wghts = wghts, baseline_pred = pred, metric = metric))
+    } else {
+      test <- unlist(lapply(c(1:length(unique(variable_block))),
+                            dropped_concordance, mm = mm, y = y, strat = strat,
+                            coefs = coefs, wghts = wghts, baseline_pred = pred, metric = metric,
+                            variable_block = variable_block))
     }
 
   }
@@ -127,41 +137,93 @@ variable_importance <- function(x,
 }
 
 # add variable block here??
-permutated_concordance <- function(i, mm, y, strat, coefs, wghts, n_permutations, metric){
+permutated_concordance <- function(i, mm, y, strat, coefs, wghts,
+                                   n_permutations, baseline_pred,
+                                   metric, variable_block = NULL){
   tmp <- unlist(lapply(c(1:n_permutations),
-                       function(x, i, mm, y, strat, coefs, wghts){
-                         mm[,i] <- mm[sample.int(nrow(mm)),i];
-                         pred <- as.vector((mm %*% coefs) %*% wghts);
-                         return(metric(data.frame(x=pred, y, strat), warnings=F))}, i=i, mm=mm, y=y, strat=strat, coefs=coefs, wghts=wghts))
+                       function(x, i, mm, y, strat, coefs, wghts, baseline_pred){
+                         # matrix n_obs rows x r_resamples cols
+                         mat_coef <- (matrix(rep(coefs[i,], each = nrow(mm)), nrow = nrow(mm)))
+                         # change in prediction value
+                         pred <- baseline_pred + (((mm[sample.int(nrow(mm)),i]-mm[,i]) * mat_coef) %*% wghts)
+                         return(metric(data.frame(x=pred, y, strat), warnings=F))},
+                       i=i, mm=mm, y=y, strat=strat, coefs=coefs, wghts=wghts, baseline_pred=baseline_pred))
   return(mean(tmp))
 }
 
-dropped_concordance <- function(i, mm, y, strat, coefs, wghts, n_permutations, metric, variable_block = NULL){
+permutated_concordance_old <- function(i, mm, y, strat, coefs, wghts,
+                                       n_permutations, baseline_pred,
+                                       metric, variable_block = NULL){
+  tmp <- unlist(lapply(c(1:n_permutations),
+                       function(x, i, mm, y, strat, coefs, wghts, baseline_pred){
+                         mm[,i] <- mm[sample.int(nrow(mm)),i];
+                         pred <- as.vector((mm %*% coefs) %*% wghts);
+                         return(metric(data.frame(x=pred, y, strat), warnings=F))},
+                       i=i, mm=mm, y=y, strat=strat, coefs=coefs, wghts=wghts, baseline_pred=baseline_pred))
+  return(mean(tmp))
+}
+#
+# permutated_concordance(7, mm, y, strat, coefs, wghts, n_permutations=1, baseline_pred, metric)
+# permutated_concordance_old(7, mm, y, strat, coefs, wghts, n_permutations=1, metric)#
+# microbenchmark::microbenchmark(permutated_concordance(7, mm, y, strat, coefs, wghts, n_permutations=1, baseline_pred, metric),
+#                                permutated_concordance_old(7, mm, y, strat, coefs, wghts, n_permutations=1, baseline_pred, metric))
+
+dropped_concordance_new <- function(i, mm, y, strat, coefs, wghts,
+                                    n_permutations, baseline_pred,
+                                    metric, variable_block = NULL){
+
+  # matrix n_obs rows x r_resamples cols
+  weights_nonzero <- which(wghts > 0)
+
+  if(!is.null(variable_block)) {
+    ### NEED TO CHECK THIS HERE
+    mat_coef <- (matrix(rep(coefs[variable_block == unique(variable_block)[i], weights_nonzero], each = nrow(mm)), nrow = nrow(mm)))
+    pred <- baseline_pred - ((mm[, variable_block == unique(variable_block)[i]] * mat_coef) %*% wghts[weights_nonzero])
+  } else {
+    mat_coef <- (matrix(rep(coefs[i,weights_nonzero], each = nrow(mm)), nrow = nrow(mm)))
+    pred <- baseline_pred - ((mm[, i] * mat_coef) %*% wghts[weights_nonzero])
+  }
+
+  return(metric(data.frame(x=pred, y, strat), warnings=F))
+}
+
+dropped_concordance <- function(i, mm, y, strat, coefs, wghts,
+                                n_permutations, baseline_pred,
+                                metric, variable_block = NULL){
   if(!is.null(variable_block)) {
     mm[,variable_block == unique(variable_block)[i]] <- 0
   } else {
     mm[,i] <- 0
   }
 
-  pred <- as.vector((mm %*% coefs) %*% wghts);
+  weights_nonzero <- which(wghts > 0)
+
+  pred <- as.vector((mm %*% coefs[,weights_nonzero]) %*% wghts[weights_nonzero]);
   return(metric(data.frame(x=pred, y, strat), warnings=F))
 }
 
-# not used now, replaced by dropped_concordance which allows for other metrics
-permutatedBoyce <- function(i, mm, y, strat, coefs, wghts, n_permutations){
-  tmp <- unlist(lapply(c(1:n_permutations),
-                       function(x, i, mm, y, strat, coefs, wghts){
-                         mm[,i] <- mm[sample.int(nrow(mm)),i];
-                         pred <- as.vector((mm %*% coefs) %*% wghts);
-                         return(conditionalBoyce(data.frame(x=pred, y, strat), warnings=F))}, i=i, mm=mm, y=y, strat=strat, coefs=coefs, wghts=wghts))
-  return(mean(tmp))
-}
-# not used now, replaced by dropped_concordance which allows for other metrics
-droppedBoyce <- function(i, mm, y, strat, coefs, wghts, n_permutations){
-  mm[,i] <- 0
-  pred <- as.vector((mm %*% coefs) %*% wghts);
-  return(conditionalBoyce(data.frame(x=pred, y, strat), warnings=F))
-}
+# dropped_concordance(7, mm, y, strat, coefs, wghts, n_permutations=1, baseline_pred, metric)
+# dropped_concordance_old(7, mm, y, strat, coefs, wghts, n_permutations=1, metric)#
+# microbenchmark::microbenchmark(dropped_concordance(7, mm, y, strat, coefs, wghts, n_permutations=1, baseline_pred, metric),
+#                                dropped_concordance_old(7, mm, y, strat, coefs, wghts, n_permutations=1, metric),
+#                                check = "identical")
+
+
+# # not used now, replaced by dropped_concordance which allows for other metrics
+# permutatedBoyce <- function(i, mm, y, strat, coefs, wghts, n_permutations){
+#   tmp <- unlist(lapply(c(1:n_permutations),
+#                        function(x, i, mm, y, strat, coefs, wghts){
+#                          mm[,i] <- mm[sample.int(nrow(mm)),i];
+#                          pred <- as.vector((mm %*% coefs) %*% wghts);
+#                          return(conditionalBoyce(data.frame(x=pred, y, strat), warnings=F))}, i=i, mm=mm, y=y, strat=strat, coefs=coefs, wghts=wghts))
+#   return(mean(tmp))
+# }
+# # not used now, replaced by dropped_concordance which allows for other metrics
+# droppedBoyce <- function(i, mm, y, strat, coefs, wghts, n_permutations){
+#   mm[,i] <- 0
+#   pred <- as.vector((mm %*% coefs) %*% wghts);
+#   return(conditionalBoyce(data.frame(x=pred, y, strat), warnings=F))
+# }
 
 
 #' Plot variable importance
