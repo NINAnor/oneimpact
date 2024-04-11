@@ -14,7 +14,7 @@ kernel_prediction <- function(f, data,
   kernel_variables <- kernel_variables[grep("strata", kernel_variables, invert = TRUE)]
 
   # returning prediction of only this variables, based on the fitted coefficients
-  f2 <- as.formula(paste0(extract_response_strata(f, other_vars = F)$response, " ~ -1 + ",
+  f2 <- as.formula(paste0(extract_response_strata(f, covars = F)$response, " ~ -1 + ",
                           paste0(kernel_variables, collapse = "+")))
   pred_vals_kernel <- model.matrix(f2, data) %*% coefs[match(kernel_variables, names(coefs))]
   return(pred_vals_kernel)

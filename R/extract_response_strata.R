@@ -1,24 +1,28 @@
-#' Separates the reponse variable, the strata variable (), and other variables in a statistical formula
+#' Separates elements in a statistical formula
 #'
-#' @param f Formula for model fitting.
-#' @param other_vars logical. If true, all the (other) explanatory variables are also
-#' appended to the output, separated from the responde and strata variables.
+#' This function separates the response variable, the strata variable,
+#' and the covariates/predictors in a statistical formula.
+#'
+#' @param f `[formula]` \cr Formula for model fitting.
+#' @param covars `[logical(1)=FALSE]` \cr logical. If true, all the (other)
+#' covariates/explanatory variables in the formula are also
+#' appended to the output, separated from the response and strata variables.
 #'
 #' @return A `data.frame` with the response variable (`case`), the stratum variable
-#' (`strata`), and possibly all explanatory variables, if `other_vars = TRUE`.
+#' (`strata`), and possibly all explanatory variables, if `covars = TRUE`.
 #'
 #' @examples
 #' # formula with strata
 #' f <- formula(use ~ exp1 + exp2 + exp1:exp2 + strata(id))
 #' extract_response_strata(f)
-#' extract_response_strata(f, other_vars = TRUE)
+#' extract_response_strata(f, covars = TRUE)
 #'
 #' # formula without strata
 #' f2 <- formula(use ~ exp1 + exp2 + exp1:exp2)
-#' extract_response_strata(f2, other_vars = TRUE)
+#' extract_response_strata(f2, covars = TRUE)
 #'
 #' @export
-extract_response_strata <- function(f, other_vars = F) {
+extract_response_strata <- function(f, covars = FALSE) {
 
     # create list of variables
     x <- list()
@@ -37,12 +41,12 @@ extract_response_strata <- function(f, other_vars = F) {
       x$strata <- tmp
     }
 
-    if (other_vars){
+    if (covars){
       tmp  <- gsub(paste0("strata(", x$strata), 'xx', as.character(f)[3], fixed=T)
       tmp  <- gsub("xx) +", '', tmp, fixed=T) |>
         gsub(pattern = "+ xx)", replacement = '', fixed=T) |>
         gsub(pattern = "xx)", replacement = '', fixed=T)
-      x$other_vars <- trimws(tmp)
+      x$covars <- trimws(tmp)
     }
 
     return(x)

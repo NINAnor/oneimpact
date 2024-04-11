@@ -2,31 +2,33 @@
 % Please edit documentation in R/extract_response_strata.R
 \name{extract_response_strata}
 \alias{extract_response_strata}
-\title{Separates the reponse variable, the strata variable (), and other variables in a statistical formula}
+\title{Separates elements in a statistical formula}
 \usage{
-extract_response_strata(f, other_vars = F)
+extract_response_strata(f, covars = FALSE)
 }
 \arguments{
-\item{f}{Formula for model fitting.}
+\item{f}{\verb{[formula]} \cr Formula for model fitting.}
 
-\item{other_vars}{logical. If true, all the (other) explanatory variables are also
-appended to the output, separated from the responde and strata variables.}
+\item{covars}{\verb{[logical(1)=FALSE]} \cr logical. If true, all the (other)
+covariates/explanatory variables in the formula are also
+appended to the output, separated from the response and strata variables.}
 }
 \value{
 A \code{data.frame} with the response variable (\code{case}), the stratum variable
-(\code{strata}), and possibly all explanatory variables, if \code{other_vars = TRUE}.
+(\code{strata}), and possibly all explanatory variables, if \code{covars = TRUE}.
 }
 \description{
-Separates the reponse variable, the strata variable (), and other variables in a statistical formula
+This function separates the response variable, the strata variable,
+and the covariates/predictors in a statistical formula.
 }
 \examples{
 # formula with strata
 f <- formula(use ~ exp1 + exp2 + exp1:exp2 + strata(id))
 extract_response_strata(f)
-extract_response_strata(f, other_vars = TRUE)
+extract_response_strata(f, covars = TRUE)
 
 # formula without strata
 f2 <- formula(use ~ exp1 + exp2 + exp1:exp2)
-extract_response_strata(f2, other_vars = TRUE)
+extract_response_strata(f2, covars = TRUE)
 
 }
