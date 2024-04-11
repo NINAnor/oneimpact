@@ -11,6 +11,7 @@ add_zoi_formula(
   pattern = "XXX",
   cumulative = "",
   separator = "_",
+  remove_term = "",
   predictor_table = FALSE
 )
 }
@@ -20,15 +21,16 @@ the actual name of each term, but all ZOI variables whose radius/scale shall be 
 be added with a pattern, e.g. "road_traffic_zoiXXXX".}
 
 \item{zoi_radius}{\verb{[numeric,vector]} \cr A vector of radii/scales for the zone of influence,
-to be added to the formula.}
+to be added to the formula (e.g. "exp" or "linear"). It should match the name of the columns
+in the data set for be used for model fitting.}
 
 \item{type}{\verb{[character=""]} \cr Shape(s) of the ZOI (or vector of shapes if more than one),
 to be added to the terms name.}
 
 \item{pattern}{\verb{[character]} \cr Pattern to be replaced in the formula, corresponding to the ZOI
-radii or ZOI shapes and radii.}
+radii or ZOI shapes and radii (e.g. \code{"XXX"}).}
 
-\item{cumulative}{\verb{[character=""]\{"cumulative", "nearest"\}} \cr Default is \code{NULL}. String to be added to the ZOI terms
+\item{cumulative}{\verb{[character=""]\{"cumulative", "nearest"\}} \cr Default is \code{""}. String to be added to the ZOI terms
 corresponding on whether the variable represents the ZOI of the nearest feature (\code{cumulative = "nearest"})
 or the cumulative ZOI (\code{cumulative = "cumulative"}). If \code{""} (default), the type of ZOI is taken from the
 variable name, already given in the formula.}
@@ -37,7 +39,9 @@ variable name, already given in the formula.}
 is provided. Default is \code{"_"}.}
 
 \item{predictor_table}{\verb{[logical(1)=FALSE]} \cr logical. Whether or not a table should be returned
-with info of all ZOI radii, shape values, and formula terms, together with info from other non-ZOI predictors.}
+with info of all ZOI radii, shape values, and formula terms, together with info from other non-ZOI predictors.
+This table is of special interest when fitting "Decay Adaptive Lasso" models with
+\code{fit_net_logit()} or \code{fit_net_clogit()} with argument \code{method = "DecayAdaptiveLasso"}.}
 }
 \value{
 A list with both the final \code{formula} with all ZOI radii and shapes and

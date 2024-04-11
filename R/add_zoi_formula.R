@@ -10,12 +10,13 @@
 #' the actual name of each term, but all ZOI variables whose radius/scale shall be fitted might
 #' be added with a pattern, e.g. "road_traffic_zoiXXXX".
 #' @param zoi_radius `[numeric,vector]` \cr A vector of radii/scales for the zone of influence,
-#' to be added to the formula.
+#' to be added to the formula (e.g. "exp" or "linear"). It should match the name of the columns
+#' in the data set for be used for model fitting.
 #' @param type `[character=""]` \cr Shape(s) of the ZOI (or vector of shapes if more than one),
 #' to be added to the terms name.
 #' @param pattern `[character]` \cr Pattern to be replaced in the formula, corresponding to the ZOI
-#' radii or ZOI shapes and radii.
-#' @param cumulative `[character=""]{"cumulative", "nearest"}` \cr Default is `NULL`. String to be added to the ZOI terms
+#' radii or ZOI shapes and radii (e.g. `"XXX"`).
+#' @param cumulative `[character=""]{"cumulative", "nearest"}` \cr Default is `""`. String to be added to the ZOI terms
 #' corresponding on whether the variable represents the ZOI of the nearest feature (`cumulative = "nearest"`)
 #' or the cumulative ZOI (`cumulative = "cumulative"`). If `""` (default), the type of ZOI is taken from the
 #' variable name, already given in the formula.
@@ -23,6 +24,8 @@
 #' is provided. Default is `"_"`.
 #' @param predictor_table `[logical(1)=FALSE]` \cr logical. Whether or not a table should be returned
 #' with info of all ZOI radii, shape values, and formula terms, together with info from other non-ZOI predictors.
+#' This table is of special interest when fitting "Decay Adaptive Lasso" models with
+#' `fit_net_logit()` or `fit_net_clogit()` with argument `method = "DecayAdaptiveLasso"`.
 #'
 #' @return A list with both the final `formula` with all ZOI radii and shapes and
 #' a table with the predictor information (if `predictor_table = TRUE`).
@@ -58,12 +61,13 @@ add_zoi_formula <- function(f, zoi_radius,
                             pattern = "XXX",
                             cumulative = "",
                             separator = "_",
+                            remove_term = "",
                             predictor_table = FALSE) {
 
   # separate case and strata from formula
-  f2 <- extract_response_strata(f, other_vars = T)
+  f2 <- extract_response_strata(f, covars = T)
   # get other variables
-  f3 <- strsplit(f2$other_vars, split="+", fixed = T)[[1]] |>
+  f3 <- strsplit(f2$covars, split="+", fixed = T)[[1]] |>
     sapply(trimws, USE.NAMES = FALSE)
   # add zoi_radius
   if(any(type == "")) {
@@ -75,6 +79,11 @@ add_zoi_formula <- function(f, zoi_radius,
     f3 <- unique(apply(grid_zoi, 1,
                        function(x, y){ gsub(y, paste0(x[2], separator, as.numeric(x[1])),
                                             x[3])}, y = pattern))
+  }
+  # remove terms to be removed
+  if(!all(remove_term == "")) {
+    which_keep <- which(!(f3 %in% remove_term))
+    f3 <- f3[which_keep]
   }
   # re-build formula with all terms
   f4 <- paste0(f3, collapse = " + ")
@@ -99,6 +108,10 @@ add_zoi_formula <- function(f, zoi_radius,
     grid_zoi[lines_other,c(1,2,4)] <- NA
     grid_zoi <- grid_zoi[sort(c(lines_zoi, lines_other)),]
     grid_zoi$is_zoi <- ifelse(is.na(grid_zoi$is_zoi), 0, grid_zoi$is_zoi)
+    # remove lines to remove
+    if(!all(remove_term == "")) {
+      grid_zoi <- grid_zoi[which_keep,]
+    }
 
     # add variable in formula
     #grid_zoi$variable_zoi <- all_covs#f3
