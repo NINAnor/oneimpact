@@ -9,6 +9,8 @@ create_resamples(
   times = 10,
   p = c(0.4, 0.2, 0.2),
   max_size_validation_blockH0 = 1000,
+  max_size_validation_blockH1 = 1000,
+  max_size_validation_blockH2 = 1000,
   max_number_fit_blockH1 = 15,
   sp_strat = NULL,
   colH0 = NULL,
@@ -61,6 +63,12 @@ By default, samples are created through bootstrapping, i.e. with replacement. Th
 data observations can be repeated within a given sample block, but observations included
 in one block are necessarily excluded from the other blocks (e.g. observations selected
 for validation will be absent from train and test blocks).
+}
+\details{
+Samples can be created at random (if \code{spat_strat = NULL}, default) or with spatial
+stratification (spatial strata can be created with the function \code{\link[=spat_strat]{spat_strat()}}.
+Also, samples might include a specific variable (with classes or groups) H0 to be used for
+validation (if \code{colH0} is provided), but this is not a requirement.
 }
 \examples{
 # random sampling, no validation block H0

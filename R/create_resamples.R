@@ -7,6 +7,11 @@
 #' in one block are necessarily excluded from the other blocks (e.g. observations selected
 #' for validation will be absent from train and test blocks).
 #'
+#' Samples can be created at random (if `spat_strat = NULL`, default) or with spatial
+#' stratification (spatial strata can be created with the function [oneimpact::spat_strat()].
+#' Also, samples might include a specific variable (with classes or groups) H0 to be used for
+#' validation (if `colH0` is provided), but this is not a requirement.
+#'
 #' @param y `[vector]` \cr A vector of outcomes.
 #' @param times `[numeric(1)=10]` \cr The number of partitions or samples to create.
 #' @param p `[numeric(3)=c(0.4,0.2,0.2)]` \cr A 3 element numeric vector with the percentage of data that goes to
@@ -76,6 +81,8 @@
 create_resamples <- function (y, times = 10,
                               p = c(0.4, 0.2, 0.2),
                               max_size_validation_blockH0 = 1000,
+                              max_size_validation_blockH1 = 1000,
+                              max_size_validation_blockH2 = 1000,
                               max_number_fit_blockH1 = 15,
                               sp_strat = NULL,
                               colH0 = NULL,
