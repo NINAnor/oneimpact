@@ -7,14 +7,37 @@
 plot_coef <- function(bag, terms = "all",
                       models = 1:bag$n,
                       weighted = TRUE,
+                      remove_weight_zero = TRUE,
                       what = c("all_models", "average")[1],
                       plot_type = c("bars", "points", "histogram")[1],
-                      remove_low = 0, remove_high = Inf,
+                      remove_low = -1, remove_high = Inf,
+                      std = c(FALSE, "std", "unstd")[1],
+                      data = NULL,
                       order_zoi_radius = FALSE,
                       show_legend = FALSE) {
 
+  # get coefs, possibly (un)standardize
+  if(std == FALSE) {
+
+    coef <- bag$coef
+
+  } else {
+
+    # check if data is provided
+    if(is.null(data)) stop("If std == 'std' or std == 'unstd', the dataset 'data' must be provided.")
+
+    if(std == "std") {
+      coef <- rescale_coefficients(bag, data, tostd = TRUE)
+    } else {
+      if(std == "unstd") {
+        coef <- rescale_coefficients(bag, data, tostd = FALSE)
+      }
+    }
+
+  }
+
   # get the coefficients for a subset of models
-  coef <- bag$coef[, models]
+  coef <- coef[, models]
   w <- bag$weights[models]
 
   # get the terms of interest
@@ -23,7 +46,7 @@ plot_coef <- function(bag, terms = "all",
     if(is.numeric(terms)) {
       coef <- coef[terms,]
     } else {
-      coef <- coef[grepl(terms, rownames(coef)),]
+      coef <- coef[grepl(terms, rownames(coef)), , drop = FALSE]
 
       # check if it is ZOI variables and they should be ordered
       if(order_zoi_radius) {
@@ -39,7 +62,9 @@ plot_coef <- function(bag, terms = "all",
 
     # all models
     if(what == "all_models") {
-      wc <- coef * w
+      w_mat <- matrix(rep(w, times = nrow(coef)), nrow = nrow(coef), byrow = T)
+      wc <- coef * as.vector(w_mat)
+      if(remove_weight_zero) wc <- wc[, w > 0]
 
     } else {
 
@@ -96,7 +121,7 @@ plot_coef <- function(bag, terms = "all",
   # negative, positive, zero
   df$signal <- ifelse(df$y > 0, "positive", ifelse(df$y < 0, "negative", "null"))
   # filter thresholds
-  df <- df[abs(df$y) >= remove_low & abs(df$y) < remove_high,]
+  df <- df[abs(df$y) > remove_low & abs(df$y) < remove_high,]
   df$x <- factor(df$x, levels = unique(df$x))
 
   # plot type
@@ -164,7 +189,7 @@ plot_coef <- function(bag, terms = "all",
     gg <- gg + ggplot2::facet_wrap(~x)
   }
 
-  print(gg)
+  gg
 }
 
 #'
