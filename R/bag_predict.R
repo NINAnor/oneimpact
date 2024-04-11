@@ -13,7 +13,7 @@ bag_predict <- function(x,
                         include = "all") {
 
   # model matrix
-  mm <- model.matrix(x$mm_formula, newdata)
+  mm <- model.matrix(x$formula_no_strata, newdata)
   # trick, check LATER ###########
   # attr(mm, "assign") |> duplicated()
   # if contrasts and NA
@@ -24,7 +24,7 @@ bag_predict <- function(x,
 
   # subset of variables to be included
   if (include[1]!="all"){
-    coefs <- coefs * include
+    coefs <- coefs[, include]
   }
 
   # prediction
@@ -72,7 +72,7 @@ bag_predict <- function(x,
 }
 
 bag_predict_components <- function(x, newdata, include="all"){
-  mm <- model.matrix(x$mm_formula, newdata)
+  mm <- model.matrix(x$formula_no_strata, newdata)
   coefs <- x$coef %*% x$weights
   if (include[1]!="all"){
     coefs <- coefs * include
