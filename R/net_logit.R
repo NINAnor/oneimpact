@@ -35,10 +35,10 @@ net_logit <- function(f, data,
   options(na.action = na.action)
 
   # extract strata variable and other columns
-  wcols <- extract_response_strata(f, other_vars = TRUE)
+  wcols <- extract_response_strata(f, covars = TRUE)
 
   # formula with no intercept
-  ff <- as.formula(paste0(wcols$reponse, " ~ -1 + ", wcols$other_vars))
+  ff <- as.formula(paste0(wcols$reponse, " ~ -1 + ", wcols$covars))
   # explanatory variables
   X <- model.matrix(ff, data)
   # response variable

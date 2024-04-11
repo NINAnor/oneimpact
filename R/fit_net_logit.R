@@ -10,9 +10,9 @@
 #' and validate. Each elements might have several elements, each representing
 #' the lines of `data` to be sampled for each resample. Typically, this is computed by
 #' the function [oneimpact::create_resamples()].
-#' @param metric `[function]{conditionalBoyce, SomersD, AUC, proc_AUC}` \cr Function
-#' representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
-#' somersD, AUC, and proc_AUC. A user-defined function might be provided, with a condition that
+#' @param metric `[function]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
+#' representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
+#' conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
 #' it must be maximized to find the best fit model.
 #' @param standardize `[logical(1)=TRUE]` \cr Logical flag for predictor variable standardization,
 #' prior to fitting the model sequence. The coefficients are always returned on the original scale.
@@ -28,7 +28,7 @@
 #' @export
 fit_net_logit <- function(f, data,
                           samples, i = 1,
-                          metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+                          metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
                           method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
                           alpha = NULL,
                           penalty.factor = NULL,
@@ -48,7 +48,7 @@ fit_net_logit <- function(f, data,
     stop(paste0("Invalid parameter 'method'. It should be one of ", paste(method_options, collapse = ","), "."))
 
   # get variables
-  wcols <- extract_response_strata(f, other_vars = TRUE)
+  wcols <- extract_response_strata(f, covars = TRUE)
 
   # filter out NAs
   if(anyNA(data[[wcols$response]])) {
@@ -56,10 +56,17 @@ fit_net_logit <- function(f, data,
     data <- data[!is.na(data[[wcols$response]]),]
   }
 
+  # relevant columns
+  all_vars <- all.vars(f)
+
+  # check columns in data
+  if(!all(all_vars %in% names(data)))
+    stop(paste0("Not all variables in the formula are present in the data. Please check."))
+
   # separate data for fitting, calibration, and validation
-  train_data  <- data[samples$train[[i]], ]
-  test_data <- data[samples$test[[i]], ]
-  validate_data <- data[samples$validate[[i]], ]
+  train_data  <- data[samples$train[[i]], all_vars]
+  test_data <- data[samples$test[[i]], all_vars]
+  validate_data <- data[samples$validate[[i]], all_vars]
 
   # check NAs
   if(anyNA(train_data)) {
@@ -113,7 +120,7 @@ fit_net_logit <- function(f, data,
     if(grepl("Decay", method[1], ignore.case = TRUE)) {
 
       # formula
-      ff <- as.formula(paste0("~ -1 +", wcols$other_vars))
+      ff <- as.formula(paste0("~ -1 +", wcols$covars))
       covars <- all.vars(ff)
       # model matrix with data
       M <- stats::model.matrix(ff, data)
@@ -142,7 +149,7 @@ fit_net_logit <- function(f, data,
                                na.action = na.action,
                                ...)
         # get variables
-        f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$other_vars))
+        f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
         # calibration
         pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit)[-1,] # multiple fits?
         d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
@@ -166,8 +173,8 @@ fit_net_logit <- function(f, data,
                    ...)
 
   # get variables
-  f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$other_vars)) # should we remove the intercept?
-  #f2 <- as.formula(paste0(wcols$response, " ~ ", wcols$other_vars))
+  f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars)) # should we remove the intercept?
+  #f2 <- as.formula(paste0(wcols$response, " ~ ", wcols$covars))
 
   #----
   # Variable selection step
@@ -217,7 +224,8 @@ fit_net_logit <- function(f, data,
   # val <- split(val, samples$blockH0[sort(match(val$strat, spStrat$id))])
   if(!is.null(samples$blockH0)) {
 
-    val2 <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
+    # val2 <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
+    val2 <- split(val, samples$blockH0[val$strat])
     if(length(val2) == 0) {
       val2 <- split(val, samples$blockH0[samples$validate[[i]]])
     }
@@ -263,7 +271,7 @@ fit_net_rsf <- fit_net_logit
 #' @export
 bag_fit_net_logit <- function(f, data,
                               samples,
-                              metric = c(conditionalBoyce, somersD, AUC, proc_AUC)[[1]],
+                              metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
                               standardize = c("internal", "external", FALSE)[1],
                               method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
                               alpha = NULL,
@@ -277,12 +285,12 @@ bag_fit_net_logit <- function(f, data,
                               ...) {
 
   # get variables
-  wcols <- extract_response_strata(f, other_vars = TRUE)
+  wcols <- extract_response_strata(f, covars = TRUE)
 
   # First we standardize covariates
   # relevant columns
   all_vars <- all.vars(f)
-  all_covars <- all_vars[grep(wcols$response, all_vars, invert = TRUE)]
+  all_covars <- all_vars[-1]
 
   # get predictors
   data_covs <- data[, all_covars]
@@ -403,3 +411,6 @@ bag_fit_net_logit <- function(f, data,
 
   results
 }
+
+
+### write fit_load_net_logit
