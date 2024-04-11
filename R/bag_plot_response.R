@@ -89,7 +89,7 @@ plot_response.bag <- function(x,
     zoi_radii <- as.numeric(gsub("\\D", "", zois))
 
     # compute ZOI for the intended distances
-    dfvar2 <- dfvar[,rep(1, length(zoi_radii))]
+    dfvar2 <- dfvar[,rep(1, length(zoi_radii)), drop = FALSE]
     is_cumulative <- grepl(pattern = which_cumulative, zois)
     dfvar2 <- as.data.frame(do.call("cbind", lapply(c(1:ncol(dfvar2)), function(i) {
       n_feat <- ifelse(is_cumulative[i], n_features, 1)
@@ -108,7 +108,13 @@ plot_response.bag <- function(x,
 
   # make sure prediction works even if categorical variables are constant
   # get that from the summary instead of dat, where from? maybe a new object
-  for(i in which(!x$numeric_covs)) newdata[,i+1] <- factor(newdata[,i+1], levels = sort(unique(data[,names(x$numeric_covs[i])]))) # maybe different condition and specification with levels if it is a factor
+  for(i in which(!x$numeric_covs)) {
+    if(class(data[,names(x$numeric_covs[i])]) == "factor") {
+      newdata[,i+1] <- factor(newdata[,i+1], levels = levels(data[,names(x$numeric_covs[i])])) # factor
+    } else {
+      newdata[,i+1] <- factor(newdata[,i+1], levels = sort(unique(data[,names(x$numeric_covs[i])]))) # character
+    }
+  }
 
   # predict for new data set
   pred <- bag_predict(x, newdata, type = type, wMean = T, wQ_probs = wQ_probs)
@@ -198,7 +204,7 @@ plot_response.bag <- function(x,
 
     if (logx) { plt <- plt + scale_x_continuous(trans = 'log10') }
     if (!is.null(ylim)) { plt <- plt + ylim }
-    print(plt)
+    return(plt)
 
   } else{
     pred <- cbind(dfvar, pred)
