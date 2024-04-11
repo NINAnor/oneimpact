@@ -1,8 +1,3 @@
-# Spatially stratified cross‐validation is less likely than randomly partitioned cross‐validation to
-# overestimate predictive performance
-# due to spatial autocorrelation (Radosavljevic & Anderson, 2014; Veloz, 2009; Wenger & Olden, 2012),
-# so it is a good way to assess predictive power when independent evaluation data are not available.
-
 #' Preparing data for spatially stratified cross‐validation schemes
 #'
 #' Hierarchical levels H0, H1, and H2.
@@ -186,6 +181,12 @@ spat_strat_blocks <- function(x,
 
   return(blocks)
 }
+
+# Spatially stratified cross‐validation is less likely than randomly partitioned cross‐validation to
+# overestimate predictive performance
+# due to spatial autocorrelation (Radosavljevic & Anderson, 2014; Veloz, 2009; Wenger & Olden, 2012),
+# so it is a good way to assess predictive power when independent evaluation data are not available.
+
 
 # test subsetting different objects
 # data(reindeer)
