@@ -2,20 +2,41 @@
 % Please edit documentation in R/explore_blocks.R
 \name{explore_blocks}
 \alias{explore_blocks}
-\alias{explore_blocks_pre}
-\title{Explore hierarchical blocks before and after spatial stratification}
+\title{Explore hierarchical blocks after spatial stratification}
 \usage{
-explore_blocks_pre(data, colH0, animal_id = NULL, col_case = "case")
-
 explore_blocks(blocks)
 }
 \arguments{
-\item{data}{\verb{[data.frame]} \cr Data.}
-
-\item{colH0}{\verb{[character]} \cr Name of the column to be used as the H0 level.}
+\item{blocks}{\verb{[data.frame]} \cr A \code{data.frame} returned by the function
+\code{\link[=spat_strat]{spat_strat()}}, which a list of blocks H0 used for validation and
+blocks H1 and H2 spatially stratified.}
+}
+\value{
+A list with:
+\itemize{
+\item blockH0_n: the number of levels/blocks in the hierarchical level H0, to be
+used for validation;
+\item blockH0_size_blocks: the number of (used) observations in each block of
+the hierarchical level H0, to be used for validation;
+\item blockH1_n: the number of different blocks (spatial strata) in the hierarchical
+level H1, to be used for model fitting.
+}
 }
 \description{
-Functions to explore the number of cases and observations for the different
-sampling units possibly used as the base H0 hierarchical level, such as population ID,
-study area, animal ID, or year.
+Function to explore the number of cases and observations for the
+sampling units used as the base H0 hierarchical level used for model validation,
+such as population ID, study area, animal ID, or year, after spatial stratification.
+It also allows exploring the the spatially stratified levels H1 and H0, to be used
+model fitting and tuning (train and test), respectively.The function can help understand
+how imbalanced are data across H0 levels used for validation.
+}
+\examples{
+# read data
+data("reindeer_ssf")
+
+# spatial stratification
+spst <- spat_strat(reindeer, coords = c("x", "y"), colH0 = "original_animal_id")
+
+# explore blocks
+explore_blocks(spst)
 }
