@@ -8,7 +8,7 @@
 #' @param model \cr Fitted model, i.e. the object created by a model fit funtion
 #' such as "lm", "glm", or "coxph".
 #' @param data \cr The original `data.frame` with the data used to fit the model.
-#' @param bag
+#' @param bag \cr A bag of models, as result of the [oneimpact::bag_models()] function.
 #' @param standardize `[logical(1)=TRUE]` If `TRUE` (Default), the coefficients are standardized.
 #' If `FALSE`, the coefficients are standardized. Only numeric coefficients are
 #' standardized.

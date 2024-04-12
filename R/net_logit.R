@@ -10,7 +10,9 @@
 #' `model.matrix(f, data)`. Default is `NULL`, in case the same penalty is applied to all variables.
 #' @param type.measure `[character(1)="deviance"]` \cr Type of measure to evaluate the model internally
 #' in [glmnet::glmnet()]. For logistic and conditional logistic regression, it is by default `"deviance"`.
-#' @param standardize
+#' @param standardize `[logical(1)=TRUE]` \cr Whether the call to `glmnet` should include
+#' internal standardization of variables or not. Default is TRUE. It should be set to `FALSE`
+#' if the variables are already standardized.
 #' @param na.action `[character(1)="na.pass"]` \cr Default is `"na.pass"`, i.e. rows with NAs are not automatically
 #' removed from the `model.matrix` used for fitting.
 #' @param func `[character(1)="glmnet"]{"glmnet", "cv.glmnet"}` \cr The function to be used for

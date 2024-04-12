@@ -44,6 +44,10 @@ fitting. The vector might have the same length as the the number of columns give
 \item{type.measure}{\verb{[character(1)="deviance"]} \cr Type of measure to evaluate the model internally
 in \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. For logistic and conditional logistic regression, it is by default \code{"deviance"}.}
 
+\item{standardize}{\verb{[logical(1)=TRUE]} \cr Whether the call to \code{glmnet} should include
+internal standardization of variables or not. Default is TRUE. It should be set to \code{FALSE}
+if the variables are already standardized.}
+
 \item{na.action}{\verb{[character(1)="na.pass"]} \cr Default is \code{"na.pass"}, i.e. rows with NAs are not automatically
 removed from the \code{model.matrix} used for fitting.}
 

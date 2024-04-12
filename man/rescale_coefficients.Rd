@@ -24,6 +24,8 @@ such as "lm", "glm", or "coxph".}
 
 \item{data}{\cr The original \code{data.frame} with the data used to fit the model.}
 
+\item{bag}{\cr A bag of models, as result of the \code{\link[=bag_models]{bag_models()}} function.}
+
 \item{standardize}{\verb{[logical(1)=TRUE]} If \code{TRUE} (Default), the coefficients are standardized.
 If \code{FALSE}, the coefficients are standardized. Only numeric coefficients are
 standardized.}
