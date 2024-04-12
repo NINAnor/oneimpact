@@ -8,10 +8,10 @@ create_resamples(
   y,
   times = 10,
   p = c(0.4, 0.2, 0.2),
-  max_size_validation_blockH0 = 1000,
-  max_size_validation_blockH1 = 1000,
-  max_size_validation_blockH2 = 1000,
-  max_number_fit_blockH1 = 15,
+  max_size_blockH0_validation = 1000,
+  max_size_blockH0_train = 1000,
+  max_size_blockH0_test = 1000,
+  max_number_blocksH1_train = 40,
   sp_strat = NULL,
   colH0 = NULL,
   H0setup = c("LAO", "LOO")[1],
@@ -28,12 +28,19 @@ create_resamples(
 fitting/training (H1), testing (H2), and validation (H0). Values should be between 0 and 1 and should
 not sum more than 1.}
 
-\item{max_size_validation_blockH0}{\verb{[numeric(1)=1000]} \cr Maximum size of the validation block H0.
-Used to limit the number of observations in the validation set, to keep fitting relatively
-fast and avoid sampling too many observations of the block H0 levels with more observations,
+\item{max_size_blockH0_validation}{\verb{[numeric(1)=1000]} \cr Maximum size of the blocks H0 (e.g. population,
+area, year) for validation block H0. Used to limit the number of observations in the validation set, to
+avoid sampling too many observations of the block H0 levels with more observations,
 for imbalanced data sets.}
 
-\item{max_number_fit_blockH1}{\verb{[numeric(1)=15]} \cr Maximum number of levels or blocks H1 to be used
+\item{max_size_blockH0_train}{\verb{[numeric(1)=1000]} \cr Maximum size of the blocks H0 (e.g. population,
+area, year) for training/fitting the model. Used to limit the number of observations in the train set,
+to avoid sampling too many observations of the block H0 levels with more observations,
+for imbalanced data sets.}
+
+\item{max_size_blockH0_test}{\verb{[numeric(1)=1000]} \cr Not implemented yet.}
+
+\item{max_number_blocksH1_train}{\verb{[numeric(1)=15]} \cr Maximum number of levels or blocks H1 to be used
 for model fitting/training.}
 
 \item{sp_strat}{\verb{[data.frame]} \cr Default is \code{NULL}. If not \code{NULL}, the \code{data.frame} resulting
@@ -84,7 +91,7 @@ library(amt)
 # random sampling, with validation block H0
 samples <- create_resamples(1:nrow(reindeer), times = 5,
                             p = c(0.2, 0.2, 0.2),
-                            max_size_validation_blockH0 = 1000,
+                            max_size_blockH0_validation = 1000,
                             colH0 = reindeer$original_animal_id,
                             list = FALSE)
 samples
@@ -94,7 +101,7 @@ spst <- spat_strat(reindeer, coords = c("x", "y"), colH0 = "original_animal_id",
                    all_cols = F)
 samples <- create_resamples(1:nrow(reindeer), times = 5,
                             p = c(0.2, 0.2, 0.2),
-                            max_number_fit_blockH1 = 20,
+                            max_number_blocksH1_train = 20,
                             sp_strat = spst,
                             colH0 = "blockH0")
 samples
@@ -104,7 +111,7 @@ sapply(samples$test, function(x) sum(is.na(x)))
 
 # small number of blocks or too high p[1] might incur in errors
 samples <- create_resamples(1:nrow(reindeer), times = 10,
-                            max_number_fit_blockH1 = 3,
+                            max_number_blocksH1_train = 3,
                             sp_strat = spst,
                             colH0 = "blockH0")
 

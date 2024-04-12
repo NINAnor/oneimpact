@@ -6,14 +6,14 @@
 \usage{
 set_sampling_params(
   max_size_validate_blockH0 = 1000,
-  max_number_fit_blockH1 = 10,
+  max_number_blocksH1_train = 10,
   max_size_fit_blockH1 = 1000
 )
 }
 \arguments{
-\item{max_number_fit_blockH1}{Default = 10. Maximum number of blocks at level H1,
+\item{max_number_blocksH1_train}{Default = 10. Maximum number of blocks at level H1,
 used for fitting the model. Why do we set a maximum here?
-If all blocks should be used, use \code{max_number_fit_blockH1 = Inf}.}
+If all blocks should be used, use \code{max_number_blocksH1_train = Inf}.}
 
 \item{max_validation_size_blockH0}{= 1000,}
 

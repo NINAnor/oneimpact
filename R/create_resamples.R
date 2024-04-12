@@ -17,11 +17,16 @@
 #' @param p `[numeric(3)=c(0.4,0.2,0.2)]` \cr A 3 element numeric vector with the percentage of data that goes to
 #' fitting/training (H1), testing (H2), and validation (H0). Values should be between 0 and 1 and should
 #' not sum more than 1.
-#' @param max_size_validation_blockH0 `[numeric(1)=1000]` \cr Maximum size of the validation block H0.
-#' Used to limit the number of observations in the validation set, to keep fitting relatively
-#' fast and avoid sampling too many observations of the block H0 levels with more observations,
+#' @param max_size_blockH0_validation `[numeric(1)=1000]` \cr Maximum size of the blocks H0 (e.g. population,
+#' area, year) for validation block H0. Used to limit the number of observations in the validation set, to
+#' avoid sampling too many observations of the block H0 levels with more observations,
 #' for imbalanced data sets.
-#' @param max_number_fit_blockH1 `[numeric(1)=15]` \cr Maximum number of levels or blocks H1 to be used
+#' @param max_size_blockH0_train `[numeric(1)=1000]` \cr Maximum size of the blocks H0 (e.g. population,
+#' area, year) for training/fitting the model. Used to limit the number of observations in the train set,
+#' to avoid sampling too many observations of the block H0 levels with more observations,
+#' for imbalanced data sets.
+#' @param max_size_blockH0_test `[numeric(1)=1000]` \cr Not implemented yet.
+#' @param max_number_blocksH1_train `[numeric(1)=15]` \cr Maximum number of levels or blocks H1 to be used
 #' for model fitting/training.
 #' @param sp_strat `[data.frame]` \cr Default is `NULL`. If not `NULL`, the `data.frame` resulting
 #' from spat_strat() should be used here.
@@ -53,7 +58,7 @@
 #' # random sampling, with validation block H0
 #' samples <- create_resamples(1:nrow(reindeer), times = 5,
 #'                             p = c(0.2, 0.2, 0.2),
-#'                             max_size_validation_blockH0 = 1000,
+#'                             max_size_blockH0_validation = 1000,
 #'                             colH0 = reindeer$original_animal_id,
 #'                             list = FALSE)
 #' samples
@@ -63,7 +68,7 @@
 #'                    all_cols = F)
 #' samples <- create_resamples(1:nrow(reindeer), times = 5,
 #'                             p = c(0.2, 0.2, 0.2),
-#'                             max_number_fit_blockH1 = 20,
+#'                             max_number_blocksH1_train = 20,
 #'                             sp_strat = spst,
 #'                             colH0 = "blockH0")
 #' samples
@@ -73,17 +78,17 @@
 #'
 #' # small number of blocks or too high p[1] might incur in errors
 #' samples <- create_resamples(1:nrow(reindeer), times = 10,
-#'                             max_number_fit_blockH1 = 3,
+#'                             max_number_blocksH1_train = 3,
 #'                             sp_strat = spst,
 #'                             colH0 = "blockH0")
 #'
 #' @export
 create_resamples <- function (y, times = 10,
                               p = c(0.4, 0.2, 0.2),
-                              max_size_validation_blockH0 = 1000,
-                              max_size_validation_blockH1 = 1000,
-                              max_size_validation_blockH2 = 1000,
-                              max_number_fit_blockH1 = 15,
+                              max_size_blockH0_validation = 1000,
+                              max_size_blockH0_train = 1000,
+                              max_size_blockH0_test = 1000, # not implemented
+                              max_number_blocksH1_train = 40,
                               sp_strat = NULL,
                               colH0 = NULL,
                               H0setup = c("LAO", "LOO")[1],
@@ -148,10 +153,10 @@ create_resamples <- function (y, times = 10,
         # split by H0 level
         blocksH0 <- split(index_val, colH0)
         # LAO
-        # sample pts in each pop/level - controlling for too imbalanced levels using max_size_validation_blockH0
+        # sample pts in each pop/level - controlling for too imbalanced levels using max_size_blockH0_validation
         # size is also controlled by the proportion of the whole data set for validation, p[3]
         validation_set <- lapply(blocksH0, function(x){
-          sample(x, size = min(max_size_validation_blockH0, length(x)), replace = replace)})
+          sample(x, size = min(max_size_blockH0_validation, length(x)), replace = replace)})
         # sample only the proportion set for validation
         val <- sort(sample(unname(unlist(validation_set)), size = N[3]))
         if(length(val) > N[3]) {
@@ -159,7 +164,7 @@ create_resamples <- function (y, times = 10,
         } else {
           if(length(val) < N[3]) {
             warning(paste0("The size of the validation set is smaller than intended; you should check the values of p[3] (", p[3]
-                           ,") and/or max_size_validation_blockH0 (", max_size_validation_blockH0, ").",
+                           ,") and/or max_size_blockH0_validation (", max_size_blockH0_validation, ").",
                            "As a reference, the number of points assigned to validation is ", length(val), ", and the number of points wanted for validation is ", N[3], "."))
           }
         }
@@ -211,10 +216,10 @@ create_resamples <- function (y, times = 10,
         # split by H0 level
         blocksH0 <- split(sp_strat, sp_strat[[colH0]])
         # LAO
-        # sample pts in each pop/level - controlling for too imbalanced levels using max_size_validation_blockH0
+        # sample pts in each pop/level - controlling for too imbalanced levels using max_size_blockH0_validation
         # size is also controlled by the proportion of the whole data set for validation, p[3]
         validation_set <- lapply(blocksH0, function(x){
-          sample(x$id, size = min(max_size_validation_blockH0, length(x$id)), replace = replace)})
+          sample(x$id, size = min(max_size_blockH0_validation, length(x$id)), replace = replace)})
         # sample only the proportion set for validation
         val <- sort(sample(unname(unlist(validation_set)), size = N[3]))
         if(length(val) > N[3]) {
@@ -222,7 +227,7 @@ create_resamples <- function (y, times = 10,
         } else {
           if(length(val) < N[3]) {
             warning(paste0("The size of the validation set is smaller than intended; you should check the values of p[3] (", p[3]
-                           ,") and/or max_size_validation_blockH0 (", max_size_validation_blockH0, ").
+                           ,") and/or max_size_blockH0_validation (", max_size_blockH0_validation, ").
                            As a reference, the number of points assigned to validation are", length(val), ", and the number of points wanted for validation are ", N[3], "."))
           }
         }
@@ -241,7 +246,7 @@ create_resamples <- function (y, times = 10,
         blocksH1 <- split(sp_strat_train_test, sp_strat_train_test$blockH1)
         # sample pts in each block H1
         # can we remove the limitation of number of blocks here?
-        blocksH1 <- blocksH1[sample.int(length(blocksH1), min(max_number_fit_blockH1, length(blocksH1)))]
+        blocksH1 <- blocksH1[sample.int(length(blocksH1), min(max_number_blocksH1_train, length(blocksH1)))]
 
         # set blocks H2 within those H1 to be sampled
         # check which blocksH2 are present in the selection H1 blocks above
@@ -254,15 +259,20 @@ create_resamples <- function (y, times = 10,
           sample(levels(as.factor(x$blockH2)), 1)})))) # we can change later for more than 1
 
         # start by setting all H2 blocks in the selected H1 for fitting
-        train_set <- sp_strat_train_test[sp_strat_train_test$blockH2 %in% all_blocksH2 & !(sp_strat_train_test$blockH2 %in% test_blocksH2),]
+        train_set <- sp_strat_train_test[sp_strat_train_test$blockH2 %in% all_blocksH2 &
+                                           !(sp_strat_train_test$blockH2 %in% test_blocksH2),]
+        # resample data to avoid too many observations of more heavily sampled populations (blockH0 level)
+        train_set <- lapply(split(train_set, train_set[[colH0]]), function(x) {
+          sample(x$id, size = min(max_size_blockH0_train, length(x$id)), replace = replace) })
+        # sample only the desired number of points
+        train <- sort(sample(unname(unlist(train_set)), size = N[1]))
         # train/fitting set
-        if(nrow(train_set) > N[1]) {
-          train <- sort(sample(train_set$id, N[1]))
+        if(length(train) > N[1]) {
+          train <- sort(sample(train, N[1]))
         } else {
-          train <- sort(train_set$id)
           if(length(train) < N[1]) {
             train <- c(train, rep(NA, N[1]))[1:N[1]]
-            warning("The size of the train/fitting set is smaller than intended; you should check and possibly decrease the value of p[1] and/or increase the value of max_number_fit_blockH1.")
+            warning("The size of the train/fitting set is smaller than intended; you should check and possibly decrease the value of p[1] and/or increase the value of max_number_blocksH1_train.")
             warning("Replacing the missing test observations by NA. This should be avoided.")
           }
         }
@@ -278,7 +288,7 @@ create_resamples <- function (y, times = 10,
           if(length(test) < N[2]) {
             test <- c(test, rep(NA, N[2]))[1:N[2]]
             #print(sum(is.na(test)))
-            warning("The size of the test/calibration set is smaller than intended; you should check and possibly decrease the value of p[2] and/or increase the value of max_number_fit_blockH1.")
+            warning("The size of the test/calibration set is smaller than intended; you should check and possibly decrease the value of p[2] and/or increase the value of max_number_blocksH1_train.")
             warning("Replacing the missing test observations by NA.")
           }
         }
@@ -349,9 +359,9 @@ create_resamples <- function (y, times = 10,
 #' This function sets the sampling parameters.
 #'
 #' @param max_validation_size_blockH0 = 1000,
-#' @param max_number_fit_blockH1 Default = 10. Maximum number of blocks at level H1,
+#' @param max_number_blocksH1_train Default = 10. Maximum number of blocks at level H1,
 #' used for fitting the model. Why do we set a maximum here?
-#' If all blocks should be used, use `max_number_fit_blockH1 = Inf`.
+#' If all blocks should be used, use `max_number_blocksH1_train = Inf`.
 #' @param max_fit_size 1000
 #'
 #' @returns List of sampling parameters for the spatial stratified cross-validation,
@@ -360,14 +370,14 @@ create_resamples <- function (y, times = 10,
 #' @examples
 #' set_sampling_params(1000, 10, 1000)
 set_sampling_params <- function(max_size_validate_blockH0 = 1000,
-                                max_number_fit_blockH1 = 10,
+                                max_number_blocksH1_train = 10,
                                 max_size_fit_blockH1 = 1000) {
 
   # Create list
   sampling_params <- list()
   # Set parameters
   sampling_params$max_size_validate_blockH0 <- max_size_validate_blockH0
-  sampling_params$max_number_fit_blockH1 <- max_number_fit_blockH1
+  sampling_params$max_number_blocksH1_train <- max_number_blocksH1_train
   sampling_params$max_size_fit_blockH1 <- max_size_fit_blockH1
 
   sampling_params
