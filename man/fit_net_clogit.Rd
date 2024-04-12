@@ -88,7 +88,7 @@ the folder) where the result of each model will be saved. E.g. if \code{out_dir_
 the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
 folder "output".}
 
-\item{...}{Options for net_logit and glmnet}
+\item{...}{Options for \code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
 }
 \description{
 By default, \code{\link[=fit_net_clogit]{fit_net_clogit()}} does not standardize predictor variables. If you want numeric variables

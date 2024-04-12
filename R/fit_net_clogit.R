@@ -24,7 +24,7 @@
 #' the folder) where the result of each model will be saved. E.g. if `out_dir_file = "output/test_"`,
 #' the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
 #' folder "output".
-#' @param ... Options for net_logit and glmnet
+#' @param ... Options for [oneimpact::net_logit()] and [glmnet::glmnet()].
 #'
 #' @name fit_net_clogit
 #' @export
@@ -474,10 +474,23 @@ bag_fit_net_clogit <- function(f, data,
   results
 }
 
-
-bag_load_net_clogit <- function(f, data,
+#' Load a series of files output of fit_net_clogit models and put them on a bag
+#'
+#' @param load_models_path `[string="."]` \cr Path to the folder where the files
+#' are saved.
+#' @param load_models_pattern `[string="."]` \cr Pattern common to the file names,
+#' to be used in `grep()` to find the files within the folder
+#' `load_models_path`. It should be the pattern present in the argument
+#' `out_dir_file` in [oneimpact::fit_net_clogit()] or [oneimpact::bag_fit_net_clogit()]
+#' functions.
+#'
+#' @export
+bag_load_net_clogit <- function(f, data, samples,
                                 load_models_path = ".",
-                                load_models_pattern = NULL) {
+                                load_models_pattern = NULL,
+                                metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+                                standardize = c("internal", "external", FALSE)[1],
+                                method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1]) {
 
   # get variables
   wcols <- extract_response_strata(f, covars = TRUE)
@@ -534,7 +547,7 @@ bag_load_net_clogit <- function(f, data,
 
   fitted_list <- list()
   # for(i in 1:length(samples$train))
-  for(i in 1:length(subset_samples)) {
+  for(i in 1:length(model_files)) {
     if(verbose) print(paste0("Loading model ", i, "/", length(samples$train), "..."))
     fitted_list[[i]] <- readRDS(model_files[i])
   }
