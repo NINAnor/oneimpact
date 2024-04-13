@@ -23,8 +23,6 @@ Imports:
     tibble, 
     purrr, 
     rgrass, 
-    terra, 
-    sf, 
     glmnet,
     maxnet,
     survival,
@@ -32,6 +30,8 @@ Imports:
     scales,
     pROC
 Suggests:
+    terra, 
+    sf, 
     amt,
     raster,
     knitr,
