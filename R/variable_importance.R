@@ -45,12 +45,9 @@ variable_importance <- function(x,
                                 variable_block = NULL,
                                 metric = NULL,
                                 plot = FALSE,
+                                ss = 1, # set sample
                                 remove_threshold = 0) {
 
-
-  # NA option
-  na.action <- "na.pass"
-  options(na.action = na.action)
 
   # get info
   f <- x$formula
@@ -58,24 +55,34 @@ variable_importance <- function(x,
   coefs <- x$coef
   if(is.null(metric)) metric <- x$metric
   # set sample(s)
-  ss <- 1
+  # ss <- 1
 
   # case
   case <- extract_response_strata(f)$response
   # strata?
   strat <- extract_response_strata(f)$strata
+  # relevant columns
+  all_vars <- all.vars(f)
 
   # should training data be used?
   if(!is.null(samples)) {
     if(strat == "") {
-      data <- data[samples$validate[[ss]],]
+      data <- data[samples$validate[[ss]], all_vars]
     } else {
       # data[data[[case]] == 1 & data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[ss]]],]
-      data <- data[data[[strat]] %in% (data[data[[case]] == 1,][[strat]][samples$validate[[ss]]]),]
+      data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[ss]]], all_vars]
     }
     ## here we select the first sample; it could be for all, and an average over samples
     # or for all data altogether, with not samples
     ### change here for conditional logistic regression
+  }
+
+  # remove NA from data
+  if(anyNA(data)) {
+    n_bef <- nrow(data)
+    data <- filter_na_strata(f, na.omit(data))
+    nNA <- n_bef - nrow(data)
+    warning(paste0(nNA, " missing observations were removed from the validate set. ", nrow(data), " observations were kept."))
   }
 
   if(!is.null(variable_block)) {

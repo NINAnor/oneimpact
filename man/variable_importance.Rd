@@ -14,6 +14,7 @@ variable_importance(
   variable_block = NULL,
   metric = NULL,
   plot = FALSE,
+  ss = 1,
   remove_threshold = 0
 )
 }
