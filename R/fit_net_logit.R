@@ -72,7 +72,7 @@ fit_net_logit <- function(f, data,
   if(anyNA(train_data)) {
     train_data <- na.omit(train_data)
     nNA <- length(na.action(train_data))
-    warning(paste0(nNA, " missing observations were removed from the test set. ", nrow(train_data), " observations were kept."))
+    warning(paste0(nNA, " missing observations were removed from the train set. ", nrow(train_data), " observations were kept."))
   }
   if(anyNA(test_data)) {
     test_data <- na.omit(test_data)
@@ -82,7 +82,7 @@ fit_net_logit <- function(f, data,
   if(anyNA(validate_data)) {
     validate_data <- na.omit(validate_data)
     nNA <- length(na.action(validate_data))
-    warning(paste0(nNA, " missing observations were removed from the test set. ", nrow(validate_data), " observations were kept."))
+    warning(paste0(nNA, " missing observations were removed from the validate set. ", nrow(validate_data), " observations were kept."))
   }
 
   # set standardize parameter to be used in glmnet call
