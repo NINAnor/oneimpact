@@ -46,6 +46,12 @@ variable_importance <- function(x,
                                 metric = NULL,
                                 plot = FALSE,
                                 remove_threshold = 0) {
+
+
+  # NA option
+  na.action <- "na.pass"
+  options(na.action = na.action)
+
   # get info
   f <- x$formula
   wghts <- x$weights
@@ -64,7 +70,8 @@ variable_importance <- function(x,
     if(strat == "") {
       data <- data[samples$validate[[ss]],]
     } else {
-      data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[ss]]],]
+      # data[data[[case]] == 1 & data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[ss]]],]
+      data <- data[data[[strat]] %in% (data[data[[case]] == 1,][[strat]][samples$validate[[ss]]]),]
     }
     ## here we select the first sample; it could be for all, and an average over samples
     # or for all data altogether, with not samples
