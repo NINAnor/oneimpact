@@ -242,7 +242,8 @@ fit_net_logit <- function(f, data,
 
   # whether to save the results externally
   if (!is.null(out_dir_file)){
-    saveRDS(results, file = paste0(out_dir_file, "_i", i, ".rds"))
+    names_out <- oneimpact:::pretty_seq(1:999)[i]
+    saveRDS(results, file = paste0(out_dir_file, "_", names_out, ".rds"))
   } else {
     return(results)
   }
