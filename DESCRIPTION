@@ -28,10 +28,11 @@ Imports:
     survival,
     ggplot2, 
     scales,
-    pROC
-Suggests:
+    DescTools,
+    pROC,
     terra, 
-    sf, 
+    sf
+Suggests: 
     amt,
     raster,
     knitr,
