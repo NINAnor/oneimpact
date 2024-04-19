@@ -170,7 +170,8 @@ fit_net_clogit <- function(f, data,
         pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit) # multiple fits?
         d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
           metric(data.frame(x = x, y = y, strat = strat), errors=F)},
-          y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
+          y = test_data[[wcols$response]], strat = test_data[[wcols$strata]])
+          # y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
         coef_weights <- matrix(coef(ridge_fit)[,which.max(d)]) # coefficients
 
         penalty.factor <- 1/coef_weights

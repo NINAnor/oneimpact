@@ -64,6 +64,33 @@ conditionalSomersD <- function(x,
   return(d)
 }
 
+# conditionalSomersD_H0 <- function(x,
+#                                   errors = TRUE,
+#                                   warnings = TRUE){
+#   #x: dataframe with x: predicted value, y:use vs. available, strat: stratum
+#   #https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
+#   lx <- split(x, x$blockH0)
+#   C  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]>x$x[x$y==0])})))
+#   D  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]<x$x[x$y==0])})))
+#   Tx  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]==x$x[x$y==0])})))
+#   d <- (C-D)/(C+D+Tx)
+#   return(d)
+# }
+
+# conditionalSomersD_H0 <- function(x,
+#                                errors = TRUE,
+#                                warnings = TRUE){
+#   #x: dataframe with x: predicted value, y:use vs. available, strat: stratum
+#   #https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
+#   lx <- split(x, paste0(x$blockH0, "_", x$strat))
+#   C  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]>x$x[x$y==0])})))
+#   D  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]<x$x[x$y==0])})))
+#   Tx  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]==x$x[x$y==0])})))
+#   d <- (C-D)/(C+D+Tx)
+#   return(d)
+# }
+
+
 #' @rdname concordance_indices
 #' @export
 conditionalAUC <- function(x,
