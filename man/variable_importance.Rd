@@ -9,9 +9,10 @@ variable_importance(
   data,
   samples = NULL,
   type = c("drop", "permutation")[1],
+  colH0 = NULL,
+  variable_block = NULL,
   n_permutations = 100,
   order = c("desc", "asc", FALSE)[1],
-  variable_block = NULL,
   metric = NULL,
   plot = FALSE,
   ss = 1,
@@ -36,6 +37,11 @@ for variable importance. If \code{type = "drop"} (default), each variable is dro
 the model at a time and the variation in model evaluation metric is computed.
 If \code{type = "permutation"}, the observations of each variable are permutated and the
 variation in the model evaluation metric is computed.}
+
+\item{colH0}{\verb{[string(1)=NULL]} \cr String with the name of the column in \code{data}
+representing the blockH0, in case we want the variable importance to be evaluated
+for each block. Default is \code{NULL}, in case variable importance is assessed for all
+the data.}
 
 \item{n_permutations}{\verb{[numeric(1)=100]} \cr Number of permutations, if
 \code{type = "permutation"}.}

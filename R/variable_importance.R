@@ -22,6 +22,10 @@
 #' and validate. Each elements might have several elements, each representing
 #' the lines of `data` to be sampled for each resample. Typically, this is computed by
 #' the function [oneimpact::create_resamples()].
+#' @param colH0 `[string(1)=NULL]` \cr String with the name of the column in `data`
+#' representing the blockH0, in case we want the variable importance to be evaluated
+#' for each block. Default is `NULL`, in case variable importance is assessed for all
+#' the data.
 #' @param n_permutations `[numeric(1)=100]` \cr Number of permutations, if
 #' `type = "permutation"`.
 #' @param order `[character,logical(1)="desc"]{"desc", "asc", FALSE}` \cr Whether or
@@ -40,9 +44,10 @@ variable_importance <- function(x,
                                 data,
                                 samples = NULL,
                                 type = c("drop", "permutation")[1],
+                                colH0 = NULL,
+                                variable_block = NULL,
                                 n_permutations = 100,
                                 order = c("desc", "asc", FALSE)[1],
-                                variable_block = NULL,
                                 metric = NULL,
                                 plot = FALSE,
                                 ss = 1, # set sample
@@ -63,6 +68,10 @@ variable_importance <- function(x,
   strat <- extract_response_strata(f)$strata
   # relevant columns
   all_vars <- all.vars(f)
+  # add blocks H0
+  if(!is.null(colH0)) {
+    if(!(colH0 %in% all_vars)) all_vars <- c(colH0, all_vars)
+  }
 
   # should training data be used?
   if(!is.null(samples)) {
@@ -75,6 +84,8 @@ variable_importance <- function(x,
     ## here we select the first sample; it could be for all, and an average over samples
     # or for all data altogether, with not samples
     ### change here for conditional logistic regression
+  } else {
+    data <- data[, all_vars]
   }
 
   # remove NA from data
@@ -100,48 +111,94 @@ variable_importance <- function(x,
     strat <- data[,strat]
   }
 
-  baseline <- metric(data.frame(x = pred, y, strat))
+  # compute baseline validation score
+  # for all herds
+  blocksH0 <- NULL
+  if(!is.null(colH0)) {
+    blocksH0 <- data[, colH0]
+    baseline <- sapply(split(data.frame(x = pred, y, strat), blocksH0), metric)
+  } else {
+    baseline <- metric(data.frame(x = pred, y, strat))
+  }
 
+  # permutation
   if (type == "permutation"){
     if(is.null(variable_block)) {
-      test <- unlist(lapply(c(1:ncol(mm)), permutated_concordance, mm = mm, y = y, strat = strat,
-                            coefs = coefs, wghts = wghts, n_permutations = n_permutations,
-                            baseline_pred = pred, metric = metric))
+      test <- lapply(c(1:ncol(mm)),
+                     permutated_concordance,
+                     mm = mm, y = y, strat = strat,
+                     coefs = coefs, wghts = wghts, n_permutations = n_permutations,
+                     baseline_pred = pred, metric = metric, blocksH0 = blocksH0)
     } else {
-      test <- unlist(lapply(c(1:ncol(mm)), permutated_concordance, mm = mm, y = y, strat = strat,
-                            coefs = coefs, wghts = wghts, n_permutations = n_permutations,
-                            baseline_pred = pred, metric = metric, variable_block = variable_block))
+      test <- lapply(c(1:length(unique(variable_block))),
+                     permutated_concordance,
+                     mm = mm, y = y, strat = strat,
+                     coefs = coefs, wghts = wghts, n_permutations = n_permutations,
+                     baseline_pred = pred, metric = metric, variable_block = variable_block,
+                     blocksH0 = blocksH0)
     }
+
+    # drop variable
   } else {
+    # all terms
     if(is.null(variable_block)) {
-      test <- unlist(lapply(c(1:ncol(mm)), dropped_concordance, mm = mm, y = y, strat = strat,
-                            coefs = coefs, wghts = wghts, baseline_pred = pred, metric = metric))
+      test <- lapply(c(1:ncol(mm)),
+                     dropped_concordance,
+                     mm = mm, y = y, strat = strat,
+                     coefs = coefs, wghts = wghts, baseline_pred = pred, metric = metric,
+                     blocksH0 = blocksH0)
+
+      # variable blocks
     } else {
-      test <- unlist(lapply(c(1:length(unique(variable_block))),
-                            dropped_concordance, mm = mm, y = y, strat = strat,
-                            coefs = coefs, wghts = wghts, baseline_pred = pred, metric = metric,
-                            variable_block = variable_block))
+      test <- lapply(c(1:length(unique(variable_block))),
+                     dropped_concordance,
+                     mm = mm, y = y, strat = strat,
+                     coefs = coefs, wghts = wghts, baseline_pred = pred, metric = metric,
+                     variable_block = variable_block, blocksH0 = blocksH0)
     }
 
   }
-  test <- ifelse(test > baseline, baseline, test)
-  test <- baseline - test
-  test <- test/baseline
-  test <- test/sum(test)
+
+  if(!is.null(colH0)) {
+    test <- lapply(test, function(x) ifelse(x > baseline, 0, baseline-x))
+    test <- matrix(unlist(test), nrow = length(test[[1]]), ncol = length(test))
+    test <- test/baseline
+    test <- test/apply(test, 1, sum)
+    rownames(test) <- names(baseline)
+  } else {
+    test <- unlist(test)
+    test <- ifelse(test > baseline, baseline, test)
+    test <- baseline - test
+    test <- test/baseline
+    test <- test/sum(test)
+  }
 
   if(is.null(variable_block)) {
     names(test) <- colnames(mm)
   } else {
-    names(test) <- unique(variable_block)
+    colnames(test) <- unique(variable_block)
   }
 
   # order?
-  if(order == "desc") {
-    test <- test[order(-test)]
-  } else {
-    if(order == "asc") {
-      test <- test[order(test)]
+  if(!is.null(colH0)) {
+    ord <- apply(test, 2, median, na.rm = TRUE)
+    if(order == "desc") {
+      test <- test[,order(-ord)]
+    } else {
+      if(order == "asc") {
+        test <- test[,order(ord)]
+      }
     }
+
+  } else {
+    if(order == "desc") {
+      test <- test[order(-test)]
+    } else {
+      if(order == "asc") {
+        test <- test[order(test)]
+      }
+    }
+
   }
 
   # plot?
@@ -203,7 +260,8 @@ dropped_concordance_new <- function(i, mm, y, strat, coefs, wghts,
 
 dropped_concordance <- function(i, mm, y, strat, coefs, wghts,
                                 n_permutations, baseline_pred,
-                                metric, variable_block = NULL){
+                                metric, variable_block = NULL,
+                                blocksH0 = NULL){
   if(!is.null(variable_block)) {
     mm[,variable_block == unique(variable_block)[i]] <- 0
   } else {
@@ -211,9 +269,15 @@ dropped_concordance <- function(i, mm, y, strat, coefs, wghts,
   }
 
   weights_nonzero <- which(wghts > 0)
-
   pred <- as.vector((mm %*% coefs[,weights_nonzero]) %*% wghts[weights_nonzero]);
-  return(metric(data.frame(x=pred, y, strat), warnings=F))
+
+  if(is.null(blocksH0)) {
+    dropped_conc <- metric(data.frame(x=pred, y, strat), warnings=F)
+  } else {
+    dropped_conc <- sapply(split(data.frame(x=pred, y, strat), blocksH0), metric, warnings=F)
+  }
+
+  return(dropped_conc)
 }
 
 # dropped_concordance(7, mm, y, strat, coefs, wghts, n_permutations=1, baseline_pred, metric)
@@ -250,18 +314,51 @@ dropped_concordance <- function(i, mm, y, strat, coefs, wghts,
 #' @param normalize `[logical(1)=TRUE]` \cr If `TRUE`, the variable importance scores are
 #' dividing the the maximum score, so that the score of the most important variable
 #' is set to 1.
+#' @param summ_stat `[string(1)=FALSE]` \cr Name of a summary statistic to be computed
+#' across blocks H0 (areas, herd, populations) for each variable. This is valid only
+#' when variable importance was computed bor each block H0, with the parameter `colH0`
+#' provided (i.e., not `NULL`) within the function [oneimpact::variable_importance()].
+#' Default is `FALSE`, in case which variable importance is plotted for each block H0.
+#' The only summary stat implemented is `"mean"` (and the variable importance plotted
+#' is the average across blocks), but others might be implemented.
 #'
 #' @export
-plot_importance <- function(importance, remove_threshold = 0, normalize = TRUE) {
+plot_importance <- function(importance, remove_threshold = 0, normalize = TRUE, summ_stat = c(FALSE, "mean")[1]) {
+
+  # get importance values
+  imp <- importance
+
+  # summ stats across blocks H0?
+  if(summ_stat != FALSE & is.matrix(imp)) {
+    if(summ_stat == "mean") {
+      imp <- apply(imp, 2, mean, na.rm = TRUE)
+    }
+  }
 
   # normalization
-  if(normalize)
-    imp <- importance/max(importance) else
-      imp <- importance
+  if(normalize) {
+    imp <- imp/max(imp)
+  }
 
-  # data frame
-  df <- data.frame(var = factor(names(importance), levels = names(importance), ordered = TRUE),
-                   importance = imp)
+  # transformation into a data.frame for plot
+  if(is.matrix(imp)) {
+
+    # data frame
+    df <- as.data.frame(imp) |>
+      dplyr::mutate(blockH0 = rownames(imp)) |>
+      tidyr::pivot_longer(cols = 1:(ncol(imp)),
+                          names_to = "var",
+                          values_to = "importance") |>
+      dplyr::mutate(var = factor(var, levels = colnames(imp), ordered = TRUE))
+
+  } else {
+
+    # data frame
+    df <- data.frame(var = factor(names(imp), levels = names(imp), ordered = TRUE),
+                     importance = imp)
+  }
+
+  # remove values smaller than threshold
   df <- df[df$importance > remove_threshold,]
 
   # plot
@@ -271,6 +368,12 @@ plot_importance <- function(importance, remove_threshold = 0, normalize = TRUE) 
     ggplot2::theme_minimal() +
     ggplot2::coord_flip() +
     ggplot2::labs(x = "Variable", y = "Importance")
+
+  # by block?
+  if(is.matrix(imp)) {
+    p <- p + ggplot2::facet_wrap(~ blockH0)
+  }
+
   p
 
 }

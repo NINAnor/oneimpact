@@ -4,7 +4,12 @@
 \alias{plot_importance}
 \title{Plot variable importance}
 \usage{
-plot_importance(importance, remove_threshold = 0, normalize = TRUE)
+plot_importance(
+  importance,
+  remove_threshold = 0,
+  normalize = TRUE,
+  summ_stat = c(FALSE, "mean")[1]
+)
 }
 \arguments{
 \item{importance}{\verb{[numeric]} \cr Numeric vector showing the importance score of
