@@ -235,8 +235,8 @@ fit_net_clogit <- function(f, data,
   if(!is.null(samples$blockH0)) {
 
     # data[data$strat %in% validate_data[[wcols$strata]],]$herd |> table()
-    # val2 <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
-    val2 <- split(val, samples$blockH0[val$strat])
+    val2 <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
+    # val2 <- split(val, samples$blockH0[val$strat])
     if(length(val2) == 0) {
       if(is.null(samples$sp_strat_id)) {
         val2 <- split(val, samples$blockH0[samples$validate[[i]]])
@@ -264,8 +264,8 @@ fit_net_clogit <- function(f, data,
 
     if(!is.null(samples$blockH0)) {
 
-      # hab2 <- split(hab, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
-      hab2 <- split(hab, samples$blockH0[val$strat])
+      hab2 <- split(hab, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
+      # hab2 <- split(hab, samples$blockH0[val$strat])
       if(length(val2) == 0) {
         if(is.null(samples$sp_strat_id)) {
           hab2 <- split(hab, samples$blockH0[samples$validate[[i]]])
