@@ -22,6 +22,14 @@ removed. To plot all variables, set remove_threshold as -1 or any other negative
 \item{normalize}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE}, the variable importance scores are
 dividing the the maximum score, so that the score of the most important variable
 is set to 1.}
+
+\item{summ_stat}{\verb{[string(1)=FALSE]} \cr Name of a summary statistic to be computed
+across blocks H0 (areas, herd, populations) for each variable. This is valid only
+when variable importance was computed bor each block H0, with the parameter \code{colH0}
+provided (i.e., not \code{NULL}) within the function \code{\link[=variable_importance]{variable_importance()}}.
+Default is \code{FALSE}, in case which variable importance is plotted for each block H0.
+The only summary stat implemented is \code{"mean"} (and the variable importance plotted
+is the average across blocks), but others might be implemented.}
 }
 \description{
 Plot variable importance
