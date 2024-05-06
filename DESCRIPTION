@@ -24,7 +24,6 @@ Imports:
     purrr, 
     rgrass, 
     glmnet,
-    maxnet,
     survival,
     ggplot2, 
     scales,
@@ -34,7 +33,7 @@ Imports:
     sf
 Suggests: 
     amt,
-    raster,
+    maxnet,
     knitr,
     rmarkdown
 Remotes:
