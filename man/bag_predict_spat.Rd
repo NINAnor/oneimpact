@@ -9,18 +9,43 @@ bag_predict_spat(
   data,
   input_type = c("df", "rast")[1],
   output_type = c("df", "rast")[2],
-  baseline_max = NULL,
   gridalign = TRUE,
   gid = "gid",
   coords = c("x33", "y33"),
   crs = NULL,
+  prediction_max_quantile = 0.999,
+  uncertainty_quantiles = c(0.25, 0.75),
   plotit = FALSE,
   verbose = FALSE
 )
 }
 \arguments{
+\item{bag}{\verb{[bag,list]} \cr A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
+
+\item{data}{\verb{[data.frame,SpatRaster]} \cr The spatial grid or stack of rasters
+with the layers in space, to be used for the spatial prediction. All variables in the
+bag$formula must be present in \code{data}.}
+
+\item{input_type}{\verb{[string(1)="df"]\{"df","rast"\}} \cr Type of input object. Either a
+\code{data.frame} with the predictor variables as columns (if \code{input_type = "df"}, default),
+or a \code{SpatRaster} with the predictor variables as layers (if \code{input_type = "rast"}).
+So far, only \code{input_type = "df"} is implemented.}
+
+\item{output_type}{\verb{[string(1)="rast"]\{"df","rast"\}} \cr Type of output object.
+Typically, the same type of object as \code{input_type}, but rasters can also be saved
+if the input is a \code{data.frame} when \code{output_type = "rast"}, and data.frames can
+also be saved if the input is a \code{SpatRaster} when \code{output_type = "df"}.}
+
 \item{gid}{\verb{[string(1)="gid"]} \cr String with the name of the "gid" or point ID
-column in \code{data}.}
+column in \code{data}. Only relevant if \code{input_type = "df"}.}
+
+\item{coords}{\verb{[vector,string(2)=c("x", "y")]} \cr Vector with two elements with
+the names of the coordinates representing (x,y) coordinates for the pixels.
+Only relevant if \code{input_type = "df"}.}
+
+\item{crs}{\verb{[string(1)=NULL]} \cr Code for the coordinate reference system of the
+output raster. Only relevant if \code{input_type = "df"}. For more details, check
+\code{\link[terra:crs]{terra::crs()}}.}
 }
 \description{
 Predict bag of models in space
