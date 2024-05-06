@@ -1,6 +1,6 @@
 #' Plot responses from a bag of models
 #'
-#' @param x `[list]` \cr A bag of models, resulting from a call to [oneimpact::bag_models()].
+#' @param x `[bag,list]` \cr A bag of models, resulting from a call to [oneimpact::bag_models()].
 #' @param dfvar `[data.frame]` \cr A data.frame with the values of the variables one wants to vary.
 #' All other variables are set to their mean or median (this is set by the parameter `baseline`).
 #' The column names of the dataframe might correspond exactly to the model covariates or to

@@ -26,7 +26,7 @@ plot_response(
 )
 }
 \arguments{
-\item{x}{\verb{[list]} \cr A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
+\item{x}{\verb{[bag,list]} \cr A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
 
 \item{dfvar}{\verb{[data.frame]} \cr A data.frame with the values of the variables one wants to vary.
 All other variables are set to their mean or median (this is set by the parameter \code{baseline}).
