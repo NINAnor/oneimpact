@@ -1,15 +1,15 @@
 #' Prediction of a bag of models to new data
 #'
-#' @param x `[list]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()].
+#' @param x `[bag,list]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()].
 #' @param newdata \cr New data set to be used for prediction.
 #' @param inclue vector with 1s and 0s about which variables should be included?
 #'
 #' @export
 bag_predict <- function(x,
                         newdata,
-                        type = c("linear", "exponential", "logit")[1],
+                        type = c("linear", "exponential", "logit", "cloglog")[1],
                         wMean = T,
-                        wQ_probs = NULL,
+                        wq_probs = NULL,
                         include = "all") {
 
   # model matrix
@@ -30,19 +30,23 @@ bag_predict <- function(x,
   # prediction
   pred <- mm %*% coefs
 
-  # if wQ_probs are provided, the weighted quantiles are computed
+  # if wq_probs are provided, the weighted quantiles are computed
   # if wMean is providade, the weighted mean is computed
   # if none is provided, the raw prediction is shown
-  if (!is.null(wQ_probs)){
-    preddf <- data.frame(t(apply(pred, 1, DescTools::Quantile, #weights = NULL,
+  if (!is.null(wq_probs)){
+    preddf <- data.frame(t(apply(pred, 1, DescTools::Quantile,
                                  weights = x$weights,
                                  type = 5,
-                                 probs=wQ_probs)))
+                                 probs=wq_probs)))
+    # preddf <- data.frame(t(apply(pred, 1, modi::weighted.quantile,
+    #                              w = x$weights,
+    #                              prob=wq_probs)))
+
     ########### error here
     # 50: In regularize.values(x, y, ties, missing(ties), na.rm = na.rm) :
     #   collapsing to unique 'x' values
     # when using weights = x$weights
-    colnames(preddf) <- paste0("quantile:", wQ_probs)
+    colnames(preddf) <- paste0("quantile:", wq_probs)
     rownames(preddf) <- NULL
     if (wMean){ preddf$mean <- as.vector(pred %*% x$weights) }
   }else{
@@ -56,6 +60,7 @@ bag_predict <- function(x,
   # should result be in linear or exp scale?
   if (type == "exponential") {
     preddf <- exp(preddf)
+
   } else {
     if (type == "logit") {
       preddf <- 1 / (1 + exp(-preddf))#log(preddf/(1-preddf))

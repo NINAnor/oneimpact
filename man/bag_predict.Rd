@@ -7,14 +7,14 @@
 bag_predict(
   x,
   newdata,
-  type = c("linear", "exponential", "logit")[1],
+  type = c("linear", "exponential", "logit", "cloglog")[1],
   wMean = T,
-  wQ_probs = NULL,
+  wq_probs = NULL,
   include = "all"
 )
 }
 \arguments{
-\item{x}{\verb{[list]} \cr  A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
+\item{x}{\verb{[bag,list]} \cr  A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
 
 \item{newdata}{\cr New data set to be used for prediction.}
 
