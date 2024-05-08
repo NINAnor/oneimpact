@@ -1,5 +1,13 @@
 #' Plot responses from a bag of models
 #'
+#' This function takes a bag of models (`x`) and a set of new data (`dfvar`) with variation for one or more
+#' specific predictor variables to predict and plot the predictions from the bag. One can either plot only the
+#' mean or (weighted) median response for specific preditor variables, and possibly also the
+#' confidence interval, computed from the weighted quantiles of the prediction. All other variables
+#' are kept constant, as defined by the `baseline` parameter.
+#'
+#' The function `plot_response` uses the `bag_predict` to produce the predictions.
+#'
 #' @param x `[bag,list]` \cr A bag of models, resulting from a call to [oneimpact::bag_models()].
 #' @param dfvar `[data.frame]` \cr A data.frame with the values of the variables one wants to vary.
 #' All other variables are set to their mean or median (this is set by the parameter `baseline`).
@@ -7,19 +15,24 @@
 #' parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).
 #' @param data `[data.frame]` \cr The original data used for model fitting. Used only for
 #' taking the categories of the categorical variables.
-#' @param type `[character(1)="linear"]{"linear", "exponential"}`
-#' @param wQ_probs a three element with lower, mid, and higher weighted quantiles to be computed
+#' @param type `[character(1)="linear"]{"linear", "exponential", "logit", "cloglog"}` \cr Type of response.
+#' Might be `"linear"` (default), `"exponential"`, `"logit"`, and `"cloglog"`.
+#' @param zoi_shape `[character(1)="linear"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}` \cr
+#' Shape of the ZOI. Necessary to be specified to represent correctly the estimated ZOI of the
+#' preditor variables.
+#' @param wq_probs `[vector,numeric(3)=c(0.025, 0.5, 0.975)]` \cr a three element with lower, mid, and higher weighted quantiles to be computed
 #' @param ci Should variation or confidence intervals be plotted?
 #'
 #' @export
 plot_response <- function(x,
                           dfvar,
                           data,
-                          type = c("linear", "exponential")[2],
+                          type = c("linear", "exponential", "logit", "cloglog")[1],
                           zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
                           which_cumulative = "cumulative",
                           ci = TRUE,
-                          wQ_probs = c(0.025, 0.5, 0.975),
+                          indiv_pred = FALSE,
+                          wq_probs = c(0.025, 0.5, 0.975),
                           baseline = c("median", "mean", "zero")[1],
                           zoi = FALSE,
                           zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
@@ -28,8 +41,17 @@ plot_response <- function(x,
                           plot_median = TRUE,
                           n_features = 1,
                           normalize = c(FALSE, "mean", "median", "ci")[1],
-                          logx=F,
-                          ylim=NULL){
+                          logx = FALSE,
+                          ylim = NULL,
+                          col_ci = "grey",
+                          col_indiv = "grey",
+                          col_mean = "black",
+                          col_median = "red",
+                          linewidth_indiv = 0.4,
+                          linewidth_mean = 1.2,
+                          linewidth_median = 1.2,
+                          alpha_ci = 0.5,
+                          alpha_indiv = 0.7) {
 
   UseMethod("plot_response")
 
@@ -40,11 +62,12 @@ plot_response <- function(x,
 plot_response.bag <- function(x,
                               dfvar,
                               data,
-                              type = c("linear", "exponential")[2],
+                              type = c("linear", "exponential", "logit", "cloglog")[1],
                               zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
                               which_cumulative = "cumulative",
                               ci = TRUE,
-                              wQ_probs = c(0.025, 0.5, 0.975),
+                              indiv_pred = FALSE,
+                              wq_probs = c(0.025, 0.5, 0.975),
                               baseline = c("median", "mean", "zero")[1],
                               zoi = FALSE,
                               zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
@@ -53,8 +76,17 @@ plot_response.bag <- function(x,
                               plot_median = TRUE,
                               n_features = 1,
                               normalize = c(FALSE, "mean", "median", "ci")[1],
-                              logx=F,
-                              ylim=NULL){
+                              logx = FALSE,
+                              ylim = NULL,
+                              col_ci = "grey",
+                              col_indiv = "grey",
+                              col_mean = "black",
+                              col_median = "red",
+                              linewidth_indiv = 0.4,
+                              linewidth_mean = 1.2,
+                              linewidth_median = 1.2,
+                              alpha_ci = 0.5,
+                              alpha_indiv = 0.7){
 
   # baselines for plotting and predicting!! mean? median?
   # define the baseline
@@ -117,8 +149,10 @@ plot_response.bag <- function(x,
   }
 
   # predict for new data set
-  pred <- bag_predict(x, newdata, type = type, wMean = T, wQ_probs = wQ_probs)
+  pred <- bag_predict(x, newdata, type = type, wMean = T, wq_probs = wq_probs)
   names(pred) <- c("lower", "mid", "higher", "mean")
+  # predict for individual models
+  if(indiv_pred) pred_indiv <- bag_predict(x, newdata, type = type, wMean = F, wq_probs = NULL)[, x$weights > 0]
 
   if (ggplot){
     if (zoi){
@@ -127,6 +161,9 @@ plot_response.bag <- function(x,
         # data for plotting
         df <- data.frame(x = dfvar[,1], y = pred$mid,
                          y_lower = pred$lower, y_upper = pred$higher, y_mean = pred$mean)
+        # data for plotting individual models
+        if(indiv_pred) df_indiv <- tidyr::gather(data.frame(x = dfvar[,1], pred_indiv),
+                                                 key = "model", value = "y", -x)
 
         # normalize y axis?
         if(normalize != FALSE) {
@@ -134,23 +171,43 @@ plot_response.bag <- function(x,
             if(normalize == "median") range_y <- range(df$y[-1]) else
               range_y <- range(df[-1,2:ncol(df)])
             df[2:ncol(df)] <- do.call("cbind", lapply(2:ncol(df), function(i) (df[,i] - range_y[1])/(diff(range_y))))
+            if(indiv_pred) df_indiv$y <- (df_indiv$y - range_y[1])/(diff(range_y))
         }
 
         # plot
         plt <- ggplot2::ggplot(df)
-        if(ci)
+
+        # confidence interval
+        if(ci) {
           plt <- plt + ggplot2::geom_ribbon(ggplot2::aes(x = x,
                                                          ymin = y_lower,
                                                          ymax = y_upper),
-                                            fill='blue', alpha=0.5)
+                                            fill = col_ci,
+                                            alpha = alpha_ci)
+        } else {
+          # individual lines
+          if(indiv_pred) {
+            plt <- plt + ggplot2::geom_line(ggplot2::aes(x = x,
+                                                         y = y,
+                                                         group = model),
+                                            data = df_indiv,
+                                            color = col_indiv,
+                                            linewidth = linewidth_indiv,
+                                            alpha = alpha_indiv)
+          }
+        }
+        # median
         if(plot_median)
           plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
                                                        y = y),
-                                          color='blue')
+                                          color = col_mean,
+                                          linewidth = linewidth_mean)
+        # mean
         if(plot_mean)
           plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
                                                        y = y_mean),
-                                          color='green')
+                                          color = col_median,
+                                          linewidth = linewidth_median)
 
         plt <- plt + ggplot2::labs(x = ifelse(zoi, "Distance (m)", names(dfvar)), y = "Output", title = "")
       }
@@ -169,22 +226,42 @@ plot_response.bag <- function(x,
     }
     if (!zoi){
       if (ncol(dfvar) == 1){
+
+        # data for plotting
         df <- data.frame(x = newdata[,names(dfvar)[1]], y = pred$mid,
                          y_lower = pred$lower, y_upper = pred$higher, y_mean = pred$mean)
+        # data for plotting individual models
+        if(indiv_pred) df_indiv <- tidyr::gather(data.frame(x = newdata[,names(dfvar)[1]], pred_indiv),
+                                                 key = "model", value = "y", -x)
+
         plt <- ggplot2::ggplot(df)
-        if(ci)
+        if(ci) {
           plt <- plt + ggplot2::geom_ribbon(ggplot2::aes(x = x,
                                                          ymin = y_lower,
                                                          ymax = y_upper),
-                                            fill='blue', alpha=0.5)
+                                            fill = col_ci,
+                                            alpha = alpha_ci)
+        } else {
+          if(indiv_pred) {
+            plt <- plt + ggplot2::geom_line(ggplot2::aes(x = x,
+                                                         y = y,
+                                                         group = model),
+                                            data = df_indiv,
+                                            color = col_indiv,
+                                            linewidth = linewidth_indiv,
+                                            alpha = alpha_indiv)
+          }
+        }
         if(plot_median)
           plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
                                                        y = y),
-                                          color='blue')
+                                          color = col_mean,
+                                          linewidth = linewidth_mean)
         if(plot_mean)
           plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
                                                        y = y_mean),
-                                          color='green')
+                                          color = col_median,
+                                          linewidth = linewidth_median)
         plt <- plt + ggplot2::labs(x = names(dfvar), y = "Output", title = "")
 
       }
@@ -204,7 +281,7 @@ plot_response.bag <- function(x,
 
     if (logx) { plt <- plt + scale_x_continuous(trans = 'log10') }
     if (!is.null(ylim)) { plt <- plt + ylim }
-    return(plt)
+    return(plt + ggplot2::theme_minimal())
 
   } else{
     pred <- cbind(dfvar, pred)

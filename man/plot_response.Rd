@@ -8,11 +8,12 @@ plot_response(
   x,
   dfvar,
   data,
-  type = c("linear", "exponential")[2],
+  type = c("linear", "exponential", "logit", "cloglog")[1],
   zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
   which_cumulative = "cumulative",
   ci = TRUE,
-  wQ_probs = c(0.025, 0.5, 0.975),
+  indiv_pred = FALSE,
+  wq_probs = c(0.025, 0.5, 0.975),
   baseline = c("median", "mean", "zero")[1],
   zoi = FALSE,
   zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
@@ -21,8 +22,17 @@ plot_response(
   plot_median = TRUE,
   n_features = 1,
   normalize = c(FALSE, "mean", "median", "ci")[1],
-  logx = F,
-  ylim = NULL
+  logx = FALSE,
+  ylim = NULL,
+  col_ci = "grey",
+  col_indiv = "grey",
+  col_mean = "black",
+  col_median = "red",
+  linewidth_indiv = 0.4,
+  linewidth_mean = 1.2,
+  linewidth_median = 1.2,
+  alpha_ci = 0.5,
+  alpha_indiv = 0.7
 )
 }
 \arguments{
@@ -36,12 +46,24 @@ parts of that (for instance, "roads_paved_" to refer to all ZOI variables relate
 \item{data}{\verb{[data.frame]} \cr The original data used for model fitting. Used only for
 taking the categories of the categorical variables.}
 
-\item{type}{\verb{[character(1)="linear"]\{"linear", "exponential"\}}}
+\item{type}{\verb{[character(1)="linear"]\{"linear", "exponential", "logit", "cloglog"\}} \cr Type of response.
+Might be \code{"linear"} (default), \code{"exponential"}, \code{"logit"}, and \code{"cloglog"}.}
+
+\item{zoi_shape}{\verb{[character(1)="linear"]\{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"\}} \cr
+Shape of the ZOI. Necessary to be specified to represent correctly the estimated ZOI of the
+preditor variables.}
 
 \item{ci}{Should variation or confidence intervals be plotted?}
 
-\item{wQ_probs}{a three element with lower, mid, and higher weighted quantiles to be computed}
+\item{wq_probs}{\verb{[vector,numeric(3)=c(0.025, 0.5, 0.975)]} \cr a three element with lower, mid, and higher weighted quantiles to be computed}
 }
 \description{
-Plot responses from a bag of models
+This function takes a bag of models (\code{x}) and a set of new data (\code{dfvar}) with variation for one or more
+specific predictor variables to predict and plot the predictions from the bag. One can either plot only the
+mean or (weighted) median response for specific preditor variables, and possibly also the
+confidence interval, computed from the weighted quantiles of the prediction. All other variables
+are kept constant, as defined by the \code{baseline} parameter.
+}
+\details{
+The function \code{plot_response} uses the \code{bag_predict} to produce the predictions.
 }
