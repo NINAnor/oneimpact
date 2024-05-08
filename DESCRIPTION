@@ -8,6 +8,8 @@ Authors@R: c(
         role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0453-315X")),
     person("Manuela", "Panzacchi", email = "manuela.panzacchi@nina.no",
         role = "aut"),
+    person("Neri", "Thorsen", email = "neri.thorsen@nina.no",
+        role = "ctb"),
     person("Bram", "van Moorter", email = "bram.van.moorter@nina.no",
         role = "aut", comment = c(ORCID = "0000-0002-3196-1993")))
 Description: The package presents a set of tools to assess cumulative impacts
@@ -21,7 +23,8 @@ Depends:
 Imports: 
     dplyr, 
     tibble, 
-    purrr, 
+    purrr,
+    tidyr,
     rgrass, 
     glmnet,
     survival,
@@ -32,6 +35,7 @@ Imports:
     terra, 
     sf
 Suggests: 
+    foreach,
     amt,
     maxnet,
     knitr,
