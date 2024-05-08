@@ -81,14 +81,20 @@ bag_predict_spat <- function(bag,
   # indiv_preds <- predvals * rep(bag$weights[good_models], each = nrow(predvals))
   indiv_preds <- predvals
   # average (sum of individual weighted models)
-  grd$linpred_ind_w_med <- apply(indiv_preds, 1, modi::weighted.quantile, w = bag$weights[good_models],
-                                 prob = 0.5)
+  # grd$linpred_ind_w_med <- apply(indiv_preds, 1, modi::weighted.quantile, w = bag$weights[good_models],
+  #                                probs = 0.5)
+  grd$linpred_ind_w_med <- apply(indiv_preds, 1, DescTools::Quantile, weights = bag$weights[good_models],
+                                 type = 5, probs = 0.5)
   # uncertainty (sd of individual weighted models)
-  grd$linpred_ind_w_quart_min <- apply(indiv_preds, 1, modi::weighted.quantile, w = bag$weights[good_models],
-                                     prob = uncertainty_quantiles[1])
-  grd$linpred_ind_w_quart_max <- apply(indiv_preds, 1, modi::weighted.quantile, w = bag$weights[good_models],
-                                     prob = uncertainty_quantiles[2])
-  # grd$linpred_ind_w_var <- apply(indiv_preds, 1, modi::weighted.var, w = bag$weights[good_models])
+  # grd$linpred_ind_w_quart_min <- apply(indiv_preds, 1, modi::weighted.quantile, w = bag$weights[good_models],
+  #                                    prob = uncertainty_quantiles[1])
+  grd$linpred_ind_w_quart_min <- apply(indiv_preds, 1, DescTools::Quantile, weights = bag$weights[good_models],
+                                 type = 5, probs = uncertainty_quantiles[1])
+  # grd$linpred_ind_w_quart_max <- apply(indiv_preds, 1, modi::weighted.quantile, w = bag$weights[good_models],
+  #                                    prob = uncertainty_quantiles[2])
+  grd$linpred_ind_w_quart_max <- apply(indiv_preds, 1, DescTools::Quantile, weights = bag$weights[good_models],
+                                       type = 5, probs = uncertainty_quantiles[2])
+
   # individual predictions
   new_cols <- ncol(grd)+1:ncol(indiv_preds)
   grd[new_cols] <- indiv_preds
@@ -134,7 +140,7 @@ bag_predict_spat <- function(bag,
 
     #---
     # summary of individual weighted models
-    ind_summs <- c("ind_w_med", "ind_w_interquart")
+    ind_summs <- c("ind_w_med", "ind_w_iqr")
     ind_vars <- paste0("linpred_", c("ind_w_med", c("ind_w_quart_min", "ind_w_quart_max")))
     ind_names <- paste0("suit_", c("exp_", ""), ind_summs)
     # i <- 2
