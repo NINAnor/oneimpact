@@ -31,7 +31,7 @@
 #' a table with the predictor information (if `predictor_table = TRUE`).
 #'
 #' @examples
-#' # multiple radii
+#' ## multiple radii
 #' f <- case_ ~ strata(step_id_) + sl_*startpt_roadsXXX + sl_*startpt_cabinsXXX
 #' add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), pattern = "XXX")
 #'
