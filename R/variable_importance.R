@@ -314,24 +314,43 @@ dropped_concordance <- function(i, mm, y, strat, coefs, wghts,
 #' @param normalize `[logical(1)=TRUE]` \cr If `TRUE`, the variable importance scores are
 #' dividing the the maximum score, so that the score of the most important variable
 #' is set to 1.
+#' @param plot_type `[character="barplot"]{"barplot", "boxplot"}` \cr Whether the plot
+#' should be a barplot (default) or a boxplot. The boxplot is only meaningful
+#' if `summ_stat != FALSE` (median or mean) and if the importance is computed
+#' for blocks (`by = "blockH0"`).
 #' @param summ_stat `[string(1)=FALSE]` \cr Name of a summary statistic to be computed
 #' across blocks H0 (areas, herd, populations) for each variable. This is valid only
 #' when variable importance was computed bor each block H0, with the parameter `colH0`
 #' provided (i.e., not `NULL`) within the function [oneimpact::variable_importance()].
 #' Default is `FALSE`, in case which variable importance is plotted for each block H0.
-#' The only summary stat implemented is `"mean"` (and the variable importance plotted
-#' is the average across blocks), but others might be implemented.
+#' The only summary stat implemented is `"mean"` and `"median"` (the variable importance plotted
+#' is the average/median across blocks), but others might be implemented.
+#' @param by `[character=FALSE]{FALSE, "blockH0", "variable"}` \cr If `by = FALSE` (default),
+#' a single plot is made. If `by = "blockH0"`, the variable importance if plotted for each
+#' block H0 (e.g. population, area) if `plot_type = "barplot"` (with the variables as a category
+#' in each plot), and as a single boxplot
+#' plot if `plot_type = "boxplot"`. If `by = "variable"`, the plot is made separately for each
+#' variable, with blocks H0 as a category in each plot.
 #'
 #' @export
-plot_importance <- function(importance, remove_threshold = 0, normalize = TRUE, summ_stat = c(FALSE, "mean")[1]) {
+plot_importance <- function(importance,
+                            remove_threshold = -1,
+                            normalize = TRUE,
+                            plot_type = c("barplot", "boxplot")[1],
+                            summ_stat = c(FALSE, "mean", "median")[1],
+                            by = c(FALSE, "blockH0", "variable")[1]) {
 
   # get importance values
   imp <- importance
 
   # summ stats across blocks H0?
-  if(summ_stat != FALSE & is.matrix(imp)) {
+  if(summ_stat != FALSE & is.matrix(imp) & by == FALSE) {
     if(summ_stat == "mean") {
       imp <- apply(imp, 2, mean, na.rm = TRUE)
+    }
+
+    if(summ_stat == "median") {
+      imp <- apply(imp, 2, median, na.rm = TRUE)
     }
   }
 
@@ -362,16 +381,74 @@ plot_importance <- function(importance, remove_threshold = 0, normalize = TRUE, 
   df <- df[df$importance > remove_threshold,]
 
   # plot
-  p <- ggplot2::ggplot(data = df, ggplot2::aes(x = var, y = importance)) +
-    ggplot2::geom_bar(stat="identity", fill="steelblue") +
-    # scale_y_continuous(trans='log10') +
-    ggplot2::theme_minimal() +
-    ggplot2::coord_flip() +
-    ggplot2::labs(x = "Variable", y = "Importance")
+  if(plot_type == "barplot") {
 
-  # by block?
-  if(is.matrix(imp)) {
-    p <- p + ggplot2::facet_wrap(~ blockH0)
+    # by block or var?
+    if(is.matrix(imp)) {
+
+      if(by == "blockH0") {
+        p <- ggplot2::ggplot(data = df, ggplot2::aes(x = var, y = importance)) +
+          ggplot2::geom_bar(stat="identity", fill="steelblue") +
+          # scale_y_continuous(trans='log10') +
+          ggplot2::theme_minimal() +
+          ggplot2::coord_flip() +
+          ggplot2::labs(x = "Variable", y = "Importance")
+
+        p <- p + ggplot2::facet_wrap(~ blockH0)
+
+      } else {
+
+        if(by == "variable") {
+
+          p <- ggplot2::ggplot(data = df, ggplot2::aes(x = blockH0, y = importance)) +
+            ggplot2::geom_bar(stat="identity", fill="steelblue") +
+            # scale_y_continuous(trans='log10') +
+            ggplot2::theme_minimal() +
+            ggplot2::coord_flip() +
+            ggplot2::labs(x = "Variable", y = "Importance")
+
+          p <- p + ggplot2::facet_wrap(~ var)
+        }
+      }
+
+    # if it is not a matrix, no blockH0/var, only average/median
+    } else {
+
+      p <- ggplot2::ggplot(data = df, ggplot2::aes(x = var, y = importance)) +
+        ggplot2::geom_bar(stat="identity", fill="steelblue") +
+        # scale_y_continuous(trans='log10') +
+        ggplot2::theme_minimal() +
+        ggplot2::coord_flip() +
+        ggplot2::labs(x = "Variable", y = "Importance")
+    }
+
+  # boxplot
+  } else {
+
+    if(is.matrix(imp)) {
+
+      # no block/var
+      p <- ggplot2::ggplot(data = df, ggplot2::aes(x = var, y = importance)) +
+        ggplot2::geom_boxplot() +
+        # scale_y_continuous(trans='log10') +
+        ggplot2::theme_minimal() +
+        ggplot2::coord_flip() +
+        ggplot2::labs(x = "Variable", y = "Importance")
+
+    } else {
+
+      if(by == "FALSE")
+        warning("The option `plot_type = 'boxplot'` is only meaningful when `summ_stat != FALSE` and `by = 'blockH0'`.")
+      # no block/var
+      p <- ggplot2::ggplot(data = df, ggplot2::aes(x = var, y = importance)) +
+        ggplot2::geom_boxplot() +
+        # scale_y_continuous(trans='log10') +
+        ggplot2::theme_minimal() +
+        ggplot2::coord_flip() +
+        ggplot2::labs(x = "Variable", y = "Importance")
+
+    }
+
   }
 
   p

@@ -6,9 +6,11 @@
 \usage{
 plot_importance(
   importance,
-  remove_threshold = 0,
+  remove_threshold = -1,
   normalize = TRUE,
-  summ_stat = c(FALSE, "mean")[1]
+  plot_type = c("barplot", "boxplot")[1],
+  summ_stat = c(FALSE, "mean", "median")[1],
+  by = c(FALSE, "blockH0", "variable")[1]
 )
 }
 \arguments{
@@ -23,13 +25,25 @@ removed. To plot all variables, set remove_threshold as -1 or any other negative
 dividing the the maximum score, so that the score of the most important variable
 is set to 1.}
 
+\item{plot_type}{\verb{[character="barplot"]\{"barplot", "boxplot"\}} \cr Whether the plot
+should be a barplot (default) or a boxplot. The boxplot is only meaningful
+if \code{summ_stat != FALSE} (median or mean) and if the importance is computed
+for blocks (\code{by = "blockH0"}).}
+
 \item{summ_stat}{\verb{[string(1)=FALSE]} \cr Name of a summary statistic to be computed
 across blocks H0 (areas, herd, populations) for each variable. This is valid only
 when variable importance was computed bor each block H0, with the parameter \code{colH0}
 provided (i.e., not \code{NULL}) within the function \code{\link[=variable_importance]{variable_importance()}}.
 Default is \code{FALSE}, in case which variable importance is plotted for each block H0.
-The only summary stat implemented is \code{"mean"} (and the variable importance plotted
-is the average across blocks), but others might be implemented.}
+The only summary stat implemented is \code{"mean"} and \code{"median"} (the variable importance plotted
+is the average/median across blocks), but others might be implemented.}
+
+\item{by}{\verb{[character=FALSE]\{FALSE, "blockH0", "variable"\}} \cr If \code{by = FALSE} (default),
+a single plot is made. If \code{by = "blockH0"}, the variable importance if plotted for each
+block H0 (e.g. population, area) if \code{plot_type = "barplot"} (with the variables as a category
+in each plot), and as a single boxplot
+plot if \code{plot_type = "boxplot"}. If \code{by = "variable"}, the plot is made separately for each
+variable, with blocks H0 as a category in each plot.}
 }
 \description{
 Plot variable importance
