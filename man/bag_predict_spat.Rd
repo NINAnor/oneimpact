@@ -9,6 +9,7 @@ bag_predict_spat(
   data,
   input_type = c("df", "rast")[1],
   output_type = c("df", "rast")[2],
+  prediction_type = c("exp", "exponential", "linear")[1],
   gridalign = TRUE,
   gid = "gid",
   coords = c("x33", "y33"),
