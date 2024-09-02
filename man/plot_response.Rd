@@ -24,6 +24,7 @@ plot_response(
   normalize = c(FALSE, "mean", "median", "ci")[1],
   logx = FALSE,
   ylim = NULL,
+  y_lab = "Output",
   col_ci = "grey",
   col_indiv = "grey",
   col_mean = "black",

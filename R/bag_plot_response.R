@@ -43,6 +43,7 @@ plot_response <- function(x,
                           normalize = c(FALSE, "mean", "median", "ci")[1],
                           logx = FALSE,
                           ylim = NULL,
+                          y_lab = "Output",
                           col_ci = "grey",
                           col_indiv = "grey",
                           col_mean = "black",
@@ -78,6 +79,7 @@ plot_response.bag <- function(x,
                               normalize = c(FALSE, "mean", "median", "ci")[1],
                               logx = FALSE,
                               ylim = NULL,
+                              y_lab = "Output",
                               col_ci = "grey",
                               col_indiv = "grey",
                               col_mean = "black",
@@ -90,6 +92,7 @@ plot_response.bag <- function(x,
 
   # baselines for plotting and predicting!! mean? median?
   # define the baseline
+  bs <- baseline
   if (baseline[1] == "median"){
     baseline <- x$data_summary[rownames(x$data_summary) == "50%",]
   } else {
@@ -98,7 +101,9 @@ plot_response.bag <- function(x,
     } else {
       if (baseline[1] == "zero"){
         baseline <- x$data_summary[5,]
-        baseline[1,] <- 0
+        baseline[1, 1+which(x$numeric_covs)] <- 0 # zero for numeric ones
+        baseline[1, 1+which(!x$numeric_covs)] <- sapply(unname(which(!x$numeric_covs)),
+                                                       function(z) levels(data[,names(x$numeric_covs[z])])[1])
       } else {
         stop(paste0("Invalid 'baseline' parameter: ", baseline, ". Pleas re-define."))
       }
@@ -149,10 +154,19 @@ plot_response.bag <- function(x,
   }
 
   # predict for new data set
-  pred <- bag_predict(x, newdata, type = type, wMean = T, wq_probs = wq_probs)
+
+  # predict only for those variables/coefs of interest for ZOI variables
+  if(zoi) include <- colnames(dfvar) else include = "all"
+  # predict
+  pred <- bag_predict(x, newdata, type = type, wMean = T, wq_probs = wq_probs, include = include)
+
   names(pred) <- c("lower", "mid", "higher", "mean")
   # predict for individual models
-  if(indiv_pred) pred_indiv <- bag_predict(x, newdata, type = type, wMean = F, wq_probs = NULL)[, x$weights > 0]
+  if(indiv_pred) {
+    pred_indiv <- bag_predict(x, newdata, type = type, wMean = F, wq_probs = NULL, include = include)[, x$weights > 0]
+    # order(x$weights[x$weights > 0])
+  }
+
 
   if (ggplot){
     if (zoi){
@@ -209,7 +223,8 @@ plot_response.bag <- function(x,
                                           color = col_median,
                                           linewidth = linewidth_median)
 
-        plt <- plt + ggplot2::labs(x = ifelse(zoi, "Distance (m)", names(dfvar)), y = "Output", title = "")
+        plt <- plt + ggplot2::labs(x = ifelse(zoi, "Distance (m)", names(dfvar)),
+                                   y = y_lab, title = "")
       }
       # if (ncol(dfvar)==2){
       #   df <- data.frame(x=dfvar[,1], grp=as.factor(newdata[,names(dfvar)[2]]), y=pred$mid, y_lower = pred$lower, y_upper=pred$higher, y2=pred$mean)
@@ -235,34 +250,43 @@ plot_response.bag <- function(x,
                                                  key = "model", value = "y", -x)
 
         plt <- ggplot2::ggplot(df)
-        if(ci) {
-          plt <- plt + ggplot2::geom_ribbon(ggplot2::aes(x = x,
-                                                         ymin = y_lower,
-                                                         ymax = y_upper),
-                                            fill = col_ci,
-                                            alpha = alpha_ci)
-        } else {
+        if(class(dfvar[,1]) == "factor") {
           if(indiv_pred) {
-            plt <- plt + ggplot2::geom_line(ggplot2::aes(x = x,
-                                                         y = y,
-                                                         group = model),
-                                            data = df_indiv,
-                                            color = col_indiv,
-                                            linewidth = linewidth_indiv,
-                                            alpha = alpha_indiv)
+            plt <- plt + ggplot2::geom_boxplot(ggplot2::aes(x = x,
+                                                            y = y),
+                                            data = df_indiv)
           }
+        } else {
+          if(ci) {
+            plt <- plt + ggplot2::geom_ribbon(ggplot2::aes(x = x,
+                                                           ymin = y_lower,
+                                                           ymax = y_upper),
+                                              fill = col_ci,
+                                              alpha = alpha_ci)
+          } else {
+            if(indiv_pred) {
+              plt <- plt + ggplot2::geom_line(ggplot2::aes(x = x,
+                                                           y = y,
+                                                           group = model),
+                                              data = df_indiv,
+                                              color = col_indiv,
+                                              linewidth = linewidth_indiv,
+                                              alpha = alpha_indiv)
+            }
+          }
+          if(plot_median)
+            plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
+                                                         y = y),
+                                            color = col_mean,
+                                            linewidth = linewidth_mean)
+          if(plot_mean)
+            plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
+                                                         y = y_mean),
+                                            color = col_median,
+                                            linewidth = linewidth_median)
         }
-        if(plot_median)
-          plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
-                                                       y = y),
-                                          color = col_mean,
-                                          linewidth = linewidth_mean)
-        if(plot_mean)
-          plt <- plt + ggplot2::geom_line(ggplot2::aes(x=x,
-                                                       y = y_mean),
-                                          color = col_median,
-                                          linewidth = linewidth_median)
-        plt <- plt + ggplot2::labs(x = names(dfvar), y = "Output", title = "")
+
+        plt <- plt + ggplot2::labs(x = names(dfvar), y = y_lab, title = "")
 
       }
       # if (ncol(dfvar)==2){
@@ -284,8 +308,10 @@ plot_response.bag <- function(x,
     return(plt + ggplot2::theme_minimal())
 
   } else{
+
     pred <- cbind(dfvar, pred)
     return(pred)
+
   }
 }
 
