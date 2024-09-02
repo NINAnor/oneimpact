@@ -7,7 +7,7 @@
 bag_predict(
   x,
   newdata,
-  type = c("linear", "exponential", "logit", "cloglog")[1],
+  type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
   wMean = T,
   wq_probs = NULL,
   include = "all"

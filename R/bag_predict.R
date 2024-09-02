@@ -7,13 +7,14 @@
 #' @export
 bag_predict <- function(x,
                         newdata,
-                        type = c("linear", "exponential", "logit", "cloglog")[1],
+                        type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
                         wMean = T,
                         wq_probs = NULL,
                         include = "all") {
 
   # model matrix
   mm <- model.matrix(x$formula_no_strata, newdata)
+  case <- oneimpact::extract_response_strata(x$formula)$response
   # trick, check LATER ###########
   # attr(mm, "assign") |> duplicated()
   # if contrasts and NA
@@ -23,8 +24,23 @@ bag_predict <- function(x,
   coefs <- x$coef
 
   # subset of variables to be included
-  if (include[1]!="all"){
-    coefs <- coefs[, include]
+  if (include[1] != "all"){
+
+    # terms
+    include_terms <- paste0(include, collapse = "|")
+
+    # subset coefficients
+    coefs <- coefs[grepl(include_terms, rownames(coefs)), ]
+
+    # re-set model matrix
+    form_parts <- as.character(x$formula_no_strata)[3] |>
+      gsub(pattern = "\n", replacement = "") |>
+      strsplit(split = "+", fixed = TRUE)
+    form_parts_subset <- sapply(form_parts, grep, pattern = include_terms, value = TRUE)
+    form_include <- as.formula(paste0(case, " ~ -1 + ", paste(form_parts_subset, collapse = " + ")))
+
+    nd <- newdata[, c(case, grep(include_terms, colnames(newdata), value = TRUE))]
+    mm <- model.matrix(form_include, nd)
   }
 
   # prediction
@@ -58,7 +74,7 @@ bag_predict <- function(x,
   }
 
   # should result be in linear or exp scale?
-  if (type == "exponential") {
+  if (type == "exponential" | type == "exp") {
     preddf <- exp(preddf)
 
   } else {
@@ -70,7 +86,6 @@ bag_predict <- function(x,
       }
     }
   }
-
 
   # return prediction
   return(preddf)
