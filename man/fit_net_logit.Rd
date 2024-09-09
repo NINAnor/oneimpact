@@ -11,9 +11,12 @@ fit_net_logit(
   samples,
   i = 1,
   metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-  method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
+    "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
+  gamma = 1,
   standardize = c("internal", FALSE)[1],
   predictor_table = NULL,
   lasso_decay_type = c(log, function(x) x/1000)[[1]],
@@ -28,9 +31,12 @@ fit_net_rsf(
   samples,
   i = 1,
   metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-  method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
+    "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
+  gamma = 1,
   standardize = c("internal", FALSE)[1],
   predictor_table = NULL,
   lasso_decay_type = c(log, function(x) x/1000)[[1]],
@@ -54,6 +60,12 @@ representing the metric to evaluate goodness-of-fit. One of AUC (Default), condi
 conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
 it must be maximized to find the best fit model.}
 
+\item{gamma}{\verb{[numeric(1)=1]\{(0.5, 1, 2)\}} \cr Gamma is the exponent for defining the vector of
+penalty weights when \verb{method = "AdaptiveLasso}. This means that the penalties are defined as
+\code{penalty.factor = 1/(coef_ridge^gamma)}, where \code{coef_ridge} are the coefficients of a Ridge regression.
+Default is \code{gamma = 1}, but values of 0.5 or 2 could also be tried, as suggested by the
+authors (Zou et al 2006).}
+
 \item{standardize}{\verb{[logical(1)=TRUE]} \cr Logical flag for predictor variable standardization,
 prior to fitting the model sequence. The coefficients are always returned on the original scale.
 Default is standardize=TRUE. If variables are in the same units already, you might not wish to
@@ -70,4 +82,7 @@ folder "output".}
 By default, \code{\link[=fit_net_logit]{fit_net_logit()}} does not standardize predictor variables. If you want numeric variables
 to be standardized, you can either use \verb{[bag_git_net_logit()]} with parameter \code{standardize = TRUE}
 or provide an already standardized data set as input.
+}
+\references{
+Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 }

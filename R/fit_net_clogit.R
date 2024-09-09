@@ -24,7 +24,14 @@
 #' the folder) where the result of each model will be saved. E.g. if `out_dir_file = "output/test_"`,
 #' the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
 #' folder "output".
+#' @param gamma `[numeric(1)=1]{(0.5, 1, 2)}` \cr Gamma is the exponent for defining the vector of
+#' penalty weights when `method = "AdaptiveLasso`. This means that the penalties are defined as
+#' `penalty.factor = 1/(coef_ridge^gamma)`, where `coef_ridge` are the coefficients of a Ridge regression.
+#' Default is `gamma = 1`, but values of 0.5 or 2 could also be tried, as suggested by the
+#' authors (Zou et al 2006).
 #' @param ... Options for [oneimpact::net_logit()] and [glmnet::glmnet()].
+#'
+#' @references Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 #'
 #' @name fit_net_clogit
 #' @export
@@ -32,7 +39,11 @@ fit_net_clogit <- function(f, data,
                            samples, i = 1,
                            kernel_vars = c("step_length", "ta"),
                            metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-                           method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+                           method = c("Lasso", "Ridge", "AdaptiveLasso",
+                                      "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
+                                      "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+                                      "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
+                                      "ElasticNet")[1],
                            alpha = NULL,
                            penalty.factor = NULL,
                            standardize = c("internal", FALSE)[1],
@@ -46,7 +57,11 @@ fit_net_clogit <- function(f, data,
   sd_options <- c("internal", "external", FALSE)
   if(!(standardize %in% sd_options))
     stop(paste0("Invalid parameter 'standardize'. It should be one of ", paste(sd_options, collapse = ","), "."))
-  method_options <- c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")
+  method_options <- c("Lasso", "Ridge", "AdaptiveLasso",
+                      "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
+                      "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+                      "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
+                      "ElasticNet")
   if(!(grepl(paste(method_options, collapse = "|"), method[1], ignore.case = TRUE)))
     stop(paste0("Invalid parameter 'method'. It should be one of ", paste(method_options, collapse = ","), "."))
 
@@ -127,13 +142,13 @@ fit_net_clogit <- function(f, data,
     # check
     # variable grid to define penalties
     if(is.null(predictor_table)) {
-      if(grepl("DecayAdaptiveLasso", method[1], ignore.case = TRUE)) {
-        stop("If 'method' is 'DecayAdaptiveLasso', the parameter 'predictor_table' must be provided.")
+      if(grepl("Decay-AdaptiveLasso|DD-AdaptiveLasso", method[1], ignore.case = TRUE)) {
+        stop("If 'method' is 'DistanceDecay-AdaptiveLasso' or 'DD-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
       }
     }
 
     # if Decay
-    if(grepl("Decay", method[1], ignore.case = TRUE)) {
+    if(grepl("DistanceDecay|DD", method[1], ignore.case = TRUE)) {
 
       # formula
       ff <- as.formula(paste0("~ -1 +", wcols$covars))
@@ -174,7 +189,8 @@ fit_net_clogit <- function(f, data,
           # y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
         coef_weights <- matrix(coef(ridge_fit)[,which.max(d)]) # coefficients
 
-        penalty.factor <- 1/coef_weights
+        penalty.factor <- 1/(abs(coef_weights)**gamma)
+        penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
       }
     }
   }
@@ -264,7 +280,7 @@ fit_net_clogit <- function(f, data,
                       y = validate_data[[wcols$response]],
                       strat = validate_data[[wcols$strata]])
     hab<-merge(hab, data.frame(strat=samples$sp_strat_id, blockH0=samples$blockH0), by="strat", all.x=T, all.y=F)
-    
+
     if(!is.null(samples$blockH0)) {
       hab2 <- split(hab, hab$blockH0)
       # hab2 <- split(hab, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])

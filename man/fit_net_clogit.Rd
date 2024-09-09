@@ -13,7 +13,9 @@ fit_net_clogit(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-  method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
+    "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
@@ -31,7 +33,9 @@ fit_net_ssf(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-  method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
+    "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
@@ -49,7 +53,9 @@ fit_net_issf(
   i = 1,
   kernel_vars = c("step_length", "ta"),
   metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-  method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+  method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
+    "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
@@ -89,9 +95,18 @@ the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, w
 folder "output".}
 
 \item{...}{Options for \code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
+
+\item{gamma}{\verb{[numeric(1)=1]\{(0.5, 1, 2)\}} \cr Gamma is the exponent for defining the vector of
+penalty weights when \verb{method = "AdaptiveLasso}. This means that the penalties are defined as
+\code{penalty.factor = 1/(coef_ridge^gamma)}, where \code{coef_ridge} are the coefficients of a Ridge regression.
+Default is \code{gamma = 1}, but values of 0.5 or 2 could also be tried, as suggested by the
+authors (Zou et al 2006).}
 }
 \description{
 By default, \code{\link[=fit_net_clogit]{fit_net_clogit()}} does not standardize predictor variables. If you want numeric variables
 to be standardized, you can either use \verb{[bag_git_net_clogit()]} with parameter \code{standardize = TRUE}
 or provide an already standardized data set as input.
+}
+\references{
+Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 }
