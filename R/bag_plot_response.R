@@ -48,11 +48,11 @@ plot_response <- function(x,
                           col_indiv = "grey",
                           col_mean = "black",
                           col_median = "red",
-                          linewidth_indiv = 0.4,
+                          linewidth_indiv = 2,
                           linewidth_mean = 1.2,
                           linewidth_median = 1.2,
                           alpha_ci = 0.5,
-                          alpha_indiv = 0.7) {
+                          alpha_indiv = 0.2) {
 
   UseMethod("plot_response")
 
