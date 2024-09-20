@@ -185,10 +185,12 @@ rescale_coefficients.bag  <- function(bag, data, tostd = TRUE, ...) {
 
 # function to standardize coefficients that are not standardized
 # here coef and sd should be the same length
+#' @export
 to_std <- function(coef, sd) {
   coef * sd
 }
 
+#' @export
 from_std <- function(coef, sd) {
   coef / sd
 }

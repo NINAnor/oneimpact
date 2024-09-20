@@ -158,12 +158,14 @@ bag_models <- function(fitted, data,
   return(result)
 }
 
+#' @export
 data_summary <- function(x){
   y <- c(min(x), quantile(x, probs=c(0.01, 0.025, 0.25, 0.5, 0.75, 0.975, 0.99)), max(x), mean(x), sd(x))
   names(y)[c(1,9,10,11)] <- c("min", "max", "mean", "sd")
   return(y)
 }
 
+#' @export
 data_summary_char <- function(x){
   tab <- table(x)
   tab <- tab[order(tab)]
