@@ -29,11 +29,11 @@ plot_response(
   col_indiv = "grey",
   col_mean = "black",
   col_median = "red",
-  linewidth_indiv = 2,
+  linewidth_indiv = 1.2,
   linewidth_mean = 1.2,
   linewidth_median = 1.2,
   alpha_ci = 0.5,
-  alpha_indiv = 0.2
+  alpha_indiv = 0.3
 )
 }
 \arguments{
