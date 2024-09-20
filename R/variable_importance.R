@@ -91,7 +91,11 @@ variable_importance <- function(x,
   # remove NA from data
   if(anyNA(data)) {
     n_bef <- nrow(data)
-    data <- filter_na_strata(f, na.omit(data))
+    if(!is.null(samples)) {
+      data <- filter_na_strata(f, na.omit(data))
+    } else {
+      data <- na.omit(data)
+    }
     nNA <- n_bef - nrow(data)
     warning(paste0(nNA, " missing observations were removed from the validate set. ", nrow(data), " observations were kept."))
   }
@@ -176,7 +180,7 @@ variable_importance <- function(x,
   if(is.null(variable_block)) {
     names(test) <- colnames(mm)
   } else {
-    colnames(test) <- unique(variable_block)
+    names(test) <- unique(variable_block)
   }
 
   # order?
