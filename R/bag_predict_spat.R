@@ -47,6 +47,23 @@ bag_predict_spat <- function(bag,
   model_vars <- all.vars(bag$formula_no_strata)[-1]
   case <- extract_response_strata(bag$formula)$response
 
+  if(input_type == "rast") {
+
+    # get crs
+    if(is.null(crs)) {
+      crs <- terra::crs(data)
+    } else {
+      if ((crs == terra::crs('epsg:25833')) == FALSE) {
+        warning("The argument 'crs' is not the same as the CRS for you 'data' raster. ")
+      }
+    }
+
+    data <- terra::as.data.frame(data, cells = TRUE, xy = TRUE, na.rm = FALSE)
+    names(data)[1:3] <- c(gid, coords[1], coords[2])
+
+
+  }
+
   # get data for prediction
   # cols %in% names(data)
   grd <- data[, c(gid, coords, model_vars)]
