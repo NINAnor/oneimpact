@@ -15,7 +15,8 @@ fit_net_clogit(
   metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
+    "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
@@ -35,7 +36,8 @@ fit_net_ssf(
   metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
+    "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
@@ -55,7 +57,8 @@ fit_net_issf(
   metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-    "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso", "ElasticNet")[1],
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
+    "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   standardize = c("internal", FALSE)[1],
@@ -83,6 +86,10 @@ to the movement kernel, included in the model (for instance, \code{"step_length"
 representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
 conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
 it must be maximized to find the best fit model.}
+
+\item{method}{\verb{[character="Lasso"]} \cr The penalized regression method used for fitting
+each model. Default is \code{method = "Lasso"}, but it could be \code{method = "Ridge"} or different
+flavors of \code{"AdaptiveLasso"} (see details below).}
 
 \item{standardize}{\verb{[logical(1)=TRUE]} \cr Logical flag for predictor variable standardization,
 prior to fitting the model sequence. The coefficients are always returned on the original scale.
