@@ -10,6 +10,9 @@
 #' and validate. Each elements might have several elements, each representing
 #' the lines of `data` to be sampled for each resample. Typically, this is computed by
 #' the function [oneimpact::create_resamples()].
+#' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
+#' each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"` or different
+#' flavors of `"AdaptiveLasso"` (see details below).
 #' @param metric `[function]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
 #' representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
 #' conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
@@ -42,6 +45,7 @@ fit_net_clogit <- function(f, data,
                            method = c("Lasso", "Ridge", "AdaptiveLasso",
                                       "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
                                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+                                      "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                                       "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
                                       "ElasticNet")[1],
                            alpha = NULL,
@@ -49,6 +53,8 @@ fit_net_clogit <- function(f, data,
                            standardize = c("internal", FALSE)[1],
                            predictor_table = NULL,
                            lasso_decay_type = c(log, function(x) x/1000)[[1]],
+                           factor_hypothesis = 1,
+                           factor_grouped_lasso = 1,
                            na.action = "na.pass",
                            out_dir_file = NULL,
                            ...) {
@@ -60,6 +66,7 @@ fit_net_clogit <- function(f, data,
   method_options <- c("Lasso", "Ridge", "AdaptiveLasso",
                       "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+                      "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                       "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
                       "ElasticNet")
   if(!(grepl(paste(method_options, collapse = "|"), method[1], ignore.case = TRUE)))
@@ -142,13 +149,17 @@ fit_net_clogit <- function(f, data,
     # check
     # variable grid to define penalties
     if(is.null(predictor_table)) {
-      if(grepl("Decay-AdaptiveLasso|DD-AdaptiveLasso", method[1], ignore.case = TRUE)) {
+      methods_pred_table <- c("Decay-AdaptiveLasso", "DD-AdaptiveLasso",
+                              "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+                              "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
+                              "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso")
+      if(grepl(paste0(methods_pred_table, collapse = "|"), method[1], ignore.case = TRUE)) {
         stop("If 'method' is 'DistanceDecay-AdaptiveLasso' or 'DD-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
       }
     }
 
     # if Decay
-    if(grepl("DistanceDecay|DD", method[1], ignore.case = TRUE)) {
+    if(grepl("Decay|DD", method[1], ignore.case = TRUE)) {
 
       # formula
       ff <- as.formula(paste0("~ -1 +", wcols$covars))
@@ -170,27 +181,183 @@ fit_net_clogit <- function(f, data,
       names(penalty.factor) <- colnames(M)
 
     } else {
+
+      print("Fitting ridge...")
+
+      # fit
+      ridge_fit <- net_logit(f, train_data,
+                             alpha = 0,
+                             type.measure = "deviance",
+                             standardize = std,
+                             na.action = na.action,
+                             ...)
+      # get variables
+      f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
+      # calibration
+      pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit)[-1,] # multiple fits?
+      d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
+        metric(data.frame(x = x, y = y, strat = strat), errors=F)},
+        y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
+      # coefficients
+      coef_rigde <- matrix(coef(ridge_fit)[-1,which.max(d)]) # coefficients
+
+      #---- prepation to standardize coefs
+      if(standardize == "internal") {
+
+        print("Standardizing coefs...")
+
+        # covariates summary
+        all_vars <- all.vars(f)[-1]
+        classes <- sapply(data[,all_vars], class)
+        # numeric variables
+        data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes == "numeric"]])), 2, data_summary))
+        # character variables - use mode
+        data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes != "numeric"]])), 2, data_summary_char))
+        names(data_summary_ch) <- all_vars[classes != "numeric"]
+        dat_summ <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
+
+        # info from formula
+        ff <- as.formula(paste0("~ -1 +", wcols$covars))
+        # covariates
+        m_covars <- all.vars(ff, unique = F)
+        # are they numeric?
+        numeric_covs <- (classes == "numeric")
+        repeated <- m_covars[which(duplicated(m_covars))]
+        rep_times <- ifelse(names(numeric_covs) %in% repeated, 2, 1) ## CORRECT IF THERE ARE MORE THAN TWO TERMS WITH THE SAME VARIABLE
+        numeric_covs <- rep(numeric_covs, times = rep_times)
+        # model matrix with data
+        M <- stats::model.matrix(ff, data)
+        # variables and terms
+        terms_order <- attributes(M)$assign
+        terms_order <- terms_order[terms_order > 0]
+        vars_formula <- rep(m_covars, times = unname(table(terms_order)))
+        numeric_vars_order <- rep(numeric_covs, times = unname(table(terms_order)))
+
+        # SDs
+        sds <- dat_summ
+        sds <- sds[rownames(sds) == "sd", colnames(sds) %in% m_covars]
+        sds_all <- sds[match(vars_formula, colnames(sds))]
+        # sds_all <- unlist(rep(sds, terms_order)) |>
+        #   as.numeric()
+        sds_all[numeric_vars_order == FALSE] <- 1
+        names(sds_all) <- vars_formula
+        sds_all <- unlist(sds_all)
+
+        coef_rigde <- to_std(coef_rigde, sds_all)
+      }
+
+      print(method[1])
+
+      # if Adaptive Lasso
       if(tolower(method[1]) == "adaptivelasso") {
 
-        # fit
-        ridge_fit <- net_clogit(f, train_data,
-                                alpha = 0,
-                                type.measure = "deviance",
-                                standardize = std,
-                                na.action = na.action,
-                                ...)
-        # get variables
-        f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
-        # calibration
-        pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit) # multiple fits?
-        d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
-          metric(data.frame(x = x, y = y, strat = strat), errors=F)},
-          y = test_data[[wcols$response]], strat = test_data[[wcols$strata]])
-          # y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
-        coef_weights <- matrix(coef(ridge_fit)[,which.max(d)]) # coefficients
+        print("Fitting AdaptiveLasso...")
 
-        penalty.factor <- 1/(abs(coef_weights)**gamma)
+        penalty.factor <- 1/(abs(coef_rigde)**gamma)
         penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
+
+      } else {
+
+        # if OneZOI
+        if(tolower(method[1]) == "onezoi-adaptivelasso" | tolower(method[1]) == "oz-adaptivelasso") {
+
+          print("Fitting One-ZOI AdaptiveLasso...")
+
+          # prepare from predictor table
+
+          # variables and terms
+          terms_order <- attributes(M)$assign
+          terms_order <- terms_order[terms_order > 0]
+          # vars_formula <- rep(covars, times = unname(table(terms_order)))
+          # ZOI and nonZOI variables in the model matrix
+          mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
+          mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
+          mm_predictor_vars <- rep(predictor_table$variable, times = unname(table(terms_order)))
+
+          # set penalties
+          penalty.factor <- 1/(abs(coef_rigde)**gamma)
+          # select only the best
+          zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
+          for(i in zoi_terms) {
+            vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i]
+            # keep only the minimum
+            vals[vals > min(vals, na.rm = TRUE)] <- Inf
+            penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+          }
+
+          penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
+
+        } else {
+
+          # if grouped
+          if(tolower(method[1]) == "grouped-adaptivelasso" | tolower(method[1]) == "g-adaptivelasso") {
+
+            print("Fitting Grouped AdaptiveLasso...")
+
+            # prepare from predictor table
+
+            # variables and terms
+            terms_order <- attributes(M)$assign
+            terms_order <- terms_order[terms_order > 0]
+            # vars_formula <- rep(covars, times = unname(table(terms_order)))
+            # ZOI and nonZOI variables in the model matrix
+            mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
+            mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
+            mm_predictor_vars <- rep(paste0(predictor_table$variable, predictor_table$cumulative), times = unname(table(terms_order)))
+
+            # set penalties
+            penalty.factor <- 1/(abs(coef_rigde)**gamma)
+
+            # select only the best
+            zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
+            for(i in zoi_terms) {
+              vals <- coef_rigde[mm_is_zoi == 1 & mm_predictor_vars == i]
+              # sum relative to the vatiation in the group
+              vals <- grouped_func(vals, phi_group = factor_grouped_lasso)**gamma
+              penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+            }
+
+            penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
+
+          } else {
+
+            # if grouped
+            if(tolower(method[1]) == "hypothesisdriven-adaptivelasso" | tolower(method[1]) == "hd-adaptivelasso") {
+
+              print("Fitting HypothesisDriven AdaptiveLasso...")
+
+              # prepare from predictor table
+
+              # variables and terms
+              terms_order <- attributes(M)$assign
+              terms_order <- terms_order[terms_order > 0]
+              # vars_formula <- rep(covars, times = unname(table(terms_order)))
+              # ZOI and nonZOI variables in the model matrix
+              mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
+              mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
+              mm_predictor_vars <- rep(predictor_table$variable, times = unname(table(terms_order)))
+
+              # set penalties
+              expected_negative <- ifelse(mm_is_zoi == 1, -1, 0)
+              penalty.factor <- hypothesis_func(coef_rigde, expected_negative, phi_hyp = factor_hypothesis)**gamma
+              # cbind(coef_rigde, expected_negative, penalty.factor)
+
+              # zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
+              # for(i in zoi_terms) {
+              #   vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i]
+              #   # keep only the minimum
+              #   vals[vals > min(vals, na.rm = TRUE)] <- Inf
+              #   penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+              # }
+
+              penalty.factor[penalty.factor == Inf] <- 999999999
+
+            } else {
+
+              stop("Please choose a valid method for the function.")
+            }
+          }
+        }
       }
     }
   }

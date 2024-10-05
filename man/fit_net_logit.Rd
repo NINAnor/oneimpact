@@ -21,6 +21,8 @@ fit_net_logit(
   standardize = c("internal", FALSE)[1],
   predictor_table = NULL,
   lasso_decay_type = c(log, function(x) x/1000)[[1]],
+  factor_hypothesis = 1,
+  factor_grouped_lasso = 1,
   na.action = "na.pass",
   out_dir_file = NULL,
   ...
@@ -42,6 +44,8 @@ fit_net_rsf(
   standardize = c("internal", FALSE)[1],
   predictor_table = NULL,
   lasso_decay_type = c(log, function(x) x/1000)[[1]],
+  factor_hypothesis = 1,
+  factor_grouped_lasso = 1,
   na.action = "na.pass",
   out_dir_file = NULL,
   ...
@@ -61,6 +65,10 @@ the function \code{\link[=create_resamples]{create_resamples()}}.}
 representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
 conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
 it must be maximized to find the best fit model.}
+
+\item{method}{\verb{[character="Lasso"]} \cr The penalized regression method used for fitting
+each model. Default is \code{method = "Lasso"}, but it could be \code{method = "Ridge"} or different
+flavors of \code{"AdaptiveLasso"} (see details below).}
 
 \item{gamma}{\verb{[numeric(1)=1]\{(0.5, 1, 2)\}} \cr Gamma is the exponent for defining the vector of
 penalty weights when \verb{method = "AdaptiveLasso}. This means that the penalties are defined as
