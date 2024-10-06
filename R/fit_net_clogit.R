@@ -41,7 +41,7 @@
 fit_net_clogit <- function(f, data,
                            samples, i = 1,
                            kernel_vars = c("step_length", "ta"),
-                           metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+                           metric = c(AUC, conditionalBoyce, conditionalSomersD)[[1]],
                            method = c("Lasso", "Ridge", "AdaptiveLasso",
                                       "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
                                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
@@ -50,9 +50,10 @@ fit_net_clogit <- function(f, data,
                                       "ElasticNet")[1],
                            alpha = NULL,
                            penalty.factor = NULL,
+                           gamma = 1,
                            standardize = c("internal", FALSE)[1],
                            predictor_table = NULL,
-                           lasso_decay_type = c(log, function(x) x/1000)[[1]],
+                           function_lasso_decay = c(log, function(x) x/1000)[[1]],
                            factor_hypothesis = 1,
                            factor_grouped_lasso = 1,
                            na.action = "na.pass",
@@ -154,7 +155,7 @@ fit_net_clogit <- function(f, data,
                               "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                               "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso")
       if(grepl(paste0(methods_pred_table, collapse = "|"), method[1], ignore.case = TRUE)) {
-        stop("If 'method' is 'DistanceDecay-AdaptiveLasso' or 'DD-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
+        stop("If 'method' is 'DistanceDecay-AdaptiveLasso', 'OneZOI-AdaptiveLasso', 'Grouped-AdaptiveLasso' or 'HypothesisDriven-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
       }
     }
 
@@ -177,15 +178,15 @@ fit_net_clogit <- function(f, data,
       # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
 
       # set penalty factor
-      penalty.factor <- ifelse(mm_is_zoi, lasso_decay_type(mm_zoi_radius), 1)
+      penalty.factor <- ifelse(mm_is_zoi, function_lasso_decay(mm_zoi_radius), 1)
       names(penalty.factor) <- colnames(M)
 
     } else {
 
-      print("Fitting ridge...")
+      print("Fitting Ridge...")
 
       # fit
-      ridge_fit <- net_logit(f, train_data,
+      ridge_fit <- net_clogit(f, train_data,
                              alpha = 0,
                              type.measure = "deviance",
                              standardize = std,
@@ -194,12 +195,12 @@ fit_net_clogit <- function(f, data,
       # get variables
       f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
       # calibration
-      pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit)[-1,] # multiple fits?
+      pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit) # multiple fits?
       d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
         metric(data.frame(x = x, y = y, strat = strat), errors=F)},
         y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
       # coefficients
-      coef_rigde <- matrix(coef(ridge_fit)[-1,which.max(d)]) # coefficients
+      coef_ridge <- matrix(coef(ridge_fit)[,which.max(d)]) # coefficients
 
       #---- prepation to standardize coefs
       if(standardize == "internal") {
@@ -207,7 +208,7 @@ fit_net_clogit <- function(f, data,
         print("Standardizing coefs...")
 
         # covariates summary
-        all_vars <- all.vars(f)[-1]
+        all_vars <- all.vars(f2)[-1]
         classes <- sapply(data[,all_vars], class)
         # numeric variables
         data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes == "numeric"]])), 2, data_summary))
@@ -243,7 +244,7 @@ fit_net_clogit <- function(f, data,
         names(sds_all) <- vars_formula
         sds_all <- unlist(sds_all)
 
-        coef_rigde <- to_std(coef_rigde, sds_all)
+        coef_ridge <- to_std(coef_ridge, sds_all)
       }
 
       print(method[1])
@@ -253,7 +254,7 @@ fit_net_clogit <- function(f, data,
 
         print("Fitting AdaptiveLasso...")
 
-        penalty.factor <- 1/(abs(coef_rigde)**gamma)
+        penalty.factor <- 1/(abs(coef_ridge)**gamma)
         penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
 
       } else {
@@ -272,10 +273,11 @@ fit_net_clogit <- function(f, data,
           # ZOI and nonZOI variables in the model matrix
           mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
           mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
+          # cbind(rep(predictor_table$variable, times = unname(table(terms_order))), mm_zoi_radius)
           mm_predictor_vars <- rep(predictor_table$variable, times = unname(table(terms_order)))
 
           # set penalties
-          penalty.factor <- 1/(abs(coef_rigde)**gamma)
+          penalty.factor <- 1/(abs(coef_ridge)**gamma)
           # select only the best
           zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
           for(i in zoi_terms) {
@@ -286,6 +288,7 @@ fit_net_clogit <- function(f, data,
           }
 
           penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
+          # rownames(penalty.factor) <- mm_predictor_vars
 
         } else {
 
@@ -306,12 +309,12 @@ fit_net_clogit <- function(f, data,
             mm_predictor_vars <- rep(paste0(predictor_table$variable, predictor_table$cumulative), times = unname(table(terms_order)))
 
             # set penalties
-            penalty.factor <- 1/(abs(coef_rigde)**gamma)
+            penalty.factor <- 1/(abs(coef_ridge)**gamma)
 
             # select only the best
             zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
             for(i in zoi_terms) {
-              vals <- coef_rigde[mm_is_zoi == 1 & mm_predictor_vars == i]
+              vals <- coef_ridge[mm_is_zoi == 1 & mm_predictor_vars == i]
               # sum relative to the vatiation in the group
               vals <- grouped_func(vals, phi_group = factor_grouped_lasso)**gamma
               penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
@@ -339,8 +342,8 @@ fit_net_clogit <- function(f, data,
 
               # set penalties
               expected_negative <- ifelse(mm_is_zoi == 1, -1, 0)
-              penalty.factor <- hypothesis_func(coef_rigde, expected_negative, phi_hyp = factor_hypothesis)**gamma
-              # cbind(coef_rigde, expected_negative, penalty.factor)
+              penalty.factor <- hypothesis_func(coef_ridge, expected_negative, phi_hyp = factor_hypothesis)**gamma
+              # cbind(coef_ridge, expected_negative, penalty.factor)
 
               # zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
               # for(i in zoi_terms) {

@@ -12,16 +12,17 @@ fit_net_clogit(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+  metric = c(AUC, conditionalBoyce, conditionalSomersD)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
     "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
+  gamma = 1,
   standardize = c("internal", FALSE)[1],
   predictor_table = NULL,
-  lasso_decay_type = c(log, function(x) x/1000)[[1]],
+  function_lasso_decay = c(log, function(x) x/1000)[[1]],
   factor_hypothesis = 1,
   factor_grouped_lasso = 1,
   na.action = "na.pass",
@@ -35,16 +36,17 @@ fit_net_ssf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+  metric = c(AUC, conditionalBoyce, conditionalSomersD)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
     "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
+  gamma = 1,
   standardize = c("internal", FALSE)[1],
   predictor_table = NULL,
-  lasso_decay_type = c(log, function(x) x/1000)[[1]],
+  function_lasso_decay = c(log, function(x) x/1000)[[1]],
   factor_hypothesis = 1,
   factor_grouped_lasso = 1,
   na.action = "na.pass",
@@ -58,16 +60,17 @@ fit_net_issf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+  metric = c(AUC, conditionalBoyce, conditionalSomersD)[[1]],
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
     "HD-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
+  gamma = 1,
   standardize = c("internal", FALSE)[1],
   predictor_table = NULL,
-  lasso_decay_type = c(log, function(x) x/1000)[[1]],
+  function_lasso_decay = c(log, function(x) x/1000)[[1]],
   factor_hypothesis = 1,
   factor_grouped_lasso = 1,
   na.action = "na.pass",
@@ -97,6 +100,12 @@ it must be maximized to find the best fit model.}
 each model. Default is \code{method = "Lasso"}, but it could be \code{method = "Ridge"} or different
 flavors of \code{"AdaptiveLasso"} (see details below).}
 
+\item{gamma}{\verb{[numeric(1)=1]\{(0.5, 1, 2)\}} \cr Gamma is the exponent for defining the vector of
+penalty weights when \verb{method = "AdaptiveLasso}. This means that the penalties are defined as
+\code{penalty.factor = 1/(coef_ridge^gamma)}, where \code{coef_ridge} are the coefficients of a Ridge regression.
+Default is \code{gamma = 1}, but values of 0.5 or 2 could also be tried, as suggested by the
+authors (Zou et al 2006).}
+
 \item{standardize}{\verb{[logical(1)=TRUE]} \cr Logical flag for predictor variable standardization,
 prior to fitting the model sequence. The coefficients are always returned on the original scale.
 Default is standardize=TRUE. If variables are in the same units already, you might not wish to
@@ -108,12 +117,6 @@ the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, w
 folder "output".}
 
 \item{...}{Options for \code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
-
-\item{gamma}{\verb{[numeric(1)=1]\{(0.5, 1, 2)\}} \cr Gamma is the exponent for defining the vector of
-penalty weights when \verb{method = "AdaptiveLasso}. This means that the penalties are defined as
-\code{penalty.factor = 1/(coef_ridge^gamma)}, where \code{coef_ridge} are the coefficients of a Ridge regression.
-Default is \code{gamma = 1}, but values of 0.5 or 2 could also be tried, as suggested by the
-authors (Zou et al 2006).}
 }
 \description{
 By default, \code{\link[=fit_net_clogit]{fit_net_clogit()}} does not standardize predictor variables. If you want numeric variables

@@ -50,7 +50,7 @@ fit_net_logit <- function(f, data,
                           gamma = 1,
                           standardize = c("internal", FALSE)[1],
                           predictor_table = NULL,
-                          lasso_decay_type = c(log, function(x) x/1000)[[1]],
+                          function_lasso_decay = c(log, function(x) x/1000)[[1]],
                           factor_hypothesis = 1,
                           factor_grouped_lasso = 1,
                           na.action = "na.pass",
@@ -165,7 +165,7 @@ fit_net_logit <- function(f, data,
         # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
 
         # set penalty factor
-        penalty.factor <- ifelse(mm_is_zoi, lasso_decay_type(mm_zoi_radius), 1)
+        penalty.factor <- ifelse(mm_is_zoi, function_lasso_decay(mm_zoi_radius), 1)
         names(penalty.factor) <- colnames(M)
 
       } else {
@@ -187,7 +187,7 @@ fit_net_logit <- function(f, data,
           metric(data.frame(x = x, y = y, strat = strat), errors=F)},
           y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
         # coefficients
-        coef_rigde <- matrix(coef(ridge_fit)[-1,which.max(d)]) # coefficients
+        coef_ridge <- matrix(coef(ridge_fit)[-1,which.max(d)]) # coefficients
 
         #---- prepation to standardize coefs
         if(standardize == "internal") {
@@ -231,7 +231,7 @@ fit_net_logit <- function(f, data,
           names(sds_all) <- vars_formula
           sds_all <- unlist(sds_all)
 
-          coef_rigde <- to_std(coef_rigde, sds_all)
+          coef_ridge <- to_std(coef_ridge, sds_all)
         }
 
         print(method[1])
@@ -241,7 +241,7 @@ fit_net_logit <- function(f, data,
 
           print("Fitting AdaptiveLasso...")
 
-          penalty.factor <- 1/(abs(coef_rigde)**gamma)
+          penalty.factor <- 1/(abs(coef_ridge)**gamma)
           penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
 
         } else {
@@ -263,7 +263,7 @@ fit_net_logit <- function(f, data,
             mm_predictor_vars <- rep(predictor_table$variable, times = unname(table(terms_order)))
 
             # set penalties
-            penalty.factor <- 1/(abs(coef_rigde)**gamma)
+            penalty.factor <- 1/(abs(coef_ridge)**gamma)
             # select only the best
             zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
             for(i in zoi_terms) {
@@ -294,12 +294,12 @@ fit_net_logit <- function(f, data,
               mm_predictor_vars <- rep(paste0(predictor_table$variable, predictor_table$cumulative), times = unname(table(terms_order)))
 
               # set penalties
-              penalty.factor <- 1/(abs(coef_rigde)**gamma)
+              penalty.factor <- 1/(abs(coef_ridge)**gamma)
 
               # select only the best
               zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
               for(i in zoi_terms) {
-                vals <- coef_rigde[mm_is_zoi == 1 & mm_predictor_vars == i]
+                vals <- coef_ridge[mm_is_zoi == 1 & mm_predictor_vars == i]
                 # sum relative to the vatiation in the group
                 vals <- grouped_func(vals, phi_group = factor_grouped_lasso)**gamma
                 penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
@@ -327,8 +327,8 @@ fit_net_logit <- function(f, data,
 
                 # set penalties
                 expected_negative <- ifelse(mm_is_zoi == 1, -1, 0)
-                penalty.factor <- hypothesis_func(coef_rigde, expected_negative, phi_hyp = factor_hypothesis)**gamma
-                # cbind(coef_rigde, expected_negative, penalty.factor)
+                penalty.factor <- hypothesis_func(coef_ridge, expected_negative, phi_hyp = factor_hypothesis)**gamma
+                # cbind(coef_ridge, expected_negative, penalty.factor)
 
                 # zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
                 # for(i in zoi_terms) {
