@@ -280,11 +280,11 @@ fit_net_clogit <- function(f, data,
           penalty.factor <- 1/(abs(coef_ridge)**gamma)
           # select only the best
           zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-          for(i in zoi_terms) {
-            vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i]
+          for(jj in zoi_terms) {
+            vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj]
             # keep only the minimum
             vals[vals > min(vals, na.rm = TRUE)] <- Inf
-            penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+            penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
           }
 
           penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
@@ -313,11 +313,11 @@ fit_net_clogit <- function(f, data,
 
             # select only the best
             zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-            for(i in zoi_terms) {
-              vals <- coef_ridge[mm_is_zoi == 1 & mm_predictor_vars == i]
+            for(jj in zoi_terms) {
+              vals <- coef_ridge[mm_is_zoi == 1 & mm_predictor_vars == jj]
               # sum relative to the vatiation in the group
               vals <- grouped_func(vals, phi_group = factor_grouped_lasso)**gamma
-              penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+              penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
             }
 
             penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
@@ -346,11 +346,11 @@ fit_net_clogit <- function(f, data,
               # cbind(coef_ridge, expected_negative, penalty.factor)
 
               # zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-              # for(i in zoi_terms) {
-              #   vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i]
+              # for(jj in zoi_terms) {
+              #   vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj]
               #   # keep only the minimum
               #   vals[vals > min(vals, na.rm = TRUE)] <- Inf
-              #   penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+              #   penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
               # }
 
               penalty.factor[penalty.factor == Inf] <- 999999999
@@ -548,10 +548,10 @@ bag_fit_net_clogit <- function(f, data,
   if(standardize == "external") {
     data_covs_num <- data_covs[, numeric_covs]
     # standardize
-    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
+    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(ii) scale(data_covs_num[,ii]))
     # register mean and sd
-    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
-      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(ii)
+      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[ii]], m)))))
     rownames(covs_mean_sd) <- colnames(data_covs_num)
     colnames(covs_mean_sd) <- c("mean", "sd")
     # merge standardized predictors with non numeric predictors
