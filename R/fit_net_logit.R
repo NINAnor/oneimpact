@@ -266,11 +266,11 @@ fit_net_logit <- function(f, data,
             penalty.factor <- 1/(abs(coef_ridge)**gamma)
             # select only the best
             zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-            for(i in zoi_terms) {
-              vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i]
+            for(jj in zoi_terms) {
+              vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj]
               # keep only the minimum
               vals[vals > min(vals, na.rm = TRUE)] <- Inf
-              penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+              penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
             }
 
             penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
@@ -298,11 +298,11 @@ fit_net_logit <- function(f, data,
 
               # select only the best
               zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-              for(i in zoi_terms) {
-                vals <- coef_ridge[mm_is_zoi == 1 & mm_predictor_vars == i]
-                # sum relative to the vatiation in the group
+              for(jj in zoi_terms) {
+                vals <- coef_ridge[mm_is_zoi == 1 & mm_predictor_vars == jj]
+                # sum relative to the variation in the group
                 vals <- grouped_func(vals, phi_group = factor_grouped_lasso)**gamma
-                penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+                penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
               }
 
               penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
