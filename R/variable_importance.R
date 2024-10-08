@@ -180,7 +180,7 @@ variable_importance <- function(x,
   if(is.null(variable_block)) {
     names(test) <- colnames(mm)
   } else {
-    names(test) <- unique(variable_block)
+    colnames(test) <- unique(variable_block)
   }
 
   # order?
