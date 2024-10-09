@@ -14,6 +14,7 @@ bag_predict_spat(
   gid = "gid",
   coords = c("x33", "y33"),
   crs = NULL,
+  output_rescale = FALSE,
   prediction_max_quantile = 0.999,
   uncertainty_quantiles = c(0.25, 0.75),
   plotit = FALSE,

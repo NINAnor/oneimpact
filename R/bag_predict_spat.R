@@ -33,6 +33,7 @@ bag_predict_spat <- function(bag,
                              gid = "gid",
                              coords = c("x33", "y33"),
                              crs = NULL,
+                             output_rescale = FALSE,
                              prediction_max_quantile = 0.999,
                              uncertainty_quantiles = c(0.25, 0.75),
                              plotit = FALSE,
@@ -148,10 +149,12 @@ bag_predict_spat <- function(bag,
     grd_rast_wavg <- terra::rast(grd[, c(coords, "linpred_wavg")], type = "xyz", crs = crs)
     # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
     # truncate at 97.5% quantile of the baseline scenario
-    baseline_max <- as.numeric(terra::global(grd_rast_wavg, fun = quantile, prob = prediction_max_quantile, na.rm = T))
-    grd_rast_wavg <- grd_rast_wavg/baseline_max
-    grd_rast_wavg <- terra::ifel(grd_rast_wavg > 1, 1, grd_rast_wavg)
-    grd_rast_wavg <- raster_rescale(grd_rast_wavg, to = c(0, 1))
+    if(output_rescale) {
+      baseline_max <- as.numeric(terra::global(grd_rast_wavg, fun = quantile, prob = prediction_max_quantile, na.rm = T))
+      grd_rast_wavg <- grd_rast_wavg/baseline_max
+      grd_rast_wavg <- terra::ifel(grd_rast_wavg > 1, 1, grd_rast_wavg)
+      grd_rast_wavg <- raster_rescale(grd_rast_wavg, to = c(0, 1))
+    }
     names(grd_rast_wavg) <- "suit_exp_weighted_avg"
     out$r_weighted_avg_pred <- grd_rast_wavg
     # plot(grd_rast_wavg)
@@ -171,11 +174,13 @@ bag_predict_spat <- function(bag,
       # grd_rast <- exp(grd_rast)
       # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
       # truncate at 97.5% quantile of the baseline scenario
-      baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
+      if(output_rescale) {
+        baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
 
-      grd_rast <- grd_rast/baseline_max
-      grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
-      grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
+        grd_rast <- grd_rast/baseline_max
+        grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
+        grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
+      }
       names(grd_rast) <- ind_names[i]
 
       if(i == 1) {
@@ -190,7 +195,8 @@ bag_predict_spat <- function(bag,
 
     #---
     # summary of individual weighted models
-    ind_summs <- c("ind_w_med", "ind_w_iqr", "ind_w_iqr_old")
+    #### CV
+    ind_summs <- c("ind_w_med", "ind_w_iqr", "ind_w_qcv")
     ind_vars <- paste0("linpred_", c("ind_w_med", c("ind_w_quart_min", "ind_w_quart_max")))
     ind_names <- paste0("suit_", c("exp_", ""), ind_summs)
     # i <- 2
@@ -200,27 +206,30 @@ bag_predict_spat <- function(bag,
       if(i == 1) {
         grd_rast <- terra::rast(grd[, c(coords, ind_vars[i])], type = "xyz", crs = crs)
       } else {
-        if(i == 3) {
-          grd_rast <- terra::rast(grd[, c(coords, ind_vars[c(2,3)])], type = "xyz", crs = crs)
+        grd_rast <- terra::rast(grd[, c(coords, ind_vars[c(2,3)])], type = "xyz", crs = crs)
+
+        if(i == 2) {
+          # diff
+          grd_rast <- terra::diff(grd_rast)
         } else {
-          grd_rast <- app(out$r_ind_pred, function(x)
-            DescTools::Quantile(x, weights = bag$weights[good_models],
-                                type = 5, probs = uncertainty_quantiles))
+          grd_rast <- terra::diff(grd_rast)/terra::app(grd_rast, "sum")
         }
-        # diff
-        grd_rast <- terra::diff(grd_rast)
-        # exp values
-        # grd_rast <- exp(grd_rast)
+
       }
       # plot(grd_rast)
 
       # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
       # truncate at 97.5% quantile of the baseline scenario
-      baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
+      if(output_rescale) {
 
-      grd_rast <- grd_rast/baseline_max
-      grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
-      grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
+        baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
+
+        grd_rast <- grd_rast/baseline_max
+        grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
+        grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
+
+      }
+
       names(grd_rast) <- ind_names[i]
       # plot(grd_rast)
 
@@ -243,7 +252,7 @@ bag_predict_spat <- function(bag,
 
   if(plotit) plot(out$r_weighted_avg_pred)
   if(plotit) plot(out$r_ind_summ_pred)
-  if(plotit) plot(out$r_ind_pred)
+  # if(plotit) plot(out$r_ind_pred)
 
   # return
   out
