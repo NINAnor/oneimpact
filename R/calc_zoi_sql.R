@@ -11,6 +11,7 @@
 #'
 #' Need to check functions (gaussian, exp, linear) and check if this is correct
 #'
+#' @param con connection to a database.
 #' @param input_points `[character]` \cr Name of the input table of points to be annotated (within the connection `con`,
 #' a database), in the format `table_name` or `schema_name.table_name`.
 #' @param infrastructure_layer `[character]` \cr Name of the infrastructure covariate table for which
@@ -25,12 +26,13 @@
 #' @param output_type `[character]` \cr
 #' @param output_column_name `[character]` \cr
 #'
-#' @example example/calc_zoi_sql_example.R
+#' @example examples/calc_zoi_sql_example.R
 #'
 #' @export
 
 # declaring the function
-calc_zoi_sql <- function(input_points,
+calc_zoi_sql <- function(con,
+                         input_points,
                          infrastructure_layer,
                          radius = 100,
                          type = c("circle", "Gauss", "exp_decay", "bartlett", "threshold")[1],

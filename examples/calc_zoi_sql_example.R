@@ -12,45 +12,40 @@ library(duckdb)
 
 # connection - in memory
 con <- DBI::dbConnect(duckdb())
-DBI::dbExecute(con, "INSTALL spatial; LOAD spatial;")
-# source("~/.pgpass")
-# NinaR::postgreSQLConnect(
-#   host = "gisdata-db.nina.no",
-#   dbname = "gisdata",
-#   username = pg_username,
-#   password = pg_password
-# )
-# rm(pg_username, pg_password)
+DBI::dbExecute(con, "INSTALL spatial from core_nightly; LOAD spatial;")
 
 # write vector of reindeer points to database
-data("reindeer")
-rein_spat <- sf::st_as_sf(reindeer, coords = c("x", "y"), crs = 25833) |>
-  dplyr::mutate(gid = 1:nrow(reindeer))
-DBI::dbWriteTable(con, "reindeer", rein_spat, overwrite = TRUE)
-# check
-dplyr::tbl(con, "reindeer")
-# add index gid and spatial index
-DBI::dbExecute(con, "CREATE UNIQUE INDEX reindeer_gid ON reindeer (gid);")
-DBI::dbExecute(con, "CREATE INDEX reindeer_geometry ON reindeer USING GIST (geometry);")
 
-# write vector of cabin points to database
-(f <- system.file("vector/reindeer_cabins.gpkg", package = "oneimpact"))
-cabins <- sf::st_read(f)
-DBI::dbWriteTable(con, "cabins", cabins)
+# load data in R
+data("reindeer")
+# register link to data in duckdb
+duckdb::duckdb_register(con, "reindeer", reindeer)
+# create spatial object in duckdb
+DBI::dbExecute(con, "create or replace table reindeer_spat as (select row_number() over () as id, * exclude(x, y), ST_POINT(x,y) as geom from reindeer)")
+duckdb::duckdb_unregister(con, "reindeer") # and forget the original dataframe
+# check
+dplyr::tbl(con, "reindeer_spat")
+# add index id and spatial index
+DBI::dbExecute(con, "CREATE UNIQUE INDEX reindeer_gid ON reindeer_spat (id);")
+DBI::dbExecute(con, "CREATE INDEX reindeer_geometry ON reindeer_spat USING rtree (geom);")
+
+# write vector of cabin points to database - from file
+DBI::dbExecute(con, "create or replace table cabins as select * from st_read('inst/vector/reindeer_cabins.gpkg')")
 # check
 dplyr::tbl(con, "cabins")
 # add spatial index
-DBI::dbExecute(con, "CREATE INDEX cabins_geom ON cabins USING GIST (geom);")
+DBI::dbExecute(con, "CREATE INDEX cabins_geom ON cabins USING rtree (geom);")
 
 # compute ZOI of cabins and extract for reindeer points
-cum_zoi_cabins <- calc_zoi_sql(input_points = "reindeer",
+cum_zoi_cabins <- calc_zoi_sql(con,
+                               input_points = "reindeer_spat",
                                infrastructure_layer = "cabins",
                                radius = 5000,
                                type = "bartlett", zoi_metric = "cumulative",
-                               input_id = "gid",
-                               input_geom = "geometry", infra_geom = "geom",
+                               input_id = "id",
+                               input_geom = "geom", infra_geom = "geom",
                                output_table = NULL,
-                               #limit = 100,
+                               limit = 100,
                                verbose = TRUE)
 cum_zoi_cabins
 
