@@ -203,7 +203,7 @@ fit_net_clogit <- function(f, data,
       coef_ridge <- matrix(coef(ridge_fit)[,which.max(d)]) # coefficients
 
       #---- prepation to standardize coefs
-      if(standardize == "internal") {
+      if(standardize == "internal" & tolower(method[1]) != "ridge") {
 
         print("Standardizing coefs...")
 
@@ -215,7 +215,11 @@ fit_net_clogit <- function(f, data,
         # character variables - use mode
         data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes != "numeric"]])), 2, data_summary_char))
         names(data_summary_ch) <- all_vars[classes != "numeric"]
-        dat_summ <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
+        if(nrow(data_summary_ch) > 0) {
+          dat_summ <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
+        } else {
+          dat_summ <- data_summary_num
+        }
 
         # info from formula
         ff <- as.formula(paste0("~ -1 +", wcols$covars))
@@ -367,13 +371,21 @@ fit_net_clogit <- function(f, data,
 
   # perform penalized regression with glmnet
   # use glmnet.cv?
-  fit <- net_clogit(f, train_data,
-                    alpha = alpha,
-                    penalty.factor = penalty.factor,
-                    type.measure = "deviance",
-                    standardize = std,
-                    na.action = na.action,
-                    ...)
+  if(tolower(method[1]) == "ridge") {
+
+    fit <- ridge_fit
+
+  } else {
+
+    fit <- net_clogit(f, train_data,
+                      alpha = alpha,
+                      penalty.factor = penalty.factor,
+                      type.measure = "deviance",
+                      standardize = std,
+                      na.action = na.action,
+                      ...)
+  }
+
 
   # get variables
   f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
