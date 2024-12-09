@@ -361,7 +361,10 @@ fit_net_clogit <- function(f, data,
 
             } else {
 
-              stop("Please choose a valid method for the function.")
+              if(tolower(method[1]) != "ridge") {
+                stop("Please choose a valid method for the function.")
+              }
+
             }
           }
         }
