@@ -335,6 +335,9 @@ dropped_concordance <- function(i, mm, y, strat, coefs, wghts,
 #' in each plot), and as a single boxplot
 #' plot if `plot_type = "boxplot"`. If `by = "variable"`, the plot is made separately for each
 #' variable, with blocks H0 as a category in each plot.
+#' @param scales `[character="fixed"]{"fixed", "free_x", "free_y", "free}` \cr Scale/range of
+#' the axes when facets are used in the plots, when `by` is not `FALSE`. See the parameter
+#' `scales` in [ggplot2::facet_wrap()] for more information.
 #'
 #' @export
 plot_importance <- function(importance,
@@ -342,7 +345,8 @@ plot_importance <- function(importance,
                             normalize = TRUE,
                             plot_type = c("barplot", "boxplot")[1],
                             summ_stat = c(FALSE, "mean", "median")[1],
-                            by = c(FALSE, "blockH0", "variable")[1]) {
+                            by = c(FALSE, "blockH0", "variable")[1],
+                            scales = c("fixed", "free_y", "free_x", "free")) {
 
   # get importance values
   imp <- importance
@@ -398,7 +402,7 @@ plot_importance <- function(importance,
           ggplot2::coord_flip() +
           ggplot2::labs(x = "Variable", y = "Importance")
 
-        p <- p + ggplot2::facet_wrap(~ blockH0)
+        p <- p + ggplot2::facet_wrap(~ blockH0, scales = scales)
 
       } else {
 
@@ -411,7 +415,7 @@ plot_importance <- function(importance,
             ggplot2::coord_flip() +
             ggplot2::labs(x = "Variable", y = "Importance")
 
-          p <- p + ggplot2::facet_wrap(~ var)
+          p <- p + ggplot2::facet_wrap(~ var, scales = scales)
         }
       }
 

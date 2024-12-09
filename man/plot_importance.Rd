@@ -10,7 +10,8 @@ plot_importance(
   normalize = TRUE,
   plot_type = c("barplot", "boxplot")[1],
   summ_stat = c(FALSE, "mean", "median")[1],
-  by = c(FALSE, "blockH0", "variable")[1]
+  by = c(FALSE, "blockH0", "variable")[1],
+  scales = c("fixed", "free_y", "free_x", "free")
 )
 }
 \arguments{
@@ -44,6 +45,10 @@ block H0 (e.g. population, area) if \code{plot_type = "barplot"} (with the varia
 in each plot), and as a single boxplot
 plot if \code{plot_type = "boxplot"}. If \code{by = "variable"}, the plot is made separately for each
 variable, with blocks H0 as a category in each plot.}
+
+\item{scales}{\verb{[character="fixed"]\{"fixed", "free_x", "free_y", "free\}} \cr Scale/range of
+the axes when facets are used in the plots, when \code{by} is not \code{FALSE}. See the parameter
+\code{scales} in \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}} for more information.}
 }
 \description{
 Plot variable importance
