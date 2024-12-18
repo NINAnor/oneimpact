@@ -2,6 +2,7 @@
 % Please edit documentation in R/bag_predict_spat.R
 \name{bag_predict_spat}
 \alias{bag_predict_spat}
+\alias{bag_predict_spat_vars}
 \title{Predict bag of models in space}
 \usage{
 bag_predict_spat(
@@ -15,6 +16,24 @@ bag_predict_spat(
   coords = c("x33", "y33"),
   crs = NULL,
   output_rescale = FALSE,
+  prediction_max_quantile = 0.999,
+  uncertainty_quantiles = c(0.25, 0.75),
+  plotit = FALSE,
+  verbose = FALSE
+)
+
+bag_predict_spat_vars(
+  bag,
+  data,
+  predictor_table_zoi,
+  input_type = c("df", "rast")[1],
+  output_type = c("df", "rast")[2],
+  prediction_type = c("exp", "exponential", "linear")[1],
+  what = c("wMean", "wMedian", "ind"),
+  gridalign = TRUE,
+  gid = "gid",
+  coords = c("x33", "y33"),
+  crs = NULL,
   prediction_max_quantile = 0.999,
   uncertainty_quantiles = c(0.25, 0.75),
   plotit = FALSE,

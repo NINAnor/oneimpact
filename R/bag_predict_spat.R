@@ -259,6 +259,7 @@ bag_predict_spat <- function(bag,
 }
 
 #' @export
+#' @rdname bag_predict_spat
 bag_predict_spat_vars <- function(bag,
                                   data,
                                   predictor_table_zoi,
@@ -266,6 +267,7 @@ bag_predict_spat_vars <- function(bag,
                                   input_type = c("df", "rast")[1], # only df implemented
                                   output_type = c("df", "rast")[2],
                                   prediction_type = c("exp", "exponential", "linear")[1],
+                                  what = c("wMean", "wMedian", "ind"),
                                   gridalign = TRUE,
                                   gid = "gid",
                                   coords = c("x33", "y33"),
@@ -345,25 +347,33 @@ bag_predict_spat_vars <- function(bag,
       predvals <- (mm %*% coefs1)
 
       # average weighted model prediction
-      col_name <- paste0("pred_", var_i, "wavg")
-      grd1[col_name] <- predvals %*% bag$weights[good_models]
-      if(grepl("exp", prediction_type)) grd1[col_name] <- exp(grd1[col_name])
+      if("wMean" %in% what) {
+        col_name <- paste0("pred_", var_i, "wavg")
+        grd1[col_name] <- predvals %*% bag$weights[good_models]
+        if(grepl("exp", prediction_type)) grd1[col_name] <- exp(grd1[col_name])
+      }
 
       # prediction for each model
-      indiv_preds <- predvals
-      if(grepl("exp", prediction_type)) indiv_preds <- exp(indiv_preds)
+      if("ind" %in% what | "wMedian" %in% what) {
+        indiv_preds <- predvals
+        if(grepl("exp", prediction_type)) indiv_preds <- exp(indiv_preds)
+      }
 
       # weighted median
-      col_name <- paste0("pred_", var_i, "w_med")
-      grd1[col_name] <- apply(indiv_preds, 1, DescTools::Quantile, weights = bag$weights[good_models],
-                              type = 5, probs = 0.5)
+      if("wMedian" %in% what) {
+        col_name <- paste0("pred_", var_i, "w_med")
+        grd1[col_name] <- apply(indiv_preds, 1, DescTools::Quantile, weights = bag$weights[good_models],
+                                type = 5, probs = 0.5)
+      }
 
       # individual predictions
-      new_cols <- ncol(grd1)+1:ncol(indiv_preds)
-      grd1[new_cols] <- indiv_preds
-      indiv_names <- paste0("pred_", var_i, "ind_", names(good_models))
-      names(grd1)[new_cols] <- indiv_names
-      names(grd1)
+      if("ind" %in% what) {
+        new_cols <- ncol(grd1)+1:ncol(indiv_preds)
+        grd1[new_cols] <- indiv_preds
+        indiv_names <- paste0("pred_", var_i, "ind_", names(good_models))
+        names(grd1)[new_cols] <- indiv_names
+        names(grd1)
+      }
 
       #---
       # come back to space
@@ -385,17 +395,19 @@ bag_predict_spat_vars <- function(bag,
         #---
         # average weighted model
         # rasterize
-        col_name <- paste0("pred_", var_i, "wavg")
-        grd_rast_wavg <- terra::rast(grd1[, c(coords, col_name)], type = "xyz", crs = crs)
-        # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
-        # truncate at 97.5% quantile of the baseline scenario
-        # baseline_max <- as.numeric(terra::global(grd_rast_wavg, fun = quantile, prob = prediction_max_quantile, na.rm = T))
-        # grd_rast_wavg <- grd_rast_wavg/baseline_max
-        # grd_rast_wavg <- terra::ifel(grd_rast_wavg > 1, 1, grd_rast_wavg)
-        # grd_rast_wavg <- raster_rescale(grd_rast_wavg, to = c(0, 1))
-        names(grd_rast_wavg) <- paste0("suit_exp_", var_i, "wavg")
-        out$r_weighted_avg_pred[[i]] <- grd_rast_wavg
-        # plot(grd_rast_wavg)
+        if("wMean" %in% what) {
+          col_name <- paste0("pred_", var_i, "wavg")
+          grd_rast_wavg <- terra::rast(grd1[, c(coords, col_name)], type = "xyz", crs = crs)
+          # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
+          # truncate at 97.5% quantile of the baseline scenario
+          # baseline_max <- as.numeric(terra::global(grd_rast_wavg, fun = quantile, prob = prediction_max_quantile, na.rm = T))
+          # grd_rast_wavg <- grd_rast_wavg/baseline_max
+          # grd_rast_wavg <- terra::ifel(grd_rast_wavg > 1, 1, grd_rast_wavg)
+          # grd_rast_wavg <- raster_rescale(grd_rast_wavg, to = c(0, 1))
+          names(grd_rast_wavg) <- paste0("suit_exp_", var_i, "wavg")
+          out$r_weighted_avg_pred[[i]] <- grd_rast_wavg
+          # plot(grd_rast_wavg)
+        }
 
         # weighted median
         # col_name <- paste0("pred_", var_i, "w_med")
@@ -406,75 +418,80 @@ bag_predict_spat_vars <- function(bag,
 
         #---
         # individual predictions
-        ind_vars <- grep(paste0("pred_", var_i, "ind_Resample"), names(grd1), value = TRUE)
-        ind_summs <- sub("pred_", "", ind_vars)
-        ind_names <- paste0("suit_exp_", ind_summs)
-        # i <- 1
-        for(j in seq_along(ind_summs)) {
+        if("ind" %in% what | "wMedian" %in% what) {
 
-          # rasterize
-          grd_rast <- terra::rast(grd1[, c(coords, ind_vars[j])], type = "xyz", crs = crs)
+          ind_vars <- grep(paste0("pred_", var_i, "ind_Resample"), names(grd1), value = TRUE)
+          ind_summs <- sub("pred_", "", ind_vars)
+          ind_names <- paste0("suit_exp_", ind_summs)
+          # i <- 1
+          for(j in seq_along(ind_summs)) {
 
-          # exp values
-          # grd_rast <- exp(grd_rast)
-          # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
-          # truncate at 97.5% quantile of the baseline scenario
-          # baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
-
-          # grd_rast <- grd_rast/baseline_max
-          # grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
-          # grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
-          names(grd_rast) <- ind_names[j]
-          # plot(grd_rast)
-
-          if(j == 1) {
             # rasterize
-            out$r_ind_pred[[i]] <- grd_rast
-          } else {
-            # rasterize and concatenate
-            out$r_ind_pred[[i]] <- c(out$r_ind_pred[[i]], grd_rast)
-          }
+            grd_rast <- terra::rast(grd1[, c(coords, ind_vars[j])], type = "xyz", crs = crs)
 
+            # exp values
+            # grd_rast <- exp(grd_rast)
+            # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
+            # truncate at 97.5% quantile of the baseline scenario
+            # baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
+
+            # grd_rast <- grd_rast/baseline_max
+            # grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
+            # grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
+            names(grd_rast) <- ind_names[j]
+            # plot(grd_rast)
+
+            if(j == 1) {
+              # rasterize
+              out$r_ind_pred[[i]] <- grd_rast
+            } else {
+              # rasterize and concatenate
+              out$r_ind_pred[[i]] <- c(out$r_ind_pred[[i]], grd_rast)
+            }
+
+          }
         }
 
         # #---
         # summary of individual weighted models
-        ind_summs <- paste0("pred_", var_i, c("w_med", "ind_w_iqr"))
-        ind_vars <- ind_summs
-        ind_names <- paste0("suit_exp_", sub("pred_", "", ind_vars))
-        # i <- 2
-        for(j in seq_along(ind_summs)) {
+        if("wMedian" %in% what) {
+          ind_summs <- paste0("pred_", var_i, c("w_med", "ind_w_iqr"))
+          ind_vars <- ind_summs
+          ind_names <- paste0("suit_exp_", sub("pred_", "", ind_vars))
+          # i <- 2
+          for(j in seq_along(ind_summs)) {
 
-          # rasterize
-          if(j == 1) {
-            grd_rast <- terra::rast(grd1[, c(coords, ind_vars[j])], type = "xyz", crs = crs)
-          } else {
-            grd_rast <- app(out$r_ind_pred[[i]], function(x)
-              DescTools::Quantile(x, weights = bag$weights[good_models],
-                                  type = 5, probs = uncertainty_quantiles))
-
-            # diff
-            grd_rast <- terra::diff(grd_rast)
-            # exp values
-            # grd_rast <- exp(grd_rast)
-          }
-          # plot(grd_rast)
-
-          # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
-          # truncate at 97.5% quantile of the baseline scenario
-          # baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
-          # grd_rast <- grd_rast/baseline_max
-          # grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
-          # grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
-          names(grd_rast) <- ind_names[j]
-          # plot(grd_rast)
-
-          if(j == 1) {
             # rasterize
-            out$r_ind_summ_pred[[i]] <- grd_rast
-          } else {
-            # rasterize and concatenate
-            out$r_ind_summ_pred[[i]] <- c(out$r_ind_summ_pred[[i]], grd_rast)
+            if(j == 1) {
+              grd_rast <- terra::rast(grd1[, c(coords, ind_vars[j])], type = "xyz", crs = crs)
+            } else {
+              grd_rast <- app(out$r_ind_pred[[i]], function(x)
+                DescTools::Quantile(x, weights = bag$weights[good_models],
+                                    type = 5, probs = uncertainty_quantiles))
+
+              # diff
+              grd_rast <- terra::diff(grd_rast)
+              # exp values
+              # grd_rast <- exp(grd_rast)
+            }
+            # plot(grd_rast)
+
+            # quantile(exp(grd$linpred), prob = 0.975, na.rm = T)
+            # truncate at 97.5% quantile of the baseline scenario
+            # baseline_max <- as.numeric(terra::global(grd_rast, fun = quantile, prob = prediction_max_quantile, na.rm = T))
+            # grd_rast <- grd_rast/baseline_max
+            # grd_rast <- terra::ifel(grd_rast > 1, 1, grd_rast)
+            # grd_rast <- raster_rescale(grd_rast, to = c(0, 1))
+            names(grd_rast) <- ind_names[j]
+            # plot(grd_rast)
+
+            if(j == 1) {
+              # rasterize
+              out$r_ind_summ_pred[[i]] <- grd_rast
+            } else {
+              # rasterize and concatenate
+              out$r_ind_summ_pred[[i]] <- c(out$r_ind_summ_pred[[i]], grd_rast)
+            }
           }
         }
 
