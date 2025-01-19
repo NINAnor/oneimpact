@@ -558,15 +558,17 @@ bag_fit_net_clogit <- function(f, data,
   # get predictors
   data_covs <- data[, all_covars]
   # select numeric predictors to be standardized
-  numeric_covs <- (sapply(data_covs, class) == "numeric")
+  numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
   # standardize
   if(standardize == "external") {
     data_covs_num <- data_covs[, numeric_covs]
     # standardize
-    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(ii) scale(data_covs_num[,ii]))
+    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
     # register mean and sd
-    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(ii)
-      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[ii]], m)))))
+    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
+      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+    ### warning if the is any cov with sd = 0, remove it or bring an error
+    # if(covs_mean_sd)
     rownames(covs_mean_sd) <- colnames(data_covs_num)
     colnames(covs_mean_sd) <- c("mean", "sd")
     # merge standardized predictors with non numeric predictors

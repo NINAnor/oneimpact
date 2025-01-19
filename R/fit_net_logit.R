@@ -486,7 +486,7 @@ bag_fit_net_logit <- function(f, data,
   # get predictors
   data_covs <- data[, all_covars]
   # select numeric predictors to be standardized
-  numeric_covs <- (sapply(data_covs, class) == "numeric")
+  numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
   # standardize
   if(standardize == "external") {
     data_covs_num <- data_covs[, numeric_covs]
@@ -497,6 +497,8 @@ bag_fit_net_logit <- function(f, data,
       sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
     rownames(covs_mean_sd) <- colnames(data_covs_num)
     colnames(covs_mean_sd) <- c("mean", "sd")
+    ### warning if the is any cov with sd = 0, remove it or bring an error
+    # if(covs_mean_sd)
     # merge standardized predictors with non numeric predictors
     data_covs_std <- cbind(data_covs[, !numeric_covs], data.frame(do.call("cbind", data_covs_num_std)))
     data_covs_std <- data_covs_std[,order(c(which(!numeric_covs), which(numeric_covs)))]

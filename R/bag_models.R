@@ -140,13 +140,17 @@ bag_models <- function(fitted, data,
 
   # covariates summary
   all_vars <- all.vars(result$formula_no_strata)
-  classes <- sapply(data[,all_vars], class)
+  classes_numeric <- sapply(data[,all_vars], is.numeric)
   # numeric variables
-  data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes == "numeric"]])), 2, data_summary))
+  data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes_numeric == TRUE]])), 2, data_summary))
   # character variables - use mode
-  data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes != "numeric"]])), 2, data_summary_char))
-  names(data_summary_ch) <- all_vars[classes != "numeric"]
-  result$data_summary <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
+  data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes_numeric == FALSE]])), 2, data_summary_char))
+  names(data_summary_ch) <- all_vars[classes_numeric == FALSE]
+  if(nrow(data_summary_ch) > 0) {
+    result$data_summary <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes_numeric == TRUE), which(classes_numeric == FALSE)))]
+  } else {
+    result$data_summary <- data_summary_num
+  }
 
   # identification of numeric covariates
   result$numeric_covs <- fitted$numeric_covs[!(names(fitted$numeric_covs) == wcols$strata)]
