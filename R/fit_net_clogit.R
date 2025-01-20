@@ -54,6 +54,7 @@ fit_net_clogit <- function(f, data,
                            standardize = c("internal", FALSE)[1],
                            predictor_table = NULL,
                            function_lasso_decay = c(log, function(x) x/1000)[[1]],
+                           value_lasso_decay = 1,
                            factor_hypothesis = 1,
                            factor_grouped_lasso = 1,
                            na.action = "na.pass",
@@ -178,7 +179,7 @@ fit_net_clogit <- function(f, data,
       # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
 
       # set penalty factor
-      penalty.factor <- ifelse(mm_is_zoi, function_lasso_decay(mm_zoi_radius), 1)
+      penalty.factor <- ifelse(mm_is_zoi, function_lasso_decay(mm_zoi_radius), value_lasso_decay)
       names(penalty.factor) <- colnames(M)
 
     } else {
