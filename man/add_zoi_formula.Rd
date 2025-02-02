@@ -18,19 +18,20 @@ add_zoi_formula(
 \arguments{
 \item{f}{\verb{[formula]} \cr A formula to be fitted in a statistical model. Here we do not need
 the actual name of each term, but all ZOI variables whose radius/scale shall be fitted might
-be added with a pattern, e.g. "road_traffic_zoiXXXX".}
+be added with a pattern, e.g. \code{"road_traffic_zoiXXXX"}. The pattern (e.g \code{"XXXX"}) needs to be
+set using the argument \code{pattern}.}
 
 \item{zoi_radius}{\verb{[numeric,vector]} \cr A vector of radii/scales for the zone of influence,
-to be added to the formula (e.g. "exp" or "linear"). It should match the name of the columns
-in the data set for be used for model fitting.}
+to be added to the formula (e.g. \code{c(100, 200, 300)}).}
 
 \item{type}{\verb{[character=""]} \cr Shape(s) of the ZOI (or vector of shapes if more than one),
-to be added to the terms name.}
+to be added to the terms name (e.g. \code{"exp"}, \code{"linear"}).}
 
 \item{pattern}{\verb{[character]} \cr Pattern to be replaced in the formula, corresponding to the ZOI
 radii or ZOI shapes and radii (e.g. \code{"XXX"}).}
 
-\item{cumulative}{\verb{[character=""]\{"cumulative", "nearest"\}} \cr Default is \code{""}. String to be added to the ZOI terms
+\item{cumulative}{\verb{[character=""]\{"cumulative", "nearest"\}} \cr Default is \code{""}.
+String to be added to the ZOI terms
 corresponding on whether the variable represents the ZOI of the nearest feature (\code{cumulative = "nearest"})
 or the cumulative ZOI (\code{cumulative = "cumulative"}). If \code{""} (default), the type of ZOI is taken from the
 variable name, already given in the formula.}
@@ -38,9 +39,14 @@ variable name, already given in the formula.}
 \item{separator}{\verb{[character(1)="_"]} \cr Separator to be used between type and zoi_radius, when \code{type}
 is provided. Default is \code{"_"}.}
 
+\item{remove_term}{\verb{[character=""]} \cr Vector of characters with the names of the variables not to be
+added to the formula. This should be used when some specific combinations of variables, shapes,
+and radii are in principle created by the function but shouldbe ignored in the final
+formula.}
+
 \item{predictor_table}{\verb{[logical(1)=FALSE]} \cr logical. Whether or not a table should be returned
 with info of all ZOI radii, shape values, and formula terms, together with info from other non-ZOI predictors.
-This table is of special interest when fitting "Decay Adaptive Lasso" models with
+This table is of special interest when fitting "Decay Adaptive Lasso" or other related models with
 \code{fit_net_logit()} or \code{fit_net_clogit()} with argument \code{method = "DecayAdaptiveLasso"}.}
 }
 \value{
@@ -48,11 +54,22 @@ A list with both the final \code{formula} with all ZOI radii and shapes and
 a table with the predictor information (if \code{predictor_table = TRUE}).
 }
 \description{
-Adds multiple radii for a zone of influence variable to a formula, to be fitted in
-a statistical model. It returns the complete formula with all variables and ZOI radii.
+Given the structure of a formula to be fitted using a data set, the function adds multiple radii
+for variables for which the zone of influence (ZOI) or scale of effect (SOE) is to be assessed
+through a statistical model. The terms representing the ZOI/SOE variables should be identified
+with a pattern (see argument \code{pattern}).
+It returns the complete formula with all variables and radii for the ZOI/SOE terms.
 If \code{predictor_table = TRUE}, it also returns a table with information
 about each predictor (e.g. whether or not it is a ZOI variable, which radius and shape, to
-what type of infrastructure it corresponds), to be used in the modeling.
+what type of infrastructure it corresponds), to be used by some of the algorithms
+in the penalized regression modeling.
+}
+\details{
+The function searches for patterns in ZOI variables as stated in the \code{formula}
+and replaces them by combinations of strings representing the type of ZOI
+(nearest, cumulative), the shape (e.g. "exp", "linear"), and the multiple ZOI radii
+to be assessed. The final name of the variables should match the names of the
+columns in the data set.
 }
 \examples{
 # multiple radii
