@@ -74,10 +74,13 @@ fit_net_logit <- function(f, data,
                 factor_hypothesis = factor_hypothesis,
                 factor_grouped_lasso = factor_grouped_lasso)
 
+  #---
   # parameter checks
+  # standardize
   sd_options <- c("internal", "external", FALSE)
   if(!(standardize %in% sd_options))
     stop(paste0("Invalid parameter 'standardize'. It should be one of ", paste(sd_options, collapse = ","), "."))
+  # method
   method_options <- c("Lasso", "Ridge", "AdaptiveLasso",
                       "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
@@ -86,6 +89,15 @@ fit_net_logit <- function(f, data,
                       "ElasticNet")
   if(!(grepl(paste(method_options, collapse = "|"), method[1], ignore.case = TRUE)))
     stop(paste0("Invalid parameter 'method'. It should be one of ", paste(method_options, collapse = ","), "."))
+  # metric
+  metric_options <- c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")
+  if(is.character(metric)) {
+    if(!(metric %in% metric_options)) {
+      stop(paste0("Invalid parameter 'metric'. It should be one of ", paste(metric_options, collapse = ","), " or a function."))
+    } else {
+      metric <- get(metric)
+    }
+  }
 
   # get variables
   wcols <- extract_response_strata(f, covars = TRUE)
