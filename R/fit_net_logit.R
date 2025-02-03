@@ -13,10 +13,11 @@
 #' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
 #' each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"` or different
 #' flavors of `"AdaptiveLasso"` (see details below).
-#' @param metric `[function]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
+#' @param metric `[function,character]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
 #' representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
 #' conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
-#' it must be maximized to find the best fit model.
+#' it must be maximized to find the best fit model. It can also be a character, in case it should be one
+#' of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
 #' @param standardize `[logical(1)=TRUE]` \cr Logical flag for predictor variable standardization,
 #' prior to fitting the model sequence. The coefficients are always returned on the original scale.
 #' Default is standardize=TRUE. If variables are in the same units already, you might not wish to

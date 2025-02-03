@@ -15,14 +15,15 @@ create_resamples(
   sp_strat = NULL,
   colH0 = NULL,
   H0setup = c("LAO", "LOO")[1],
-  list = TRUE,
   replace = TRUE
 )
 }
 \arguments{
-\item{y}{\verb{[vector]} \cr A vector of outcomes.}
+\item{y}{\verb{[vector]} \cr A vector of outcomes. It can be the response variable for
+the data set of interest, or only the \code{case = 1} cases for conditional logistic (
+step-selection) analyses.}
 
-\item{times}{\verb{[numeric(1)=10]} \cr The number of partitions or samples to create.}
+\item{times}{\verb{[numeric(1)=10]} \cr The number of partitions or samples to be sampled.}
 
 \item{p}{\verb{[numeric(3)=c(0.4,0.2,0.2)]} \cr A 3 element numeric vector with the percentage of data that goes to
 fitting/training (H1), testing (H2), and validation (H0). Values should be between 0 and 1 and should
@@ -31,51 +32,60 @@ not sum more than 1.}
 \item{max_size_blockH0_validation}{\verb{[numeric(1)=1000]} \cr Maximum size of the blocks H0 (e.g. population,
 area, year) for validation block H0. Used to limit the number of observations in the validation set, to
 avoid sampling too many observations of the block H0 levels with more observations,
-for imbalanced data sets.}
+for imbalanced data sets. To find out about meaningful values for this parameter,
+use \code{\link[=explore_blocks_pre]{explore_blocks_pre()}} and \code{\link[=explore_blocks]{explore_blocks()}}.}
 
 \item{max_size_blockH0_train}{\verb{[numeric(1)=1000]} \cr Maximum size of the blocks H0 (e.g. population,
 area, year) for training/fitting the model. Used to limit the number of observations in the train set,
 to avoid sampling too many observations of the block H0 levels with more observations,
-for imbalanced data sets.}
+for imbalanced data sets. To find out about meaningful values for this parameter,
+use \code{\link[=explore_blocks]{explore_blocks()}}.}
 
 \item{max_size_blockH0_test}{\verb{[numeric(1)=1000]} \cr Not implemented yet.}
 
 \item{max_number_blocksH1_train}{\verb{[numeric(1)=15]} \cr Maximum number of levels or blocks H1 to be used
-for model fitting/training.}
+for model fitting/training. This is only meaningful if there is spatial stratification
+(i.e. if \code{sp_strat} in not \code{NULL}). To find out about meaningful values for this parameter,
+use \code{\link[=explore_blocks]{explore_blocks()}}.}
 
 \item{sp_strat}{\verb{[data.frame]} \cr Default is \code{NULL}. If not \code{NULL}, the \code{data.frame} resulting
-from spat_strat() should be used here.}
+from \code{\link[=spat_strat]{spat_strat()}} should be provided here.}
 
 \item{colH0}{\verb{[numeric,character,vector]} \cr Column number or name to define the IDs of the H0 level -
 the one with ecological meaning, e.g. individual, population, or study area, used for validating the
 predictions of the fitted model. If \code{sp_strat} is provided,
 \code{colH0} is a string with the column name (or the column number) in the \code{sp_strat} table.
 If \code{sp_strat = NULL}, \code{colH0} is a vector of H0 values with the same length as \code{y}.
-If \code{colH0 = NULL} (Default), no H0 level is defined.}
+If \code{colH0 = NULL} (Default), no H0 level is defined and there is no block cross-validation
+in the bootstraped sets.}
 
-\item{H0setup}{Setup for the H0 (validate) block. Either "LAO" (Leave-a-small-bit-of-All-Out) or "LOO"
-(Leave-One-Out). For instance, if H0 corresponds to the animal populations, "LAO" will keep some observations
-of each and all populations in the H0 (validation) set.}
-
-\item{list}{logical - should the results be in lists (TRUE) or matrices with the number of rows equal to
-floor(p * length(y)) and times columns.}
+\item{H0setup}{Not implemented yet.}
 
 \item{replace}{\verb{[logical(1)=TRUE]} \cr Whether to perform the bootstrap sampling with or without
 replacement (Default is \code{TRUE}).}
 }
+\value{
+A list with lists for the sets for train, test, and validation, each of which
+with the indices corresponding to the observations to be kept in each resample.
+If \code{colkH0} is not \code{NULL}, a vector with the blockH0 which each observation pertains
+to is also appended to the output.
+If \code{spat_strat} is provided, a list of blocks H0 and possibly a list of strata
+might also be provided.
+}
 \description{
-The function creates samples of the data to be included for three different
-model blocks: train (fitting), test (calibrate), and validate.
+The function creates (sub)samples of the data to be included for three different
+model blocks: train (fitting), test (calibrate, tunning), and validate.
 By default, samples are created through bootstrapping, i.e. with replacement. This means
 data observations can be repeated within a given sample block, but observations included
 in one block are necessarily excluded from the other blocks (e.g. observations selected
 for validation will be absent from train and test blocks).
-}
-\details{
+'
 Samples can be created at random (if \code{spat_strat = NULL}, default) or with spatial
 stratification (spatial strata can be created with the function \code{\link[=spat_strat]{spat_strat()}}.
+In the latter case, train and test sets are spatially split, to allow for a more
+thorough cross-validation to define the penalty parameter in the penalized regressions.
 Also, samples might include a specific variable (with classes or groups) H0 to be used for
-validation (if \code{colH0} is provided), but this is not a requirement.
+(block cross-)validation (if \code{colH0} is provided), but this is not a requirement.
 }
 \examples{
 # random sampling, no validation block H0
@@ -92,8 +102,7 @@ library(amt)
 samples <- create_resamples(1:nrow(reindeer), times = 5,
                             p = c(0.2, 0.2, 0.2),
                             max_size_blockH0_validation = 1000,
-                            colH0 = reindeer$original_animal_id,
-                            list = FALSE)
+                            colH0 = reindeer$original_animal_id)
 samples
 
 # spatially stratified sampling, with validation block H0
