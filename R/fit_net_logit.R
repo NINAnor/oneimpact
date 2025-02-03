@@ -51,11 +51,28 @@ fit_net_logit <- function(f, data,
                           standardize = c("internal", FALSE)[1],
                           predictor_table = NULL,
                           function_lasso_decay = c(log, function(x) x/1000)[[1]],
+                          value_lasso_decay = 1,
                           factor_hypothesis = 1,
                           factor_grouped_lasso = 1,
                           na.action = "na.pass",
                           out_dir_file = NULL,
                           ...) {
+
+  # record initial parameters
+  parms <- list(f = f,
+                samples = samples,
+                i = i,
+                metric = metric,
+                method = method,
+                alpha = alpha,
+                penalty.factor = penalty.factor,
+                gamma = gamma,
+                standardize = standardize,
+                predictor_table = predictor_table,
+                function_lasso_decay = function_lasso_decay,
+                value_lasso_decay = value_lasso_decay,
+                factor_hypothesis = factor_hypothesis,
+                factor_grouped_lasso = factor_grouped_lasso)
 
   # parameter checks
   sd_options <- c("internal", "external", FALSE)
@@ -430,6 +447,10 @@ fit_net_logit <- function(f, data,
   results$habitat_validation_score <- NULL
   #plot(results$validation_score, results$habitat_validation_score)
 
+  # register parameters and all resuts
+  results$parms <- parms
+  results$glmnet_fit <- fit
+
   # whether to save the results externally
   if (!is.null(out_dir_file)){
     names_out <- oneimpact:::pretty_seq(1:999)[i]
@@ -463,8 +484,8 @@ fit_net_rsf <- fit_net_logit
 bag_fit_net_logit <- function(f, data,
                               samples,
                               metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-                              standardize = c("internal", "external", FALSE)[1],
                               method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+                              standardize = c("internal", "external", FALSE)[1],
                               alpha = NULL,
                               penalty.factor = NULL,
                               predictor_table = NULL,
@@ -514,6 +535,8 @@ bag_fit_net_logit <- function(f, data,
   results$formula <- f
   results$method <- method
   results$metric <- metric
+  results$samples <- samples
+  results$standardize <- standardize
   # standarized means and sd
   if(standardize == "external") {
     results$covariate_mean_sd <- covs_mean_sd

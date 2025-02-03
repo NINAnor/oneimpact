@@ -50,7 +50,12 @@ bag_models <- function(fitted, data,
   # weight threshold
   result$weight_threshold <- score_threshold
   # metric
-  result$metric <- fitted$metric
+  result$metric <- fittedl$metric
+  # samples
+  result$samples <- fittedl$samples
+  # options
+  result$standardize <- fittedl$standardize
+  # we could take the models to explore them here as well...
 
   # errors
   result$errors <- err <- sapply(lres, function(x) class(x) == "try-error")

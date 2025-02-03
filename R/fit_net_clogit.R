@@ -61,6 +61,23 @@ fit_net_clogit <- function(f, data,
                            out_dir_file = NULL,
                            ...) {
 
+  # record initial parameters
+  parms <- list(f = f,
+                samples = samples,
+                i = i,
+                kernel_vars = kernel_vars,
+                metric = metric,
+                method = method,
+                alpha = alpha,
+                penalty.factor = penalty.factor,
+                gamma = gamma,
+                standardize = standardize,
+                predictor_table = predictor_table,
+                function_lasso_decay = function_lasso_decay,
+                value_lasso_decay = value_lasso_decay,
+                factor_hypothesis = factor_hypothesis,
+                factor_grouped_lasso = factor_grouped_lasso)
+
   # parameter checks
   sd_options <- c("internal", "external", FALSE)
   if(!(standardize %in% sd_options))
@@ -188,11 +205,11 @@ fit_net_clogit <- function(f, data,
 
       # fit
       ridge_fit <- net_clogit(f, train_data,
-                             alpha = 0,
-                             type.measure = "deviance",
-                             standardize = std,
-                             na.action = na.action,
-                             ...)
+                              alpha = 0,
+                              type.measure = "deviance",
+                              standardize = std,
+                              na.action = na.action,
+                              ...)
       # get variables
       f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
       # calibration
@@ -390,7 +407,6 @@ fit_net_clogit <- function(f, data,
                       ...)
   }
 
-
   # get variables
   f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
 
@@ -493,6 +509,10 @@ fit_net_clogit <- function(f, data,
 
   }
 
+  # register parameters and all resuts
+  results$parms <- parms
+  results$glmnet_fit <- fit
+
   # whether to save the results externally
   if (!is.null(out_dir_file)){
     # change if there are more than 999 samples
@@ -536,8 +556,8 @@ bag_fit_net_clogit <- function(f, data,
                                subset_samples = 1:length(samples$train),
                                kernel_vars = c("step_length", "ta"),
                                metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-                               standardize = c("internal", "external", FALSE)[1],
                                method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+                               standardize = c("internal", "external", FALSE)[1],
                                alpha = NULL,
                                penalty.factor = NULL,
                                predictor_table = NULL,
@@ -587,7 +607,8 @@ bag_fit_net_clogit <- function(f, data,
   results$formula <- f
   results$method <- method
   results$metric <- metric
-
+  results$samples <- samples
+  results$standardize <- standardize
   # standarized means and sd
   if(standardize == "external") {
     results$covariate_mean_sd <- covs_mean_sd
