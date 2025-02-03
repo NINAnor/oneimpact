@@ -2,7 +2,7 @@
 % Please edit documentation in R/explore_blocks.R
 \name{explore_blocks}
 \alias{explore_blocks}
-\title{Explore hierarchical blocks after spatial stratification}
+\title{Explore hierarchical blocks after sampling or spatial stratification}
 \usage{
 explore_blocks(blocks)
 }
@@ -20,6 +20,12 @@ used for validation;
 the hierarchical level H0, to be used for validation;
 \item blockH1_n: the number of different blocks (spatial strata) in the hierarchical
 level H1, to be used for model fitting.
+\item blockH1_size_blocks: the number of (used) observations in each block of
+the hierarchical level H1, to be used for model fitting;
+\item blockH2_n: the number of different blocks (spatial strata) in the hierarchical
+level H2, to be used for model tuning.
+\item blockH2_size_blocks: the number of (used) observations in each block of
+the hierarchical level H2, to be used for model tuning.
 }
 }
 \description{
@@ -27,8 +33,10 @@ Function to explore the number of cases and observations for the
 sampling units used as the base H0 hierarchical level used for model validation,
 such as population ID, study area, animal ID, or year, after spatial stratification.
 It also allows exploring the the spatially stratified levels H1 and H0, to be used
-model fitting and tuning (train and test), respectively.The function can help understand
-how imbalanced are data across H0 levels used for validation.
+for model fitting and tuning (train and test), respectively.
+The function can help understand how imbalanced are data across H0, H1, and H2
+levels used for validation, training/fitting, and tuning/testing, as well as how many
+blocks exist there are for each type and their sizes.
 }
 \examples{
 # read data

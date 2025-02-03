@@ -20,13 +20,13 @@ spat_strat(
 )
 }
 \arguments{
-\item{x}{Vector of points to be spatially stratified, in \link{sf}, \link[sp:SpatialPoints]{sp::SpatialPoints}, or \link[terra:SpatVector-class]{terra::SpatVector}.
-If a \code{data.frame}, the columns corresponding to the (x,y) coordinates must be given in
+\item{x}{\verb{[data.frame,sf,SpatVector]} \cr Vector of points to be spatially stratified, as a
+\link{sf} or a \link[terra:SpatVector-class]{terra::SpatVector} object. If a \code{data.frame}, the columns corresponding to the (x,y) coordinates must be given in
 \code{coords}.}
 
 \item{colH0}{\verb{[numeric,character=NULL]} \cr Column number or name to define the ids of the H0 level
 \itemize{
-\item the one with ecological meaning, e.g. individual, population, or study area, used for validating
+\item the one with ecological meaning, e.g. individuals, populations, or study areas, used for block cross-validating
 the predictions of the fitted models. Default is \code{NULL}, in which case there is no block H0 defined.
 }}
 
@@ -34,49 +34,84 @@ the predictions of the fitted models. Default is \code{NULL}, in which case ther
 as the block H0, in case no block H0 is provided (if \code{colH0 = NULL}). This parameter is ignored
 if \code{colH0} is provided.}
 
-\item{k}{Number of parts for k-fold cross validation within H1 hierarchical level - to set the penalty parameter}
+\item{k}{\verb{[numeric(1)=4]} \cr Number of H2 blocks within each block H1. Should be 4, 9, 16, or some
+number \code{k = x**2}, where x is an integer > 1. Default is \code{k = 4}.
+TO BE IMPLEMENTED: Number of parts for k-fold cross validation within H1 hierarchical level, for
+tuning (setting the penalty parameter). Could be used for nested cross-validation.}
 
-\item{block_size}{size (side of a square) of the blocks for H2 level. H1 level blocks size are defined as sqrt(k)*block_size.}
+\item{block_size}{\verb{[numeric(1)=10000]} \cr Size (side of a square) of the blocks for H2 level,
+map units (generally meters). The size of the H1 level blocks is defined as \code{sqrt(k)*block_size}.
+Default is \code{block_size = 10000}}
 
-\item{buffer}{\code{max_step_length} buffer around the points, to make sure all points are included}
+\item{buffer}{\verb{[numeric(1)=1000]} \cr Buffer added around the points before creating the blocks,
+to make sure all points are included in the samples. Default is \code{buffer = 1000}.}
 
-\item{coords}{vector with the names of the columns with the (x,y) coordinates of animal locations or step start/end points}
+\item{coords}{\link{string,vector} \cr Vector with the names of the columns with the (x,y)
+coordinates of the locations from the data set. Default is \code{NULL}, in which case \code{x}
+should be a \code{sf} or a \code{terra::SpatVector} object. If \code{x} is a \code{data.frame}, \code{coords}
+must be provided.}
 
-\item{all_cols}{logical. If TRUE, and if \code{x} is a \code{data.frame}, the spatial strata blocks are appended as columns in the
-input data \code{x}.}
+\item{all_cols}{\verb{[logical=FALSE]} \cr If \code{TRUE}, and if \code{x} is a \code{data.frame},
+the spatial strata blocks are appended as columns in the input data \code{x}.}
 
-\item{crs}{CRS of the points, if \code{x} is a data.frame}
+\item{crs}{\verb{[string=""]} \cr Coordinate reference system (CRS) of the observations,
+if \code{x} is a \code{data.frame}.}
 
-\item{plot_grid}{Should we plot the grid and points?}
+\item{plot_grid}{\verb{[logical=TRUE]} \cr if \code{TRUE} (default), the grid with spatial blocks and
+observations is plotted.}
 
-\item{save_grid}{Should the grid which defines the H1 and H2 blocks be saved?}
+\item{save_grid}{\verb{[character=NA]\{NA, "raster", "vector"\}} \cr Should the grid which defines
+the H1 and H2 blocks be saved? NOT IMPLEMENTED.}
 
-\item{col_id}{\verb{[numeric,character=NULL]} Column number of name with the ID of the rows of the
+\item{col_id}{\verb{[numeric,character=NULL]} Column number or name with the ID of the rows of the
 data observations. In step-selection analysis, this should be the column showing the
 number of the strata of each step. For resource selection analysis and environmental niche modeling,
 this might be the row id, for instance.}
 }
 \value{
-A \code{data.frame} with the number of the blocks at hierarchical levels H0, H1, and H2.
-If \code{x} is a \code{data.frame} and
+A \code{data.frame} with the blocks at hierarchical levels H0, H1, and H2 corresponding to
+each of the observations in the input data set \code{x}.
 }
 \description{
-Hierarchical levels H0, H1, and H2.
+This function sets up the variables used spatial stratification sampling to
+be used in the bootstrapped modeling approach in \link{oneimpact}.
+The function defines the hierarchical levels H0,
+used for block cross-validation, as well as the levels H1 and H2, used for setting the
+spatial structure of the sampling for model fitting and tuning.
+Levels H1 and and H2 are organized in hierarchical spatial blocks. Blocks H1 correspond
+to larger square blocks, each of which is subdivided into four, smaller H2 blocks
+(with side equal \code{block_size}). H2 blocks are separated
+spatially so that 3 of them are used for model fitting the the fourth is used for
+model tuning.
+The level H0 comes from the data set and should represent some other level for
+block cross validation, such as population ID, animal ID, year or study area.
+The block H0 is used for drawing validation sets, to allow a thorough evaluation
+of the fitted models in all blocks H0.
+}
+\details{
+The function returns a \code{data.frame} with the blocks for the hierarchical
+levels H0, H1, and H2 for each observation in the input data set,
+to be used to create samples for the bootstrapped modeling
+approach using the \code{\link[=create_samples]{create_samples()}} function, in case spatial
+stratified samples are desired.
 }
 \note{
-Implement for input = data.frame
+To be implemented for input = data.frame
 #terra::vect(data\link{data$case==1,}, geom = c("x", "y"))
-Implement method for track object - already have crs
+To be implemented for track objects - already have crs
 Put H0 here as well.
 }
 \examples{
 data(reindeer)
 library(terra)
 library(amt)
+
+# no block H0, spatial blocks
 spat_strat(reindeer, block_size = 5000, coords = c("x", "y"))
 
+# with block H0
 spst <- spat_strat(reindeer, coords = c("x", "y"), colH0 = "original_animal_id",
-                   all_cols = F)
+                   all_cols = TRUE)
 # Visualize level H0 - individuals
 spst_vect <- terra::vect(spst, geom = c("x", "y"))
 terra::plot(spst_vect, "blockH0")

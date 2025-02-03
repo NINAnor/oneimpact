@@ -1,14 +1,15 @@
-#' Explore hierarchical blocks before spatial stratification
+#' Explore potential hierarchical blocks before sampling or spatial stratification
 #'
 #' Function to explore the number of cases and observations for the different
 #' sampling units possibly used as the base H0 hierarchical level, such as population ID,
-#' study area, animal ID, or year, before spatial stratification or creating samples.
-#' The function can help understand how imbalanced are data across H0 levels used f
-#' or validation.
+#' study area, animal ID, or year, before spatial stratification or creating samples
+#' for the bootstrapped approach.
+#' The function can help understand how imbalanced is the data across H0 levels used
+#' for validation.
 #'
 #' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
 #' @param colH0 `[character]` \cr Name of the column in `data` to be used as the H0
-#' hierarchival level, intended for model validation.
+#' hierarchical level, intended for model validation.
 #' @param animal_id `[character]` \cr Name of the column in `data` representing
 #' animal ID. If `NULL` (default), summaries are not created for individuals.
 #' @param col_case `[string(1)="case"]` \cr Name of the column in `data` representing
@@ -38,14 +39,16 @@ explore_blocks_pre <- function(data,
                      .by = all_of(groups))
 }
 
-#' Explore hierarchical blocks after spatial stratification
+#' Explore hierarchical blocks after sampling or spatial stratification
 #'
 #' Function to explore the number of cases and observations for the
 #' sampling units used as the base H0 hierarchical level used for model validation,
 #' such as population ID, study area, animal ID, or year, after spatial stratification.
 #' It also allows exploring the the spatially stratified levels H1 and H0, to be used
-#' model fitting and tuning (train and test), respectively.The function can help understand
-#' how imbalanced are data across H0 levels used for validation.
+#' for model fitting and tuning (train and test), respectively.
+#' The function can help understand how imbalanced are data across H0, H1, and H2
+#' levels used for validation, training/fitting, and tuning/testing, as well as how many
+#' blocks exist there are for each type and their sizes.
 #'
 #' @param blocks `[data.frame]` \cr A `data.frame` returned by the function
 #' [oneimpact::spat_strat()], which a list of blocks H0 used for validation and
@@ -58,6 +61,12 @@ explore_blocks_pre <- function(data,
 #' the hierarchical level H0, to be used for validation;
 #' - blockH1_n: the number of different blocks (spatial strata) in the hierarchical
 #' level H1, to be used for model fitting.
+#' - blockH1_size_blocks: the number of (used) observations in each block of
+#' the hierarchical level H1, to be used for model fitting;
+#' - blockH2_n: the number of different blocks (spatial strata) in the hierarchical
+#' level H2, to be used for model tuning.
+#' - blockH2_size_blocks: the number of (used) observations in each block of
+#' the hierarchical level H2, to be used for model tuning.
 #'
 #' @example examples/explore_blocks_example.R
 #'

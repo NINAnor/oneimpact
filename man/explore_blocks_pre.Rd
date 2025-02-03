@@ -2,7 +2,7 @@
 % Please edit documentation in R/explore_blocks.R
 \name{explore_blocks_pre}
 \alias{explore_blocks_pre}
-\title{Explore hierarchical blocks before spatial stratification}
+\title{Explore potential hierarchical blocks before sampling or spatial stratification}
 \usage{
 explore_blocks_pre(data, colH0, animal_id = NULL, col_case = "case")
 }
@@ -10,7 +10,7 @@ explore_blocks_pre(data, colH0, animal_id = NULL, col_case = "case")
 \item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.}
 
 \item{colH0}{\verb{[character]} \cr Name of the column in \code{data} to be used as the H0
-hierarchival level, intended for model validation.}
+hierarchical level, intended for model validation.}
 
 \item{animal_id}{\verb{[character]} \cr Name of the column in \code{data} representing
 animal ID. If \code{NULL} (default), summaries are not created for individuals.}
@@ -21,9 +21,10 @@ the case or used/available points. Default is \code{"case"}.}
 \description{
 Function to explore the number of cases and observations for the different
 sampling units possibly used as the base H0 hierarchical level, such as population ID,
-study area, animal ID, or year, before spatial stratification or creating samples.
-The function can help understand how imbalanced are data across H0 levels used f
-or validation.
+study area, animal ID, or year, before spatial stratification or creating samples
+for the bootstrapped approach.
+The function can help understand how imbalanced is the data across H0 levels used
+for validation.
 }
 \examples{
 # read data

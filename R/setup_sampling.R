@@ -25,7 +25,6 @@
 #' set_validation_sampling(spst, seed = 1234, sampling_params)
 #' # comment
 #'
-#' @export
 set_validation_sampling <- function(spStrat, seed = 1234, sampling_params){
 
   # Create set column
