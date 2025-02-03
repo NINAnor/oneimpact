@@ -94,10 +94,11 @@ the function \code{\link[=create_resamples]{create_resamples()}}.}
 \item{kernel_vars}{\verb{[vector,character=c("step_length", "ta")]} \cr Vector of strings with the names of the variables related
 to the movement kernel, included in the model (for instance, \code{"step_length"} and \code{"turning_angle"})}
 
-\item{metric}{\verb{[function]\{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC\}} \cr Function
-representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
+\item{metric}{\verb{[function,character]\{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC\}} \cr Function
+representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
 conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
-it must be maximized to find the best fit model.}
+it must be maximized to find the best fit model. It can also be a character, in case it should be one
+of the following: \code{c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")}.}
 
 \item{method}{\verb{[character="Lasso"]} \cr The penalized regression method used for fitting
 each model. Default is \code{method = "Lasso"}, but it could be \code{method = "Ridge"} or different

@@ -13,10 +13,11 @@
 #' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
 #' each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"` or different
 #' flavors of `"AdaptiveLasso"` (see details below).
-#' @param metric `[function]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
-#' representing the metric to evaluate goodness-of-fit. One of conditionalBoyce (Default),
+#' @param metric `[function,character]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
+#' representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
 #' conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
-#' it must be maximized to find the best fit model.
+#' it must be maximized to find the best fit model. It can also be a character, in case it should be one
+#' of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
 #' @param kernel_vars `[vector,character=c("step_length", "ta")]` \cr Vector of strings with the names of the variables related
 #' to the movement kernel, included in the model (for instance, `"step_length"` and `"turning_angle"`)
 #' @param standardize `[logical(1)=TRUE]` \cr Logical flag for predictor variable standardization,

@@ -50,11 +50,11 @@ bag_models <- function(fitted, data,
   # weight threshold
   result$weight_threshold <- score_threshold
   # metric
-  result$metric <- fittedl$metric
+  result$metric <- fitted$metric
   # samples
-  result$samples <- fittedl$samples
+  result$samples <- fitted$samples
   # options
-  result$standardize <- fittedl$standardize
+  result$standardize <- fitted$standardize
   # we could take the models to explore them here as well...
 
   # errors
