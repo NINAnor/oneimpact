@@ -12,8 +12,7 @@ bag_predict <- function(x,
                         wq_probs = NULL,
                         include = "all") {
 
-  # model matrix
-  mm <- model.matrix(x$formula_no_strata, newdata)
+  # response
   case <- oneimpact::extract_response_strata(x$formula)$response
   # trick, check LATER ###########
   # attr(mm, "assign") |> duplicated()
@@ -41,6 +40,9 @@ bag_predict <- function(x,
 
     nd <- newdata[, c(case, grep(include_terms, colnames(newdata), value = TRUE))]
     mm <- model.matrix(form_include, nd)
+  } else {
+    # model matrix
+    mm <- model.matrix(x$formula_no_strata, newdata)
   }
 
   # prediction
