@@ -12,7 +12,8 @@ fit_net_clogit(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(AUC, conditionalBoyce, conditionalSomersD)[[1]],
+  metric = c("coxnet.deviance", "Cindex", "conditionalAUC", "conditionalSomersD")[1],
+  metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
@@ -20,7 +21,7 @@ fit_net_clogit(
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
-  standardize = c("internal", FALSE)[1],
+  standardize = c("internal", "external", FALSE)[1],
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
@@ -28,6 +29,7 @@ fit_net_clogit(
   factor_grouped_lasso = 1,
   na.action = "na.pass",
   out_dir_file = NULL,
+  verbose = FALSE,
   ...
 )
 
@@ -37,7 +39,8 @@ fit_net_ssf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(AUC, conditionalBoyce, conditionalSomersD)[[1]],
+  metric = c("coxnet.deviance", "Cindex", "conditionalAUC", "conditionalSomersD")[1],
+  metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
@@ -45,7 +48,7 @@ fit_net_ssf(
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
-  standardize = c("internal", FALSE)[1],
+  standardize = c("internal", "external", FALSE)[1],
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
@@ -53,6 +56,7 @@ fit_net_ssf(
   factor_grouped_lasso = 1,
   na.action = "na.pass",
   out_dir_file = NULL,
+  verbose = FALSE,
   ...
 )
 
@@ -62,7 +66,8 @@ fit_net_issf(
   samples,
   i = 1,
   kernel_vars = c("step_length", "ta"),
-  metric = c(AUC, conditionalBoyce, conditionalSomersD)[[1]],
+  metric = c("coxnet.deviance", "Cindex", "conditionalAUC", "conditionalSomersD")[1],
+  metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
@@ -70,7 +75,7 @@ fit_net_issf(
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
-  standardize = c("internal", FALSE)[1],
+  standardize = c("internal", "external", FALSE)[1],
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
@@ -78,6 +83,7 @@ fit_net_issf(
   factor_grouped_lasso = 1,
   na.action = "na.pass",
   out_dir_file = NULL,
+  verbose = FALSE,
   ...
 )
 }
