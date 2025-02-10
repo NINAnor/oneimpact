@@ -5,9 +5,11 @@
 #'
 #' @details The function [oneimpact::conditionalAUC()] is the implementation of the computation of the Area Under the Curve as related
 #' to the Sommers'D index, as described in https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf.
-#' It is implemented by accounting for strata, ideal for conditional logistic regression.
+#' It is implemented by accounting for strata, ideal for conditional logistic regression, but it is under testing.
 #' The function [oneimpact::AUC()] uses the [pROC::auc()] function and does not account for strata.
-#' Functions conditionalBoyce and conditionalSomersD both account for strata.
+#' Functions conditionalBoyce and conditionalSomersD both account for strata, but are under checking.
+#' The functions coxnet.deviance and Cindex are wrappers for the same functions from glmnet, which are
+#' suitable for cox models, but here they use the same arguments as all the other concordance variables.
 #'
 #' @name concordance_indices
 #' @export
@@ -52,8 +54,8 @@ conditionalBoyce <- function(x,
 #' @rdname concordance_indices
 #' @export
 conditionalSomersD <- function(x,
-                    errors = TRUE,
-                    warnings = TRUE){
+                               errors = TRUE,
+                               warnings = TRUE){
   #x: dataframe with x: predicted value, y:use vs. available, strat: stratum
   #https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
   lx <- split(x, x$strat)
@@ -64,38 +66,11 @@ conditionalSomersD <- function(x,
   return(d)
 }
 
-# conditionalSomersD_H0 <- function(x,
-#                                   errors = TRUE,
-#                                   warnings = TRUE){
-#   #x: dataframe with x: predicted value, y:use vs. available, strat: stratum
-#   #https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
-#   lx <- split(x, x$blockH0)
-#   C  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]>x$x[x$y==0])})))
-#   D  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]<x$x[x$y==0])})))
-#   Tx  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]==x$x[x$y==0])})))
-#   d <- (C-D)/(C+D+Tx)
-#   return(d)
-# }
-
-# conditionalSomersD_H0 <- function(x,
-#                                errors = TRUE,
-#                                warnings = TRUE){
-#   #x: dataframe with x: predicted value, y:use vs. available, strat: stratum
-#   #https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
-#   lx <- split(x, paste0(x$blockH0, "_", x$strat))
-#   C  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]>x$x[x$y==0])})))
-#   D  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]<x$x[x$y==0])})))
-#   Tx  <- sum(unlist(lapply(lx, function(x){sum(x$x[x$y==1]==x$x[x$y==0])})))
-#   d <- (C-D)/(C+D+Tx)
-#   return(d)
-# }
-
-
 #' @rdname concordance_indices
 #' @export
 conditionalAUC <- function(x,
-                errors = TRUE,
-                warnings = TRUE) {
+                           errors = TRUE,
+                           warnings = TRUE) {
   d <- conditionalSomersD(x)
   auc <- (d + 1)/2
   auc
@@ -109,8 +84,30 @@ cost <- function(r, pi = 0, na.rm = TRUE) mean(abs(r-pi) > 0.5, na.rm = na.rm)
 #' @rdname concordance_indices
 #' @export
 AUC <- function(x,
-                 errors = TRUE,
-                 warnings = TRUE) {
+                errors = TRUE,
+                warnings = TRUE) {
   auc_val <- as.numeric(pROC::auc(pROC::roc(x$y, x$x, quiet = TRUE)))
   auc_val
+}
+
+# the same as glmnet::coxnet.deviance, but using the same input/parameters as the other functions
+#' @rdname concordance_indices
+#' @export
+coxnet.deviance <- function(x,
+                            errors = TRUE,
+                            warnings = TRUE) {
+  yy <- glmnet::stratifySurv(survival::Surv(rep(1, length(x$y)), x$y), x$strat)
+  dev_val <- glmnet::coxnet.deviance(pred = x$x, y = yy)
+  dev_val
+}
+
+# the same as glmnet::Cindex, but using the same input/parameters as the other functions
+#' @rdname concordance_indices
+#' @export
+Cindex <- function(x,
+                   errors = TRUE,
+                   warnings = TRUE) {
+  yy <- glmnet::stratifySurv(survival::Surv(rep(1, length(x$y)), x$y), x$strat)
+  dev_val <- glmnet::Cindex(pred = x$x, y = yy)
+  dev_val
 }

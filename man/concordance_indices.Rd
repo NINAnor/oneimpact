@@ -6,6 +6,8 @@
 \alias{conditionalSomersD}
 \alias{conditionalAUC}
 \alias{AUC}
+\alias{coxnet.deviance}
+\alias{Cindex}
 \title{Computes the conditional Boyce index for model evaluation}
 \usage{
 conditionalBoyce(
@@ -21,6 +23,10 @@ conditionalSomersD(x, errors = TRUE, warnings = TRUE)
 conditionalAUC(x, errors = TRUE, warnings = TRUE)
 
 AUC(x, errors = TRUE, warnings = TRUE)
+
+coxnet.deviance(x, errors = TRUE, warnings = TRUE)
+
+Cindex(x, errors = TRUE, warnings = TRUE)
 }
 \arguments{
 \item{x}{A data.frame with three columns: x, the predicted values; y, the case variable
@@ -32,9 +38,11 @@ These functions compute different concordance indices.
 \details{
 The function \code{\link[=conditionalAUC]{conditionalAUC()}} is the implementation of the computation of the Area Under the Curve as related
 to the Sommers'D index, as described in https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf.
-It is implemented by accounting for strata, ideal for conditional logistic regression.
+It is implemented by accounting for strata, ideal for conditional logistic regression, but it is under testing.
 The function \code{\link[=AUC]{AUC()}} uses the \code{\link[pROC:auc]{pROC::auc()}} function and does not account for strata.
-Functions conditionalBoyce and conditionalSomersD both account for strata.
+Functions conditionalBoyce and conditionalSomersD both account for strata, but are under checking.
+The functions coxnet.deviance and Cindex are wrappers for the same functions from glmnet, which are
+suitable for cox models, but here they use the same arguments as all the other concordance variables.
 }
 \references{
 https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
