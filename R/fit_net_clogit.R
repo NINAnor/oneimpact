@@ -597,6 +597,10 @@ fit_net_clogit <- function(f, data,
     val <- merge(val, data.frame(strat = samples$sp_strat_id, blockH0=samples$blockH0),
                  by = "strat", all.x = T, all.y = F)
 
+    # if the metric is coxnet.deviance, use it for the tuning parameter but compute
+    # the validation score using the Cindex
+    if(mt == "coxnet.deviance") mt_fun <- "Cindex"
+
     if(!is.null(samples$blockH0)) {
 
       # data[data$strat %in% validate_data[[wcols$strata]],]$herd |> table()
