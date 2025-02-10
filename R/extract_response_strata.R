@@ -8,8 +8,10 @@
 #' covariates/explanatory variables in the formula are also
 #' appended to the output, separated from the response and strata variables.
 #'
-#' @return A `data.frame` with the response variable (`case`), the stratum variable
-#' (`strata`), and possibly all explanatory variables, if `covars = TRUE`.
+#' @return A `list` with strings representing the response variable (`response`),
+#' the stratum variable (`strata`),
+#' and possibly all explanatory variables (`covars`), if `covars = TRUE`, as shown
+#' in the formula.
 #'
 #' @examples
 #' # formula with strata

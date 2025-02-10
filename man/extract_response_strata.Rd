@@ -14,8 +14,10 @@ covariates/explanatory variables in the formula are also
 appended to the output, separated from the response and strata variables.}
 }
 \value{
-A \code{data.frame} with the response variable (\code{case}), the stratum variable
-(\code{strata}), and possibly all explanatory variables, if \code{covars = TRUE}.
+A \code{list} with strings representing the response variable (\code{response}),
+the stratum variable (\code{strata}),
+and possibly all explanatory variables (\code{covars}), if \code{covars = TRUE}, as shown
+in the formula.
 }
 \description{
 This function separates the response variable, the strata variable,

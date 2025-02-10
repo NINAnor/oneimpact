@@ -7,9 +7,9 @@
 filter_na_strata(f, data)
 }
 \arguments{
-\item{f}{formula}
+\item{f}{\verb{[formula]} \cr Formula for model fitting.}
 
-\item{data}{dataset}
+\item{data}{\verb{[data.frame]} \cr Data set to be checked.}
 }
 \value{
 Cleaned \code{data.frame}, removing from the input \code{data} the rows with NA
@@ -35,7 +35,7 @@ if(FALSE) {
   # with no NAs; necessary if using glmnet
   coxph(Surv(rep(1, length(case)), case) ~ x + strata(step_id), filter_na_strata(f, test1))
   # This differs from that
-  coxph(Surv(rep(1, length(case)), case) ~ x + strata(step_id), )
+  coxph(Surv(rep(1, length(case)), case) ~ x + strata(step_id), test1)
 }
 }
 \references{

@@ -3,8 +3,8 @@
 #' Remove strata for which there are only 1s (used points, presence) or only 0s
 #' (available points, background or absence).
 #'
-#' @param f formula
-#' @param data dataset
+#' @param f `[formula]` \cr Formula for model fitting.
+#' @param data `[data.frame]` \cr Data set to be checked.
 #'
 #' @return Cleaned `data.frame`, removing from the input `data` the rows with NA
 #' in any of the columns and all the strata for which there are only presences or
