@@ -14,6 +14,7 @@ bag_models(
   fitted,
   data,
   score2weight = score2weight_min_invmean,
+  metric = fitted$metric,
   weights_col = c("validation_score", "habitat_validation_score")[1],
   score_threshold = 0.7,
   weights_function = NULL,

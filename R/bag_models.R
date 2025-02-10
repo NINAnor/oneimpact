@@ -13,6 +13,7 @@
 #' @export
 bag_models <- function(fitted, data,
                        score2weight = score2weight_min_invmean,
+                       metric = fitted$metric,
                        weights_col = c("validation_score", "habitat_validation_score")[1],
                        score_threshold = 0.7,
                        weights_function = NULL,
@@ -45,17 +46,14 @@ bag_models <- function(fitted, data,
   # method
   # assuming all models follow the same method, must be changed to lapply if not
   result$method <- fitted$method
-  # weights
-  result$weight_ref <- weights_col
-  # weight threshold
-  result$weight_threshold <- score_threshold
   # metric
-  result$metric <- fitted$metric
+  result$metric <- metric
+  # metric
+  result$metrics_evaluated <- sapply(lres[[1]]$metrics_evaluated, function(x) x$metric)
   # samples
   result$samples <- fitted$samples
   # options
   result$standardize <- fitted$standardize
-  # we could take the models to explore them here as well...
 
   # errors
   result$errors <- err <- sapply(lres, function(x) class(x) == "try-error")
@@ -75,16 +73,31 @@ bag_models <- function(fitted, data,
     }
   }
 
-  # should we unstandardize the coefs here!?!
+  # parameters for fitting
+  result$parms <- lres[[1]]$parms
+  # removing redundant elements
+  result$parms[c("samples", "i", "metric", "method", "standardize")] <- NULL
+  # other model outputs
+  result$var_names <- lres[!err][[1]]$var_names
 
   # synthesize results
-  coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coef } ))
-  colnames(coef) <- names(lres[!err])
-  var_names <- lres[!err][[1]]$var_names
-  fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$fit_score} ))
-  calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$calibration_score} ))
-  validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$validation_score} ))
-  habitat_validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$habitat_validation_score} ))
+  if(metric == fitted$metric) {
+
+    # coefficients
+    coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coef } ))
+    coef_std <- do.call("cbind", lapply(lres[!err], function(x) { x$coef_std } ))
+    colnames(coef) <- colnames(coef_std) <- names(lres[!err])
+
+    fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$fit_score} ))
+    calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$calibration_score} ))
+    validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$validation_score} ))
+    habitat_validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$habitat_validation_score} ))
+
+  } else {
+
+    stop("This needs to be implemented yet!")
+
+  }
 
   # weights
   weights <- unlist(lapply(lres[!err], score2weight, col = weights_col, score_threshold = score_threshold))
@@ -96,22 +109,28 @@ bag_models <- function(fitted, data,
     stop("All resamples have NaN weight. Please check the models' validation scores and possibly increase the 'score_threshold' parameter.")
   }
 
-  # One way
+  # weights column
+  result$weight_ref <- weights_col
+  # weights threshold
+  result$weight_threshold <- score_threshold
+  # weights
+  result$weights <- weights
+  # number of models above the threshold
+  result$n_above_threshold <- sum(weights > 0)
+
+  # weighted coefficients
   weights_matrix <- matrix(rep(weights, each = nrow(coef)), nrow = nrow(coef))
   wcoef <- coef * as.vector(weights_matrix) # each model
-  # Another way, it seems it is slower
-  # wcoef <- weights(t(coef) * weights)
-  # wcoef[,apply(wcoef, 2, sum) != 0, drop = FALSE]
+  wcoef_std <- coef_std * as.vector(weights_matrix) # each model
 
   result$coef <- coef
+  result$coef_std <- coef_std
   result$wcoef <- wcoef
-  result$var_names <- var_names
+  result$wcoef_std <- wcoef_std
   result$fit_score <- fit_score
   result$calibration_score <- calibration_score
   result$validation_score <- validation_score
   result$habitat_validation_score <- habitat_validation_score
-  result$weights <- weights
-  result$n_above_threshold <- sum(weights > 0)
 
   # average validation scores
   if(nrow(result$validation_score) > 1) {
@@ -143,8 +162,25 @@ bag_models <- function(fitted, data,
     colnames(result$weighted_validation_score_summary) <- "mean"
   }
 
-  # covariates summary
+  # covariates summary - based on the whole dataset; different from the ones used for each model in the bag
   all_vars <- all.vars(result$formula_no_strata)
+  all_covars <- all_vars[-1]
+  # get predictors
+  data_covs <- data[, all_covars]
+  # select numeric predictors to be standardized
+  numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
+  # numeric ones
+  data_covs_num <- data_covs[, numeric_covs]
+  # standardize
+  data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
+  # register mean and sd
+  covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
+    sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+  rownames(covs_mean_sd) <- colnames(data_covs_num)
+  colnames(covs_mean_sd) <- c("mean", "sd")
+  result$covariate_mean_sd <- covs_mean_sd
+
+  # is data numeric?
   classes_numeric <- sapply(data[,all_vars], is.numeric)
   # numeric variables
   data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes_numeric == TRUE]])), 2, data_summary))
@@ -158,7 +194,7 @@ bag_models <- function(fitted, data,
   }
 
   # identification of numeric covariates
-  result$numeric_covs <- fitted$numeric_covs[!(names(fitted$numeric_covs) == wcols$strata)]
+  result$numeric_covs <- lres[[1]]$numeric_covs
 
   # set class
   class(result) <- c("bag", "list")
@@ -168,8 +204,9 @@ bag_models <- function(fitted, data,
 }
 
 #' @export
-data_summary <- function(x){
-  y <- c(min(x), quantile(x, probs=c(0.01, 0.025, 0.25, 0.5, 0.75, 0.975, 0.99)), max(x), mean(x), sd(x))
+data_summary <- function(x, na.rm = TRUE){
+  y <- c(min(x, na.rm = na.rm), quantile(x, probs=c(0.01, 0.025, 0.25, 0.5, 0.75, 0.975, 0.99), na.rm = na.rm),
+         max(x, na.rm = na.rm), mean(x, na.rm = na.rm), sd(x, na.rm = na.rm))
   names(y)[c(1,9,10,11)] <- c("min", "max", "mean", "sd")
   return(y)
 }
