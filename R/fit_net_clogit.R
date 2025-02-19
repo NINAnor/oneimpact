@@ -104,7 +104,7 @@ fit_net_clogit <- function(f, data,
     if(!(metric %in% metric_options)) {
       stop(paste0("Invalid parameter 'metric'. It should be one of ", paste(metric_options, collapse = ","), " or a function."))
     } else {
-      metric_fun <- get(metric)
+      metric_fun <- getFromNamespace(metric, ns = "oneimpact")
     }
   } else {
     metric_fun <- metric
@@ -263,7 +263,7 @@ fit_net_clogit <- function(f, data,
 
     } else {
 
-      if(tolower(method[1]) != "lasso") {
+        if(tolower(method[1]) != "lasso") {
 
         if(verbose) print("Fitting Ridge...")
 
@@ -549,7 +549,8 @@ fit_net_clogit <- function(f, data,
     pie(abs(coef(fit, s = metrics_evaluated[[mt]]$lambda_opt)[,1]), labels = rownames(fit$beta))
 
     # coefs
-    coef <- as.matrix(coef(fit, s = fit$lambda[opt_fun(d)])) # coefficients
+    coef <- matrix(coef(fit, s = fit$lambda[opt_fun(d)])) # coefficients
+    rownames(coef) <- names(coef(fit, s = fit$lambda[opt_fun(d)]))
 
     # get predicted values based on the training, testing, and validation data
     train_pred_vals <- model.matrix(f2, train_data) %*% coef
