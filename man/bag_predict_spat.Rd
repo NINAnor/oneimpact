@@ -57,6 +57,10 @@ Typically, the same type of object as \code{input_type}, but rasters can also be
 if the input is a \code{data.frame} when \code{output_type = "rast"}, and data.frames can
 also be saved if the input is a \code{SpatRaster} when \code{output_type = "df"}.}
 
+\item{prediction_type}{\verb{[string(1)="exp"]\{"exp", "exponential", "linear"\}} Type
+of transformation for the prediction. One of \code{"exp"} or \code{"expornential"} for
+exponential response or \code{"linear"} for linear response.}
+
 \item{gid}{\verb{[string(1)="gid"]} \cr String with the name of the "gid" or point ID
 column in \code{data}. Only relevant if \code{input_type = "df"}.}
 

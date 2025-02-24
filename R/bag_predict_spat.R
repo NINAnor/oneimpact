@@ -12,6 +12,9 @@
 #' Typically, the same type of object as `input_type`, but rasters can also be saved
 #' if the input is a `data.frame` when `output_type = "rast"`, and data.frames can
 #' also be saved if the input is a `SpatRaster` when `output_type = "df"`.
+#' @param prediction_type `[string(1)="exp"]{"exp", "exponential", "linear"}` Type
+#' of transformation for the prediction. One of `"exp"` or `"expornential"` for
+#' exponential response or `"linear"` for linear response.
 #' @param gid `[string(1)="gid"]` \cr String with the name of the "gid" or point ID
 #' column in `data`. Only relevant if `input_type = "df"`.
 #' @param coords `[vector,string(2)=c("x", "y")]` \cr Vector with two elements with
