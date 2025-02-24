@@ -584,6 +584,10 @@ fit_net_clogit <- function(f, data,
     metrics_evaluated[[mt]]$coef <- coef
     metrics_evaluated[[mt]]$coef_std <- coef_std
 
+    # if the metric is coxnet.deviance, use it for the tuning parameter but compute
+    # the validation score using the Cindex
+    if(mt == "coxnet.deviance") mt_fun <- oneimpact::Cindex
+
     # save results train and test scores
     metrics_evaluated[[mt]]$train_score <- mt_fun(data.frame(x = train_pred_vals[,1],
                                                              y = train_data[[wcols$response]],
@@ -597,10 +601,6 @@ fit_net_clogit <- function(f, data,
                       strat = validate_data[[wcols$strata]])
     val <- merge(val, data.frame(strat = samples$sp_strat_id, blockH0=samples$blockH0),
                  by = "strat", all.x = T, all.y = F)
-
-    # if the metric is coxnet.deviance, use it for the tuning parameter but compute
-    # the validation score using the Cindex
-    if(mt == "coxnet.deviance") mt_fun <- "Cindex"
 
     if(!is.null(samples$blockH0)) {
 
