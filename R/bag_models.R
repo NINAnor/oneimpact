@@ -97,7 +97,7 @@ bag_models <- function(fitted, data,
 
     # coefficients
     coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coefs_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
-    coef_std <- do.call("cbind", lapply(lres[!err], function(x) { x$coefs_std_allx[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
+    coef_std <- do.call("cbind", lapply(lres[!err], function(x) { x$coefs_std_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
     colnames(coef) <- colnames(coef_std) <- names(lres[!err])
 
     fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$train_score_all[colnames(x$coefs_all) == metric, drop = FALSE] } ))

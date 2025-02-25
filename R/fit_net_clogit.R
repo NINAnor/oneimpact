@@ -1,7 +1,7 @@
-#' Fits a conditional logistic regression/SSF/iSSF using glmnet in a train-validate-test setup
+#' Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a train-validate-test setup
 #'
 #' By default, [fit_net_clogit()] does not standardize predictor variables. If you want numeric variables
-#' to be standardized, you can either use `[bag_git_net_clogit()]` with parameter `standardize = TRUE`
+#' to be standardized, you can either use `[bag_fit_net_clogit()]` with parameter `standardize = TRUE`
 #' or provide an already standardized data set as input.
 #'
 #' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
@@ -263,7 +263,7 @@ fit_net_clogit <- function(f, data,
 
     } else {
 
-        if(tolower(method[1]) != "lasso") {
+      if(tolower(method[1]) != "lasso") {
 
         if(verbose) print("Fitting Ridge...")
 
