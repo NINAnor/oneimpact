@@ -189,6 +189,16 @@ library(dplyr)
 library(tidyr)
 data(reindeer)
 
+reindeer |>
+  dplyr::filter(animal_year_id == 33580) |>
+  amt::make_track(x, y, t, crs = 25833, all_cols = TRUE) |>
+  # dplyr::rename(x_ = x, y_ = y, t_ = t) |>
+  dplyr::filter(lubridate::month(t_) == 7) |>
+  amt::track_resample(rate = hours(3), tolerance = hours(1)) |>
+  amt::filter_min_n_burst() |>
+  amt::steps_by_burst(keep_cols = "start") |>
+  amt::random_steps()
+
 # use-availability setup for ssf
 r <- reindeer |>
   amt::make_track(x, y, t, crs = 25833, all_cols = TRUE) |>
@@ -328,7 +338,7 @@ usethis::use_data(reindeer_ssf, overwrite = TRUE)
 # now we document by hand
 
 #------------------------------------
-# Annotated reindeer data for SSF
+# Annotated reindeer data for RSF
 # packages
 library(oneimpact)
 library(glmnet)
