@@ -5,28 +5,16 @@
 \title{Load a series of files output of fit_net_clogit models and put them on a bag}
 \usage{
 bag_load_models(
-  f,
   data,
-  samples,
   load_models_path = ".",
   load_models_pattern = NULL,
   names_from_file = FALSE,
   name_from_file_pattern = "Resample",
-  metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-  standardize = c("internal", "external", FALSE)[1],
-  method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
   verbose = FALSE
 )
 }
 \arguments{
-\item{f}{\verb{[formula]} \cr Formula of the models fitted, with all possible candidate terms.}
-
 \item{data}{\verb{[data.frame,tibble]} \cr Complete data set analyzed.}
-
-\item{samples}{\verb{[list]} \cr List of samples with at least three elements: train, test,
-and validate. Each elements might have several elements, each representing
-the lines of \code{data} to be sampled for each resample. Typically, this is computed by
-the function \code{\link[=create_resamples]{create_resamples()}}.}
 
 \item{load_models_path}{\verb{[string="."]} \cr Path to the folder where the files
 are saved.}
@@ -48,6 +36,13 @@ they are read from files.
 
 The parameters metric, standardize, and method should be same ones used to
 fit the bag of models.}
+
+\item{f}{\verb{[formula]} \cr Formula of the models fitted, with all possible candidate terms.}
+
+\item{samples}{\verb{[list]} \cr List of samples with at least three elements: train, test,
+and validate. Each elements might have several elements, each representing
+the lines of \code{data} to be sampled for each resample. Typically, this is computed by
+the function \code{\link[=create_resamples]{create_resamples()}}.}
 }
 \description{
 Load a series of files output of fit_net_clogit models and put them on a bag

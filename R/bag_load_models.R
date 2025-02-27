@@ -25,78 +25,35 @@
 #' fit the bag of models.
 #'
 #' @export
-bag_load_models <- function(f, data, samples,
+bag_load_models <- function(data,
                             load_models_path = ".",
                             load_models_pattern = NULL,
                             names_from_file = FALSE,
                             name_from_file_pattern = "Resample",
-                            metric = c(conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-                            standardize = c("internal", "external", FALSE)[1],
-                            method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
                             verbose = FALSE) {
 
-  # get variables
-  wcols <- extract_response_strata(f, covars = TRUE)
+  # initiate results object
+  results <- list()
 
-  # First we standardize covariates
-  # relevant columns
-  all_vars <- all.vars(f)
-  all_covars <- all_vars[-1]
-
-  # get predictors
-  data_covs <- data[, all_covars]
-  # select numeric predictors to be standardized
-  numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
-  # standardize
-  if(standardize == "external") {
-    data_covs_num <- data_covs[, numeric_covs]
-    # standardize
-    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
-    # register mean and sd
-    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
-      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
-    ### warning if the is any cov with sd = 0, remove it or bring an error
-    rownames(covs_mean_sd) <- colnames(data_covs_num)
-    colnames(covs_mean_sd) <- c("mean", "sd")
-    # merge standardized predictors with non numeric predictors
-    data_covs_std <- cbind(data_covs[, !numeric_covs], data.frame(do.call("cbind", data_covs_num_std)))
-    data_covs_std <- data_covs_std[,order(c(which(!numeric_covs), which(numeric_covs)))]
-    colnames(data_covs_std) <- colnames(data_covs)
-    data <- cbind(data[wcols$response], data_covs_std)
-  } else {
-    data <- data[, all_vars]
-  }
-
+  #---
   # if the models were already run, read them
   model_files <- list.files(path = load_models_path, pattern = load_models_pattern,
                             full.names = TRUE) |>
     grep(pattern = ".rds$", value = TRUE)
 
-  # initiate results object
-  results <- list()
-  results$n_samples <- length(samples$train)
-  results$n <- length(model_files)
-  results$formula <- f
-  results$method <- method
-  results$metric <- metric
-
-  # standarized means and sd
-  if(standardize == "external") {
-    results$covariate_mean_sd <- covs_mean_sd
-  } else {
-    results$covariate_mean_sd <- NULL
+  fitted_list <- list()
+  for(i in seq_along(model_files)) {
+    if(verbose) print(paste0("Loading model ", i, "/", length(model_files), "..."))
+    fitted_list[[i]] <- readRDS(model_files[i])
   }
+
+  #---
+  # get number of models
+  results$n <- length(fitted_list[[1]]$parms$samples$train)
 
   # check number of files
   if(length(model_files) != results$n)
     warning(paste0("Warning: there should be ", results$n, " models, but we found ", length(model_files), " files. Please check."))
-
-  fitted_list <- list()
-  # for(i in 1:length(samples$train))
-  for(i in 1:results$n) {
-    if(verbose) print(paste0("Loading model ", i, "/", length(samples$train), "..."))
-    fitted_list[[i]] <- readRDS(model_files[i])
-  }
 
   # add errors to the others - flag
   if(names_from_file) {
@@ -106,17 +63,18 @@ bag_load_models <- function(f, data, samples,
     names_out <- oneimpact:::pretty_seq(1:999)[unname(model_number)]
     names(fitted_list) <- names_out
   } else {
-    names(fitted_list) <- names(samples$train)
+    names(fitted_list) <- names(fitted_list[[1]]$parms$samples$train)
   }
 
-  # define new class?
+  # get other parms
+  results$formula <- fitted_list[[1]]$parms$f
+  results$method <- fitted_list[[1]]$parms$method
+  results$metric <- fitted_list[[1]]$parms$metric
+  results$samples <- fitted_list[[1]]$parms$samples
+  results$standardize <- fitted_list[[1]]$parms$standardize
+
+  # set list of models
   results$models <- fitted_list
-
-  ## TO DO
-  # unstandardize coeffients if standarize = "external"
-
-  # Add info about the covariates - type
-  results$numeric_covs <- numeric_covs
 
   results
 }
