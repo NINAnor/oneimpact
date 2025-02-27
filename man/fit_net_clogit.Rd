@@ -4,7 +4,7 @@
 \alias{fit_net_clogit}
 \alias{fit_net_ssf}
 \alias{fit_net_issf}
-\title{Fits a conditional logistic regression/SSF/iSSF using glmnet in a train-validate-test setup}
+\title{Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a train-validate-test setup}
 \usage{
 fit_net_clogit(
   f,
@@ -130,7 +130,7 @@ folder "output".}
 }
 \description{
 By default, \code{\link[=fit_net_clogit]{fit_net_clogit()}} does not standardize predictor variables. If you want numeric variables
-to be standardized, you can either use \verb{[bag_git_net_clogit()]} with parameter \code{standardize = TRUE}
+to be standardized, you can either use \verb{[bag_fit_net_clogit()]} with parameter \code{standardize = TRUE}
 or provide an already standardized data set as input.
 }
 \references{

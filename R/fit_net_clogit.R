@@ -289,7 +289,8 @@ fit_net_clogit <- function(f, data,
 
           # coefficients
           if(metric == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max
-          coef_ridge <- matrix(coef(ridge_fit)[,opt_fun(d)]) # coefficients
+          coef_ridge <- matrix(coef(ridge_fit, s = ridge_fit$lambda[opt_fun(d)])) # coefficients
+          rownames(coef_ridge) <- rownames(coef(ridge_fit))
 
           #---- prepation to standardize coefs
           if(standardize == "internal" & tolower(method[1]) != "ridge") {
@@ -469,7 +470,6 @@ fit_net_clogit <- function(f, data,
   }
 
   # perform penalized regression with glmnet
-  # use glmnet.cv?
   if(tolower(method[1]) == "ridge") {
 
     fit <- ridge_fit
@@ -525,7 +525,7 @@ fit_net_clogit <- function(f, data,
   for(mt in metrics_evaluate) {
 
     # get metric function
-    mt_fun <- get(mt)
+    mt_fun <- getFromNamespace(metric, ns = "oneimpact")
 
     # set min or max as optim function
     if(mt == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max
@@ -544,13 +544,13 @@ fit_net_clogit <- function(f, data,
     # print
     print(metrics_evaluated[[mt]]$metric)
     print(metrics_evaluated[[mt]]$lambda_opt)
-    plot(fit$lambda, metrics_evaluated[[mt]]$score); abline(v = metrics_evaluated[[mt]]$lambda_opt)
+    plot(fit$lambda, metrics_evaluated[[mt]]$test_scores); abline(v = metrics_evaluated[[mt]]$lambda_opt)
     plot(fit, xvar = "lambda"); abline(v = metrics_evaluated[[mt]]$lambda_opt)
     pie(abs(coef(fit, s = metrics_evaluated[[mt]]$lambda_opt)[,1]), labels = rownames(fit$beta))
 
     # coefs
     coef <- matrix(coef(fit, s = fit$lambda[opt_fun(d)])) # coefficients
-    rownames(coef) <- names(coef(fit, s = fit$lambda[opt_fun(d)]))
+    rownames(coef) <- rownames(coef(fit, s = fit$lambda[opt_fun(d)]))
 
     # get predicted values based on the training, testing, and validation data
     train_pred_vals <- model.matrix(f2, train_data) %*% coef
@@ -847,7 +847,7 @@ bag_fit_net_clogit <- function(f, data,
 
   if(length(fitted_list) == results$n)
     names(fitted_list) <- names(samples$train)
-  # define new class?
+
   results$models <- fitted_list
 
   results
