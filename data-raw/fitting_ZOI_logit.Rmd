@@ -55,11 +55,12 @@ data annotation workflow, please check Niebuhr et al. 2023.
 
 ```{r load_data}
 # load packages
-library(oneimpact)
 library(glmnet) # for fitting
 library(ggplot2) # for ploting
 library(rgrass) # retrieving maps
 library(terra) # for spatial predictions
+
+library(oneimpact)
 
 # load data
 data("reindeer_rsf")
@@ -98,7 +99,7 @@ f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
 # add ZOI terms to the formula
 zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX", 
-                      type = c("cumulative_exp_decay", "nearest_exp_decay"),
+                      type = c("cumulative_exp_decay"),#, "nearest_exp_decay"),
                       separator = "_", predictor_table = TRUE)
 
 # get formula
@@ -141,7 +142,7 @@ but the sampling can also be spatially stratified.
 set.seed(1234)
 samples <- create_resamples(y = dat$use,
                             p = c(0.2, 0.2, 0.2),
-                            times = 50,
+                            times = 10,
                             colH0 = NULL)
 ```
 
@@ -167,7 +168,7 @@ A warning message is printed in these cases; but we recommend that missing data 
 before the sampling and analysis.
 
 ```{r fit1model}
-mod <- fit_net_logit(f, dat, samples, i = 1, metric = AUC)
+mod <- fit_net_logit(f, dat, samples, i = 1, metric = "AUC")
 ```
 
 We will just examine the structure of the output object now. It is a list with the 
@@ -179,7 +180,7 @@ function used for model. For the logistic regression used here, the default `met
 the Area Under the Curve (AUC) of the ROC curve.
 
 ```{r 1model}
-str(mod)
+str(mod, max.level = 1)
 ```
 
 We are here interested not only in one single model, but in bootstrapping from the whole data set 
@@ -196,7 +197,7 @@ larger data sets and more complex models.
 fittedl <- bag_fit_net_logit(f, dat,
                              samples = samples,
                              standardize = "internal", # glmnet does the standardization of covariates
-                             metric = AUC,
+                             metric = "AUC",
                              parallel = "mclapply",
                              mc.cores = 3)
 
@@ -219,7 +220,7 @@ weights and the weighted validation scores is also present in the bag object, as
 of the data that are useful for model prediction.
 
 ```{r look_bag}
-str(bag_summary)
+str(bag_summary, max.level = 1)
 ```
 
 Here we have two sets of functions important for defining the bag of models. The first function 
@@ -286,7 +287,7 @@ plot_importance(importance, remove_threshold = 5e-3) # remove vars with too low 
 Variable importance might also be computed for groups of variables. For instance, below we group all variables 
 with similar ZOI metric (cumulative or nearest) and all terms related to the same variable (e.g. quadratic terms).
 
-```{r variable_importance2}
+```{r variable_importance2, eval=FALSE}
 # Using variable block/type of variable
 variable_blocks <- bag_summary$var_names |>
   strsplit(split = "_exp_decay|reclass|, 2)|, 2, raw = TRUE)") |>
@@ -305,7 +306,7 @@ of all terms related to private cabins and public resorts
 (regardless of the ZOI metric, shape, and radius) - which is ultimately
 what is desired in applied context such as impact assessments.
 
-```{r variable_importance3}
+```{r variable_importance3, eval=FALSE}
 # more aggregation of infrastructure, both cumulative and nearest
 variable_blocks2 <- bag_summary$var_names |>
   strsplit(split = "_cumulative_exp_decay|_nearest_exp_decay|reclass|, 2)|, 2, raw = TRUE)") |>
@@ -356,7 +357,7 @@ Now we can get the weighted coefficients for each model, and averaged over model
 
 ```{r coef4}
 # weighted coefficients for each model
-bag_summary$wcoef
+bag_summary$wcoef[,1:2]
 # weighted average coefficients
 bag_summary$coef %*% bag_summary$weights # weighted average
 ```
@@ -439,7 +440,7 @@ plot_response(bag_summary, dfvar, dat, type = "exponential", indiv_pred = TRUE, 
 
 Now we plot the effects of the ZOI of private cabins. We start by exploring the ZOI of the nearest private cabin. Here the `plot_response()` function gets all the variables that contain "private_cabins_nearest" in the name. We plot the distance in logarithmic scale to ease the visualization.
 
-```{r plot_response3}
+```{r plot_response3, eval=FALSE}
 # ZOI private cabins nearest
 plot_coef(bag_summary, what = "average", terms = "private_cabins_nearest", 
           plot_type = "points", order_zoi_radius = TRUE)
@@ -456,6 +457,9 @@ Now we plot the predicted effect of the cumulative ZOI of private cabins. Here t
 
 ```{r plot_response4}
 # ZOI private cabins cumulative
+plot_coef(bag_summary, what = "average", terms = "private_cabins", 
+          plot_type = "points", order_zoi_radius = TRUE)
+
 wQ_probs=c(0.25, 0.5, 0.75)
 dfvar = data.frame(private_cabins_cumulative = 1e3*seq(0.2, 20, length.out = 100))
 # 1 feature
@@ -474,7 +478,7 @@ plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, ind
 
 Now, what is interesting is the final predicted effect of private cabins, accounting for all the terms related to this type of infrastructure. Agin, we plot this considering different numbers of features. While this does not alter the effect of the terms related to the ZOI of the nearest feature, it does change the effect of the cumulative ZOI terms.
 
-```{r plot_response5}
+```{r plot_response5, eval=FALSE}
 # ZOI all private cabins nearest and cumulative
 wQ_probs=c(0.25, 0.5, 0.75)
 # go to account for the number of features for the cumulative variable??
@@ -500,7 +504,7 @@ We see that as the number of cabins increase, the cumulative ZOI of private cabi
 
 We start with the ZOI of the nearest resort. We see that, in contrast with private cabins, the effect of the nearest public resort is strong and negative, with a large
 
-```{r plot_response6}
+```{r plot_response6, eval=FALSE}
 # ZOI public resorts nearest
 wQ_probs=c(0.25, 0.5, 0.75)
 dfvar = data.frame(public_cabins_high_nearest = 1e3*seq(0.2, 20, length.out = 100))
@@ -512,19 +516,25 @@ Now we plot the effect of the cumulative ZOI of public resorts:
 
 ```{r plot_response7}
 # ZOI public resorts cumulative
+plot_coef(bag_summary, what = "average", terms = "public_cabins", 
+          plot_type = "points", order_zoi_radius = TRUE)
+
 wQ_probs=c(0.25, 0.5, 0.75)
 dfvar = data.frame(public_cabins_high_cumulative = 1e3*seq(0.2, 20, length.out = 100))
 # 1 feature
 plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = TRUE,
-              wq_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = FALSE)
+              wq_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = FALSE) +
+  ylim(0, 2)
+
 # 3 feature
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = TRUE,
-              wq_probs = wQ_probs, n_features = 3, plot_mean = FALSE, logx = FALSE)
+plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
+              wq_probs = wQ_probs, n_features = 3, plot_mean = FALSE, logx = FALSE) +
+  ylim(0, 2)
 ```
 
 And the overall effect of public resorts:
 
-```{r plot_response8}
+```{r plot_response8, eval=FALSE}
 # ZOI all public cabins
 wQ_probs=c(0.25, 0.5, 0.75)
 # gow to account for the number of features for the cumulative variable??
