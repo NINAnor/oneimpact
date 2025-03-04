@@ -1,7 +1,7 @@
-#' Fit logistic regression/RSF with penalized regression in a train-validate-test setup
+#' Fit logistic regression/RSF with penalized regression using glmnet in a train-validate-test setup
 #'
 #' By default, [fit_net_logit()] does not standardize predictor variables. If you want numeric variables
-#' to be standardized, you can either use `[bag_git_net_logit()]` with parameter `standardize = TRUE`
+#' to be standardized, you can either use `[bag_fit_net_logit()]` with parameter `standardize = TRUE`
 #' or provide an already standardized data set as input.
 #'
 #' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
@@ -31,7 +31,7 @@
 #' `penalty.factor = 1/(coef_ridge^gamma)`, where `coef_ridge` are the coefficients of a Ridge regression.
 #' Default is `gamma = 1`, but values of 0.5 or 2 could also be tried, as suggested by the
 #' authors (Zou et al 2006).
-#' @param ... Options for net_logit and glmnet
+#' @param ... Options for [onewimpact::net_logit()] and [glmnet::glmnet()].
 #'
 #' @references Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 #'
@@ -39,7 +39,8 @@
 #' @export
 fit_net_logit <- function(f, data,
                           samples, i = 1,
-                          metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+                          metric = c("AUC")[1],
+                          metrics_evaluate = c("AUC"),
                           method = c("Lasso", "Ridge", "AdaptiveLasso",
                                      "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
                                      "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
@@ -49,7 +50,7 @@ fit_net_logit <- function(f, data,
                           alpha = NULL,
                           penalty.factor = NULL,
                           gamma = 1,
-                          standardize = c("internal", FALSE)[1],
+                          standardize = c("internal", "external", FALSE)[1],
                           predictor_table = NULL,
                           function_lasso_decay = c(log, function(x) x/1000)[[1]],
                           value_lasso_decay = 1,
@@ -57,8 +58,10 @@ fit_net_logit <- function(f, data,
                           factor_grouped_lasso = 1,
                           na.action = "na.pass",
                           out_dir_file = NULL,
+                          verbose = FALSE,
                           ...) {
 
+  #-----------------------------
   # record initial parameters
   parms <- list(f = f,
                 samples = samples,
@@ -75,7 +78,7 @@ fit_net_logit <- function(f, data,
                 factor_hypothesis = factor_hypothesis,
                 factor_grouped_lasso = factor_grouped_lasso)
 
-  #---
+  #-----------------------------
   # parameter checks
   # standardize
   sd_options <- c("internal", "external", FALSE)
@@ -91,22 +94,30 @@ fit_net_logit <- function(f, data,
   if(!(grepl(paste(method_options, collapse = "|"), method[1], ignore.case = TRUE)))
     stop(paste0("Invalid parameter 'method'. It should be one of ", paste(method_options, collapse = ","), "."))
   # metric
-  metric_options <- c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")
+  metric_options <- c("coxnet.deviance", "Cindex", "AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")
   if(is.character(metric)) {
     if(!(metric %in% metric_options)) {
       stop(paste0("Invalid parameter 'metric'. It should be one of ", paste(metric_options, collapse = ","), " or a function."))
     } else {
-      metric <- get(metric)
+      metric_fun <- getFromNamespace(metric, ns = "oneimpact")
     }
+  } else {
+    metric_fun <- metric
   }
+
+  #-----------------------------
+  # prepare data
 
   # get variables
   wcols <- extract_response_strata(f, covars = TRUE)
 
-  # filter out NAs
+  # case
+  case <- wcols$response
+
+  # filter out NAs in the response variable
   if(anyNA(data[[wcols$response]])) {
     warning("NAs detected in the response variable. Removing them for model fitting.")
-    data <- data[!is.na(data[[wcols$response]]),]
+    data <- data[!is.na(data[[case]]),]
   }
 
   # relevant columns
@@ -115,6 +126,47 @@ fit_net_logit <- function(f, data,
   # check columns in data
   if(!all(all_vars %in% names(data)))
     stop(paste0("Not all variables in the formula are present in the data. Please check."))
+
+  #---
+  # Need to standardize?
+
+  # First we standardize covariates, if needed
+  # in any case, we keep their mean and sd which might be useful
+  all_covars <- all_vars[-1]
+  # get predictors
+  data_covs <- data[, all_covars]
+  # select numeric predictors to be standardized
+  numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
+
+  if(standardize != FALSE) {
+
+    # get standardization parms
+    data_covs_num <- data_covs[, numeric_covs]
+    # standardize
+    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
+    # register mean and sd
+    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
+      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+    rownames(covs_mean_sd) <- colnames(data_covs_num)
+    colnames(covs_mean_sd) <- c("mean", "sd")
+
+    if(any(covs_mean_sd == 0)) {
+      stop("There are covariates with variance equals zero; please check.")
+    }
+
+  }
+
+  # register/use standardized covariates
+  if(standardize == "external") {
+    # merge standardized predictors with non numeric predictors
+    data_covs_std <- cbind(data_covs[, !numeric_covs], data.frame(do.call("cbind", data_covs_num_std)))
+    data_covs_std <- data_covs_std[,order(c(which(!numeric_covs), which(numeric_covs)))]
+    colnames(data_covs_std) <- colnames(data_covs)
+    data <- cbind(data[wcols$response], data_covs_std)
+  } else {
+    # or just use the original data
+    data <- data[, all_vars]
+  }
 
   # separate data for fitting, calibration, and validation
   train_data  <- data[samples$train[[i]], all_vars]
@@ -158,49 +210,48 @@ fit_net_logit <- function(f, data,
     }
   }
 
-  # If we use some type of AdaptiveLasso (not pure Lasso or Ridge)
-  if(!(method[1] %in% c("Lasso", "Ridge"))) {
+  # set method - penalties
+  if(is.null(penalty.factor)) {
 
-    # set method - penalties
-    if(is.null(penalty.factor)) {
-
-      # check
-      # variable grid to define penalties
-      if(is.null(predictor_table)) {
-        methods_pred_table <- c("Decay-AdaptiveLasso", "DD-AdaptiveLasso",
-                                "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-                                "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
-                                "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso")
-        if(grepl(paste0(methods_pred_table, collapse = "|"), method[1], ignore.case = TRUE)) {
-          stop("If 'method' is 'DistanceDecay-AdaptiveLasso' or 'DD-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
-        }
+    # check
+    # variable grid to define penalties
+    if(is.null(predictor_table)) {
+      methods_pred_table <- c("Decay-AdaptiveLasso", "DD-AdaptiveLasso",
+                              "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+                              "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
+                              "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso")
+      if(grepl(paste0(methods_pred_table, collapse = "|"), method[1], ignore.case = TRUE)) {
+        stop("If 'method' is 'DistanceDecay-AdaptiveLasso', 'OneZOI-AdaptiveLasso', 'Grouped-AdaptiveLasso' or 'HypothesisDriven-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
       }
+    }
 
-      # if Decay
-      if(grepl("Decay|DD", method[1], ignore.case = TRUE)) {
+    # if Decay
+    if(grepl("Decay|DD", method[1], ignore.case = TRUE)) {
 
-        # formula
-        ff <- as.formula(paste0("~ -1 +", wcols$covars))
-        covars <- all.vars(ff)
-        # model matrix with data
-        M <- stats::model.matrix(ff, data)
+      # formula
+      ff <- as.formula(paste0("~ -1 +", wcols$covars))
+      covars <- all.vars(ff)
+      # model matrix with data
+      M <- stats::model.matrix(ff, data)
 
-        # variables and terms
-        terms_order <- attributes(M)$assign
-        terms_order <- terms_order[terms_order > 0]
-        # vars_formula <- rep(covars, times = unname(table(terms_order)))
-        # ZOI and nonZOI variables in the model matrix
-        mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
-        mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
-        # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
+      # variables and terms
+      terms_order <- attributes(M)$assign
+      terms_order <- terms_order[terms_order > 0]
+      # vars_formula <- rep(covars, times = unname(table(terms_order)))
+      # ZOI and nonZOI variables in the model matrix
+      mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
+      mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
+      # cbind(colnames(M), vars_formula, vars_is_zoi, mm_zoi_radius)
 
-        # set penalty factor
-        penalty.factor <- ifelse(mm_is_zoi, function_lasso_decay(mm_zoi_radius), 1)
-        names(penalty.factor) <- colnames(M)
+      # set penalty factor
+      penalty.factor <- ifelse(mm_is_zoi, function_lasso_decay(mm_zoi_radius), value_lasso_decay)
+      names(penalty.factor) <- colnames(M)
 
-      } else {
+    } else {
 
-        print("Fitting ridge...")
+      if(tolower(method[1]) != "lasso") {
+
+        if(verbose) print("Fitting Ridge...")
 
         # fit
         ridge_fit <- net_logit(f, train_data,
@@ -209,59 +260,73 @@ fit_net_logit <- function(f, data,
                                standardize = std,
                                na.action = na.action,
                                ...)
-        # get variables
-        f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
-        # calibration
-        pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit)[-1,] # multiple fits?
-        d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
-          metric(data.frame(x = x, y = y, strat = strat), errors=F)},
-          y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
-        # coefficients
-        coef_ridge <- matrix(coef(ridge_fit)[-1,which.max(d)]) # coefficients
 
-        #---- prepation to standardize coefs
-        if(standardize == "internal") {
+        if(tolower(method[1]) != "ridge") {
 
-          print("Standardizing coefs...")
+          # get variables
+          f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars))
+          # calibration
+          pred_vals <- model.matrix(f2, test_data) %*% coef(ridge_fit)[-1,] # multiple fits?
 
-          # covariates summary
-          all_vars <- all.vars(f)[-1]
-          classes <- sapply(data[,all_vars], class)
-          # numeric variables
-          data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes == "numeric"]])), 2, data_summary))
-          # character variables - use mode
-          data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes != "numeric"]])), 2, data_summary_char))
-          names(data_summary_ch) <- all_vars[classes != "numeric"]
-          dat_summ <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
+          # here we do not do it for all the metrics, should we? ??????????????
+          d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
+            metric_fun(data.frame(x = x, y = y, strat = strat), errors=F)},
+            y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
 
-          # info from formula
-          ff <- as.formula(paste0("~ -1 +", wcols$covars))
-          # covariates
-          m_covars <- all.vars(ff, unique = F)
-          # are they numeric?
-          numeric_covs <- (classes == "numeric")
-          repeated <- m_covars[which(duplicated(m_covars))]
-          rep_times <- ifelse(names(numeric_covs) %in% repeated, 2, 1) ## CORRECT IF THERE ARE MORE THAN TWO TERMS WITH THE SAME VARIABLE
-          numeric_covs <- rep(numeric_covs, times = rep_times)
-          # model matrix with data
-          M <- stats::model.matrix(ff, data)
-          # variables and terms
-          terms_order <- attributes(M)$assign
-          terms_order <- terms_order[terms_order > 0]
-          vars_formula <- rep(m_covars, times = unname(table(terms_order)))
-          numeric_vars_order <- rep(numeric_covs, times = unname(table(terms_order)))
+          # coefficients
+          if(metric == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max
+          coef_ridge <- matrix(coef(ridge_fit, s = ridge_fit$lambda[opt_fun(d)])[-1, , drop=FALSE]) # coefficients
+          rownames(coef_ridge) <- rownames(coef(ridge_fit))[-1]
 
-          # SDs
-          sds <- dat_summ
-          sds <- sds[rownames(sds) == "sd", colnames(sds) %in% m_covars]
-          sds_all <- sds[match(vars_formula, colnames(sds))]
-          # sds_all <- unlist(rep(sds, terms_order)) |>
-          #   as.numeric()
-          sds_all[numeric_vars_order == FALSE] <- 1
-          names(sds_all) <- vars_formula
-          sds_all <- unlist(sds_all)
+          #---- prepation to standardize coefs
+          if(standardize == "internal" & tolower(method[1]) != "ridge") {
 
-          coef_ridge <- to_std(coef_ridge, sds_all)
+            if(verbose) print("Standardizing coefs...")
+
+            # covariates summary
+            all_vars <- all.vars(f2)[-1]
+            classes <- sapply(data[,all_vars], class)
+            # numeric variables
+            data_summary_num <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes == "numeric"]])), 2, data_summary))
+            # character variables - use mode
+            data_summary_ch <- as.data.frame(apply(na.omit(as.matrix(data[,all_vars[classes != "numeric"]])), 2, data_summary_char))
+            names(data_summary_ch) <- all_vars[classes != "numeric"]
+            if(nrow(data_summary_ch) > 0) {
+              dat_summ <- cbind(data_summary_num, data_summary_ch)[order(c(which(classes == "numeric"), which(classes != "numeric")))]
+            } else {
+              dat_summ <- data_summary_num
+            }
+
+            # info from formula
+            ff <- as.formula(paste0("~ -1 +", wcols$covars))
+            # covariates
+            m_covars <- all.vars(ff, unique = F)
+            # are they numeric?
+            numeric_covs <- (classes == "numeric")
+            repeated <- m_covars[which(duplicated(m_covars))]
+            rep_times <- ifelse(names(numeric_covs) %in% repeated, 2, 1) ## CORRECT IF THERE ARE MORE THAN TWO TERMS WITH THE SAME VARIABLE
+            numeric_covs <- rep(numeric_covs, times = rep_times)
+            # model matrix with data
+            M <- stats::model.matrix(ff, data)
+            # variables and terms
+            terms_order <- attributes(M)$assign
+            terms_order <- terms_order[terms_order > 0]
+            vars_formula <- rep(m_covars, times = unname(table(terms_order)))
+            numeric_vars_order <- rep(numeric_covs, times = unname(table(terms_order)))
+
+            # SDs
+            sds <- dat_summ
+            sds <- sds[rownames(sds) == "sd", colnames(sds) %in% m_covars]
+            sds_all <- sds[match(vars_formula, colnames(sds))]
+            # sds_all <- unlist(rep(sds, terms_order)) |>
+            #   as.numeric()
+            sds_all[numeric_vars_order == FALSE] <- 1
+            names(sds_all) <- vars_formula
+            sds_all <- unlist(sds_all)
+
+            coef_ridge <- to_std(coef_ridge, sds_all)
+          }
+
         }
 
         print(method[1])
@@ -269,7 +334,7 @@ fit_net_logit <- function(f, data,
         # if Adaptive Lasso
         if(tolower(method[1]) == "adaptivelasso") {
 
-          print("Fitting AdaptiveLasso...")
+          if(verbose) print("Fitting AdaptiveLasso...")
 
           penalty.factor <- 1/(abs(coef_ridge)**gamma)
           penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
@@ -279,7 +344,7 @@ fit_net_logit <- function(f, data,
           # if OneZOI
           if(tolower(method[1]) == "onezoi-adaptivelasso" | tolower(method[1]) == "oz-adaptivelasso") {
 
-            print("Fitting One-ZOI AdaptiveLasso...")
+            if(verbose) print("Fitting One-ZOI AdaptiveLasso...")
 
             # prepare from predictor table
 
@@ -290,6 +355,7 @@ fit_net_logit <- function(f, data,
             # ZOI and nonZOI variables in the model matrix
             mm_is_zoi <- rep(predictor_table$is_zoi, times = unname(table(terms_order)))
             mm_zoi_radius <- rep(predictor_table$zoi_radius, times = unname(table(terms_order)))
+            # cbind(rep(predictor_table$variable, times = unname(table(terms_order))), mm_zoi_radius)
             mm_predictor_vars <- rep(predictor_table$variable, times = unname(table(terms_order)))
 
             # set penalties
@@ -304,13 +370,14 @@ fit_net_logit <- function(f, data,
             }
 
             penalty.factor[penalty.factor == Inf] <- 999999999 # If there is any infinite coefficient
+            # rownames(penalty.factor) <- mm_predictor_vars
 
           } else {
 
             # if grouped
             if(tolower(method[1]) == "grouped-adaptivelasso" | tolower(method[1]) == "g-adaptivelasso") {
 
-              print("Fitting Grouped AdaptiveLasso...")
+              if(verbose) print("Fitting Grouped AdaptiveLasso...")
 
               # prepare from predictor table
 
@@ -330,7 +397,7 @@ fit_net_logit <- function(f, data,
               zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
               for(jj in zoi_terms) {
                 vals <- coef_ridge[mm_is_zoi == 1 & mm_predictor_vars == jj]
-                # sum relative to the variation in the group
+                # sum relative to the vatiation in the group
                 vals <- grouped_func(vals, phi_group = factor_grouped_lasso)**gamma
                 penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
               }
@@ -342,7 +409,7 @@ fit_net_logit <- function(f, data,
               # if grouped
               if(tolower(method[1]) == "hypothesisdriven-adaptivelasso" | tolower(method[1]) == "hd-adaptivelasso") {
 
-                print("Fitting HypothesisDriven AdaptiveLasso...")
+                if(verbose) print("Fitting HypothesisDriven AdaptiveLasso...")
 
                 # prepare from predictor table
 
@@ -361,40 +428,51 @@ fit_net_logit <- function(f, data,
                 # cbind(coef_ridge, expected_negative, penalty.factor)
 
                 # zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-                # for(i in zoi_terms) {
-                #   vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i]
+                # for(jj in zoi_terms) {
+                #   vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj]
                 #   # keep only the minimum
                 #   vals[vals > min(vals, na.rm = TRUE)] <- Inf
-                #   penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == i] <- vals
+                #   penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
                 # }
 
                 penalty.factor[penalty.factor == Inf] <- 999999999
 
               } else {
 
-                stop("Please choose a valid method for the function.")
+                if(tolower(method[1]) != "ridge") {
+                  stop("Please choose a valid method for the function.")
+                }
+
               }
             }
           }
         }
-      }
+      } else {
 
+        print("Fitting Lasso...")
+
+      }
     }
   }
 
   # perform penalized regression with glmnet
-  # use glmnet.cv?
-  fit <- net_logit(f, train_data,
-                   alpha = alpha,
-                   penalty.factor = penalty.factor,
-                   type.measure = "deviance",
-                   standardize = std,
-                   na.action = na.action,
-                   ...)
+  if(tolower(method[1]) == "ridge") {
+
+    fit <- ridge_fit
+
+  } else {
+
+    fit <- net_logit(f, train_data,
+                     alpha = alpha,
+                     penalty.factor = penalty.factor,
+                     type.measure = "deviance",
+                     standardize = std,
+                     na.action = na.action,
+                     ...)
+  }
 
   # get variables
   f2 <- as.formula(paste0(wcols$response, " ~ -1 + ", wcols$covars)) # should we remove the intercept?
-  #f2 <- as.formula(paste0(wcols$response, " ~ ", wcols$covars))
 
   #----
   # Variable selection step
@@ -403,66 +481,188 @@ fit_net_logit <- function(f, data,
   # does not work fro cv.glmnet
   # predict.glmnet(fit, test_data, type = "response")??
   pred_vals <- model.matrix(f2, test_data) %*% coef(fit)[-1,] # multiple fits?
-  # compute conditional Boyce for all lambda parameters
-  # here it is just Boyce
 
-  # strat <- rep(1, nrow(test_data))
-  # presence <- test_data[[wcols$response]] == 1
-  # ecospat::ecospat.boyce(unname(pred_vals[,2])[presence], obs = test_data[[wcols$response]][presence], nclass = 50)
-  # conditionalBoyce(data.frame(x = pred_vals[,5], y = test_data[[wcols$response]], strat = rep(1, nrow(test_data))))
-  d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
-    metric(data.frame(x = x, y = y, strat = strat), errors=F)},
-    y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
+  # variable names
+  var_names <- rownames(coef(fit))[-1] # variable names
 
-  # best lambda
-  #plot(fit$lambda, d)
-  fit$lambda[which.max(d)]
+  # prepare SDs for unstardization
+  # if(standardize != FALSE) {
+  if(standardize == "external") {
 
-  # initialize results
-  results <- list()
-  results$lambda <- fit$lambda[which.max(d)] # lambda
-  results$coef <- matrix(coef(fit)[-1,which.max(d)]) # coefficients
-  rownames(results$coef) <- names(coef(fit)[-1,which.max(d)])
-  results$var_names <- names(coef(fit)[-1,which.max(d)]) # variable names
-
-  # get predicted values based on the training and testing data
-  train_pred_vals <- model.matrix(f2, train_data) %*% results$coef
-  test_pred_vals <- model.matrix(f2, test_data) %*% results$coef
-
-  # save results
-  results$train_score <- metric(data.frame(x = train_pred_vals,
-                                           y = train_data[[wcols$response]],
-                                           strat = rep(1, nrow(train_data))))
-  results$test_score <- max(d)
-
-  #----
-  # Validation step
-  val_pred_vals <- model.matrix(f2, validate_data) %*% results$coef
-  val <- data.frame(x = val_pred_vals,
-                    y = validate_data[[wcols$response]],
-                    strat = rep(1, nrow(validate_data)))
-  # val <- split(val, samples$blockH0[sort(match(val$strat, spStrat$id))])
-  if(!is.null(samples$blockH0)) {
-
-    # val2 <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
-    val2 <- split(val, samples$blockH0[val$strat])
-    if(length(val2) == 0) {
-      val2 <- split(val, samples$blockH0[samples$validate[[i]]])
+    # get variable name for each term
+    # term_labels <- attr(terms(result$formula_no_strata), "term.labels")
+    term_labels <- var_names
+    variables <- unlist(lapply(term_labels, function(term) all.vars(parse(text = term)[[1]])))
+    # check if there are categorical variables
+    cat_vars <- names(numeric_covs[!numeric_covs])
+    if(length(cat_vars) > 0) {
+      cat_var_order <- list()
+      for(i in seq_along(cat_vars)) {
+        cat_var_order[[i]] <- indexes <- grep(cat_vars[i], variables)
+        variables[indexes] <- cat_vars[i]
+      }
     }
-    results$validation_score <- unlist(lapply(val2, metric))
+    # unique set of variable names
+    variables_names <- unique(variables)
 
-  } else {
-    results$validation_score <- metric(val)
+    sds <- covs_mean_sd$sd
+    # if there are categorical variables
+    if(length(cat_vars) > 0) {
+      for(i in seq_along(cat_vars)) {
+        sds <- append(sds, 1, after = cat_var_order[[i]][1]-1)
+      }
+    }
+
+    # Create a named vector
+    sd_vars <- setNames(sds, variables_names)  # Named vector: x -> 10, z -> 20
+
+    # repeat values based on occurrences in the formula
+    sds_all_terms <- sd_vars[variables]
+
   }
 
-  # Validation habitat only
-  # no habitat validation score
-  results$habitat_validation_score <- NULL
-  #plot(results$validation_score, results$habitat_validation_score)
+  # compute optimal score for multiple selected metrics
+  metrics_evaluated <- list()
+  for(mt in metrics_evaluate) {
+
+    # get metric function
+    mt_fun <- getFromNamespace(metric, ns = "oneimpact")
+
+    # set min or max as optim function
+    if(mt == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max
+
+    # compute the scoring metric using the test data
+    d <- apply(pred_vals, 2, function(x = x, y = y, strat = strat){
+      mt_fun(data.frame(x = x, y = y, strat = strat), errors=F)},
+      y = test_data[[wcols$response]], strat = rep(1, nrow(test_data)))
+
+    # save results
+    metrics_evaluated[[mt]]$metric <- mt
+    metrics_evaluated[[mt]]$test_scores <- d
+    metrics_evaluated[[mt]]$opt_fun <- opt_fun
+    metrics_evaluated[[mt]]$lambda_opt <- fit$lambda[opt_fun(d)]
+
+    # print
+    print(metrics_evaluated[[mt]]$metric)
+    print(metrics_evaluated[[mt]]$lambda_opt)
+    if(verbose) {
+      plot(fit$lambda, metrics_evaluated[[mt]]$test_scores); abline(v = metrics_evaluated[[mt]]$lambda_opt)
+      plot(fit, xvar = "lambda"); abline(v = metrics_evaluated[[mt]]$lambda_opt)
+      pie(abs(coef(fit, s = metrics_evaluated[[mt]]$lambda_opt)[,1]), labels = rownames(fit$beta))
+    }
+
+    # coefs
+    coef <- matrix(coef(fit, s = fit$lambda[opt_fun(d)])[-1,, drop=FALSE]) # coefficients
+    rownames(coef) <- rownames(coef(fit, s = fit$lambda[opt_fun(d)]))[-1]
+
+    # get predicted values based on the training, testing, and validation data
+    train_pred_vals <- model.matrix(f2, train_data) %*% coef
+    test_pred_vals <- model.matrix(f2, test_data) %*% coef
+    val_pred_vals <- model.matrix(f2, validate_data) %*% coef
+
+    # if the standardization was not done before calling the function
+    if(standardize != FALSE) {
+
+      if(standardize == "external") {
+        coef_std <- coef
+        coef <- apply(coef, MARGIN = 2, oneimpact::from_std, sd = sds_all_terms)
+      } else {
+        # coef_std <- apply(coef, MARGIN = 2, oneimpact::from_std, sd = sds_all_terms)
+        coef_std <- NULL
+      }
+
+    } else {
+
+      coef_std <- NULL
+
+    }
+
+    # register coefficients (standardized and unstandardized)
+    metrics_evaluated[[mt]]$coef <- coef
+    metrics_evaluated[[mt]]$coef_std <- coef_std
+
+    # if the metric is coxnet.deviance, use it for the tuning parameter but compute
+    # the validation score using the Cindex
+    if(mt == "coxnet.deviance") mt_fun <- oneimpact::Cindex
+
+    # save results train and test scores
+    metrics_evaluated[[mt]]$train_score <- mt_fun(data.frame(x = train_pred_vals[,1],
+                                                             y = train_data[[wcols$response]],
+                                                             strat = rep(1, nrow(train_data))))
+    metrics_evaluated[[mt]]$test_score <- unname(d[opt_fun(d)])
+
+    #----
+    # Validation step
+    val <- data.frame(x = val_pred_vals[,1],
+                      y = validate_data[[wcols$response]],
+                      strat = rep(1, nrow(validate_data)))
+
+    if(!is.null(samples$blockH0)) {
+
+      # data[data$strat %in% validate_data[[wcols$strata]],]$herd |> table()
+      val2 <- split(val, val$blockH0)
+      # val2 <- split(val, samples$blockH0[match(val$strat, validate_data[[wcols$strata]])])
+      # val2 <- split(val, samples$blockH0[val$strat])
+      if(length(val2) == 0) {
+        if(is.null(samples$sp_strat_id)) {
+          val2 <- split(val, samples$blockH0[samples$validate[[i]]])
+        } else {
+          val2 <- split(val, samples$validate[[i]])
+        }
+      }
+      metrics_evaluated[[mt]]$validation_score <- unlist(lapply(val2, mt_fun))
+
+    } else {
+      metrics_evaluated[[mt]]$validation_score <- mt_fun(val)
+    }
+
+    # Validation habitat only
+    # no habitat validation score
+    metrics_evaluated[[mt]]$habitat_validation_score <- NULL
+  }
+
+  # initiate results object
+  results <- list()
 
   # register parameters and all resuts
   results$parms <- parms
   results$glmnet_fit <- fit
+
+  # all metrics evaluated
+  results$metrics_evaluated <- metrics_evaluated
+  results$var_names <- var_names # variable names
+  # Add info about the covariates - type
+  results$numeric_covs <- numeric_covs
+
+  # standarized means and sd
+  if(standardize != FALSE) {
+    results$covariate_mean_sd <- covs_mean_sd
+  } else {
+    results$covariate_mean_sd <- NULL
+  }
+
+  # lambda and coefs for the selected metric
+  results$metric <- metric
+  results$lambda <- metrics_evaluated[[metric]]$lambda_opt
+  results$coef <- metrics_evaluated[[metric]]$coef
+  results$coef_std <- metrics_evaluated[[metric]]$coef_std
+  results$train_score <- metrics_evaluated[[metric]]$train_score
+  results$test_score <- metrics_evaluated[[metric]]$test_score
+  results$validation_score <- metrics_evaluated[[metric]]$validation_score
+  results$validation_score_avg <- mean(results$validation_score, na.rm = TRUE)
+  results$habitat_validation_score <- NULL
+  results$habitat_validation_score_avg <- NULL
+
+  # lambda and coefs for all metrics
+  results$lambdas <- sapply(metrics_evaluated, function(x) x$lambda_opt)
+  results$coefs_all <- sapply(metrics_evaluated, function(x) x$coef)
+  results$coefs_std_all <- sapply(metrics_evaluated, function(x) x$coef_std)
+  rownames(results$coefs_all) <- var_names
+  if(standardize == "external") rownames(results$coefs_std_all) <- var_names
+  results$train_score_all <- sapply(metrics_evaluated, function(x) x$train_score)
+  results$test_score_all <- sapply(metrics_evaluated, function(x) x$test_score)
+  results$validation_score_all <- sapply(metrics_evaluated, function(x) x$validation_score)
+  results$habitat_validation_score_all <- NULL
 
   # whether to save the results externally
   if (!is.null(out_dir_file)){

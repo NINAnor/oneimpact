@@ -3,14 +3,15 @@
 \name{fit_net_logit}
 \alias{fit_net_logit}
 \alias{fit_net_rsf}
-\title{Fit logistic regression/RSF with penalized regression in a train-validate-test setup}
+\title{Fit logistic regression/RSF with penalized regression using glmnet in a train-validate-test setup}
 \usage{
 fit_net_logit(
   f,
   data,
   samples,
   i = 1,
-  metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+  metric = c("AUC")[1],
+  metrics_evaluate = c("AUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
@@ -18,7 +19,7 @@ fit_net_logit(
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
-  standardize = c("internal", FALSE)[1],
+  standardize = c("internal", "external", FALSE)[1],
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
@@ -26,6 +27,7 @@ fit_net_logit(
   factor_grouped_lasso = 1,
   na.action = "na.pass",
   out_dir_file = NULL,
+  verbose = FALSE,
   ...
 )
 
@@ -34,7 +36,8 @@ fit_net_rsf(
   data,
   samples,
   i = 1,
-  metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
+  metric = c("AUC")[1],
+  metrics_evaluate = c("AUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecay-AdaptiveLasso",
     "DD-AdaptiveLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
     "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
@@ -42,7 +45,7 @@ fit_net_rsf(
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
-  standardize = c("internal", FALSE)[1],
+  standardize = c("internal", "external", FALSE)[1],
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
@@ -50,6 +53,7 @@ fit_net_rsf(
   factor_grouped_lasso = 1,
   na.action = "na.pass",
   out_dir_file = NULL,
+  verbose = FALSE,
   ...
 )
 }
@@ -89,11 +93,11 @@ the folder) where the result of each model will be saved. E.g. if \code{out_dir_
 the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
 folder "output".}
 
-\item{...}{Options for net_logit and glmnet}
+\item{...}{Options for \code{\link[onewimpact:net_logit]{onewimpact::net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
 }
 \description{
 By default, \code{\link[=fit_net_logit]{fit_net_logit()}} does not standardize predictor variables. If you want numeric variables
-to be standardized, you can either use \verb{[bag_git_net_logit()]} with parameter \code{standardize = TRUE}
+to be standardized, you can either use \verb{[bag_fit_net_logit()]} with parameter \code{standardize = TRUE}
 or provide an already standardized data set as input.
 }
 \references{
