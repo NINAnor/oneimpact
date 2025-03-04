@@ -86,7 +86,8 @@ bag_models <- function(fitted, data,
     # coefficients
     coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coef } ))
     coef_std <- do.call("cbind", lapply(lres[!err], function(x) { x$coef_std } ))
-    colnames(coef) <- colnames(coef_std) <- names(lres[!err])
+    colnames(coef) <- names(lres[!err])
+    if(!is.null(coef_std)) colnames(coef_std) <- colnames(coef)
 
     fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$fit_score} ))
     calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$calibration_score} ))
@@ -98,7 +99,8 @@ bag_models <- function(fitted, data,
     # coefficients
     coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coefs_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
     coef_std <- do.call("cbind", lapply(lres[!err], function(x) { x$coefs_std_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
-    colnames(coef) <- colnames(coef_std) <- names(lres[!err])
+    colnames(coef) <- names(lres[!err])
+    if(!is.null(coef_std)) colnames(coef_std) <- colnames(coef)
 
     fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$train_score_all[colnames(x$coefs_all) == metric, drop = FALSE] } ))
     calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$test_score_all[colnames(x$coefs_all) == metric, drop = FALSE] } ))
