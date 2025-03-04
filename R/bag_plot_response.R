@@ -103,7 +103,7 @@ plot_response.bag <- function(x,
         baseline <- x$data_summary[5,]
         baseline[1, 1+which(x$numeric_covs)] <- 0 # zero for numeric ones
         baseline[1, 1+which(!x$numeric_covs)] <- sapply(unname(which(!x$numeric_covs)),
-                                                       function(z) levels(data[,names(x$numeric_covs[z])])[1])
+                                                        function(z) levels(data[,names(x$numeric_covs[z])])[1])
       } else {
         stop(paste0("Invalid 'baseline' parameter: ", baseline, ". Pleas re-define."))
       }
@@ -240,7 +240,7 @@ plot_response.bag <- function(x,
       # }
     }
     if (!zoi){
-      if (ncol(dfvar) == 1){
+      # if (ncol(dfvar) == 1){
 
         # data for plotting
         df <- data.frame(x = newdata[,names(dfvar)[1]], y = pred$mid,
@@ -288,7 +288,7 @@ plot_response.bag <- function(x,
 
         plt <- plt + ggplot2::labs(x = names(dfvar), y = y_lab, title = "")
 
-      }
+      # }
       # if (ncol(dfvar)==2){
       #   df <- data.frame(x=newdata[,names(dfvar)[1]], grp=as.factor(newdata[,names(dfvar)[2]]), y=pred$mid, y_lower = pred$lower, y_upper=pred$higher, y2=pred$mean)
       #   plt <- ggplot(df, aes(x=x,
