@@ -58,7 +58,12 @@ variable_importance <- function(x,
   f <- x$formula
   wghts <- x$weights
   coefs <- x$coef
-  if(is.null(metric)) metric <- x$metric
+  if(is.null(metric)) {
+    metric <- x$metric
+    if(metric == "coxnet.deviance") metric <- "Cindex"
+    metric <- getFromNamespace(metric, ns = "oneimpact")
+  }
+
   # set sample(s)
   # ss <- 1
 
