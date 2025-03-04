@@ -379,19 +379,19 @@ create_resamples <- function (y, times = 10,
 #'
 #' @examples
 #' set_sampling_params(1000, 10, 1000)
-set_sampling_params <- function(max_size_validate_blockH0 = 1000,
-                                max_number_blocksH1_train = 10,
-                                max_size_fit_blockH1 = 1000) {
-
-  # Create list
-  sampling_params <- list()
-  # Set parameters
-  sampling_params$max_size_validate_blockH0 <- max_size_validate_blockH0
-  sampling_params$max_number_blocksH1_train <- max_number_blocksH1_train
-  sampling_params$max_size_fit_blockH1 <- max_size_fit_blockH1
-
-  sampling_params
-}
+# set_sampling_params <- function(max_size_validate_blockH0 = 1000,
+#                                 max_number_blocksH1_train = 10,
+#                                 max_size_fit_blockH1 = 1000) {
+#
+#   # Create list
+#   sampling_params <- list()
+#   # Set parameters
+#   sampling_params$max_size_validate_blockH0 <- max_size_validate_blockH0
+#   sampling_params$max_number_blocksH1_train <- max_number_blocksH1_train
+#   sampling_params$max_size_fit_blockH1 <- max_size_fit_blockH1
+#
+#   sampling_params
+# }
 
 # Helper function to create resample names
 pretty_seq <- function (x, name = "Resample")

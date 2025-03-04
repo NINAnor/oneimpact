@@ -4,7 +4,7 @@ Title: Tools for the assessment of the cumulative impacts of anthropogenic
     features in ecological studies
 Version: 0.1.1
 Authors@R: c(
-    person("Bernardo", "Niebuhr", email = "bernardo_brandaum@yahoo.com.br",
+    person("Bernardo", " Brandão Niebuhr", email = "bernardo_brandaum@yahoo.com.br",
         role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0453-315X")),
     person("Manuela", "Panzacchi", email = "manuela.panzacchi@nina.no",
         role = "aut"),
