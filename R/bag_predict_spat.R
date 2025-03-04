@@ -32,6 +32,7 @@ bag_predict_spat <- function(bag,
                              input_type = c("df", "rast")[1], # only df implemented
                              output_type = c("df", "rast")[2],
                              prediction_type = c("exp", "exponential", "linear")[1],
+                             standardize = FALSE,
                              gridalign = TRUE,
                              gid = "gid",
                              coords = c("x33", "y33"),
@@ -64,13 +65,19 @@ bag_predict_spat <- function(bag,
 
     data <- terra::as.data.frame(data, cells = TRUE, xy = TRUE, na.rm = FALSE)
     names(data)[1:3] <- c(gid, coords[1], coords[2])
-
-
   }
 
   # get data for prediction
-  # cols %in% names(data)
-  grd <- data[, c(gid, coords, model_vars)]
+
+  # standardize variables?
+  if(standardize) {
+    # check
+    if(is.null(bag$coef_std)) stop("There are no standardized coefficients estimated in the bag. Please check if the parameter 'standardize' should be FALSE.")
+
+    grd <- cbind(data[, c(gid, coords)], scale(data[model_vars], center = bag_summary$data_summary[10,-1], scale = bag_summary$data_summary[11,-1]))
+  } else {
+    grd <- data[, c(gid, coords, model_vars)]
+  }
   grd[[case]] <- rep(0, nrow(grd))
   nrow(grd)
   colnames(grd)
@@ -90,7 +97,12 @@ bag_predict_spat <- function(bag,
   # predict only for models with weight > 0
   good_models <- which(bag$weights > 0)
   # coefs
-  coefs <- bag$coef[, good_models, drop = FALSE]
+  if(standardize) {
+    coefs <- bag$coef_std[, good_models, drop = FALSE]
+  } else {
+    coefs <- bag$coef[, good_models, drop = FALSE]
+  }
+
   # prediction
   predvals <- (mm %*% coefs)
 
@@ -270,6 +282,7 @@ bag_predict_spat_vars <- function(bag,
                                   input_type = c("df", "rast")[1], # only df implemented
                                   output_type = c("df", "rast")[2],
                                   prediction_type = c("exp", "exponential", "linear")[1],
+                                  standardize = FALSE,
                                   what = c("wMean", "wMedian", "ind"),
                                   gridalign = TRUE,
                                   gid = "gid",
@@ -290,8 +303,16 @@ bag_predict_spat_vars <- function(bag,
   case <- extract_response_strata(bag$formula)$response
 
   # get data for prediction
-  # cols %in% names(data)
-  grd <- data[, c(gid, coords, model_vars)]
+
+  # standardize variables?
+  if(standardize) {
+    # check
+    if(is.null(bag$coef_std)) stop("There are no standardized coefficients estimated in the bag. Please check if the parameter 'standardize' should be FALSE.")
+
+    grd <- cbind(data[, c(gid, coords)], scale(data[model_vars], center = bag_summary$data_summary[10,-1], scale = bag_summary$data_summary[11,-1]))
+  } else {
+    grd <- data[, c(gid, coords, model_vars)]
+  }
   grd[[case]] <- rep(0, nrow(grd))
   nrow(grd)
   colnames(grd)
@@ -311,7 +332,11 @@ bag_predict_spat_vars <- function(bag,
   # predict only for models with weight > 0
   good_models <- which(bag$weights > 0)
   # coefs
-  coefs <- bag$coef[, good_models, drop = FALSE]
+  if(standardize) {
+    coefs <- bag$coef_std[, good_models, drop = FALSE]
+  } else {
+    coefs <- bag$coef[, good_models, drop = FALSE]
+  }
   # prediction
   predvals <- (mm %*% coefs)
 
