@@ -26,11 +26,36 @@ reference:
   desc: "Creating spatial filters to compute a meaningful zone of influence"
   contents:
   - starts_with("filter")
-- title: "Visualization"
+- title: "Estimating ZOI - set up analysis"
+  desc: >
+    Functions to set up RSF and SSF analyses using ZOI variables
+  contents:
+  - starts_with("add_zoi")
+  - starts_with("explore")
+  - spat_strat
+  - create_resamples
+- title: "Estimating ZOI - fit models"
+  desc: >
+    Functions to fit RSF and SSF and estimate ZOI using penalized regression
+  contents:
+  - filter_na_strata
+  - extract_response_strata
+  - starts_with("net")
+  - starts_with("fit_net")
+  - starts_with("bag_fit")
+  - bag_load_models
+  - bag_models
+  - concordance_indices
+  - kernel_prediction
+- title: "Estimating ZOI - interpret and visualize models"
   desc: >
     Functions to help interpreting parameters and visualizing
     cumulative impacts
   contents:
+  - bag_predict
+  - variable_importance
+  - plot_response
+  - bag_predict_spat
   - rescale_coefficients
 - title: "Raster processing ancillary functions"
   desc: >
@@ -49,4 +74,5 @@ reference:
   - starts_with("reindeer")
   - ends_with("tif")
   - ends_with("gpkg")
+
 
