@@ -5,66 +5,50 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="oneimpact">
 <title>Computing zones of influence for different types of variable • oneimpact</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing zones of influence for different types of variable">
-<meta property="og:description" content="oneimpact">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing zones of influence for different types of variable">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">oneimpact</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/oneimpact.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/oneimpact.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/oneimpact.html">Getting started</a>
-    <a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence</a>
-    <a class="dropdown-item" href="../articles/zoi_on_grass.html">Zones of influence on GRASS GIS</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/oneimpact.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence</a></li>
+    <li><a class="dropdown-item" href="../articles/zoi_on_grass.html">Zones of influence on GRASS GIS</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/NINAnor/oneimpact/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/NINAnor/oneimpact/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -73,10 +57,11 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Computing zones of influence for different types of variable</h1>
+
+      <h1>Computing zones of influence for different types of variable</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/NINAnor/oneimpact/blob/HEAD/vignettes/computing_zoi.Rmd" class="external-link"><code>vignettes/computing_zoi.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/NINAnor/oneimpact/blob/main/vignettes/computing_zoi.Rmd" class="external-link"><code>vignettes/computing_zoi.Rmd</code></a></small>
       <div class="d-none name"><code>computing_zoi.Rmd</code></div>
     </div>
 
@@ -131,7 +116,7 @@ accomplished e.g. with the package <code>terra</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load cabins vector data</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_cabins.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
-<span><span class="va">cabins_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+<span><span class="va">cabins_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span><span class="va">cabins_vect</span></span>
 <span><span class="co">#&gt;  class       : SpatVector </span></span>
 <span><span class="co">#&gt;  geometry    : points </span></span>
@@ -149,13 +134,13 @@ landscape used here. The data set has information for the type of
 building and municipality where each feature is located. We can
 visualize the cabins to have an idea of how they are distributed:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>We can now load the road data for the same area.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load roads vector data</span></span>
 <span><span class="va">f2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_roads.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
-<span><span class="va">roads_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f2</span><span class="op">)</span></span>
+<span><span class="va">roads_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f2</span><span class="op">)</span></span>
 <span><span class="va">roads_vect</span></span>
 <span><span class="co">#&gt;  class       : SpatVector </span></span>
 <span><span class="co">#&gt;  geometry    : lines </span></span>
@@ -173,7 +158,7 @@ each of which is also classified according to the road name, whether the
 road is public or private, and if the road traffic is high or low.</p>
 <p>Now we plot the roads data set:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads_vect</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads_vect</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_roads-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -205,7 +190,7 @@ rasterization process.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load vase raster data</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
-<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="input-rasters-for-point-data">Input rasters for point data<a class="anchor" aria-label="anchor" href="#input-rasters-for-point-data"></a>
 </h4>
@@ -217,16 +202,16 @@ cabins per pixel. Which input map should be used depends on the
 ecological indicator being assessed and the hypotheses around it. As
 illustration, we’ll compute here a map representing the count of cabins.
 We’ll rasterize the vector map using the function
-<code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize()</a></code> from the <code>terra</code> package, filling
+<code><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize()</a></code> from the <code>terra</code> package, filling
 the information in each pixel with the count of features within them
 (function <code>fun = length</code>). We also fill the background areas
 (pixels with no cabins) with value zero, since that is not default in
-the <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">terra::rasterize()</a></code> function.</p>
+the <code><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">terra::rasterize()</a></code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rasterize cabins counting the number of features in each pixel</span></span>
-<span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">cabins_vect</span>, <span class="va">r</span>, fun <span class="op">=</span> <span class="va">length</span><span class="op">)</span></span>
+<span><span class="va">cabins</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">cabins_vect</span>, <span class="va">r</span>, fun <span class="op">=</span> <span class="va">length</span><span class="op">)</span></span>
 <span><span class="co"># fill background as zero</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span><span class="co"># output</span></span>
 <span><span class="va">cabins</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
@@ -235,12 +220,13 @@ the <code><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
+<span><span class="co">#&gt; varname     : sample_area_cabins </span></span>
 <span><span class="co">#&gt; name        : V1 </span></span>
 <span><span class="co">#&gt; min value   :  0 </span></span>
 <span><span class="co">#&gt; max value   :  8</span></span></code></pre></div>
 <p>Now we plot the map to visualize the result:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_cabins_rast-1.png" width="700"></p>
 </div>
 <div class="section level4">
@@ -254,7 +240,7 @@ binary input raster, where 1 represents the presence of roads and
 <code>NA</code> represent the absence of roads in the pixel.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rasterize roads into a binary map 1/NA</span></span>
-<span><span class="va">roads</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">roads_vect</span>, <span class="va">r</span><span class="op">)</span></span>
+<span><span class="va">roads</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">roads_vect</span>, <span class="va">r</span><span class="op">)</span></span>
 <span><span class="co"># output</span></span>
 <span><span class="va">roads</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
@@ -263,12 +249,13 @@ binary input raster, where 1 represents the presence of roads and
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
+<span><span class="co">#&gt; varname     : sample_area_cabins </span></span>
 <span><span class="co">#&gt; name        : layer </span></span>
 <span><span class="co">#&gt; min value   :     1 </span></span>
 <span><span class="co">#&gt; max value   :     1</span></span></code></pre></div>
 <p>Now we plot the map to visualize the result:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_roads_rast-1.png" width="700"></p>
 <p>Note that here we did not fill the background of the map (areas
 without roads) with zero but kept the <code>NA</code> values. We did so
@@ -324,17 +311,17 @@ radii of 500 and 1000 m. Since the background of the input map is
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, zoi_cum~ecay500, zoi_cum~cay1000 </span></span>
+<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000 </span></span>
 <span><span class="co">#&gt; min values  :     1.46044e-09,     3.82157e-05,         0.00000,          0.0000 </span></span>
 <span><span class="co">#&gt; max values  :     1.00000e+00,     1.00000e+00,        51.57446,        112.6539</span></span></code></pre></div>
 <p>Since we opted to compute both ZOI metrics
 (<code>zoi_metric = "all"</code> by default, if nothing else is
 specified) using two different radii, the resulting raster is composed
-of <span class="math inline">\(\verb|2 x 2 = 4|\)</span> layers. Below
-we plot these layers to visualize the different spatial patterns:</p>
+of <span class="math inline">$\verb|2 x 2 = 4|$</span> layers. Below we
+plot these layers to visualize the different spatial patterns:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_cabins</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_cabins</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_zoi_cabins-1.png" width="700"></p>
 <p>The figure shows the two measures of the ZOI of the nearest feature
 in the row above (for radius = 500 and 1000 m) and the two measures of
@@ -376,14 +363,14 @@ radii of 1000 and 2000 m. Since the background of the input map is
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, zoi_cum~ecay500, zoi_cum~cay1000 </span></span>
+<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000 </span></span>
 <span><span class="co">#&gt; min values  :    2.151265e-24,    1.466719e-12,         0.00000,         0.00000 </span></span>
 <span><span class="co">#&gt; max values  :    1.000000e+00,    1.000000e+00,        11.56858,        28.16008</span></span></code></pre></div>
 <p>We again have four layers representing the two ZOI metrics for roads
 for the different radii:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_roads</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_roads</span><span class="op">)</span></span></code></pre></div>
 <p><img src="computing_zoi_files/figure-html/plot_zoi_roads-1.png" width="700"></p>
 <p>Here the ZOI of the nearest feature has a similar interpretation to
 the point data example. The ZOI in a given site represents the influence
@@ -397,9 +384,9 @@ the ZOI of 1000 m-radius, for instance, a site with a cumulative ZOI of
 1000 m radius around this site (but remember this is not a simple count
 but an exponentially-weighted count of the number of road pixels). If
 multiplied by the pixel size and divided by the size of the neighborhood
-(<span class="math inline">\(\pi \cdot r^2\)</span>), the cumulative ZOI
-metric represents the exponentially-weighted density of roads at 1000 m
-scale.</p>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mo>⋅</mo><msup><mi>r</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\pi \cdot r^2</annotation></semantics></math>),
+the cumulative ZOI metric represents the exponentially-weighted density
+of roads at 1000 m scale.</p>
 </div>
 <div class="section level3">
 <h3 id="area-infrastructure">Area infrastructure<a class="anchor" aria-label="anchor" href="#area-infrastructure"></a>
@@ -477,28 +464,26 @@ reindeer’s perspective. Polar Biology, 37(7), 1041–1054. </p>
 temporal scales: A review of reindeer and caribou response to human
 activity. Polar Biology, 31(4), 399–407. </p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Bernardo Niebuhr, Manuela Panzacchi, Bram van Moorter.</p>
+  <p>Developed by Bernardo Brandão Niebuhr, Manuela Panzacchi, Bram van Moorter.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
