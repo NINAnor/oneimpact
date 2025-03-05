@@ -388,4 +388,5 @@ vignette for a reasoning about where this might be useful.
 
 Niebuhr, B. B., van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,
 Alam, M., Skarin, A., & Panzacchi, M. Estimating the cumulative impact and zone of
-influence of anthropogenic infrastructure on biodiversity. *Submitted manuscript*.
+influence of anthropogenic infrastructure on biodiversity. _Methods in Ecology and Evolution_,
+14, 2362–2375. https://doi.org/10.1111/2041-210X.14133

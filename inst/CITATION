@@ -15,13 +15,13 @@ citEntry(
         as.person("Manuela Panzacchi")),
   journal  = {"Methods in Ecology and Evolution"},
   year     = {"2023"},
-  volume   = {""},
+  volume   = {"14"},
   number   = {},
-  pages    = {},
-  url      = {""},
+  pages    = {"2362–2375"},
+  url      = {"https://doi.org/10.1111/2041-210X.14133"},
   textVersion = paste("Niebuhr, B. B., Moorter, B. V., Stien, A., Tveraa, T., Strand, O., Langeland, K.,",
                       "Sandström, P., Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating the cumulative",
                       "impact and zone of influence of anthropogenic features on biodiversity.",
-                      "Methods in Ecology and Evolution."
+                      "Methods in Ecology and Evolution, 14, 2362–2375. https://doi.org/10.1111/2041-210X.14133"
   )
 )
