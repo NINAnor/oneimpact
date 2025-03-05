@@ -6,11 +6,10 @@
 \usage{
 set_points(
   n_features = 1000,
-  method = c("mobsim", "regular", "random", "raster", "NLMR")[1],
+  method = c("mobsim", "regular", "random", "raster")[1],
   centers = 1,
   width = 0.05,
   base_raster = NULL,
-  nlmr_function = "nlm_mpd",
   point_coordinates = NULL,
   res = 0.1,
   extent_x = c(0, 1),
@@ -18,19 +17,16 @@ set_points(
   buffer_around = 0,
   return_base_raster = TRUE,
   use_terra = TRUE,
-  crs = "",
-  ...
+  crs = ""
 )
 }
 \arguments{
 \item{n_features}{\verb{[integer(1)=1000]} \cr Total number of features to spread in space.}
 
-\item{method}{\verb{[character(1)]\{"mobsim", "regular", "random", "raster", "NLMR"\}} \cr Method used
+\item{method}{\verb{[character(1)]\{"mobsim", "regular", "random", "raster"\}} \cr Method used
 to simulate points in space.
 \code{mobsim} uses the function \code{\link[mobsim:sim_thomas_community]{mobsim::sim_thomas_community()}} from the \link{mobsim} package to simulate
-points. \code{raster} uses a base raster map as input to define weights and simulate the random points.
-\code{NLMR} creates a neutral landscape model using \link{NLMR} package and uses it as an input base raster.
-See \code{Details} for more information.}
+points. \code{raster} uses a base raster map as input to define weights and simulate the random points.}
 
 \item{centers}{\verb{[integer(1)=1]} \cr Number of centers around which the features will be placed.
 Used only if \code{method = "mobsim"}.}
@@ -40,10 +36,6 @@ and the center of the cluster. Used only if \code{method = "mobsim"}.}
 
 \item{base_raster}{\verb{[RasterLayer=NULL]} \cr Base raster to define weights for creating the random points.
 Used only if \code{method = "raster"}.}
-
-\item{nlmr_function}{\verb{[character(1)="nlm_mpd"]} \cr Name of the function from NLMR package used to create
-the base raster, to be used to define weights for creating the random points.
-Used only if \code{method = "NLMR"}.}
 
 \item{point_coordinates}{\verb{[data.frame=NULL]} \cr \code{data.frame} with (x,y) columns with coordinates
 already taken from elsewhere. This option is intended for when the points' coordinates were already
@@ -68,9 +60,7 @@ is created.}
 
 \item{crs}{\verb{[character(1)]} \cr Specification for the coordinate reference system
 of the \code{rast} object created from the points. Default is
-\code{"+proj=utm +zone=1 +datum=WGS84"}.}
-
-\item{...}{Other arguments passed as input to the NLMR functions, defined by the \code{nlmr_function}
+\code{"+proj=utm +zone=1 +datum=WGS84"}.
 argument.}
 }
 \value{
@@ -99,14 +89,6 @@ and their width.
 If \code{method = "raster"}, the function uses an input raster (defined by the argument
 \code{base_raster}) to define the probabilities of setting a given point in a certain pixel
 in space.
-
-If \code{method = "NLMR"}, the function also uses a raster to define the probabilities of
-setting a given point in a certain pixel in space, but this raster is created with
-a function from the \link{NLMR} package. The function name is defined by the argument
-\code{nlmr_function} and its arguments must be defined as additional parameters to
-\code{set_points()}.
-
-TO IMPROVE: implement rasterization with terra package
 }
 \examples{
 #-----
@@ -145,40 +127,6 @@ r <- raster::raster(matrix(runif(12),3,4)) |>
 # points from raster
 pts <- set_points(n_features = 100, method = "raster",
                   base_raster = r)
-plot(pts$base_rast)
-plot(pts$pts)
-plot(pts$rast, col = "black")
-
-#-----
-# using NLMR
-library(NLMR)
-
-# example NLM
-set.seed(123)
-ext <- 300
-nlm1 <- NLMR::nlm_mpd(ext, ext, 100, roughness = .5)
-nlm1[] <- scales::rescale(exp(nlm1[]))
-
-plot(nlm1)
-
-# points
-pts <- set_points(n_features = 1000, method = "raster",
-                  base_raster = nlm1)
-
-plot(pts$base_rast)
-plot(pts$pts)
-plot(pts$rast, col = "black")
-
-# OR we can do it directly
-
-# points
-ext <- 30000
-pts <- set_points(n_features = 1000, method = "NLMR",
-                  nlmr_function = "nlm_mpd",
-                  roughness = .2,
-                  res = 100,
-                  extent_x = c(0, ext), extent_y = c(0, ext))
-
 plot(pts$base_rast)
 plot(pts$pts)
 plot(pts$rast, col = "black")
