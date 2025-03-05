@@ -47,6 +47,7 @@ reference:
   - bag_models
   - concordance_indices
   - kernel_prediction
+  - pretty_seq
 - title: "Estimating ZOI - interpret and visualize models"
   desc: >
     Functions to help interpreting parameters and visualizing
