@@ -39,40 +39,6 @@ plot(pts$pts)
 plot(pts$rast, col = "black")
 
 #-----
-# using NLMR
-library(NLMR)
-
-# example NLM
-set.seed(123)
-ext <- 300
-nlm1 <- NLMR::nlm_mpd(ext, ext, 100, roughness = .5)
-nlm1[] <- scales::rescale(exp(nlm1[]))
-
-plot(nlm1)
-
-# points
-pts <- set_points(n_features = 1000, method = "raster",
-                  base_raster = nlm1)
-
-plot(pts$base_rast)
-plot(pts$pts)
-plot(pts$rast, col = "black")
-
-# OR we can do it directly
-
-# points
-ext <- 30000
-pts <- set_points(n_features = 1000, method = "NLMR",
-                  nlmr_function = "nlm_mpd",
-                  roughness = .2,
-                  res = 100,
-                  extent_x = c(0, ext), extent_y = c(0, ext))
-
-plot(pts$base_rast)
-plot(pts$pts)
-plot(pts$rast, col = "black")
-
-#-----
 # using random or regular
 
 set.seed(123)

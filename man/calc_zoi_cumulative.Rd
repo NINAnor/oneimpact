@@ -40,9 +40,8 @@ the presence of linear or area features, with zero as background.
 to the name of the input map within a GRASS GIS location and mapset.
 Continuous or discrete raster maps with multiple categories can be binarized
 to be used as input for \code{calc_zoi_cumulative()} through
-\code{\link[landscapetools:util_binarize]{landscapetools::util_binarize()}} in R or \code{\link[=grass_binarize]{grass_binarize()}}
-in GRASS GIS, or through common raster algebra in both
-environments.
+\code{\link[=grass_binarize]{grass_binarize()}} in GRASS GIS, or through common raster algebra in both
+R and GRASS.
 
 Notice that, different from \code{\link[=calc_zoi_nearest]{calc_zoi_nearest()}}, the input maps \code{x}
 must have zero as background values, instead of NA. In R it is possible to
@@ -208,7 +207,7 @@ location/mapset, and might be retrieved to R through the
 \code{\link[rgrass:readRAST]{rgrass::read_RAST()}} function or exported outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
-\details{
+\section{Details}{
 The input raster is supposed to
 represent the location of point, line, or polygon infrastructure
 (e.g. houses, roads, mining areas), but any landscape variable whose
@@ -292,6 +291,7 @@ such as mean, median, standard deviation etc.
 }
 }
 }
+
 \examples{
 # Running calc_zoi_cumulative through R
 library(terra)

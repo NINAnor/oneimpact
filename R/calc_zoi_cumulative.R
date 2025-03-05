@@ -31,6 +31,8 @@
 #' `r.out.gdal` module, for instance.
 #'
 #' @details
+#'
+#' # Details
 #' The input raster is supposed to
 #' represent the location of point, line, or polygon infrastructure
 #' (e.g. houses, roads, mining areas), but any landscape variable whose
@@ -119,9 +121,8 @@
 #' to the name of the input map within a GRASS GIS location and mapset.
 #' Continuous or discrete raster maps with multiple categories can be binarized
 #' to be used as input for `calc_zoi_cumulative()` through
-#' [landscapetools::util_binarize()] in R or [oneimpact::grass_binarize()]
-#' in GRASS GIS, or through common raster algebra in both
-#' environments.
+#' [oneimpact::grass_binarize()] in GRASS GIS, or through common raster algebra in both
+#' R and GRASS.
 #'
 #' Notice that, different from [oneimpact::calc_zoi_nearest()], the input maps `x`
 #' must have zero as background values, instead of NA. In R it is possible to
@@ -470,11 +471,15 @@ calc_zoi_cumulative_r <- function(
   }
 
   # rename cumulative zoi layer
+  # get number of layers
+  if(use_terra) nl <- terra::nlyr(r0) else raster::nlayers(r0)
+
+  if(nl > 1) pre <- names(r0) else pre <- ""
   if(type == "mfilter") {
-    if(!is.list(radius)) name <- "zoi_cumulative" else
-      name <- paste0("zoi_cumulative", 1:length(radius))
+    if(!is.list(radius)) name <- paste0(pre, "_zoi_cumulative") else
+      name <- paste0(pre, "_zoi_cumulative", 1:length(radius))
   } else {
-    name <- paste0("zoi_cumulative_", type, radius)
+    name <- paste0(pre, "_zoi_cumulative_", type, radius)
   }
 
   names(cumulative_r) <- name

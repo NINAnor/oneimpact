@@ -108,7 +108,7 @@ in Windows:
 
 ```{r where_grass}
 # For linux or within OSGeo4W shell
-grassdir <- system("grass78 --config path", intern = TRUE)
+grassdir <- system("grass --config path", intern = TRUE)
 grassdir
 ```
 

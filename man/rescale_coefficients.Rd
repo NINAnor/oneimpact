@@ -2,15 +2,33 @@
 % Please edit documentation in R/rescale_coefficients.R
 \name{rescale_coefficients}
 \alias{rescale_coefficients}
+\alias{rescale_coefficients.coxph}
+\alias{rescale_coefficients.lm}
+\alias{rescale_coefficients.glm}
+\alias{rescale_coefficients.bag}
 \title{Rescale standardized coefficients back to their original range after model fitting}
 \usage{
-rescale_coefficients(model, data)
+rescale_coefficients(...)
+
+\method{rescale_coefficients}{coxph}(model, data, ...)
+
+\method{rescale_coefficients}{lm}(model, data, ...)
+
+\method{rescale_coefficients}{glm}(model, data, ...)
+
+\method{rescale_coefficients}{bag}(bag, data, tostd = TRUE, ...)
 }
 \arguments{
 \item{model}{\cr Fitted model, i.e. the object created by a model fit funtion
 such as "lm", "glm", or "coxph".}
 
 \item{data}{\cr The original \code{data.frame} with the data used to fit the model.}
+
+\item{bag}{\cr A bag of models, as result of the \code{\link[=bag_models]{bag_models()}} function.}
+
+\item{standardize}{\verb{[logical(1)=TRUE]} If \code{TRUE} (Default), the coefficients are standardized.
+If \code{FALSE}, the coefficients are standardized. Only numeric coefficients are
+standardized.}
 }
 \value{
 A vector of rescaled coefficients for the input model.

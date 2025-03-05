@@ -19,30 +19,17 @@
 #' `base_raster`) to define the probabilities of setting a given point in a certain pixel
 #' in space.
 #'
-#' If `method = "NLMR"`, the function also uses a raster to define the probabilities of
-#' setting a given point in a certain pixel in space, but this raster is created with
-#' a function from the [NLMR] package. The function name is defined by the argument
-#' `nlmr_function` and its arguments must be defined as additional parameters to
-#' `set_points()`.
-#'
-#' TO IMPROVE: implement rasterization with terra package
-#'
 #' @param n_features `[integer(1)=1000]` \cr Total number of features to spread in space.
-#' @param method `[character(1)]{"mobsim", "regular", "random", "raster", "NLMR"}` \cr Method used
+#' @param method `[character(1)]{"mobsim", "regular", "random", "raster"}` \cr Method used
 #' to simulate points in space.
 #' `mobsim` uses the function [mobsim::sim_thomas_community()] from the [mobsim] package to simulate
 #' points. `raster` uses a base raster map as input to define weights and simulate the random points.
-#' `NLMR` creates a neutral landscape model using [NLMR] package and uses it as an input base raster.
-#' See `Details` for more information.
 #' @param centers `[integer(1)=1]` \cr Number of centers around which the features will be placed.
 #' Used only if `method = "mobsim"`.
 #' @param width `[numeric(1)=0.05]` \cr Mean distance between each of the features in a cluster
 #' and the center of the cluster. Used only if `method = "mobsim"`.
 #' @param base_raster `[RasterLayer=NULL]` \cr Base raster to define weights for creating the random points.
 #' Used only if `method = "raster"`.
-#' @param nlmr_function `[character(1)="nlm_mpd"]` \cr Name of the function from NLMR package used to create
-#' the base raster, to be used to define weights for creating the random points.
-#' Used only if `method = "NLMR"`.
 #' @param point_coordinates `[data.frame=NULL]` \cr `data.frame` with (x,y) columns with coordinates
 #' already taken from elsewhere. This option is intended for when the points' coordinates were already
 #' generated or taken from a real landscape. In this case, no points are simulated and they are
@@ -61,7 +48,6 @@
 #' @param crs `[character(1)]` \cr Specification for the coordinate reference system
 #' of the `rast` object created from the points. Default is
 #' `"+proj=utm +zone=1 +datum=WGS84"`.
-#' @param ... Other arguments passed as input to the NLMR functions, defined by the `nlmr_function`
 #' argument.
 #'
 #' @returns A list with three elements: (1) `pts`, the coordinates (x,y) of the simulated points;
@@ -75,18 +61,16 @@
 
 # function to simulate points in the landscape
 set_points <- function(n_features = 1000,
-                       method = c("mobsim", "regular", "random", "raster", "NLMR")[1],
+                       method = c("mobsim", "regular", "random", "raster")[1],
                        centers = 1, width = 0.05,
                        base_raster = NULL,
-                       nlmr_function = "nlm_mpd",
                        point_coordinates = NULL,
                        res = 0.1,
                        extent_x = c(0,1), extent_y = c(0,1),
                        buffer_around = 0,
                        return_base_raster = TRUE,
                        use_terra = TRUE,
-                       crs = "",
-                       ...) {
+                       crs = "") {
 
   # get point coordinates if they were taken from elsewhere
   if(!is.null(point_coordinates)) {
@@ -99,20 +83,7 @@ set_points <- function(n_features = 1000,
                                           sigma = width, mother_points = centers,
                                           xrange = extent_x, yrange = extent_y)$census[,1:2]
     } else {
-      if(method %in% c("NLMR", "raster")) {
-
-        # NLMR
-        if(method == "NLMR") {
-          # simulate points with NLMR
-          # get function
-          nlm_func <- get(nlmr_function, asNamespace("NLMR"))
-          # get nrow and ncol
-          ncol = round(abs(diff(extent_x))/res)
-          nrow = round(abs(diff(extent_y))/res)
-          # simulate landscape
-          base_raster <- nlm_func(nrow = nrow, ncol = ncol, resolution = res,
-                                  ...)
-        }
+      if(method %in% c("raster")) {
 
         # simulate points
         pts <- oneimpact::set_points_from_raster(base_raster = base_raster,
