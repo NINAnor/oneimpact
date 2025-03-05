@@ -31,7 +31,7 @@
 #' `penalty.factor = 1/(coef_ridge^gamma)`, where `coef_ridge` are the coefficients of a Ridge regression.
 #' Default is `gamma = 1`, but values of 0.5 or 2 could also be tried, as suggested by the
 #' authors (Zou et al 2006).
-#' @param ... Options for [onewimpact::net_logit()] and [glmnet::glmnet()].
+#' @param ... Options for [oneimpact::net_logit()] and [glmnet::glmnet()].
 #'
 #' @references Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 #'

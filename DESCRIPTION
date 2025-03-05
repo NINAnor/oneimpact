@@ -7,9 +7,9 @@ Authors@R: c(
     person("Bernardo", " Brandão Niebuhr", email = "bernardo_brandaum@yahoo.com.br",
         role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0453-315X")),
     person("Manuela", "Panzacchi", email = "manuela.panzacchi@nina.no",
-        role = "aut"),
+        role = "aut", comment = c(ORCID = "0000-0002-4645-9656")),
     person("Neri", "Thorsen", email = "neri.thorsen@nina.no",
-        role = "ctb"),
+        role = "ctb", comment = c(ORCID = "0000-0002-3472-0546")),
     person("Bram", "van Moorter", email = "bram.van.moorter@nina.no",
         role = "aut", comment = c(ORCID = "0000-0002-3196-1993")))
 Description: The package presents a set of tools to assess cumulative impacts
@@ -33,15 +33,15 @@ Imports:
     DescTools,
     pROC,
     terra, 
-    sf
-Suggests: 
+    sf,
+    mobsim
+Suggests:
+    knitr,
+    rmarkdown,
     foreach,
     amt,
-    maxnet,
-    knitr,
-    rmarkdown
+    maxnet
 Remotes:
-    MoBiodiv/mobsim,
     ropensci/NLMR
 License: GPL-3
 Encoding: UTF-8
