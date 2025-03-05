@@ -40,7 +40,8 @@ Suggests:
     rmarkdown,
     foreach,
     amt,
-    maxnet
+    maxnet,
+    smoothie
 Remotes:
     ropensci/NLMR
 License: GPL-3

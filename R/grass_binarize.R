@@ -10,8 +10,7 @@
 #' (through the package [rgrass]), and that the input map is already loaded
 #' within this GRASS GIS mapset.
 #'
-#' For a similar procedure within R, use the function [landscapetools::util_binarize()]
-#' or the raster algebra functions within the [raster] and [terra] packages.
+#' For a similar procedure within R, use raster algebra functions within the [raster] and [terra] packages.
 #'
 #' @param x `[character(1)]` \cr Name of the input raster map, within a GRASS GIS location and mapset.
 #'
@@ -49,9 +48,8 @@
 #' within the GRASS GIS mapset. In R, the output is a string with the name of this
 #' map.
 #'
-#' @seealso See also [landscapetools::util_binarize()], [landscapetools::util_classify()],
-#' and a documentation of raster algebra with [terra] [here](https://rspatial.org/terra/pkg/4-algebra.html) and with
-#' [raster] [here](https://rspatial.org/raster/pkg/4-algebra.html).
+#' @seealso See also the documentation of raster algebra with [terra] [here](https://rspatial.org/terra/pkg/4-algebra.html)
+#' and with [raster] [here](https://rspatial.org/raster/pkg/4-algebra.html).
 #'
 #' @example examples/grass_binarize_example.R
 #'

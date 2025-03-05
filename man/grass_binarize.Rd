@@ -71,8 +71,7 @@ the R session and a GRASS GIS location and mapset
 within this GRASS GIS mapset.
 }
 \details{
-For a similar procedure within R, use the function \code{\link[landscapetools:util_binarize]{landscapetools::util_binarize()}}
-or the raster algebra functions within the \link{raster} and \link{terra} packages.
+For a similar procedure within R, use raster algebra functions within the \link{raster} and \link{terra} packages.
 }
 \examples{
 # libraries
@@ -137,7 +136,6 @@ plot(cabins_bin2vals,
               "Binarized map, break = 0.8"))
 }
 \seealso{
-See also \code{\link[landscapetools:util_binarize]{landscapetools::util_binarize()}}, \code{\link[landscapetools:util_classify]{landscapetools::util_classify()}},
-and a documentation of raster algebra with \link{terra} \href{https://rspatial.org/terra/pkg/4-algebra.html}{here} and with
-\link{raster} \href{https://rspatial.org/raster/pkg/4-algebra.html}{here}.
+See also the documentation of raster algebra with \link{terra} \href{https://rspatial.org/terra/pkg/4-algebra.html}{here}
+and with \link{raster} \href{https://rspatial.org/raster/pkg/4-algebra.html}{here}.
 }
