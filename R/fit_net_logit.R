@@ -526,7 +526,7 @@ fit_net_logit <- function(f, data,
   for(mt in metrics_evaluate) {
 
     # get metric function
-    mt_fun <- getFromNamespace(metric, ns = "oneimpact")
+    mt_fun <- getFromNamespace(mt, ns = "oneimpact")
 
     # set min or max as optim function
     if(mt == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max

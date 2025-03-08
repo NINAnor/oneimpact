@@ -463,7 +463,7 @@ fit_net_clogit <- function(f, data,
         }
       } else {
 
-        print("Fitting Lasso...")
+        if(verbose) print("Fitting Lasso...")
 
       }
     }
@@ -525,7 +525,7 @@ fit_net_clogit <- function(f, data,
   for(mt in metrics_evaluate) {
 
     # get metric function
-    mt_fun <- getFromNamespace(metric, ns = "oneimpact")
+    mt_fun <- getFromNamespace(mt, ns = "oneimpact")
 
     # set min or max as optim function
     if(mt == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max
@@ -542,11 +542,13 @@ fit_net_clogit <- function(f, data,
     metrics_evaluated[[mt]]$lambda_opt <- fit$lambda[opt_fun(d)]
 
     # print
-    print(metrics_evaluated[[mt]]$metric)
-    print(metrics_evaluated[[mt]]$lambda_opt)
-    plot(fit$lambda, metrics_evaluated[[mt]]$test_scores); abline(v = metrics_evaluated[[mt]]$lambda_opt)
-    plot(fit, xvar = "lambda"); abline(v = metrics_evaluated[[mt]]$lambda_opt)
-    pie(abs(coef(fit, s = metrics_evaluated[[mt]]$lambda_opt)[,1]), labels = rownames(fit$beta))
+    if(verbose) {
+      print(metrics_evaluated[[mt]]$metric)
+      print(metrics_evaluated[[mt]]$lambda_opt)
+      plot(fit$lambda, metrics_evaluated[[mt]]$test_scores); abline(v = metrics_evaluated[[mt]]$lambda_opt)
+      plot(fit, xvar = "lambda"); abline(v = metrics_evaluated[[mt]]$lambda_opt)
+      pie(abs(coef(fit, s = metrics_evaluated[[mt]]$lambda_opt)[,1]), labels = rownames(fit$beta))
+    }
 
     # coefs
     coef <- matrix(coef(fit, s = fit$lambda[opt_fun(d)])) # coefficients
