@@ -78,6 +78,11 @@ bag_predict_spat <- function(bag,
   } else {
     grd <- data[, c(gid, coords, model_vars)]
   }
+
+  # check NA columns so they are not propagated
+  nas <- apply(grd, 2, function(x) sum(is.na(x)))/nrow(grd)
+  if(length(ww <- which(nas > 0.9)) > 0) grd[, ww] <- 0
+
   grd[[case]] <- rep(0, nrow(grd))
   nrow(grd)
   colnames(grd)
@@ -310,9 +315,15 @@ bag_predict_spat_vars <- function(bag,
     if(is.null(bag$coef_std)) stop("There are no standardized coefficients estimated in the bag. Please check if the parameter 'standardize' should be FALSE.")
 
     grd <- cbind(data[, c(gid, coords)], scale(data[model_vars], center = bag_summary$data_summary[10,-1], scale = bag_summary$data_summary[11,-1]))
+
   } else {
     grd <- data[, c(gid, coords, model_vars)]
   }
+
+  # check NA columns so they are not propagated
+  nas <- apply(grd, 2, function(x) sum(is.na(x)))/nrow(grd)
+  if(length(ww <- which(nas > 0.9)) > 0) grd[, ww] <- 0
+
   grd[[case]] <- rep(0, nrow(grd))
   nrow(grd)
   colnames(grd)
