@@ -449,7 +449,7 @@ fit_net_logit <- function(f, data,
         }
       } else {
 
-        print("Fitting Lasso...")
+        if(verbose) print("Fitting Lasso...")
 
       }
     }
@@ -543,9 +543,9 @@ fit_net_logit <- function(f, data,
     metrics_evaluated[[mt]]$lambda_opt <- fit$lambda[opt_fun(d)]
 
     # print
-    print(metrics_evaluated[[mt]]$metric)
-    print(metrics_evaluated[[mt]]$lambda_opt)
     if(verbose) {
+      print(metrics_evaluated[[mt]]$metric)
+      print(metrics_evaluated[[mt]]$lambda_opt)
       plot(fit$lambda, metrics_evaluated[[mt]]$test_scores); abline(v = metrics_evaluated[[mt]]$lambda_opt)
       plot(fit, xvar = "lambda"); abline(v = metrics_evaluated[[mt]]$lambda_opt)
       pie(abs(coef(fit, s = metrics_evaluated[[mt]]$lambda_opt)[,1]), labels = rownames(fit$beta))
