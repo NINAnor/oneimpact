@@ -114,7 +114,7 @@ fit_net_clogit <- function(f, data,
   # prepare data
 
   # filter out NAs and strata with only 1s or 0s
-  data <- filter_na_strata(f, data)
+  # data <- filter_na_strata(f, data)
 
   # get variables
   wcols <- extract_response_strata(f, covars = TRUE)
@@ -177,6 +177,11 @@ fit_net_clogit <- function(f, data,
     train_data  <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$train[[i]]], all_vars]
     test_data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$test[[i]]], all_vars]
     validate_data <- data[data[[strat]] %in% data[data[[case]] == 1,][[strat]][samples$validate[[i]]], all_vars]
+
+    # if(!is.null(samples$blockH0)) {
+    #   data[[strat]] <- samples$blockH0[samples$validate[[i]]]
+    # }
+
   } else {
     train_data  <- data[data[[strat]] %in% samples$train[[i]], all_vars]
     test_data <- data[data[[strat]] %in% samples$test[[i]], all_vars]
@@ -601,10 +606,18 @@ fit_net_clogit <- function(f, data,
     val <- data.frame(x = val_pred_vals[,1],
                       y = validate_data[[wcols$response]],
                       strat = validate_data[[wcols$strata]])
+
+    # if(is.null(samples$sp_strat_id)) {
+    #   val <- cbind(val, blockH0=samples$blockH0[samples$validate[[i]]])
+    # } else {
     val <- merge(val, data.frame(strat = samples$sp_strat_id, blockH0=samples$blockH0),
                  by = "strat", all.x = T, all.y = F)
+    # }
 
     if(!is.null(samples$blockH0)) {
+
+      # val <- merge(val, data.frame(strat = samples$sp_strat_id, blockH0=samples$blockH0),
+      #              by = "strat", all.x = T, all.y = F)
 
       # data[data$strat %in% validate_data[[wcols$strata]],]$herd |> table()
       val2 <- split(val, val$blockH0)
@@ -620,6 +633,13 @@ fit_net_clogit <- function(f, data,
       metrics_evaluated[[mt]]$validation_score <- unlist(lapply(val2, mt_fun))
 
     } else {
+
+      # if(is.null(samples$sp_strat_id)) {
+      #   val2 <- split(val, samples$blockH0[samples$validate[[i]]])
+      # } else {
+      #   val2 <- split(val, samples$validate[[i]])
+      # }
+
       metrics_evaluated[[mt]]$validation_score <- mt_fun(val)
     }
 
