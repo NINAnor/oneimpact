@@ -130,17 +130,17 @@ create_resamples <- function (y, times = 10,
 
         # validate
         index_val <- seq(along = y)
-        val <- sort(sample(index_val, size = nrow(indexes[[3]]), replace = TRUE))
+        val <- sort(sample(index_val, size = nrow(indexes[[3]]), replace = replace))
 
         # train/fit
         index_train <- index_val |>
           setdiff(val)
-        train <- sort(sample(index_train, size = nrow(indexes[[1]]), replace = TRUE))
+        train <- sort(sample(index_train, size = nrow(indexes[[1]]), replace = replace))
 
         # test/calibrate
         index_test <- index_train |>
           setdiff(train)
-        test <- sort(sample(index_test, size = nrow(indexes[[2]]), replace = TRUE))
+        test <- sort(sample(index_test, size = nrow(indexes[[2]]), replace = replace))
 
         indexes[[1]][,col] <- train
         indexes[[2]][,col] <- test
@@ -182,12 +182,12 @@ create_resamples <- function (y, times = 10,
         # train/fit
         index_train <- index_val |>
           setdiff(val)
-        train <- sort(sample(index_train, size = nrow(indexes[[1]]), replace = TRUE))
+        train <- sort(sample(index_train, size = nrow(indexes[[1]]), replace = replace))
 
         # test/calibrate
         index_test <- index_train |>
           setdiff(train)
-        test <- sort(sample(index_test, size = nrow(indexes[[2]]), replace = TRUE))
+        test <- sort(sample(index_test, size = nrow(indexes[[2]]), replace = replace))
 
         indexes[[1]][,col] <- train
         indexes[[2]][,col] <- test
