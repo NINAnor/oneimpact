@@ -59,55 +59,99 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><code>oneimpact</code> provides tools for the assessment of cumulative impacts of multiple infrastructure and land use modifications in ecological studies. The tools use R interface but the main calculations might be run in both R and GRASS GIS. The tools available so far are:</p>
+<p><code>oneimpact</code> provides tools for the assessment of cumulative impacts of multiple infrastructure and land use modifications in ecological studies. This includes tools to calculate the zone of influence (ZOI) of anthropogenic variables as well as tools for model fitting, estimation of the effect size and ZOI, and ancillary functions. The functions dealing with spatial data processing can be run in both R and GRASS GIS, using R as an interface. The tools available so far are:</p>
+<div class="section level2">
+<h2 id="compute-spatial-layers-representing-zones-of-influence">Compute spatial layers representing zones of influence<a class="anchor" aria-label="anchor" href="#compute-spatial-layers-representing-zones-of-influence"></a>
+</h2>
+<p>The first set of functions in <code>oneimpact</code> are aimed at computing the (potential) ZOI of infrastructure or other spatial covariates. This means we use spatial information on where they are located to compute the density of features in space (i.e. the cumulative ZOI) and/or the (decay) distance to the nearest feature (i.e. the ZOI of the nearest), given an expected ZOI radius (i.e. the distance up to which a given feature is expected to affect a certain species or process). These functions do not estimate the ZOI, though (which is context and process dependent); for that see more functions further down.</p>
+<p>Here are the main functions in <code>oneimpact</code> to compute spatial layers representing zones of influence.</p>
 <div class="section level3">
 <h3 id="zone-of-influence-zoi-decay-functions">Zone of influence (ZOI) decay functions<a class="anchor" aria-label="anchor" href="#zone-of-influence-zoi-decay-functions"></a>
 </h3>
 <ul>
-<li>zoi_functions: a set of decay zone of influence functions to characterize different shapes of the ZOI around infrastructure, parameterized based on the zone of influence radius. The functions implemented so far are: threshold (<code>threshold_decay</code> or <code>step_decay</code>), linear decay (<code>linear_decay</code> or <code>bartlett_decay</code> or <code>tent_decay</code>), exponential decay (<code>exp_decay</code>), or Gaussian decay (<code>gaussian_decay</code> or <code>half_norm_decay</code>).</li>
+<li>zoi_functions: a set of decay zone of influence functions to characterize different shapes of the ZOI around infrastructure, parameterized based on the zone of influence radius. The functions implemented so far are: threshold (<code><a href="reference/zoi_functions.html">threshold_decay()</a></code> or <code><a href="reference/zoi_functions.html">step_decay()</a></code>), linear decay (<code><a href="reference/zoi_functions.html">linear_decay()</a></code> or <code><a href="reference/zoi_functions.html">bartlett_decay()</a></code> or <code><a href="reference/zoi_functions.html">tent_decay()</a></code>), exponential decay (<code><a href="reference/zoi_functions.html">exp_decay()</a></code>), or Gaussian decay (<code><a href="reference/zoi_functions.html">gaussian_decay()</a></code> or <code><a href="reference/zoi_functions.html">half_norm_decay()</a></code>).</li>
 <li>
-<code>plot_zoi1d</code>: plot ZOI in 1 dimensional space for multiple points infrastructure, using both the ZOI of the nearest feature and the cumulative ZOI metric.</li>
+<code><a href="reference/plot_zoi1d.html">plot_zoi1d()</a></code>: plot ZOI in 1 dimensional space for multiple points infrastructure, using both the ZOI of the nearest feature and the cumulative ZOI metric.</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="compute-zones-of-influence-zoi">Compute zones of influence (ZOI):<a class="anchor" aria-label="anchor" href="#compute-zones-of-influence-zoi"></a>
+<h3 id="compute-zones-of-influence-zoi">Compute zones of influence (ZOI)<a class="anchor" aria-label="anchor" href="#compute-zones-of-influence-zoi"></a>
 </h3>
 <ul>
 <li>
-<code>calc_zoi_nearest</code>: Calculate the zone of influence from the nearest infrastructure, according to multiple possible decay functions and zones of influence radii.</li>
+<code><a href="reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>: Calculate the zone of influence from the nearest infrastructure, according to multiple possible decay functions and zones of influence radii.</li>
 <li>
-<code>calc_zoi_cumulative</code>: Calculate the cumulative zone of influence of multiple features, according to multiple possible decay functions and zones of influence radii.</li>
+<code><a href="reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>: Calculate the cumulative zone of influence of multiple features, according to multiple possible decay functions and zones of influence radii.</li>
 <li>
-<code>calc_zoi</code>: Calculate both the the ZOI of the nearest infrastructure and the cumulative ZOI, at multiple scales or zones of influence radii.</li>
+<code><a href="reference/calc_zoi.html">calc_zoi()</a></code>: Calculate both the the ZOI of the nearest infrastructure and the cumulative ZOI, at multiple scales or zones of influence radii.</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="spatial-filters">Spatial filters:<a class="anchor" aria-label="anchor" href="#spatial-filters"></a>
+<h3 id="spatial-filters">Spatial filters<a class="anchor" aria-label="anchor" href="#spatial-filters"></a>
 </h3>
 <ul>
 <li>
-<code>create_filter</code>: Create filters or weight matrices for neighborhood analysis, according to different decay functions and parameterized using the zone of influence radius.</li>
+<code>create_filter()</code>: Create filters or weight matrices for neighborhood analysis, according to different decay functions and parameterized using the zone of influence radius.</li>
 <li>
-<code>save_filter</code>: Saves filters/weight matrices outside R for use within GRASS GIS modules.</li>
+<code>save_filter()</code>: Saves filters/weight matrices outside R for use within GRASS GIS modules.</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="estimate-the-cumulative-impact-and-the-zoi-of-features-on-a-certain-species-or-process">Estimate the cumulative impact and the ZOI of features on a certain species or process<a class="anchor" aria-label="anchor" href="#estimate-the-cumulative-impact-and-the-zoi-of-features-on-a-certain-species-or-process"></a>
+</h2>
+<p>The <code>oneimpact</code> package also allows us to, given a set of potential candidate ZOIs (with possibly different types, shapes, and radii; computed with the functions above), estimate the actual effect and ZOI of the variables on a certain species or process. This is done combining three elements:</p>
+<ul>
+<li>Bootstrap aggregation (bagging), a multi-model bootstrap procedure that allows us to estimate the uncertainty in the effect sizes and ZOI radii;</li>
+<li>Penalized regression, an approach that allows us to penalize estimated coefficients and possibly remove the least likely covariates from a model, i.e., it allows us to perform model fitting together with variable section;</li>
+<li>Nested cross-validation, which allows is to consider hierarchical, spatial, or temporally cross-validation schemes in model and variable/feature selection.</li>
+</ul>
+<div class="section level3">
+<h3 id="estimating-zoi---set-up-analysis">Estimating ZOI - set up analysis<a class="anchor" aria-label="anchor" href="#estimating-zoi---set-up-analysis"></a>
+</h3>
+<p>Functions to set up RSF and SSF analyses using ZOI variables:</p>
+<ul>
+<li>
+<code><a href="reference/add_zoi_formula.html">add_zoi_formula()</a></code>: Adds ZOI radii to formula</li>
+<li>
+<code><a href="reference/spat_strat.html">spat_strat()</a></code>: Prepares data for spatially stratified cross‐validation schemes</li>
+<li>
+<code><a href="reference/explore_blocks_pre.html">explore_blocks_pre()</a></code> and <code><a href="reference/explore_blocks.html">explore_blocks()</a></code>: Explore hierarchical blocks before or after sampling or spatial stratification, respectively</li>
+<li>
+<code><a href="reference/create_resamples.html">create_resamples()</a></code>: Create samples for fitting, calibrating, and validating models in a bootstrap/baggin procedure.</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="ancillary-functions">Ancillary functions:<a class="anchor" aria-label="anchor" href="#ancillary-functions"></a>
+<h3 id="estimating-zoi---fit-models">Estimating ZOI - fit models<a class="anchor" aria-label="anchor" href="#estimating-zoi---fit-models"></a>
 </h3>
+<p>Functions to fit RSF and SSF and estimate ZOI using penalized regression</p>
 <ul>
-<li>
-<code>grass_binarize</code>: Binarize continuous or multi-class categorical rasters within GRASS GIS. Binary maps may be used as input for cumulative zone of influence and kernel density calculation.</li>
-<li>
-<code>grass_v2rast_count</code>: Rasterize a vector files counting the number of features within each pixel of the output raster. Count rasters may be used as input for cumulative zone of influence and kernel density calculation.</li>
+<li><p><code><a href="reference/bag_fit_net_clogit.html">bag_fit_net_clogit()</a></code>: Fits a a bag of conditional logistic regressions/SSF/iSSF using glmnet. This function is a wrapper around <code><a href="reference/fit_net_clogit.html">fit_net_clogit()</a></code> which is the one properly setting up the model fitting, tunning, and validation. It allows the use of different penalization algorithms, including Lasso, Ridge, Adaptive Lasso, and different adaptations from Adaptive Lasso. This function calls the function <code><a href="reference/net_logit.html">net_logit()</a></code> which is the one properly calling <code>glmnet</code> and fitting the model.</p></li>
+<li><p><code><a href="reference/bag_fit_net_logit.html">bag_fit_net_logit()</a></code> (and <code><a href="reference/fit_net_logit.html">fit_net_logit()</a></code>, <code><a href="reference/net_logit.html">net_logit()</a></code>): equivalent to the one above, but performing common logistic regression, with no strata.</p></li>
+<li><p><code><a href="reference/bag_load_models.html">bag_load_models()</a></code>: Load a vector of files with the output of <code><a href="reference/fit_net_clogit.html">fit_net_clogit()</a></code> or <code><a href="reference/fit_net_logit.html">fit_net_logit()</a></code> and put them on a bag.</p></li>
+<li><p><code><a href="reference/bag_models.html">bag_models()</a></code>: Bag a list of loaded/fitted models fitted through <code><a href="reference/fit_net_clogit.html">fit_net_clogit()</a></code> or <code><a href="reference/fit_net_logit.html">fit_net_logit()</a></code>. This created an object of class <code>bag</code> with all information for understanding and making prediction from the bag of models.</p></li>
+<li><p><code><a href="reference/concordance_indices.html">AUC()</a></code>, <code><a href="reference/concordance_indices.html">conditionalAUC()</a></code>, <code><a href="reference/concordance_indices.html">coxnet.deviance()</a></code>, <code><a href="reference/concordance_indices.html">Cindex()</a></code>, <code><a href="reference/concordance_indices.html">conditionalSomersD()</a></code>: functions used for model tunning (selecting penalties) and validation.</p></li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="support-for-landscape-simulation">Support for landscape simulation:<a class="anchor" aria-label="anchor" href="#support-for-landscape-simulation"></a>
+<h3 id="estimating-zoi---interpret-and-visualize-models">Estimating ZOI - interpret and visualize models<a class="anchor" aria-label="anchor" href="#estimating-zoi---interpret-and-visualize-models"></a>
 </h3>
+<p>Functions to help interpreting parameters and visualizing cumulative impacts from bags of fitted models:</p>
 <ul>
 <li>
-<code>set_points</code>: simulate points in a landscape according to different rules and spatial patterns.</li>
+<code><a href="reference/bag_predict.html">bag_predict()</a></code>: Prediction of a bag of models to new data.</li>
+<li>
+<code><a href="reference/variable_importance.html">variable_importance()</a></code>, <code><a href="reference/plot_importance.html">plot_importance()</a></code>: Computes and plots variable importance from a bag of models.</li>
+<li>
+<code><a href="reference/plot_coef.html">plot_coef()</a></code>: Plots the coefficients of bags of models.</li>
+<li>
+<code><a href="reference/plot_response.html">plot_response()</a></code>: Plots (partial) response curves from a bag of models.</li>
+<li>
+<code><a href="reference/bag_predict_spat.html">bag_predict_spat()</a></code>: Predict bag of models in space.</li>
+<li>
+<code><a href="reference/bag_predict_spat.html">bag_predict_spat_vars()</a></code>: Predict reponses of each individual covariate in space according to a bag of models.</li>
 </ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -127,7 +171,8 @@
 <div class="section level2">
 <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
-<p>The <code>oneimpact</code> functions are greatly based on neighborhood analyses made through the <a href="https://rspatial.org/terra/pkg/index.html" class="external-link"><code>terra</code> package</a> in R and on three GRASS GIS modules: <a href="https://grass.osgeo.org/grass78/manuals/r.mfilter.html" class="external-link"><code>r.mfilter</code></a>, <a href="https://grass.osgeo.org/grass78/manuals/r.resamp.filter.html" class="external-link"><code>r.resamp.filter</code></a>, and <a href="https://grass.osgeo.org/grass78/manuals/r.neighbors.html" class="external-link"><code>r.neighbors</code></a>. The connection between R and GRASS GIS is made through the <a href="https://github.com/rsbivand/rgrass" class="external-link"><code>rgrass7</code></a> R package.</p>
+<p>For model fitting nad estimation of ZOI, see the pacakage <a href="https://glmnet.stanford.edu/index.html" class="external-link"><code>glmnet</code></a>, which is the backbone of the modeling approach used in <code>oneimpact</code>. For other similar approaches, check the <a href="https://cran.r-project.org/web/packages/maxnet/index.html" class="external-link"><code>maxnet()</code></a> for MaxEnt species distribution models using <code>glmnet</code>.</p>
+<p>The <code>oneimpact</code> functions to compute the ZOI layers are greatly based on neighborhood analyses made through the <a href="https://rspatial.org/terra/pkg/index.html" class="external-link"><code>terra</code> package</a> in R and on three GRASS GIS modules: <a href="https://grass.osgeo.org/grass78/manuals/r.mfilter.html" class="external-link"><code>r.mfilter</code></a>, <a href="https://grass.osgeo.org/grass78/manuals/r.resamp.filter.html" class="external-link"><code>r.resamp.filter</code></a>, and <a href="https://grass.osgeo.org/grass78/manuals/r.neighbors.html" class="external-link"><code>r.neighbors</code></a>. The connection between R and GRASS GIS is made through the <a href="https://github.com/rsbivand/rgrass" class="external-link"><code>rgrass7</code></a> R package.</p>
 </div>
 <div class="section level2">
 <h2 id="meta">Meta<a class="anchor" aria-label="anchor" href="#meta"></a>
