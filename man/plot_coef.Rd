@@ -7,7 +7,7 @@
 plot_coef(
   bag,
   terms = "all",
-  models = 1:bag$n,
+  models = 1:bag$n_above_threshold,
   weighted = TRUE,
   remove_weight_zero = TRUE,
   what = c("all_models", "average")[1],
