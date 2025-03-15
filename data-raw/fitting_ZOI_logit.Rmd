@@ -1,5 +1,5 @@
 ---
-title: "Fitting models to estimate the ZOI in RSF setup using bagging and penalized regression"
+title: "Estimating zones of influence in resource selection functions using bagging and penalized regression"
 author: "Bernardo Niebuhr"
 format: 
   html:
@@ -32,22 +32,31 @@ The infrastructures considered were private cottages and public tourism resorts.
 about the cumulative ZOI approach, the data collection, and the data preparation for analysis might 
 be found in Niebuhr et al. 2023.
 
-Here we show the workflow for preparing the data, fitting, and checking model fits combining 
-penalized regression and bootstrap aggregation (bagging). We do it using three different fitting 
-regression procedures: Lasso, Adaptive Lasso, and the "Decay Adaptive Lasso" that we propose here.
+Here we show the workflow for preparing the data, fitting a conditional logistic regression model to it, 
+and checking model fits combining bootstrap aggregation (bagging) and penalized regression. In a bootstrap
+aggregation setup, the model is repeatedly fitted to a subset of the full data set and model fits 
+are aggregated into a bag (a group of models). Each model model is based on a different sub-set (a 
+resample) of the full data set, allowing variation among them and the estimation of uncertinaty on
+the parameters and variables important for the process. The penalized regression approach
+allows us to perform model fitting and variable selection within the same procedure.
+The data is split into fitting/train sets, used to fit the individual models with multiple
+possible penalty parameters, and tuning/test sets, used to calibrate the model, select the
+most parsimonious penalty parameter, and select the best fitted model, possibly removing
+unimportant variables from it.
 
-# Lasso fitting
+Penalized regression might be fitted using different approaches, such as Ridge, Lasso,
+and Adaptive Lasso. Ridgre regression shrinks the parameters toward zero, but still keep
+all of them in the final fitted model. Lasso (and Adaptive Lasso) allow for variable selection
+as well, potentially removing unimportant variables from the fitted model. The Adaptive
+Lasso allows a different penalization of different coefficients and is therefore
+more flexible. The `oneimpact` package offers different "flavors" of Adaptive Lasso,
+by allowing different ways to set the prior penalties to the different ZOI and non-ZOI
+variables.
+For the purpose of this vignette, we exemplify the approach through Lasso regression.
+
+# Adaptive Lasso fitting
 
 ## Preparing the data and the model
-
-If the development version of the `oneimpact` package is still not installed, the installation
-can be done through the following code:
-
-```{r install, eval=FALSE}
-# To install the latest version of the package
-library(devtools)
-devtools::install_github("NINAnor/oneimpact", ref = "lasso")
-```
 
 We start by loading the packages and the annotated data, already prepared for analysis. 
 For details on the preparation of biological and environmental/zone of influence data and 
@@ -73,15 +82,16 @@ colnames(dat)
 
 The data set "reindeer_rsf" in the `oneimpact` package contains the wild reindeer data used to fit the 
 resource selection functions using the cumulative ZOI approach in Niebuhr et al. 2023. The response variable 
-`use` is a binary variable showing where a given location was used (1) or not (0, a random location within the 
+`use` is a binary variable showing whether a given location was used (1) or not (0, a random location within the 
 population area). The GPS used and available positions were annotated with information on land cover 
 (column `NORUTreclass`), bio-geo-climatic PCAs (columns `norway_pca_klima_axis` 1 to 4) and the zone of 
 influence of private cottages and public resorts (columns starting with `private_cabins` and 
 `public_cabins_high`, respectively). Zone of influence variables include both the ZOI of the nearest feature 
 and the cumulative ZOI, with radii from 100 m to 20 km. For illustration, we only kept ZOI variables 
-with exponential decay shape.
+with exponential decay shape and cumulative type (not nearest).
 
-The predictor variables are not standardized - this is done within the fitting process.
+The predictor variables are not standardized, but it is essential to standardize them for penalized regression.
+The standardization can be done in advance or directly within the model fitting procedure (as we do it here).
 
 ### Model specification
 
@@ -108,7 +118,7 @@ f <- ff$formula
 predictor_table_zoi <- ff$predictor_table
 ```
 
-Contrary to the traditional sub-set model approach, in which only one ZOI predictor with a specific radius
+Contrary to the traditional sub-set model approaches, in which only one ZOI predictor with a specific radius
 is kept in the model at a time and multiple models are fitted and compared, here we keep all the terms in 
 the formula and use a penalized regression approach to both fit the model and select the variables.
 
@@ -120,8 +130,8 @@ The `add_zoi_formula()` function can also produce a `predictor_table` `data.fram
 characteristics of the covariates in the model - e.g. whether they are ZOI metrics or not, 
 which type (cumulative, nearest), and which radii. This is helpful to treat the ZOI variables 
 differently in the model interpretation, to aggregate ZOI terms related to the same 
-type of infrastructure, but also to define the term penalties in the "Decay Adaptive Lasso" 
-approach.
+type of infrastructure, but also to define the term penalties in the different flavors of 
+"Adaptive Lasso" approaches.
 
 ```{r predictor_table}
 head(predictor_table_zoi, 10)
@@ -130,24 +140,24 @@ head(predictor_table_zoi, 10)
 ### Setting samples
 
 As in several machine learning workflows, we partition the data into sets used to fit 
-(or train) the model, calibrate (or test), and validate. Here this is done with bootstrap aggregation 
+(or train) the model, calibrate (or tune/test), and validate. Here this is done with bootstrap aggregation 
 (bagging) procedure, so in general only part of the data is used at a time. We use the function 
-`oneimpact::create_resamples()` for this purpose, where we define the number of times we'll do resampling 
+`oneimpact::create_resamples()` for this purpose, where we define the number of times we'll resample 
 (i.e., the size of the bag, parameter `times`) and the proportion of the data observation that goes 
-into fitting, calibration, and validation (parameter `p`). For simplicity, we perform random sampling here,
-but the sampling can also be spatially stratified. 
+into fitting, calibration, and validation (parameter `p`) in each resample. 
+For simplicity, we perform random sampling here, but the sampling can also be spatially stratified. 
 
 ```{r samples}
 # sampling - random sampling
 set.seed(1234)
 samples <- create_resamples(y = dat$use,
                             p = c(0.2, 0.2, 0.2),
-                            times = 10,
+                            times = 50,
                             colH0 = NULL)
 ```
 
 When there is no spatial stratification, the object `samples` is a list of three elements: 
-a list of sets (defined by the row numbers in the original dataset) that will be used for 
+a list of sets (defined by the row numbers in the original data set) that will be used for 
 (i) model fitting (`samples$train`), for (ii) variable selection/calibration (`samples$test`), 
 and for (iii) model valiation (`samples$validate`).
 
@@ -158,7 +168,7 @@ str(samples, max.level = 1)
 ## Fitting the model
 
 To fit one single model (e.g. the one corresponding to the first resample above) using 
-penalized regression, we can use the function `oneimpact::fit_net_logit()` which calls 
+logistic penalized regression, we can use the function `oneimpact::fit_net_logit()` which calls 
 `glmnet::glmnet()` for the fitting procedure. We give an example below. By default, a 
 Lasso fit is performed, but the `method` parameter might be used to change it for a 
 Ridge or Adaptive Lasso regression. Notice that observations with missing values in the data 
@@ -168,29 +178,64 @@ A warning message is printed in these cases; but we recommend that missing data 
 before the sampling and analysis.
 
 ```{r fit1model}
-mod <- fit_net_logit(f, dat, samples, i = 1, metric = "AUC")
+mod <- fit_net_logit(f, 
+                     data = dat,
+                     samples = samples, 
+                     i = 1, 
+                     metric = "AUC",
+                     method = "AdaptiveLasso",
+                     upper.limits = c(rep(0, 16), rep(Inf, 21)))
+
+mod$coef
 ```
 
-We will just examine the structure of the output object now. It is a list with the 
-selected lambda parameter (useful in case the model must be re-run), a matrix of estimated 
-coefficients for each of the terms in the formula, the names of the variables included in the
-`model.matrix`, and scores for fit/train, calibration/test, and validation sets. The score is 
-set by the parameter `metric` in the `fit_net_logit` function, which represents a 
-function used for model. For the logistic regression used here, the default `metric` is 
-the Area Under the Curve (AUC) of the ROC curve.
+We will just examine the structure of the output object now. It comprises a list with:
+
+- `parms`: The initial parameters used for when calling `fit_net_logit()`;
+- `glmnet_fit`: The actual output from `glmnet`, a set of models with different penalty parameters;
+- `metrics_evaluated`: The names of the metrics evaluated for setting the penalty 
+parameter `lambda`, set by the `metrics_evaluated` argument when calling `fit_net_logit()`; 
+by default the only one is `"AUC"`;
+- `var_names`: The names of the variables included in the model formula;
+- `numeric_covs`: A vector of logical values for whether each of the covariates
+is numeric or not;
+- `covariate_mean_sd`: A matrix with the mean and standard deviation for each of 
+the covariates in the model, useful for standardizing or unstandardizing covariates
+and coefficients;
+- `metric`: The name of the metric selected for model validation, here `"AUC"`;
+- `lambda`: The final penalty parameter `lambda` selected for the best fitted model;
+- `coef`: The coefficients for the variables in the fitted model;
+- `train_score`: The score of the model (i.e., the result of the `metric` when applied to) for the 
+train/fitting set;
+- `train_score`: The score of the model (i.e., the result of the `metric` when applied to) for the 
+test/calibration set;
+- `validation_score`: The score of the model (i.e., the result of the `metric` when applied to) for the 
+validation set. If there is a hierarchical block H0 for block cross validation (e.g. 
+representing the populations, study areas, or years; see parameter `H0`
+in the functions `spat_strat()` and `create_resamples()`), this is computed for each
+block H0;
+- `validation_score_avg`: Average of the validation scores across block H0, when they are present.
+- `lambdas`: The different penalty parameters selected for each of the `metrics_evaluated`,
+when there is more than one metric;
+- `coefs_all`, `train_score_all`, `test_score_all`, `validation_score_all`: The same as `coef`, 
+`train_score`, `test_score`, and `validation_score`, but for all the `metrics_evaluated`, 
+when there is more than one metric.
 
 ```{r 1model}
 str(mod, max.level = 1)
 ```
 
-We are here interested not only in one single model, but in bootstrapping from the whole data set 
+Here the model was calibrated and evaluated using the Area Under the ROC curve, AUC.
+
+However, in this approach we areinterested not only in one single model, but in bootstrapping from the whole data set 
 and producing a bag of models. In this case, we can use the function `oneimpact::bag_fit_net_logit()` 
 which fits all the models and produces a list with all the outputs. After fitting, the function 
 `oneimpact::bag_models()` can be used to organize the output of each model in a single "bag" object, 
 of the class `bag`.
 
 Running the bag of models below can take some minutes, and the running time can be high for 
-larger data sets and more complex models.
+larger data sets and more complex models. The model fitting can be done in parallel, and also
+saved in external files if needed.
 
 ```{r bag_of_models, warning=FALSE}
 # fit multiple models
@@ -198,18 +243,19 @@ fittedl <- bag_fit_net_logit(f, dat,
                              samples = samples,
                              standardize = "internal", # glmnet does the standardization of covariates
                              metric = "AUC",
+                             method = "AdaptiveLasso",
                              parallel = "mclapply",
-                             mc.cores = 3)
+                             upper.limits = c(rep(0, 16), rep(Inf, 21)),
+                             mc.cores = 4)
 
 # bag models in a single object
-bag_summary <- bag_models(fittedl, dat, score_threshold = 0.7,
+bag_object <- bag_models(fittedl, dat, score_threshold = 0.7, 
                           weights_function = w_strech_max_squared)
 ```
 
-The resulting bag of models is a list which include the number of models run `n`, 
-the original formula fitted (`formula`), the fitting method (`method`), 
-the validation metric function (`function`), a matrix of coefficients (`coef`) and the validation scores 
-(`validation_score`) for all models.
+The resulting bag of models is a list which include the number of models fitted `n`, 
+the original formula fitted (`formula`), the fitting method (`method`) and validation metric (`metric`), 
+a matrix of coefficients (`coef`) and the validation scores (`validation_score`) for all models.
 
 The function `bag_models()` also transforms the validation scores into weights, so that the coefficients 
 of each model might be weighted according to how well they fit the data. Models with a validation 
@@ -220,7 +266,7 @@ weights and the weighted validation scores is also present in the bag object, as
 of the data that are useful for model prediction.
 
 ```{r look_bag}
-str(bag_summary, max.level = 1)
+str(bag_object, max.level = 1)
 ```
 
 Here we have two sets of functions important for defining the bag of models. The first function 
@@ -228,7 +274,7 @@ Here we have two sets of functions important for defining the bag of models. The
 validation scores are transformed into weights (e.g. mean of scores for `score2weight_mean` and `score2weight_min_mean`)
 and also which criterion is used to set weights to zero (e.g. models with average score below the threshold are 
 set to weight 0 for `score2weight_mean`, but models with minimum score below the threshold are set to weight
-zerp for `score2weight_min_mean`).
+zero for `score2weight_min_mean`).
 
 The second function is defined by the parameter `weights_function` and defines how the 
 weights > 0 are normalized and stretched to sum 1. 
@@ -243,28 +289,31 @@ First, it is possible to check and plot the validation scores to know how well t
 under new conditions.
 
 ```{r model_validation1}
-bag_summary$validation_score
+bag_object$validation_score[1:10]
 ```
 
-All the 50 models of the bag have a quite good (and equivalent) performance here,
-with an average weighted validation AUC of `r bag_summary$weighted_validation_score`.
+All the models of the bag have a quite good (and equivalent) performance here,
+with an average weighted validation AUC of `r bag_object$weighted_validation_score`.
 Here we go beyond just averaging the scores, but we also account for the weights
-of each model, with more weight for models better ranked.
+of each model, with more weight for models better ranked. We can also plot the 
+scores for each model in the bag:
 
 ```{r}
-hist(bag_summary$validation_score, xlim = c(0,1),
+hist(bag_object$validation_score, xlim = c(0,1),
      xlab = "Validation score")
+abline(v = 0.7, col = "red") # threshold
 ```
-
 
 ### Variable importance
 
 Variable importance helps us understand the effect size of the different covariates included
-in the model. It is proportional to the standarized coefficients (see Supplementary Material),
-but it has the advantage that variables can be grouped - for instance, ZOI of an infrastructure type
+in the model by evaluating how strongly one or more variables affect the predicted output of the
+model. Variable importance values are proportional to the standardized coefficients (see Supplementary Material)
+for the covariates,
+but they have the advantage that variables can be grouped - for instance, ZOI of an infrastructure type
 at different radii or variables related to the same type of disturbance (e.g. trails and tourist cabins).
 
-Variable importnace is computed here by the function `oneimpact::variable_importance()` by dropping 
+Variable importance is computed here by the function `oneimpact::variable_importance()` by dropping 
 certain terms in the model (parameter `type = "drop"`), recomputing the validation score, and comparing it to 
 the validation score of the full model. The greater the difference in scores, the largest is the 
 importance set to a certain variable or set of variables. This can also be done through permutation 
@@ -275,69 +324,43 @@ Variable importance can be visualized using the function `oneimpact::plot_import
 
 ```{r variable_importance1}
 # variable importance
-importance <- variable_importance(bag_summary, dat, 
+importance <- variable_importance(bag_object, 
+                                  data = dat, 
                                   type = "drop", # method = drop variable
                                   order = "asc") # ascendent order
-# importance <- importance[order(-importance)]
+
 #plot_importance(importance)
 plot_importance(importance, remove_threshold = 5e-3) # remove vars with too low score from plot
-# plot_importance(importance[order(names(importance))]) # original sequence
 ```
 
 Variable importance might also be computed for groups of variables. For instance, below we group all variables 
-with similar ZOI metric (cumulative or nearest) and all terms related to the same variable (e.g. quadratic terms).
+with similar ZOI metric (private cottages or public resorts) and all terms related to the same variable (e.g. quadratic terms).
 
 ```{r variable_importance2, eval=FALSE}
 # Using variable block/type of variable
-variable_blocks <- bag_summary$var_names |>
-  strsplit(split = "_exp_decay|reclass|, 2)|, 2, raw = TRUE)") |>
+variable_blocks <- bag_object$var_names |>
+  strsplit(split = "_cumulative_exp_decay|reclass|, 2)|, 2, raw = TRUE)") |>
   sapply(function(x) x[1]) |>
   sub(pattern = "poly(", replacement = "", fixed = TRUE)
 
-importance_block <- variable_importance(bag_summary, dat, 
+importance_block <- variable_importance(bag_object, 
+                                        data = dat, 
                                         type = "drop",
                                         order = "asc",
                                         variable_block = variable_blocks)
 plot_importance(importance_block, normalize = T)
 ```
 
-Variables can be aggregated even more, for instance to evaluate the effect 
-of all terms related to private cabins and public resorts
-(regardless of the ZOI metric, shape, and radius) - which is ultimately
-what is desired in applied context such as impact assessments.
-
-```{r variable_importance3, eval=FALSE}
-# more aggregation of infrastructure, both cumulative and nearest
-variable_blocks2 <- bag_summary$var_names |>
-  strsplit(split = "_cumulative_exp_decay|_nearest_exp_decay|reclass|, 2)|, 2, raw = TRUE)") |>
-  sapply(function(x) x[1]) |>
-  sub(pattern = "poly(", replacement = "", fixed = TRUE)
-
-importance_block2 <- variable_importance(bag_summary, dat, type = "drop",
-                                         order = "asc",
-                                         variable_block = variable_blocks2)
-plot_importance(importance_block2)
-```
 
 ### Model coefficients
 
-The estimated coefficients from the models in the bag can be seen as in the `coef`
+The estimated coefficients from the models in the bag can be seen in the `coef`
 element of the bag. It contains the coefficient of each model/resample of the bag,
 for each term of the formula: 
 
 ```{r coef1}
 # coefficients - already unstandardized by the fit_net_logit function
-bag_summary$coef[,1:5] |> 
-  head(10)
-```
-
-If we want to use the standardized coefficients (for comparison between variables), 
-we can use the function `oneimpact::rescale_coefficients()`. We can do it applied
-to the matrix of coefficients or to the bag of models directly: 
-
-```{r coef2}
-# standardize coefficients again
-rescale_coefficients(bag_summary, dat)[,1:10] |> 
+bag_object$coef[,1:5] |> 
   head(10)
 ```
 
@@ -349,34 +372,45 @@ perform relatively well, which means all of them are given a relative similar we
 
 ```{r coef3}
 # weights and weighted coefficients
-bag_summary$validation_score
-bag_summary$weights
+bag_object$validation_score[1:10]
+bag_object$weights[1:10]
 ```
 
 Now we can get the weighted coefficients for each model, and averaged over models.
 
 ```{r coef4}
 # weighted coefficients for each model
-bag_summary$wcoef[,1:2]
+bag_object$wcoef[,1:2]
 # weighted average coefficients
-bag_summary$coef %*% bag_summary$weights # weighted average
+bag_object$coef %*% bag_object$weights # weighted average
 ```
 
 Finally, we can plot the coefficients in each model in different ways using the `oneimpact::plot_coef()` function.
 
 ```{r coef5}
-# plot weighted coefficients in each model
-# plot_coef(bag_summary) # all models, all terms
+# plot weighted coefficients in each model, for all terms
+# plot_coef(bag_object)
 
 # different plots
-plot_coef(bag_summary, terms = "private_cabins_cumulative")
-plot_coef(bag_summary, terms = "private_cabins_cumulative", 
+
+# only for private cabins, by resample, as bars
+# for all resamples
+# plot_coef(bag_object, terms = "private_cabins_cumulative")
+# for one the 3 first models
+plot_coef(bag_object, terms = "private_cabins_cumulative", models = 1:3)
+# only for private cabins, by resample, as points
+plot_coef(bag_object, terms = "private_cabins_cumulative", 
+          plot_type = "points", models = 1:3)
+# only for private cabins, as histograms
+plot_coef(bag_object, terms = "private_cabins_cumulative", 
           plot_type = "histogram")
-plot_coef(bag_summary, terms = "private_cabins_cumulative", 
-          plot_type = "points")
-# in only one or few models
-plot_coef(bag_summary, terms = "private_cabins_cumulative", models = 1:3)
+
 ```
+
+It is possible to see that several of the terms/covariates were removed from the models
+in some of the resamples, i.e., their estimated coefficients were zero. That is a property
+of Lasso and Adaptive Lasso regression, that perform variable selection with model
+fitting.
 
 We can also plot the raw or weighted average coefficients. This can be done for all
 terms, or for terms of one specific type of variable. In this case, for ZOI variables,
@@ -384,39 +418,60 @@ it is advisable to order them according to the ZOI radius with the option
 `order_zoi_radius = TRUE`.
 
 ```{r coef6}
-# plot weighted average coefs
-plot_coef(bag_summary, what = "average")
-plot_coef(bag_summary, what = "average", terms = "public_cabins", 
-          plot_type = "points", order_zoi_radius = TRUE)
-plot_coef(bag_summary, what = "average", terms = "public_cabins", 
-          plot_type = "points", order_zoi_radius = TRUE) + ylim(-50, 50)
+# plot weighted average coefs - all terms
+plot_coef(bag_object, what = "average")
 
-# plot raw coefficients, no weighing
-# plot_coef(bag_summary, weighted = FALSE, what = "average")
+# plot weighted average coefs - public cabins
+plot_coef(bag_object, what = "average", terms = "public_cabins", 
+          plot_type = "points", order_zoi_radius = TRUE)
+# zoom
+plot_coef(bag_object, what = "average", terms = "public_cabins", 
+          plot_type = "points", order_zoi_radius = TRUE) + ylim(-50, 50)
 ```
 
 ### Plot the effect of each predictor in the response variable
 
-We can now plot the response variables one at a time with the `oneimpact::plot_response` function. We fix all variables at their median values (or mean, this is controlled by `baseline` parameter) and vary only one or a few at a time.
+We can now plot the response variables one at a time with the `oneimpact::plot_response` function. 
+For that, we fix all variables at their median values (or mean, or set them to zero; this is 
+controlled by `baseline` parameter) and vary only one or a few at a time.
 
 #### PCA1
 
-We start by plotting the effect of PCA 1. The green lines below show the average weighted predicted value of the Output (in the y axis), which is proportional to the probability of presence of the species. The blue line represents the weighted median predicted value, and the blue stripe the 95% weighted confidence interval. Just for illustration, we plot the predictions in the linear, exponential, and logistic scale. Below we keep only the logistic representation.
+We start by plotting the effect of PCA 1. The red lines below show the average weighted 
+predicted value for the relative selection strength (in the y axis), which is proportional 
+to the probability of presence of the species. The black line represents the weighted median 
+predicted value, and the grey stripe is the 75% weighted confidence interval, also called
+the interquartile range. Given the logistic structure of the model, we make a "logit"
+prediction here.
 
 ```{r plot_response}
 # plot responses
 
 # PCA1
-wQ_probs=c(0.25, 0.5, 0.75)
-dfvar = data.frame(norway_pca_klima_axis1 = seq(min(bag_summary$data_summary$norway_pca_klima_axis1),
-                                                max(bag_summary$data_summary$norway_pca_klima_axis1),
+wQ_probs=c(0.25, 0.5, 0.75) # percentiles for the median and confidence interval
+dfvar = data.frame(norway_pca_klima_axis1 = seq(min(bag_object$data_summary$norway_pca_klima_axis1),
+                                                max(bag_object$data_summary$norway_pca_klima_axis1),
                                                 length.out = 100))
 # reference median
-plot_response(bag_summary, dfvar, dat, type = "exponential", ci = TRUE, 
-              wq_probs = wQ_probs) # exponential
-plot_response(bag_summary, dfvar, dat, type = "exponential", ci = FALSE, indiv_pred = TRUE, 
-              wq_probs = wQ_probs) # exponential
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              type = "logit", ci = TRUE, 
+              wq_probs = wQ_probs, 
+              ylim = ggplot2::ylim(0,1))
 ```
+
+It is also possible to plot the individual model predictions as lines, instead of the weighted
+confidence interval, to represent the variability in the model predictions in the bag.
+
+```{r plot_response1.2}
+# reference median
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              type = "logit", 
+              indiv_pred = TRUE, ci = FALSE)
+```
+
+
 
 #### PCA3
 
@@ -427,124 +482,79 @@ Now we plot the effect of PCA3.
 
 # PCA3
 wQ_probs=c(0.25, 0.5, 0.75)
-dfvar = data.frame(norway_pca_klima_axis3 = seq(min(bag_summary$data_summary$norway_pca_klima_axis3),
-                                                max(bag_summary$data_summary$norway_pca_klima_axis3),
+dfvar = data.frame(norway_pca_klima_axis3 = seq(min(bag_object$data_summary$norway_pca_klima_axis3),
+                                                max(bag_object$data_summary$norway_pca_klima_axis3),
                                                 length.out = 100))
-plot_response(bag_summary, dfvar, dat, type = "exponential", ci = TRUE, 
-              wq_probs = wQ_probs)
-plot_response(bag_summary, dfvar, dat, type = "exponential", indiv_pred = TRUE, ci = FALSE,
-              wq_probs = wQ_probs)
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              type = "logit", 
+              ci = FALSE, indiv_pred = TRUE)
 ```
 
 #### Private cabins
 
-Now we plot the effects of the ZOI of private cabins. We start by exploring the ZOI of the nearest private cabin. Here the `plot_response()` function gets all the variables that contain "private_cabins_nearest" in the name. We plot the distance in logarithmic scale to ease the visualization.
+Now we plot the effects of the ZOI of private cabins. 
+Here the `plot_response()` function gets all the variables that contain "private_cabins" in the name. 
+We plot the distance in logarithmic scale to ease the visualization.
 
 ```{r plot_response3, eval=FALSE}
-# ZOI private cabins nearest
-plot_coef(bag_summary, what = "average", terms = "private_cabins_nearest", 
-          plot_type = "points", order_zoi_radius = TRUE)
-
-wQ_probs=c(0.25, 0.5, 0.75)
-dfvar = data.frame(private_cabins_nearest = 1e3*seq(0.2, 20, length.out = 100))
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = T, normalize = "mean",
-              wq_probs = wQ_probs, logx = FALSE, plot_mean = FALSE)
+# ZOI private cabins
+dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              type = "logit", zoi = TRUE, 
+              ci = FALSE, indiv_pred = TRUE, 
+              logx = TRUE, ylim = ggplot2::ylim(0, 1))
 ```
 
-We see that... \[interpret here\].
+We see that the effects of a private cabin vary from strong effects up to ca. 5km to
+very weak effect, depending on the model. This means that there is a high variation on
+the effect size and ZOI of one single private cabin, even though the weighted mean
+and median effects are negative.
 
-Now we plot the predicted effect of the cumulative ZOI of private cabins. Here the response depends on the number of cabins present in the origin, so we plot the effect for 4 different illustrative values - 1, 10, 100, and 1000 (extreme value) cabins.
+However, we see that both the realized effect size and the ZOI radius increase as
+the density of cabins increase, and the negative effects gets less uncertain. See
+below the response plot for a set of 10 and 100 cabins.
 
 ```{r plot_response4}
-# ZOI private cabins cumulative
-plot_coef(bag_summary, what = "average", terms = "private_cabins", 
-          plot_type = "points", order_zoi_radius = TRUE)
-
-wQ_probs=c(0.25, 0.5, 0.75)
-dfvar = data.frame(private_cabins_cumulative = 1e3*seq(0.2, 20, length.out = 100))
-# 1 feature
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = FALSE) +ylim(0, 2)
 # 10 features
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 10, plot_mean = FALSE, logx = FALSE) + ylim(0, 2)
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              n_features = 10,
+              type = "logit", zoi = TRUE, 
+              ci = FALSE, indiv_pred = TRUE, 
+              logx = TRUE, ylim = ggplot2::ylim(0, 1))
+
 # 100 features
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 100, plot_mean = FALSE, logx = FALSE) + ylim(0, 2)
-# 500
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 500, plot_mean = FALSE, logx = FALSE) + ylim(0, 2)
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              type = "logit", zoi = TRUE, 
+              n_features = 100,
+              ci = FALSE, indiv_pred = TRUE, 
+              logx = TRUE, ylim = ggplot2::ylim(0, 1))
 ```
-
-Now, what is interesting is the final predicted effect of private cabins, accounting for all the terms related to this type of infrastructure. Agin, we plot this considering different numbers of features. While this does not alter the effect of the terms related to the ZOI of the nearest feature, it does change the effect of the cumulative ZOI terms.
-
-```{r plot_response5, eval=FALSE}
-# ZOI all private cabins nearest and cumulative
-wQ_probs=c(0.25, 0.5, 0.75)
-# go to account for the number of features for the cumulative variable??
-dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
-
-# 1 feature
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = FALSE) + ylim(0, 10)
-# 10 features
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 10, plot_mean = FALSE, logx = FALSE) + ylim(0, 10) 
-# 100 features
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 100, plot_mean = FALSE, logx = FALSE) + ylim(0, 10)
-# 150 features
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 150, plot_mean = FALSE, logx = FALSE) + ylim(0, 10)
-```
-
-We see that as the number of cabins increase, the cumulative ZOI of private cabins also increases. Different from the statistical approach in Niebuhr et al. 2023, here not only the effect size but the effective radius of the ZOI also changes with the number of features.
 
 #### Public resorts
 
-We start with the ZOI of the nearest resort. We see that, in contrast with private cabins, the effect of the nearest public resort is strong and negative, with a large
-
-```{r plot_response6, eval=FALSE}
-# ZOI public resorts nearest
-wQ_probs=c(0.25, 0.5, 0.75)
-dfvar = data.frame(public_cabins_high_nearest = 1e3*seq(0.2, 20, length.out = 100))
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = FALSE) + ylim(0, 2)
-```
-
-Now we plot the effect of the cumulative ZOI of public resorts:
-
 ```{r plot_response7}
 # ZOI public resorts cumulative
-plot_coef(bag_summary, what = "average", terms = "public_cabins", 
-          plot_type = "points", order_zoi_radius = TRUE)
+dfvar = data.frame(public_cabins = 1e3*seq(0.2, 20, length.out = 100))
 
-wQ_probs=c(0.25, 0.5, 0.75)
-dfvar = data.frame(public_cabins_high_cumulative = 1e3*seq(0.2, 20, length.out = 100))
 # 1 feature
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = TRUE,
-              wq_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = FALSE) +
-  ylim(0, 2)
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              type = "logit", zoi = TRUE, 
+              n_features = 1,
+              ci = FALSE, indiv_pred = TRUE, 
+              logx = TRUE, ylim = ggplot2::ylim(0, 1))
 
 # 3 feature
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = FALSE, indiv_pred = TRUE,
-              wq_probs = wQ_probs, n_features = 3, plot_mean = FALSE, logx = FALSE) +
-  ylim(0, 2)
-```
-
-And the overall effect of public resorts:
-
-```{r plot_response8, eval=FALSE}
-# ZOI all public cabins
-wQ_probs=c(0.25, 0.5, 0.75)
-# gow to account for the number of features for the cumulative variable??
-dfvar = data.frame(public_cabins_high = 1e3*seq(0.2, 20, length.out = 100))
-# 1 feature
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = TRUE,
-              wq_probs = wQ_probs, n_features = 1, plot_mean = FALSE, logx = FALSE) + ylim(0, 2)
-# 3 features
-plot_response(bag_summary, dfvar, dat, type = "exp", zoi = TRUE, ci = TRUE,
-              wq_probs = wQ_probs, n_features = 3, plot_mean = FALSE, logx = FALSE) + ylim(0, 2)
+plot_response(bag_object, 
+              dfvar = dfvar, data = dat, 
+              type = "logit", zoi = TRUE, 
+              n_features = 3,
+              ci = FALSE, indiv_pred = TRUE, 
+              logx = TRUE, ylim = ggplot2::ylim(0, 1))
 ```
 
 ## Spatial predictions
@@ -601,10 +611,10 @@ terra::writeRaster(rasters_cabins, "/data/P-Prosjekter/41203800_oneimpact/05_pap
 
 ```{r}
 # model
-bag_summary$formula
+bag_object$formula
 
 # coefficients
-m_vars <- all.vars(bag_summary$formula)[-1]
+m_vars <- all.vars(bag_object$formula)[-1]
 
 # load vectors
 path <- "/data/P-Prosjekter/41203800_oneimpact/05_papers/02_cumulative_zoi_paper/data/analysis_GPS/"
@@ -657,7 +667,7 @@ plot(rasters_cabins[[25:32]])
 # rasters for prediction
 rast_df <- c(rasters, lu_rast, rasters_cabins)
 
-pred <- bag_predict_spat(bag = bag_summary, data = rast_df, 
+pred <- bag_predict_spat(bag = bag_object, data = rast_df, 
                          input_type = "rast")
 
 # weighted average
