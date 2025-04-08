@@ -12,14 +12,14 @@ bag_predict_spat(
   output_type = c("df", "rast")[2],
   prediction_type = c("exp", "exponential", "linear")[1],
   standardize = FALSE,
-  gridalign = TRUE,
+  what = c("mean", "median", "ind"),
   gid = "gid",
   coords = c("x33", "y33"),
   crs = NULL,
+  gridalign = FALSE,
   output_rescale = FALSE,
   prediction_max_quantile = 0.999,
   uncertainty_quantiles = c(0.25, 0.75),
-  plotit = FALSE,
   verbose = FALSE
 )
 
@@ -31,14 +31,13 @@ bag_predict_spat_vars(
   output_type = c("df", "rast")[2],
   prediction_type = c("exp", "exponential", "linear")[1],
   standardize = FALSE,
-  what = c("wMean", "wMedian", "ind"),
-  gridalign = TRUE,
+  what = c("mean", "median", "ind"),
   gid = "gid",
   coords = c("x33", "y33"),
   crs = NULL,
+  gridalign = FALSE,
   prediction_max_quantile = 0.999,
   uncertainty_quantiles = c(0.25, 0.75),
-  plotit = FALSE,
   verbose = FALSE
 )
 }
