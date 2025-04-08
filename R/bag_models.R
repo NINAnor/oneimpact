@@ -105,7 +105,7 @@ bag_models <- function(fitted, data,
     fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$train_score_all[colnames(x$coefs_all) == metric, drop = FALSE] } ))
     calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$test_score_all[colnames(x$coefs_all) == metric, drop = FALSE] } ))
     validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$validation_score_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
-    habitat_validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$habitat_validation_score[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
+    habitat_validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$habitat_validation_score_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
 
   }
 
