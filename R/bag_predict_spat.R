@@ -457,7 +457,7 @@ bag_predict_spat_vars <- function(bag,
           # grd_rast_wavg <- grd_rast_wavg/baseline_max
           # grd_rast_wavg <- terra::ifel(grd_rast_wavg > 1, 1, grd_rast_wavg)
           # grd_rast_wavg <- raster_rescale(grd_rast_wavg, to = c(0, 1))
-          names(grd_rast_wavg) <- paste0("suit_exp_", var_i, "wavg")
+          names(grd_rast_wavg) <- paste0("pred_exp_", var_i, "wavg")
           out$r_weighted_avg_pred[[i]] <- grd_rast_wavg
           names(out$r_weighted_avg_pred[[i]]) <- names(grd_rast_wavg)
           # plot(grd_rast_wavg)
@@ -476,7 +476,7 @@ bag_predict_spat_vars <- function(bag,
 
           ind_vars <- grep(paste0("pred_", var_i, "ind_Resample"), names(grd1), value = TRUE)
           ind_summs <- sub("pred_", "", ind_vars)
-          ind_names <- paste0("suit_exp_", ind_summs)
+          ind_names <- paste0("pred_exp_", ind_summs)
           # i <- 1
           for(j in seq_along(ind_summs)) {
 
@@ -511,7 +511,7 @@ bag_predict_spat_vars <- function(bag,
         if("median" %in% what) {
           ind_summs <- paste0("pred_", var_i, c("w_med", "ind_w_iqr"))
           ind_vars <- ind_summs
-          ind_names <- paste0("suit_exp_", sub("pred_", "", ind_vars))
+          ind_names <- paste0("pred_exp_", sub("pred_", "", ind_vars))
           # i <- 2
           for(j in seq_along(ind_summs)) {
 
