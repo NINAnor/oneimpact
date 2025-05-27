@@ -442,3 +442,29 @@ reindeer_rsf <- dat[,all.vars(f)]
 # save
 usethis::use_data(reindeer_rsf, overwrite = TRUE)
 # now we document by hand
+
+#------------------------------
+# all ZOI covariates from Niebuhr et al 2023
+
+
+# table of fits
+load(file = "/data/P-Prosjekter/41203800_oneimpact/04_tools/support_oneimpact/cuminf_zoi_results_rsf_priv_pub_cabins_glm.rda")
+head(multi_infra_model_comparison_df)
+multi_infra_best_model_call
+f <- as.formula(multi_infra_best_model_call)
+
+
+# formula with all variables
+f <- as.formula(multi_infra_best_model_call)
+f <- as.character(f) |> gsub(pattern = "cumulative_threshold_10000|cumulative_exp_decay_20000", replacement = "XXX")
+f <- as.formula(paste(f[2], f[1], f[3]))
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX", type = c("cumulative_exp_decay", "nearest_exp_decay"),
+                      separator = "_", grid = TRUE)
+
+f <- ff$formula
+grid_zoi <- ff$grid
+
+# get data
+reindeer_rsf <- dat[,all.vars(f)]
+# save
