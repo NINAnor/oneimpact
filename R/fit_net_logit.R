@@ -56,6 +56,7 @@ fit_net_logit <- function(f, data,
                           value_lasso_decay = 1,
                           factor_hypothesis = 1,
                           factor_grouped_lasso = 1,
+                          replace_missing_NA = TRUE,
                           na.action = "na.pass",
                           out_dir_file = NULL,
                           verbose = FALSE,
@@ -76,7 +77,8 @@ fit_net_logit <- function(f, data,
                 function_lasso_decay = function_lasso_decay,
                 value_lasso_decay = value_lasso_decay,
                 factor_hypothesis = factor_hypothesis,
-                factor_grouped_lasso = factor_grouped_lasso)
+                factor_grouped_lasso = factor_grouped_lasso,
+                replace_missing_NA = replace_missing_NA)
 
   #-----------------------------
   # parameter checks
@@ -138,23 +140,50 @@ fit_net_logit <- function(f, data,
   # select numeric predictors to be standardized
   numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
 
-  if(standardize != FALSE) {
+  # if(standardize != FALSE) {
+  # now we compute the means and sds in all cases, to check
+  # for missing variables/infrastructures
 
-    # get standardization parms
-    data_covs_num <- data_covs[, numeric_covs]
-    # standardize
-    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
-    # register mean and sd
-    covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
-      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
-    rownames(covs_mean_sd) <- colnames(data_covs_num)
-    colnames(covs_mean_sd) <- c("mean", "sd")
+  # get standardization parms
+  data_covs_num <- data_covs[, numeric_covs]
+  # standardize
+  data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
+  # register mean and sd
+  covs_mean_sd <- data.frame(do.call("rbind",lapply(1:length(data_covs_num_std), function(i)
+    sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+  rownames(covs_mean_sd) <- colnames(data_covs_num)
+  colnames(covs_mean_sd) <- c("mean", "sd")
 
-    if(any(covs_mean_sd == 0)) {
-      stop("There are covariates with variance equals zero; please check.")
+  # check if there are NAs (no variation in a variables)
+  if(any(ind <- which(covs_mean_sd$sd == 0))) {
+    # stop("There are covariates with variance equals zero; please check.")
+    warning(paste0("Some of the covariates have variance zero: ",
+                   paste0(rownames(covs_mean_sd)[ind], collapse = ",")))
+
+    # check if we remove missing variables with NA
+    if(replace_missing_NA) {
+
+      # backup original formula
+      f_original <- f
+      # remove from formula
+      vv <- 1
+      for(vv in seq_along(ind)) {
+        f <- update(f, paste0("~ . - ", rownames(covs_mean_sd)[ind[vv]]))
+      }
+      warning(paste0("The formula was updated excluding these variable(s): ",
+                     paste0(rownames(covs_mean_sd)[ind], collapse = ","), ". ",
+                     "The model will be fitted with this updated formula."))
+      # parms$f <- f
+      # update covariates
+      wcols <- extract_response_strata(f, covars = TRUE)
+
+    } else {
+      stop("Computation interrupted. Please check the covariates.")
     }
 
   }
+
+  # }
 
   # register/use standardized covariates
   if(standardize == "external") {
@@ -644,8 +673,38 @@ fit_net_logit <- function(f, data,
   # lambda and coefs for the selected metric
   results$metric <- metric
   results$lambda <- metrics_evaluated[[metric]]$lambda_opt
+
   results$coef <- metrics_evaluated[[metric]]$coef
   results$coef_std <- metrics_evaluated[[metric]]$coef_std
+
+  # add missing coefs
+  if(replace_missing_NA) {
+
+    # get variables form the original formula
+    f3 <- as.formula(paste0(wcols$response, " ~ -1 + ",
+                            extract_response_strata(f_original, covars = TRUE)$covars)) # should we remove the intercept?
+    # create original model matrix
+    mm <- colnames(model.matrix(f3, train_data))
+
+    # re-write coefs with NAs
+    coef <- matrix(nrow = length(mm), ncol = 1)
+    rownames(coef) <- mm
+    # fill in the estimated coefficients
+    coef[match(rownames(results$coef), mm)] <- results$coef
+    results$coef <- coef # replace
+
+    # standardized coefficients
+    if(!is.null(coef_std)) {
+      # re-write coefs_std with NAs
+      coef_std <- matrix(nrow = length(mm), ncol = 1)
+      rownames(coef_std) <- mm
+      # fill in the
+      coef_std[match(rownames(results$coef_std), mm)] <- results$coef_std
+      results$coef_std <- coef_std
+    }
+
+  }
+
   results$train_score <- metrics_evaluated[[metric]]$train_score
   results$test_score <- metrics_evaluated[[metric]]$test_score
   results$validation_score <- metrics_evaluated[[metric]]$validation_score
