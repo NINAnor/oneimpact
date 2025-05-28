@@ -33,11 +33,15 @@
 #' `penalty.factor = 1/(coef_ridge^gamma)`, where `coef_ridge` are the coefficients of a Ridge regression.
 #' Default is `gamma = 1`, but values of 0.5 or 2 could also be tried, as suggested by the
 #' authors (Zou et al 2006).
+#' @param replace_missing_NA `[logical(1)=TRUE]` \cr If `TRUE` (default), any variables missing from the data
+#' (i.e. with variance zero) are removed from the formula for the model fitting procedure, and a `NA` is set
+#' as its coefficient in the output. If `FALSE`, the function raises an error if there are variables with
+#' variance zero in the formula.
 #' @param ... Options for [oneimpact::net_logit()] and [glmnet::glmnet()].
 #'
 #' @references Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 #'
-#' @name fit_net_clogit
+#' @name fit_net_functions
 #' @export
 fit_net_clogit <- function(f, data,
                            samples, i = 1,
@@ -159,10 +163,13 @@ fit_net_clogit <- function(f, data,
   colnames(covs_mean_sd) <- c("mean", "sd")
 
   # check if there are NAs (no variation in a variables)
+  any_missing_vars <- FALSE
   if(any(ind <- which(covs_mean_sd$sd == 0))) {
     # stop("There are covariates with variance equals zero; please check.")
     warning(paste0("Some of the covariates have variance zero: ",
                    paste0(rownames(covs_mean_sd)[ind], collapse = ",")))
+
+    any_missing_vars <- TRUE
 
     # check if we remove missing variables with NA
     if(replace_missing_NA) {
@@ -378,7 +385,7 @@ fit_net_clogit <- function(f, data,
 
         }
 
-        print(method[1])
+        # print(method[1])
 
         # if Adaptive Lasso
         if(tolower(method[1]) == "adaptivelasso") {
@@ -735,32 +742,34 @@ fit_net_clogit <- function(f, data,
   results$coef <- metrics_evaluated[[metric]]$coef
   results$coef_std <- metrics_evaluated[[metric]]$coef_std
 
-  # add missing coefs
-  if(replace_missing_NA) {
+  #in case there are missing variables, add missing coefs
+  if(any_missing_vars) {
+    if(replace_missing_NA) {
 
-    # get variables form the original formula
-    f3 <- as.formula(paste0(wcols$response, " ~ -1 + ",
-                            extract_response_strata(f_original, covars = TRUE)$covars)) # should we remove the intercept?
-    # create original model matrix
-    mm <- colnames(model.matrix(f3, train_data))
+      # get variables form the original formula
+      f3 <- as.formula(paste0(wcols$response, " ~ -1 + ",
+                              extract_response_strata(f_original, covars = TRUE)$covars)) # should we remove the intercept?
+      # create original model matrix
+      mm <- colnames(model.matrix(f3, train_data))
 
-    # re-write coefs with NAs
-    coef <- matrix(nrow = length(mm), ncol = 1)
-    rownames(coef) <- mm
-    # fill in the estimated coefficients
-    coef[match(rownames(results$coef), mm)] <- results$coef
-    results$coef <- coef # replace
+      # re-write coefs with NAs
+      coef <- matrix(nrow = length(mm), ncol = 1)
+      rownames(coef) <- mm
+      # fill in the estimated coefficients
+      coef[match(rownames(results$coef), mm)] <- results$coef
+      results$coef <- coef # replace
 
-    # standardized coefficients
-    if(!is.null(coef_std)) {
-      # re-write coefs_std with NAs
-      coef_std <- matrix(nrow = length(mm), ncol = 1)
-      rownames(coef_std) <- mm
-      # fill in the
-      coef_std[match(rownames(results$coef_std), mm)] <- results$coef_std
-      results$coef_std <- coef_std
+      # standardized coefficients
+      if(!is.null(coef_std)) {
+        # re-write coefs_std with NAs
+        coef_std <- matrix(nrow = length(mm), ncol = 1)
+        rownames(coef_std) <- mm
+        # fill in the
+        coef_std[match(rownames(results$coef_std), mm)] <- results$coef_std
+        results$coef_std <- coef_std
+      }
+
     }
-
   }
 
   results$train_score <- metrics_evaluated[[metric]]$train_score
@@ -792,11 +801,11 @@ fit_net_clogit <- function(f, data,
 
 }
 
-#' @rdname fit_net_clogit
+#' @rdname fit_net_functions
 #' @export
 fit_net_ssf <- fit_net_clogit
 
-#' @rdname fit_net_clogit
+#' @rdname fit_net_functions
 #' @export
 fit_net_issf <- fit_net_clogit
 
@@ -817,7 +826,7 @@ fit_net_issf <- fit_net_clogit
 #' bag_fit_net_logit function. Return coefs in the original scale?? Implement.
 #' If FALSE, no standardization of predictors is done.
 #'
-#' @name bag_fit_net_clogit
+#' @name bag_fit_net_functions
 #' @export
 bag_fit_net_clogit <- function(f, data,
                                samples,
