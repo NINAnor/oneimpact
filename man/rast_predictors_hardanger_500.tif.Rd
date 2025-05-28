@@ -6,8 +6,10 @@
 \format{
 A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 \itemize{
-\item{norway_pca_klima_axis1-4}{PCAs 1 to 4 representing bio-geo-climatic variation in Norway,
-from Bakkestuen et al. 2008. More information in Niebuhr et al. 2023. PCAs 1 and 2 also present quadratic layers.}
+\item{norway_pca_klima_axis1-4}{Components 1 to 4 from a principal component analysis
+representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
+PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
+More information in Niebuhr et al. 2023. PCAs 1 and 2 also present quadratic layers.}
 \item{NORUTreclass} {Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.}
 \item{private_cabins_cumulative_exp_decay_XXX} {Cumulative zone of influence of private cabins at each location,
 with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
