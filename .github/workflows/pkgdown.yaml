@@ -25,11 +25,11 @@ jobs:
         with:
           packages: grass grass-dev grass-doc wget
           version: 1.0 # change that if we change the packages above
-          
+
       - uses: actions/checkout@v4
-      
+
       - uses: r-lib/actions/setup-pandoc@v2
-      
+
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
@@ -39,6 +39,12 @@ jobs:
           install-quarto: true
           extra-packages: any::pkgdown, local::.
           needs: website
+
+       name: Install used packages which are not dependencies
+        run: |
+          install.packages('tictoc')
+          install.packages('tmap')
+        shell: Rscript {0}
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
