@@ -2,24 +2,65 @@
 % Please edit documentation in R/bag_predict.R
 \name{bag_predict}
 \alias{bag_predict}
+\alias{bag_predict.bag}
+\alias{bag_predict.formula}
 \title{Prediction of a bag of models to new data}
 \usage{
 bag_predict(
   x,
   newdata,
   type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
-  wMean = T,
+  wmean = TRUE,
+  wq_probs = NULL,
+  include = "all",
+  ...
+)
+
+\method{bag_predict}{bag}(
+  x,
+  newdata,
+  data = NULL,
+  type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
+  wmean = TRUE,
+  wq_probs = NULL,
+  include = "all",
+  baseline = c("median", "mean", "zero")[1],
+  zoi = FALSE,
+  zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
+  which_cumulative = "cumulative",
+  type_feature = c("point", "line", "area")[1],
+  n_features = 1,
+  resolution = 100,
+  line_value = 1,
+  ...
+)
+
+\method{bag_predict}{formula}(
+  x,
+  newdata,
+  coefs,
+  weights = 1,
+  type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
+  wmean = TRUE,
   wq_probs = NULL,
   include = "all"
 )
 }
 \arguments{
-\item{x}{\verb{[bag,list]} \cr  A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
+\item{x}{\verb{[formula]} \cr Formula used to fit the model.}
 
-\item{newdata}{\cr New data set to be used for prediction.}
+\item{newdata}{\cr New data set to be used for prediction. It can include all the variables in the formula
+or only those for which the user is interested in making a prediction from.}
+
+\item{coefs}{\verb{[vector,numeric]} \cr Either a named vector of coefficients (in case there is only one
+model) or a matrix of coefficients, with rownames as the term names and columns as the different models/resamples.}
+
+\item{weights}{\verb{[vector,numeric=1]} \cr Vector of weights for the different models/resamples, i.e.
+the column from the \code{coefs} object with coefficients. A single number (by default, 1) in case there is only
+one model (\code{coefs} is a vector).}
 
 \item{inclue}{vector with 1s and 0s about which variables should be included?}
 }
 \description{
-Prediction of a bag of models to new data
+The function \code{bag_predict} makes a prediction from
 }
