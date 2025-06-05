@@ -405,6 +405,10 @@ reindeer_rsf_v <- terra::vect(reindeer_rsf, geom = c("x_", "y_"))
 plot(reindeer_rsf_v[reindeer_rsf$case_ == F], col = "grey", cex = 0.3)
 points(reindeer_rsf_v[reindeer_rsf$case_ == T], col = "red", cex = 0.3)
 
+# compute squared values for some columns
+reindeer_rsf$norway_pca_klima_axis1_sq <- reindeer_rsf$norway_pca_klima_axis1**2
+reindeer_rsf$norway_pca_klima_axis2_sq <- reindeer_rsf$norway_pca_klima_axis2**2
+
 # save
 usethis::use_data(reindeer_rsf, overwrite = TRUE)
 # now we document by hand

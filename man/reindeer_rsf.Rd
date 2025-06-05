@@ -21,6 +21,8 @@ with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
 representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
 PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
 More information in Niebuhr et al. 2023.}
+\item{norway_pca_klima_axis1-2_sq}{Squared value for components 1 and 2 to from a principal component analysis
+representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.}
 }
 }
 \source{
