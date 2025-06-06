@@ -24,6 +24,10 @@
 #' mid, and higher weighted quantiles to be computed.
 #' @param ci Should variation or confidence intervals be plotted?
 #'
+#' @seealso [oneimpact::predict()]
+#'
+#' @example examples/bag_plot_response_example.R
+#'
 #' @export
 plot_response <- function(x,
                           dfvar,
