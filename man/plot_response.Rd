@@ -17,6 +17,9 @@ plot_response(
   baseline = c("median", "mean", "zero")[1],
   zoi = FALSE,
   zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
+  type_feature = c("point", "line", "area")[1],
+  resolution = 100,
+  line_value = 1,
   ggplot = T,
   plot_mean = TRUE,
   plot_median = TRUE,
@@ -56,7 +59,8 @@ preditor variables.}
 
 \item{ci}{Should variation or confidence intervals be plotted?}
 
-\item{wq_probs}{\verb{[vector,numeric(3)=c(0.025, 0.5, 0.975)]} \cr a three element with lower, mid, and higher weighted quantiles to be computed}
+\item{wq_probs}{\verb{[vector,numeric(3)=c(0.025, 0.5, 0.975)]} \cr A three element vector with lower,
+mid, and higher weighted quantiles to be computed.}
 }
 \description{
 This function takes a bag of models (\code{x}) and a set of new data (\code{dfvar}) with variation for one or more
@@ -66,5 +70,5 @@ confidence interval, computed from the weighted quantiles of the prediction. All
 are kept constant, as defined by the \code{baseline} parameter.
 }
 \details{
-The function \code{plot_response} uses the \code{bag_predict} to produce the predictions.
+The function \code{plot_response} uses the \code{predict} to produce the predictions.
 }

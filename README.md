@@ -129,7 +129,7 @@ You can customize `docker-compose.yml` based on your needs.
 
 ## See also
 
-For model fitting nad estimation of ZOI, see the pacakage [`glmnet`](https://glmnet.stanford.edu/index.html),
+For model fitting and estimation of ZOI, see the pacakage [`glmnet`](https://glmnet.stanford.edu/index.html),
 which is the backbone of the modeling approach used in `oneimpact`. For other similar approaches,
 check the [`maxnet()`](https://cran.r-project.org/web/packages/maxnet/index.html) for MaxEnt 
 species distribution models using `glmnet`.
@@ -139,7 +139,7 @@ made through the [`terra` package](https://rspatial.org/terra/pkg/index.html) in
 [`r.mfilter`](https://grass.osgeo.org/grass78/manuals/r.mfilter.html), 
 [`r.resamp.filter`](https://grass.osgeo.org/grass78/manuals/r.resamp.filter.html), and 
 [`r.neighbors`](https://grass.osgeo.org/grass78/manuals/r.neighbors.html). The connection
-between R and GRASS GIS is made through the [`rgrass7`](https://github.com/rsbivand/rgrass) R package.
+between R and GRASS GIS is made through the [`rgrass`](https://github.com/rsbivand/rgrass) R package.
 
 ## Meta
 
