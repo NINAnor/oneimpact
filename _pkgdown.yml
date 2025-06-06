@@ -59,6 +59,7 @@ reference:
   - plot_response
   - bag_predict_spat
   - rescale_coefficients
+  - create_linear_feature_zoi
 - title: "Raster processing ancillary functions"
   desc: >
     GRASS GIS ancillary functions to process rasters and prepare inputs
