@@ -1,28 +1,72 @@
 #' Prediction of a bag of models to new data
 #'
-#' The function `bag_predict` makes a prediction from
+#' The function `predict` makes a prediction for new data based wither on a bag of models or
+#' on its formula, coefficients, and weights. The prediction can be made either for a complete new dataset
+#' with all the variables included in the formula or to predict the specific response on one single or a
+#' group of variables in the model. In this case, all the other variables are set to their median or mean
+#' value, to to zero (defined by the `baseline` parameter). What controls that is which columns are added in
+#' the `newdata` data.frame.
 #'
 #' @param x `[bag,list or formula]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()],
 #' or a `formula` used to fit the models in the bag.
 #' @param newdata \cr New data set to be used for prediction. It can include all the variables in the formula
 #' or only those for which the user is interested in making a prediction from.
-#' @param inclue vector with 1s and 0s about which variables should be included?
+#' @param type `[character="linear"]{"linear", "exponential", "exp", "logit", "cloglog"}` \cr Type of prediction.
+#' One of `"linear"` (default), `"exp"` or `"exponential"`, `"logit"`, or `"cloglog"`.
+#' @param wmean `[logical=TRUE]` \cr Should the weighted mean values be predicted? Default is `TRUE`.
+#' @param wq_probs `[vector,numeric(3)=c(0.025, 0.5, 0.975)]` \cr A three element vector with lower,
+#' mid, and higher weighted quantiles to be computed.
+#' @param include `[character="all"]` \cr String of vector of strings with the terms (or unique parts of terms)
+#' to be predicted for. This does not restrict which terms we are focusing on - this is done
+#' by the definition of the `newdata` dataset and by which columns are in there. What
+#' the `include` parameters does is to set which other variables will be used for prediction,
+#' at their mean or median values, for instance.
+#' @param baseline `[character="median"]{"median", "mean", "zero")}` \cr What values to
+#' choose for the baseline, i.e., for all other variables/terms not contained in
+#' `newdata`. It can be one of `median`, `"mean"`, or `"zero"`.
+#' @param zoi `[logical(1)=FALSE]` \cr Are the columns in `newdata` supposed to represent
+#' zones of influence (ZOI) variables?
+#' This parameter should be set to `TRUE` if you provided a set of distances from a source that need
+#' to be translated into ZOI variables (cumulative or nearest ZOI from sources).
+#' @param zoi_shape `[character="exp_decay"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}` \cr
+#' Shape of the zone of influence (ZOI), if `zoi = TRUE`. Default is `exp_decay"`. It can assume any of the
+#' possible values for the argument `type` in the function [oneimpact::dist_decay()].
+#' @param which_cumulative `[character="cumulative"]` \cr Which string or pattern to be searched on the column
+#' names of `newdata` and on the original data used to fit the models to represent the cumulative ZOI.
+#' It is used to break the names of the columns/terms in the formula and get the ZOI radii as numbers,
+#' to be able to create all the ZOI radii included in the model or bag of models.
+#' @param type_feature `[character="point"]{"point", "line", "area"}` \cr Type of feature we are predicting
+#' for, for zone of influence-type variables. Default is `"point"`. If `type_feature = "line"`, a line is simulated
+#' with the function [oneimpact::create_linear_feature_zoi()] to get the values and account for
+#' the number of pixels of each single linear feature in the neighborhhod and correclty estimate
+#' the effect of each linear feature ZOI. The option `"area"` is still not implemented and for now
+#' is treated as a point feature at the origin.
+#' @param n_features `[numeric(1)=1]` \cr Number of features to be used for prediction, for ZOI variables.
+#' Default is 1.
+#' @param resolution `[numeric(1)=100]` \cr Resolution for the raster created in [oneimpact::create_line_feature_zoi()],
+#' when `type_feature = "line"`.
+#' @param line_value `[numeric(1)=1]` \cr Value set to the raster line created by [oneimpact::create_line_feature_zoi()],
+#' when `type_feature = "line"`. It could be changed to different values if we want to represent e.g. the value in the
+#' linear feature as the roads traffic or another value for spatio-temporally dynamic variables.
+#' @param ... \cr Additional parameters. None implemented.
 #'
-#' @example examples/bag_predict_examople.R
+#' @seealso [oneimpact::plot_response()], [oneimpact::create_line_feature_zoi()].
+#'
+#' @example examples/bag_predict_example.R
 #'
 #' @export
-bag_predict <- function(x,
+predict <- function(x,
                         newdata,
                         type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
                         wmean = TRUE,
                         wq_probs = NULL,
                         include = "all", ...) {
-  UseMethod("bag_predict")
+  UseMethod("predict")
 }
 
-#' @rdname bag_predict
+#' @rdname predict
 #' @export
-bag_predict.bag <- function(x,
+predict.bag <- function(x,
                             newdata,
                             data = NULL,
                             type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
@@ -118,7 +162,7 @@ bag_predict.bag <- function(x,
   # predict only for those variables/coefs of interest for ZOI variables
   include <- if(zoi) colnames(dfvar) else include
   # predict
-  pred <- bag_predict(x$formula,
+  pred <- predict(x$formula,
                       newdata = newdata,
                       coefs = x$coef,
                       weights = x$weights,
@@ -130,24 +174,24 @@ bag_predict.bag <- function(x,
   pred
 }
 
-
-#' @param x `[formula]` \cr Formula used to fit the model.
 #' @param coefs `[vector,numeric]` \cr Either a named vector of coefficients (in case there is only one
 #' model) or a matrix of coefficients, with rownames as the term names and columns as the different models/resamples.
+#' Only relevant if `x` is a formula.
 #' @param weights `[vector,numeric=1]` \cr Vector of weights for the different models/resamples, i.e.
 #' the column from the `coefs` object with coefficients. A single number (by default, 1) in case there is only
-#' one model (`coefs` is a vector).
+#' one model (`coefs` is a vector). Only relevant if `x` is a formula.
 #'
-#' @rdname bag_predict
+#' @rdname predict
 #' @export
-bag_predict.formula <- function(x,
+predict.formula <- function(x,
                                 newdata,
                                 coefs,
                                 weights = 1,
                                 type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
                                 wmean = TRUE,
                                 wq_probs = NULL,
-                                include = "all") {
+                                include = "all",
+                                ...) {
 
   # formula with not strata
   wcols <- extract_response_strata(x, covars = TRUE)
@@ -238,7 +282,7 @@ bag_predict.formula <- function(x,
   return(preddf)
 }
 
-bag_predict_components <- function(x, newdata, include="all"){
+predict_components <- function(x, newdata, include="all"){
   mm <- model.matrix(x$formula_no_strata, newdata)
   coefs <- x$coef %*% x$weights
   if (include[1]!="all"){
@@ -262,15 +306,40 @@ combine_zoi_components <- function(x, zoi=c(250, 500, 1000, 2500, 5000, 10000)){
 }
 
 
-#' The function `create_linear_feature_zoi` created ZOI of one single linear feature so it is used to
-#' correctly create response plots for linear infrastructure, considering the potential
-#' responses at multiple radii.
+#' Creates a line feature and gets the value of their zone of influence on locations over the feature
+#'
+#' The function `create_linear_feature_zoi()` computes the cumulative zone of influence (ZOI) of one single
+#' linear feature so it is used to correctly create predictions and response plots for
+#' linear infrastructure, considering the potential responses at multiple radii.
+#'
+#' This function could be extended to the nearest ZOI, if needed.
+#'
+#' @param radii `[numeric,vector=c(100, 250, 500, 1000, 2500, 5000, 10000)]` \cr Vector of radii for which the
+#' zone of influence should be computed.
+#' @param type `[character="circle"]{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold"}` \cr
+#' Shape of the zone of influence (ZOI), Default is `circle"`. It can assume any of the
+#' possible values for the argument `type` in the function [oneimpact::dist_decay()].
+#' @param radius_max `[numeric=max(radii)]` \cr Maximum radius, used to set the size of the
+#' landscape/raster for ZOI computations.
+#' @param res `[numeric(1)=100]` \cr Resolution for the raster created. This might impact what are the values observed
+#' in the ZOI.
+#' @param line_value `[numeric(1)=1]` \cr Value set to the raster line created. Default is 1.
+#' It could be changed to different values if we want to represent e.g. the value in the
+#' linear feature as the roads traffic or another value for spatio-temporally dynamic variables.
+#'
+#' @seealso [oneimpact::predict()]
+#'
+#' @examples
+#' # create feature
+#' create_linear_feature_zoi(radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
+#'                           type = "exp_decay",
+#'                           res = 100)
 #'
 #' @export
 create_linear_feature_zoi <- function(radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
                                       type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
                                                "mfilter")[1],
-                                      radius_max = 10000,
+                                      radius_max = max(radii),
                                       res = 100,
                                       value = 1) {
 
@@ -287,6 +356,7 @@ create_linear_feature_zoi <- function(radii = c(100, 250, 500, 1000, 2500, 5000,
                     xmin = -radius_max, xmax = radius_max,
                     ymin = -radius_max, ymax = radius_max,
                     res = res)
+  # multiple the line by value
   r_line <- value * terra::rasterize(line, rr, touches= TRUE, background = 0)
   r_line
   # plot(r_line)
@@ -296,5 +366,5 @@ create_linear_feature_zoi <- function(radii = c(100, 250, 500, 1000, 2500, 5000,
   # plot(zois)
 
   # return(setNames(zois[radius_max/res+1, radius_max/res], radii))
-  return(setNames(unlist(global(zois, max)), radii))
+  return(setNames(unlist(terra::global(zois, max)), radii))
 }

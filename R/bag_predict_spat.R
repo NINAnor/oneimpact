@@ -24,7 +24,6 @@
 #' output raster. Only relevant if `input_type = "df"`. For more details, check
 #' [terra::crs()].
 #'
-#'
 #' @export
 bag_predict_spat <- function(bag,
                              data,

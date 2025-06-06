@@ -53,7 +53,7 @@ reference:
     Functions to help interpreting parameters and visualizing
     cumulative impacts
   contents:
-  - bag_predict
+  - predict
   - contains("importance")
   - plot_coef
   - plot_response

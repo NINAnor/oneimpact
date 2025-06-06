@@ -2,21 +2,50 @@
 % Please edit documentation in R/bag_predict.R
 \name{create_linear_feature_zoi}
 \alias{create_linear_feature_zoi}
-\title{The function \code{create_linear_feature_zoi} created ZOI of one single linear feature so it is used to
-correctly create response plots for linear infrastructure, considering the potential
-responses at multiple radii.}
+\title{Creates a line feature and gets the value of their zone of influence on locations over the feature}
 \usage{
 create_linear_feature_zoi(
   radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
   type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
     "mfilter")[1],
-  radius_max = 10000,
+  radius_max = max(radii),
   res = 100,
   value = 1
 )
 }
+\arguments{
+\item{radii}{\verb{[numeric,vector=c(100, 250, 500, 1000, 2500, 5000, 10000)]} \cr Vector of radii for which the
+zone of influence should be computed.}
+
+\item{type}{\verb{[character="circle"]\{"circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold"\}} \cr
+Shape of the zone of influence (ZOI), Default is \verb{circle"}. It can assume any of the
+possible values for the argument \code{type} in the function \code{\link[=dist_decay]{dist_decay()}}.}
+
+\item{radius_max}{\verb{[numeric=max(radii)]} \cr Maximum radius, used to set the size of the
+landscape/raster for ZOI computations.}
+
+\item{res}{\verb{[numeric(1)=100]} \cr Resolution for the raster created. This might impact what are the values observed
+in the ZOI.}
+
+\item{line_value}{\verb{[numeric(1)=1]} \cr Value set to the raster line created. Default is 1.
+It could be changed to different values if we want to represent e.g. the value in the
+linear feature as the roads traffic or another value for spatio-temporally dynamic variables.}
+}
 \description{
-The function \code{create_linear_feature_zoi} created ZOI of one single linear feature so it is used to
-correctly create response plots for linear infrastructure, considering the potential
-responses at multiple radii.
+The function \code{create_linear_feature_zoi()} computes the cumulative zone of influence (ZOI) of one single
+linear feature so it is used to correctly create predictions and response plots for
+linear infrastructure, considering the potential responses at multiple radii.
+}
+\details{
+This function could be extended to the nearest ZOI, if needed.
+}
+\examples{
+# create feature
+create_linear_feature_zoi(radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
+                          type = "exp_decay",
+                          res = 100)
+
+}
+\seealso{
+\code{\link[=predict]{predict()}}
 }

@@ -96,7 +96,7 @@ used for model tunning (selecting penalties) and validation.
 Functions to help interpreting parameters and visualizing cumulative impacts from bags
 of fitted models:
 
-- `bag_predict()`: Prediction of a bag of models to new data.
+- `predict()`: Prediction of a bag of models to new data.
 - `variable_importance()`, `plot_importance()`: Computes and plots variable importance from a bag of models.
 - `plot_coef()`: Plots the coefficients of bags of models.
 - `plot_response()`: Plots (partial) response curves from a bag of models.
