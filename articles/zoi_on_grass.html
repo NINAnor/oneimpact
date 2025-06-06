@@ -158,11 +158,16 @@ first load this data set.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'oneimpact'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     predict</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://osgeo.github.io/rgrass/" class="external-link">rgrass</a></span><span class="op">)</span> <span class="co"># for connecting R and GRASS</span></span>
 <span><span class="co">#&gt; GRASS GIS interface loaded with GRASS version: sh: line 1: g.version: command not found</span></span>
 <span><span class="co">#&gt; and location: ETRS_33N/</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># for geodata in R</span></span>
-<span><span class="co">#&gt; terra 1.8.42</span></span>
+<span><span class="co">#&gt; terra 1.8.54</span></span>
 <span></span>
 <span><span class="co"># load cabins raster data into R</span></span>
 <span><span class="op">(</span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins_count.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span><span class="op">)</span></span>
@@ -417,14 +422,14 @@ reads the rasters as a <code>SpatialGridDataFrame</code> object from the
 <span>                                           flags <span class="op">=</span> <span class="st">"quiet"</span><span class="op">)</span></span>
 <span><span class="va">cabins_zoi_cumulative</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 361, 478, 4  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; size        : 361, 478, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
-<span><span class="co">#&gt; sources     : file44291d8c743b.grd  </span></span>
-<span><span class="co">#&gt;               file4429619553df.grd  </span></span>
-<span><span class="co">#&gt;               file442919393cb7.grd  </span></span>
-<span><span class="co">#&gt;               file44295f306dc1.grd  </span></span>
+<span><span class="co">#&gt; sources     : file33eb4b302b7.grd  </span></span>
+<span><span class="co">#&gt;               file33eb341cd0d2.grd  </span></span>
+<span><span class="co">#&gt;               file33eb69e97c3f.grd  </span></span>
+<span><span class="co">#&gt;               file33eb7f7cd7ad.grd  </span></span>
 <span><span class="co">#&gt; color table : 1, 2, 3, 4 </span></span>
 <span><span class="co">#&gt; names       : cabins_~lett500, cabins_~ett1000, cabins_~lett500, cabins_~ett1000 </span></span>
 <span><span class="co">#&gt; min values  :               0,               0,         0.00000,          0.0000 </span></span>
@@ -553,7 +558,7 @@ on biodiversity. <em>Methods in Ecology and Evolution</em>, 14,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

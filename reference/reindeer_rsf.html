@@ -88,26 +88,32 @@ with shapes other than the exponential decay were omitted.</p>
 
 <dt>private_cabins_cumulative_exp_decay_XXX</dt>
 <dd><p>Cumulative zone of influence of private cabins at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 10000m).</p></dd>
+with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></dd>
 
 <dt>private_cabins_nearest_exp_decay_XXX</dt>
 <dd><p>Zone of influence of the nearest private cabin at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 10000m).</p></dd>
+with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></dd>
 
 <dt>public_cabins_cumulative_exp_decay_XXX</dt>
 <dd><p>Cumulative zone of influence of public resorts at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 10000m).</p></dd>
+with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></dd>
 
 <dt>public_cabins_nearest_exp_decay_XXX</dt>
 <dd><p>Zone of influence of the nearest public resort at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 10000m).</p></dd>
+with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></dd>
 
 <dt>NORUTreclass</dt>
 <dd><p>Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.</p></dd>
 
 <dt>norway_pca_klima_axis1-4</dt>
-<dd><p>PCAs 1 to 4 representing bio-geo-climatic variation in Norway,
-from Bakkestuen et al. 2008. More information in Niebuht et al. 2023.</p></dd>
+<dd><p>Components 1 to 4 from a principal component analysis
+representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
+PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
+More information in Niebuhr et al. 2023.</p></dd>
+
+<dt>norway_pca_klima_axis1-2_sq</dt>
+<dd><p>Squared value for components 1 and 2 to from a principal component analysis
+representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.</p></dd>
 
 
 </dl></div>
@@ -138,7 +144,7 @@ https://doi.org/10.1111/j.1365-2699.2008.01941.x</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

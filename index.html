@@ -126,10 +126,10 @@
 </h3>
 <p>Functions to fit RSF and SSF and estimate ZOI using penalized regression</p>
 <ul>
-<li><p><code><a href="reference/bag_fit_net_clogit.html">bag_fit_net_clogit()</a></code>: Fits a a bag of conditional logistic regressions/SSF/iSSF using glmnet. This function is a wrapper around <code><a href="reference/fit_net_clogit.html">fit_net_clogit()</a></code> which is the one properly setting up the model fitting, tunning, and validation. It allows the use of different penalization algorithms, including Lasso, Ridge, Adaptive Lasso, and different adaptations from Adaptive Lasso. This function calls the function <code><a href="reference/net_logit.html">net_logit()</a></code> which is the one properly calling <code>glmnet</code> and fitting the model.</p></li>
-<li><p><code><a href="reference/bag_fit_net_logit.html">bag_fit_net_logit()</a></code> (and <code><a href="reference/fit_net_logit.html">fit_net_logit()</a></code>, <code><a href="reference/net_logit.html">net_logit()</a></code>): equivalent to the one above, but performing common logistic regression, with no strata.</p></li>
-<li><p><code><a href="reference/bag_load_models.html">bag_load_models()</a></code>: Load a vector of files with the output of <code><a href="reference/fit_net_clogit.html">fit_net_clogit()</a></code> or <code><a href="reference/fit_net_logit.html">fit_net_logit()</a></code> and put them on a bag.</p></li>
-<li><p><code><a href="reference/bag_models.html">bag_models()</a></code>: Bag a list of loaded/fitted models fitted through <code><a href="reference/fit_net_clogit.html">fit_net_clogit()</a></code> or <code><a href="reference/fit_net_logit.html">fit_net_logit()</a></code>. This created an object of class <code>bag</code> with all information for understanding and making prediction from the bag of models.</p></li>
+<li><p><code><a href="reference/bag_fit_net_functions.html">bag_fit_net_clogit()</a></code>: Fits a a bag of conditional logistic regressions/SSF/iSSF using glmnet. This function is a wrapper around <code><a href="reference/fit_net_functions.html">fit_net_clogit()</a></code> which is the one properly setting up the model fitting, tunning, and validation. It allows the use of different penalization algorithms, including Lasso, Ridge, Adaptive Lasso, and different adaptations from Adaptive Lasso. This function calls the function <code><a href="reference/net_logit.html">net_logit()</a></code> which is the one properly calling <code>glmnet</code> and fitting the model.</p></li>
+<li><p><code><a href="reference/bag_fit_net_functions.html">bag_fit_net_logit()</a></code> (and <code><a href="reference/fit_net_functions.html">fit_net_logit()</a></code>, <code><a href="reference/net_logit.html">net_logit()</a></code>): equivalent to the one above, but performing common logistic regression, with no strata.</p></li>
+<li><p><code><a href="reference/bag_load_models.html">bag_load_models()</a></code>: Load a vector of files with the output of <code><a href="reference/fit_net_functions.html">fit_net_clogit()</a></code> or <code><a href="reference/fit_net_functions.html">fit_net_logit()</a></code> and put them on a bag.</p></li>
+<li><p><code><a href="reference/bag_models.html">bag_models()</a></code>: Bag a list of loaded/fitted models fitted through <code><a href="reference/fit_net_functions.html">fit_net_clogit()</a></code> or <code><a href="reference/fit_net_functions.html">fit_net_logit()</a></code>. This created an object of class <code>bag</code> with all information for understanding and making prediction from the bag of models.</p></li>
 <li><p><code><a href="reference/concordance_indices.html">AUC()</a></code>, <code><a href="reference/concordance_indices.html">conditionalAUC()</a></code>, <code><a href="reference/concordance_indices.html">coxnet.deviance()</a></code>, <code><a href="reference/concordance_indices.html">Cindex()</a></code>, <code><a href="reference/concordance_indices.html">conditionalSomersD()</a></code>: functions used for model tunning (selecting penalties) and validation.</p></li>
 </ul>
 </div>
@@ -139,7 +139,7 @@
 <p>Functions to help interpreting parameters and visualizing cumulative impacts from bags of fitted models:</p>
 <ul>
 <li>
-<code><a href="reference/bag_predict.html">bag_predict()</a></code>: Prediction of a bag of models to new data.</li>
+<code><a href="reference/predict.html">predict()</a></code>: Prediction of a bag of models to new data.</li>
 <li>
 <code><a href="reference/variable_importance.html">variable_importance()</a></code>, <code><a href="reference/plot_importance.html">plot_importance()</a></code>: Computes and plots variable importance from a bag of models.</li>
 <li>
@@ -171,8 +171,8 @@
 <div class="section level2">
 <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
-<p>For model fitting nad estimation of ZOI, see the pacakage <a href="https://glmnet.stanford.edu/index.html" class="external-link"><code>glmnet</code></a>, which is the backbone of the modeling approach used in <code>oneimpact</code>. For other similar approaches, check the <a href="https://cran.r-project.org/web/packages/maxnet/index.html" class="external-link"><code>maxnet()</code></a> for MaxEnt species distribution models using <code>glmnet</code>.</p>
-<p>The <code>oneimpact</code> functions to compute the ZOI layers are greatly based on neighborhood analyses made through the <a href="https://rspatial.org/terra/pkg/index.html" class="external-link"><code>terra</code> package</a> in R and on three GRASS GIS modules: <a href="https://grass.osgeo.org/grass78/manuals/r.mfilter.html" class="external-link"><code>r.mfilter</code></a>, <a href="https://grass.osgeo.org/grass78/manuals/r.resamp.filter.html" class="external-link"><code>r.resamp.filter</code></a>, and <a href="https://grass.osgeo.org/grass78/manuals/r.neighbors.html" class="external-link"><code>r.neighbors</code></a>. The connection between R and GRASS GIS is made through the <a href="https://github.com/rsbivand/rgrass" class="external-link"><code>rgrass7</code></a> R package.</p>
+<p>For model fitting and estimation of ZOI, see the pacakage <a href="https://glmnet.stanford.edu/index.html" class="external-link"><code>glmnet</code></a>, which is the backbone of the modeling approach used in <code>oneimpact</code>. For other similar approaches, check the <a href="https://cran.r-project.org/web/packages/maxnet/index.html" class="external-link"><code>maxnet()</code></a> for MaxEnt species distribution models using <code>glmnet</code>.</p>
+<p>The <code>oneimpact</code> functions to compute the ZOI layers are greatly based on neighborhood analyses made through the <a href="https://rspatial.org/terra/pkg/index.html" class="external-link"><code>terra</code> package</a> in R and on three GRASS GIS modules: <a href="https://grass.osgeo.org/grass78/manuals/r.mfilter.html" class="external-link"><code>r.mfilter</code></a>, <a href="https://grass.osgeo.org/grass78/manuals/r.resamp.filter.html" class="external-link"><code>r.resamp.filter</code></a>, and <a href="https://grass.osgeo.org/grass78/manuals/r.neighbors.html" class="external-link"><code>r.neighbors</code></a>. The connection between R and GRASS GIS is made through the <a href="https://github.com/rsbivand/rgrass" class="external-link"><code>rgrass</code></a> R package.</p>
 </div>
 <div class="section level2">
 <h2 id="meta">Meta<a class="anchor" aria-label="anchor" href="#meta"></a>
@@ -234,7 +234,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

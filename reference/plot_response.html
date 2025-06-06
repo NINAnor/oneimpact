@@ -70,6 +70,9 @@ are kept constant, as defined by the <code>baseline</code> parameter.</p>
 <span>  baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"mean"</span>, <span class="st">"zero"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  zoi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  zoi_vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span><span class="op">)</span>,</span>
+<span>  type_feature <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point"</span>, <span class="st">"line"</span>, <span class="st">"area"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  resolution <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  line_value <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  ggplot <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  plot_mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  plot_median <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -126,14 +129,137 @@ preditor variables.</p></dd>
 
 
 <dt id="arg-wq-probs">wq_probs<a class="anchor" aria-label="anchor" href="#arg-wq-probs"></a></dt>
-<dd><p><code>[vector,numeric(3)=c(0.025, 0.5, 0.975)]</code> <br> a three element with lower, mid, and higher weighted quantiles to be computed</p></dd>
+<dd><p><code>[vector,numeric(3)=c(0.025, 0.5, 0.975)]</code> <br> A three element vector with lower,
+mid, and higher weighted quantiles to be computed.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The function <code>plot_response</code> uses the <code>bag_predict</code> to produce the predictions.</p>
+    <p>The function <code>plot_response</code> uses the <code>predict</code> to produce the predictions.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="predict.html">predict()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#---</span></span></span>
+<span class="r-in"><span><span class="co"># fit a bag to be tested</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load packages</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu" class="external-link">glmnet</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loaded glmnet 4.1-9</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘glmnet’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:oneimpact’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Cindex, coxnet.deviance</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"reindeer_rsf"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># rename it just for convenience</span></span></span>
+<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">reindeer_rsf</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># formula initial structure</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">private_cabins_XXX</span> <span class="op">+</span> <span class="va">public_cabins_high_XXX</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="va">NORUTreclass</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis1, 2, raw = TRUE) +</span></span></span>
+<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis2, 2, raw = TRUE) +</span></span></span>
+<span class="r-in"><span>  <span class="va">norway_pca_klima_axis1</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis1_sq</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="va">norway_pca_klima_axis2</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis2_sq</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="va">norway_pca_klima_axis3</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis4</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add ZOI terms to the formula</span></span></span>
+<span class="r-in"><span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span>, <span class="fl">20000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="add_zoi_formula.html">add_zoi_formula</a></span><span class="op">(</span><span class="va">f</span>, zoi_radius <span class="op">=</span> <span class="va">zois</span>, pattern <span class="op">=</span> <span class="st">"XXX"</span>,</span></span>
+<span class="r-in"><span>                     type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cumulative_exp_decay"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     separator <span class="op">=</span> <span class="st">"_"</span>, predictor_table <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">formula</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># sampling - random sampling</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_resamples.html">create_resamples</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">use</span>,</span></span>
+<span class="r-in"><span>                            p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            times <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                            colH0 <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Starting random sampling..."</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># fit multiple models</span></span></span>
+<span class="r-in"><span><span class="va">fittedl</span> <span class="op">&lt;-</span> <span class="fu"><a href="bag_fit_net_functions.html">bag_fit_net_logit</a></span><span class="op">(</span><span class="va">f</span>,</span></span>
+<span class="r-in"><span>                             data <span class="op">=</span> <span class="va">dat</span>,</span></span>
+<span class="r-in"><span>                             samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
+<span class="r-in"><span>                             standardize <span class="op">=</span> <span class="st">"internal"</span>, <span class="co"># glmnet does the standardization of covariates</span></span></span>
+<span class="r-in"><span>                             metric <span class="op">=</span> <span class="st">"AUC"</span>,</span></span>
+<span class="r-in"><span>                             method <span class="op">=</span> <span class="st">"AdaptiveLasso"</span>,</span></span>
+<span class="r-in"><span>                             parallel <span class="op">=</span> <span class="st">"mclapply"</span>,</span></span>
+<span class="r-in"><span>                             mc.cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># bag models in a single object</span></span></span>
+<span class="r-in"><span><span class="va">bag_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="bag_models.html">bag_models</a></span><span class="op">(</span><span class="va">fittedl</span>, <span class="va">dat</span>, score_threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#---</span></span></span>
+<span class="r-in"><span><span class="co"># plot predictions for non-ZOI variables</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># plot for PCA1</span></span></span>
+<span class="r-in"><span><span class="va">dfvar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>norway_pca_klima_axis1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">bag_object</span><span class="op">$</span><span class="va">data_summary</span><span class="op">$</span><span class="va">norway_pca_klima_axis1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">bag_object</span><span class="op">$</span><span class="va">data_summary</span><span class="op">$</span><span class="va">norway_pca_klima_axis1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                                 length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dfvar</span><span class="op">$</span><span class="va">norway_pca_klima_axis1_sq</span> <span class="op">=</span> <span class="va">dfvar</span><span class="op">$</span><span class="va">norway_pca_klima_axis1</span><span class="op">**</span><span class="fl">2</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># plot mean response in linear scale with weighted interquartile range</span></span></span>
+<span class="r-in"><span><span class="fu">plot_response</span><span class="op">(</span><span class="va">bag_object</span>,</span></span>
+<span class="r-in"><span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>,</span></span>
+<span class="r-in"><span>              data <span class="op">=</span> <span class="va">dat</span>,</span></span>
+<span class="r-in"><span>              wq_probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              plot_median <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># remove median, plot only weighted mean</span></span></span>
+<span class="r-plt img"><img src="plot_response-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># plot median response in exponential scale with weighted interquartile range</span></span></span>
+<span class="r-in"><span><span class="fu">plot_response</span><span class="op">(</span><span class="va">bag_object</span>,</span></span>
+<span class="r-in"><span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>,</span></span>
+<span class="r-in"><span>              data <span class="op">=</span> <span class="va">dat</span>,</span></span>
+<span class="r-in"><span>              type <span class="op">=</span> <span class="st">"exp"</span>,</span></span>
+<span class="r-in"><span>              wq_probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              plot_mean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># remove mean, plot only weighted median</span></span></span>
+<span class="r-plt img"><img src="plot_response-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#---</span></span></span>
+<span class="r-in"><span><span class="co"># plot predictions for ZOI variables</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># plot for private cabins</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># define newdata based only on the distances from the source (public cabins)</span></span></span>
+<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>private_cabins <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># plot mean response in exponential scale, with individual lines, x in log scale</span></span></span>
+<span class="r-in"><span><span class="co"># in exponential scale, relative selection strength = 1 corresponse to no effect</span></span></span>
+<span class="r-in"><span><span class="co"># prediction for for 1 cabin only</span></span></span>
+<span class="r-in"><span><span class="fu">plot_response</span><span class="op">(</span><span class="va">bag_object</span>,</span></span>
+<span class="r-in"><span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>,</span></span>
+<span class="r-in"><span>              data <span class="op">=</span> <span class="va">dat</span>,</span></span>
+<span class="r-in"><span>              type <span class="op">=</span> <span class="st">"exp"</span>,</span></span>
+<span class="r-in"><span>              zoi <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              ci <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>              indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              logx <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              ylim <span class="op">=</span> <span class="fu">ylim</span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ylim(0, 2):</span> could not find function "ylim"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># prediction for for 10 cabins located at the origin</span></span></span>
+<span class="r-in"><span><span class="fu">plot_response</span><span class="op">(</span><span class="va">bag_object</span>,</span></span>
+<span class="r-in"><span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>,</span></span>
+<span class="r-in"><span>              data <span class="op">=</span> <span class="va">dat</span>,</span></span>
+<span class="r-in"><span>              type <span class="op">=</span> <span class="st">"exp"</span>,</span></span>
+<span class="r-in"><span>              zoi <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              n_features <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>              ci <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>              indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              logx <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              ylim <span class="op">=</span> <span class="fu">ylim</span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ylim(0, 2):</span> could not find function "ylim"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
@@ -143,7 +269,7 @@ preditor variables.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
