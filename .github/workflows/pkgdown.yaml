@@ -40,7 +40,7 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
-       name: Install used packages which are not dependencies
+      - name: Install used packages which are not dependencies
         run: |
           install.packages('tictoc')
           install.packages('tmap')
