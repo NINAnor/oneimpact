@@ -118,8 +118,9 @@ plot(rast_predictors_500$NORUTreclass)
 rast_predictors_500$NORUTreclass |> levels()
 
 terra::writeRaster(rast_predictors, "data-raw/rast_predictors_hardanger_100.tif", gdal = c("COMPRESS=DEFLATE"))
-terra::writeRaster(rast_predictors_500, "data-raw/rast_predictors_hardanger_500.tif", gdal = c("COMPRESS=DEFLATE"),
+terra::writeRaster(rast_predictors_500, "inst/raster/rast_predictors_hardanger_500.tif", gdal = c("COMPRESS=DEFLATE"),
                    overwrite = TRUE)
+file.copy("data-raw/rast_predictors_hardanger_500.tif", "inst/raster/", overwrite = TRUE)
 
 rast_predictors$NORUTreclass <- as.numeric(rast_predictors$NORUTreclass)
 rast_df <- terra::as.data.frame(rast_predictors, xy = TRUE, cells = TRUE, na.rm = FALSE)
