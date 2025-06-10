@@ -802,11 +802,9 @@ fit_net_clogit <- function(f, data,
 }
 
 #' @rdname fit_net_functions
-#' @export
 fit_net_ssf <- fit_net_clogit
 
 #' @rdname fit_net_functions
-#' @export
 fit_net_issf <- fit_net_clogit
 
 #' Fit a bag of conditional logistic regression/SSF/iSSF models with penalized regression in a train-validate-test setup

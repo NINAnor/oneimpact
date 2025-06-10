@@ -743,7 +743,6 @@ fit_net_logit <- function(f, data,
 }
 
 #' @rdname fit_net_functions
-#' @export
 fit_net_rsf <- fit_net_logit
 
 #' Fit a bag of logistic regression/RSF models with penalized regression in a train-validate-test setup
