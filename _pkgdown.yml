@@ -12,6 +12,8 @@ navbar:
       href: articles/computing_zoi.html
     - text: Zones of influence on GRASS GIS
       href: articles/zoi_on_grass.html
+    - text: Estimating zones of influence using penalized regression
+      href: articles/fitting_ZOI_logit.html
 reference:
 - title: "Zone of influence (ZoI) functions"
   desc: "Functions to represent the zone of influence"
