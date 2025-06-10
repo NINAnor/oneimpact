@@ -115,7 +115,7 @@ f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
 zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX", 
                       type = c("cumulative_exp_decay"),
-                      separator = "_", predictor_table = TRUE)
+                      separator = "", predictor_table = TRUE)
 
 # get formula
 f <- ff$formula

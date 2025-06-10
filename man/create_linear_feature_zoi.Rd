@@ -49,3 +49,4 @@ create_linear_feature_zoi(radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
 \seealso{
 \code{\link[=predict]{predict()}}
 }
+\keyword{internal}

@@ -7,6 +7,7 @@
 \alias{fit_net_issf}
 \alias{fit_net_logit}
 \alias{fit_net_rsf}
+\alias{grouped_func}
 \title{Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a train-validate-test setup}
 \usage{
 fit_net_clogit(
@@ -28,7 +29,7 @@ fit_net_clogit(
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
-  factor_hypothesis = 1,
+  function_hypothesis = c(exp)[[1]],
   factor_grouped_lasso = 1,
   replace_missing_NA = TRUE,
   na.action = "na.pass",
@@ -56,7 +57,7 @@ fit_net_ssf(
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
-  factor_hypothesis = 1,
+  function_hypothesis = c(exp)[[1]],
   factor_grouped_lasso = 1,
   replace_missing_NA = TRUE,
   na.action = "na.pass",
@@ -84,7 +85,7 @@ fit_net_issf(
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
-  factor_hypothesis = 1,
+  function_hypothesis = c(exp)[[1]],
   factor_grouped_lasso = 1,
   replace_missing_NA = TRUE,
   na.action = "na.pass",
@@ -111,7 +112,8 @@ fit_net_logit(
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
-  factor_hypothesis = 1,
+  function_hypothesis = c(exp)[[1]],
+  expected_sign_hypothesis = -1,
   factor_grouped_lasso = 1,
   replace_missing_NA = TRUE,
   na.action = "na.pass",
@@ -138,7 +140,8 @@ fit_net_rsf(
   predictor_table = NULL,
   function_lasso_decay = c(log, function(x) x/1000)[[1]],
   value_lasso_decay = 1,
-  factor_hypothesis = 1,
+  function_hypothesis = c(exp)[[1]],
+  expected_sign_hypothesis = -1,
   factor_grouped_lasso = 1,
   replace_missing_NA = TRUE,
   na.action = "na.pass",
@@ -146,6 +149,8 @@ fit_net_rsf(
   verbose = FALSE,
   ...
 )
+
+grouped_func(coefs, phi_group = 0)
 }
 \arguments{
 \item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
@@ -192,6 +197,10 @@ the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, w
 folder "output".}
 
 \item{...}{Options for \code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
+
+\item{phi_group}{Additional penalty constant for the group-based penalties.
+A value in the interval \link{0, Inf} where 0 is no additional penalty and
+higher values correspond to higher penalties.}
 }
 \description{
 By default, \code{\link[=fit_net_clogit]{fit_net_clogit()}} does not standardize predictor variables. If you want numeric variables

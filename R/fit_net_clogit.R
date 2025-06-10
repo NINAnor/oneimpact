@@ -61,7 +61,8 @@ fit_net_clogit <- function(f, data,
                            predictor_table = NULL,
                            function_lasso_decay = c(log, function(x) x/1000)[[1]],
                            value_lasso_decay = 1,
-                           factor_hypothesis = 1,
+                           function_hypothesis = c(exp)[[1]],
+                           # factor_hypothesis = 1,
                            factor_grouped_lasso = 1,
                            replace_missing_NA = TRUE,
                            na.action = "na.pass",
@@ -85,7 +86,8 @@ fit_net_clogit <- function(f, data,
                 predictor_table = predictor_table,
                 function_lasso_decay = function_lasso_decay,
                 value_lasso_decay = value_lasso_decay,
-                factor_hypothesis = factor_hypothesis,
+                function_hypothesis = function_hypothesis,
+                # factor_hypothesis = factor_hypothesis,
                 factor_grouped_lasso = factor_grouped_lasso,
                 replace_missing_NA = replace_missing_NA)
 
@@ -479,16 +481,12 @@ fit_net_clogit <- function(f, data,
                 mm_predictor_vars <- rep(predictor_table$variable, times = unname(table(terms_order)))
 
                 # set penalties
-                expected_negative <- ifelse(mm_is_zoi == 1, -1, 0)
-                penalty.factor <- hypothesis_func(coef_ridge, expected_negative, phi_hyp = factor_hypothesis)**gamma
+                # expected_negative <- ifelse(mm_is_zoi == 1, -1, 0)
+                # penalty.factor <- hypothesis_func(coef_ridge, expected_negative, phi_hyp = factor_hypothesis)**gamma
                 # cbind(coef_ridge, expected_negative, penalty.factor)
+                penalty.factor <- ifelse(mm_is_zoi == 1, function_hypothesis(-1*expected_sign_hypothesis*coef_ridge)**gamma,
+                                         1/(abs(coef_ridge)**gamma))
 
-                # zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-                # for(jj in zoi_terms) {
-                #   vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj]
-                #   # keep only the minimum
-                #   vals[vals > min(vals, na.rm = TRUE)] <- Inf
-                #   penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
                 # }
 
                 penalty.factor[penalty.factor == Inf] <- 999999999
@@ -514,10 +512,12 @@ fit_net_clogit <- function(f, data,
   # perform penalized regression with glmnet
   if(tolower(method[1]) == "ridge") {
 
+    # get ridge fit
     fit <- ridge_fit
 
   } else {
 
+    # fit
     fit <- net_clogit(f, train_data,
                       alpha = alpha,
                       penalty.factor = penalty.factor,
@@ -525,6 +525,7 @@ fit_net_clogit <- function(f, data,
                       standardize = std,
                       na.action = na.action,
                       ...)
+
   }
 
   # get variables
@@ -540,6 +541,10 @@ fit_net_clogit <- function(f, data,
 
   # variable names
   var_names <- rownames(coef(fit)) # variable names
+
+  # register used penalty.factor
+  penalty_factor_modified <- penalty.factor
+  names(penalty_factor_modified) <- var_names
 
   # prepare SDs for unstardization
   # if(standardize != FALSE) {
@@ -725,6 +730,7 @@ fit_net_clogit <- function(f, data,
   # all metrics evaluated
   results$metrics_evaluated <- metrics_evaluated
   results$var_names <- var_names # variable names
+  results$penalty_factor_modified <- penalty_factor_modified
   # Add info about the covariates - type
   results$numeric_covs <- numeric_covs
 

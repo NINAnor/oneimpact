@@ -17,7 +17,7 @@
 #' @param zero_coefficient_limit `[numeric(1)=1e8]` \cr Value above which an estimated coefficient is considered
 #' non-zero. Default is 1e-8. Useful for comparing coefficients which are expected to be zero (i.e. to have no effect).
 #'
-#' @example weirdness_example.R
+#' @example examples/weirdness_example.R
 #'
 #' @export
 weirdness <- function(x,

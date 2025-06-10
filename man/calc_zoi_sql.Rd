@@ -44,9 +44,9 @@ goes below a given minimum limit value \code{zoi_limit}. ### CHECK THAT, so far 
 
 \item{infra_geom}{\verb{[character]} \cr Name of the geometry column from the \code{infrastructure_layer} table.}
 
-\item{output_type}{\verb{[character]} \cr}
+\item{output_type}{\verb{[character]} \cr To be described.}
 
-\item{output_column_name}{\verb{[character]} \cr}
+\item{output_column_name}{\verb{[character]} \cr To be described.}
 }
 \description{
 This function computes the zone of influence (ZOI) for a set of points

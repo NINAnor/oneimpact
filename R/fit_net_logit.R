@@ -58,7 +58,9 @@ fit_net_logit <- function(f, data,
                           predictor_table = NULL,
                           function_lasso_decay = c(log, function(x) x/1000)[[1]],
                           value_lasso_decay = 1,
-                          factor_hypothesis = 1,
+                          # factor_hypothesis = 1,
+                          function_hypothesis = c(exp)[[1]],
+                          expected_sign_hypothesis = -1,
                           factor_grouped_lasso = 1,
                           replace_missing_NA = TRUE,
                           na.action = "na.pass",
@@ -80,7 +82,8 @@ fit_net_logit <- function(f, data,
                 predictor_table = predictor_table,
                 function_lasso_decay = function_lasso_decay,
                 value_lasso_decay = value_lasso_decay,
-                factor_hypothesis = factor_hypothesis,
+                function_hypothesis = function_hypothesis,
+                # factor_hypothesis = factor_hypothesis,
                 factor_grouped_lasso = factor_grouped_lasso,
                 replace_missing_NA = replace_missing_NA)
 
@@ -459,17 +462,10 @@ fit_net_logit <- function(f, data,
                 mm_predictor_vars <- rep(predictor_table$variable, times = unname(table(terms_order)))
 
                 # set penalties
-                expected_negative <- ifelse(mm_is_zoi == 1, -1, 0)
-                penalty.factor <- hypothesis_func(coef_ridge, expected_negative, phi_hyp = factor_hypothesis)**gamma
-                # cbind(coef_ridge, expected_negative, penalty.factor)
-
-                # zoi_terms <- unique(mm_predictor_vars[mm_is_zoi == 1])
-                # for(jj in zoi_terms) {
-                #   vals <- penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj]
-                #   # keep only the minimum
-                #   vals[vals > min(vals, na.rm = TRUE)] <- Inf
-                #   penalty.factor[mm_is_zoi == 1 & mm_predictor_vars == jj] <- vals
-                # }
+                # expected_sign <- ifelse(mm_is_zoi == 1, expected_sign_hypothesis, 0)
+                # penalty.factor <- hypothesis_func(coef_ridge, expected_negative, phi_hyp = factor_hypothesis)**gamma
+                penalty.factor <- ifelse(mm_is_zoi == 1, function_hypothesis(-1*expected_sign_hypothesis*coef_ridge)**gamma,
+                                         1/(abs(coef_ridge)**gamma))
 
                 penalty.factor[penalty.factor == Inf] <- 999999999
 
@@ -494,10 +490,12 @@ fit_net_logit <- function(f, data,
   # perform penalized regression with glmnet
   if(tolower(method[1]) == "ridge") {
 
+    # get ridge fit
     fit <- ridge_fit
 
   } else {
 
+    # fit
     fit <- net_logit(f, train_data,
                      alpha = alpha,
                      penalty.factor = penalty.factor,
@@ -505,6 +503,7 @@ fit_net_logit <- function(f, data,
                      standardize = std,
                      na.action = na.action,
                      ...)
+
   }
 
   # get variables
@@ -520,6 +519,10 @@ fit_net_logit <- function(f, data,
 
   # variable names
   var_names <- rownames(coef(fit))[-1] # variable names
+
+  # register used penalty.factor
+  penalty_factor_modified <- penalty.factor
+  names(penalty_factor_modified) <- var_names
 
   # prepare SDs for unstardization
   # if(standardize != FALSE) {
@@ -667,6 +670,7 @@ fit_net_logit <- function(f, data,
   # all metrics evaluated
   results$metrics_evaluated <- metrics_evaluated
   results$var_names <- var_names # variable names
+  results$penalty_factor_modified <- penalty_factor_modified
   # Add info about the covariates - type
   results$numeric_covs <- numeric_covs
 
@@ -909,6 +913,8 @@ bag_fit_net_logit <- function(f, data,
   results
 }
 
+#' Function to set penalties according to hypotheses
+#'
 #' @param coefs Vector of estimated coefficients through a Ridge regression.
 #' @param expectation Expected/Hypothetical signal of the coefficient for a
 #' given covariate. Should take value `hyp = -1` or `hyp = +1` depending
@@ -917,6 +923,17 @@ bag_fit_net_logit <- function(f, data,
 #' @param phi_hyp Additional penalty constant for the hypothesis-based penalties.
 #' A value in the interval [1, Inf] where 1 is no additional penalty and
 #' higher values correspond to higher penalties when
+#'
+#' @examples
+#' # set coefficients
+#' coefs <- c(-1, -0.5, -0.1, 0.8, 0.3, -0.1)
+#' expected_sign <- -1
+#' hypothesis_func(coefs)
+#'
+#' x <- seq(-2, 2, length.out = 101)
+#' plot(x, hypothesis_func(x), ylab = "Penalties")
+#' plot(x, exp(x), ylab = "Penalties")
+#'
 #' @export
 hypothesis_func <- function(coefs, expectation = -1, phi_hyp = 1) {
 
@@ -928,6 +945,9 @@ hypothesis_func <- function(coefs, expectation = -1, phi_hyp = 1) {
 #' @param phi_group Additional penalty constant for the group-based penalties.
 #' A value in the interval [0, Inf] where 0 is no additional penalty and
 #' higher values correspond to higher penalties.
+#'
+#' @rdname fit_net_functions
+#' @export
 grouped_func <- function(coefs, phi_group = 0) {
 
   # coefs_sorted <- sort(coefs, decreasing = TRUE)

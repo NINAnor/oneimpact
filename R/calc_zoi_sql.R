@@ -1,4 +1,4 @@
-#' # Compute Zone of Influence for points and annotate them to points using SQL
+#' Compute Zone of Influence for points and annotate them to points using SQL
 #'
 #' This function computes the zone of influence (ZOI) for a set of points
 #' (typically a type of indrastructure, defined by the `infrastructure_layer` parameter)
@@ -23,14 +23,12 @@
 #' @param input_geom `[character]` \cr Name of the geometry column from the `input_points` table.
 #' @param infra_geom `[character]` \cr Name of the geometry column from the `infrastructure_layer` table.
 #' @param input_id `[character]` \cr Name of a ID column from the `input_points` table.
-#' @param output_type `[character]` \cr
-#' @param output_column_name `[character]` \cr
+#' @param output_type `[character]` \cr To be described.
+#' @param output_column_name `[character]` \cr To be described.
 #'
 #' @example examples/calc_zoi_sql_example.R
 #'
 #' @export
-
-# declaring the function
 calc_zoi_sql <- function(con,
                          input_points,
                          infrastructure_layer,
