@@ -335,6 +335,7 @@ combine_zoi_components <- function(x, zoi=c(250, 500, 1000, 2500, 5000, 10000)){
 #'                           type = "exp_decay",
 #'                           res = 100)
 #'
+#' @keywords internal
 #' @export
 create_linear_feature_zoi <- function(radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
                                       type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
