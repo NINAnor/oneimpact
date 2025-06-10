@@ -42,13 +42,14 @@ plot_response(
 \arguments{
 \item{x}{\verb{[bag,list]} \cr A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
 
-\item{dfvar}{\verb{[data.frame]} \cr A data.frame with the values of the variables one wants to vary.
-All other variables are set to their mean or median (this is set by the parameter \code{baseline}).
-The column names of the dataframe might correspond exactly to the model covariates or to
+\item{dfvar}{\verb{[data.frame]} \cr A \code{data.frame} with the values of the variables one wants to vary
+and predict for.
+All other variables are set to their mean or median, or to zero (this is set by the parameter \code{baseline}).
+The column names of the \code{data.frame} might correspond exactly to the model covariates or to
 parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).}
 
 \item{data}{\verb{[data.frame]} \cr The original data used for model fitting. Used only for
-taking the categories of the categorical variables.}
+taking the categories of the categorical variables. Irrelevant if there is no categorical variables.}
 
 \item{type}{\verb{[character(1)="linear"]\{"linear", "exponential", "logit", "cloglog"\}} \cr Type of response.
 Might be \code{"linear"} (default), \code{"exponential"}, \code{"logit"}, and \code{"cloglog"}.}

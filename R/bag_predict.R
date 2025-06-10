@@ -56,32 +56,32 @@
 #'
 #' @export
 predict <- function(x,
-                        newdata,
-                        type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
-                        wmean = TRUE,
-                        wq_probs = NULL,
-                        include = "all", ...) {
+                    newdata,
+                    type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
+                    wmean = TRUE,
+                    wq_probs = NULL,
+                    include = "all", ...) {
   UseMethod("predict")
 }
 
 #' @rdname predict
 #' @export
 predict.bag <- function(x,
-                            newdata,
-                            data = NULL,
-                            type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
-                            wmean = TRUE,
-                            wq_probs = NULL,
-                            include = "all",
-                            baseline = c("median", "mean", "zero")[1],
-                            zoi = FALSE,
-                            zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
-                            which_cumulative = "cumulative",
-                            type_feature = c("point", "line", "area")[1],
-                            n_features = 1,
-                            resolution = 100, # resolution for the raster created in create_line_feature_zoi
-                            line_value = 1, # value sey to the linear inftastructure raster created in create_line_feature_zoi
-                            ...) {
+                        newdata,
+                        data = NULL,
+                        type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
+                        wmean = TRUE,
+                        wq_probs = NULL,
+                        include = "all",
+                        baseline = c("median", "mean", "zero")[1],
+                        zoi = FALSE,
+                        zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
+                        which_cumulative = "cumulative",
+                        type_feature = c("point", "line", "area")[1],
+                        n_features = 1,
+                        resolution = 100, # resolution for the raster created in create_line_feature_zoi
+                        line_value = 1, # value sey to the linear inftastructure raster created in create_line_feature_zoi
+                        ...) {
 
   # store new data entered
   dfvar <- newdata
@@ -163,13 +163,13 @@ predict.bag <- function(x,
   include <- if(zoi) colnames(dfvar) else include
   # predict
   pred <- predict(x$formula,
-                      newdata = newdata,
-                      coefs = x$coef,
-                      weights = x$weights,
-                      type = type,
-                      wmean = wmean,
-                      wq_probs = wq_probs,
-                      include = include)
+                  newdata = newdata,
+                  coefs = x$coef,
+                  weights = x$weights,
+                  type = type,
+                  wmean = wmean,
+                  wq_probs = wq_probs,
+                  include = include)
 
   pred
 }
@@ -184,14 +184,14 @@ predict.bag <- function(x,
 #' @rdname predict
 #' @export
 predict.formula <- function(x,
-                                newdata,
-                                coefs,
-                                weights = 1,
-                                type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
-                                wmean = TRUE,
-                                wq_probs = NULL,
-                                include = "all",
-                                ...) {
+                            newdata,
+                            coefs,
+                            weights = 1,
+                            type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
+                            wmean = TRUE,
+                            wq_probs = NULL,
+                            include = "all",
+                            ...) {
 
   # formula with not strata
   wcols <- extract_response_strata(x, covars = TRUE)

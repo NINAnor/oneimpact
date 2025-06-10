@@ -9,12 +9,13 @@
 #' The function `plot_response` uses the `predict` to produce the predictions.
 #'
 #' @param x `[bag,list]` \cr A bag of models, resulting from a call to [oneimpact::bag_models()].
-#' @param dfvar `[data.frame]` \cr A data.frame with the values of the variables one wants to vary.
-#' All other variables are set to their mean or median (this is set by the parameter `baseline`).
-#' The column names of the dataframe might correspond exactly to the model covariates or to
+#' @param dfvar `[data.frame]` \cr A `data.frame` with the values of the variables one wants to vary
+#' and predict for.
+#' All other variables are set to their mean or median, or to zero (this is set by the parameter `baseline`).
+#' The column names of the `data.frame` might correspond exactly to the model covariates or to
 #' parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).
 #' @param data `[data.frame]` \cr The original data used for model fitting. Used only for
-#' taking the categories of the categorical variables.
+#' taking the categories of the categorical variables. Irrelevant if there is no categorical variables.
 #' @param type `[character(1)="linear"]{"linear", "exponential", "logit", "cloglog"}` \cr Type of response.
 #' Might be `"linear"` (default), `"exponential"`, `"logit"`, and `"cloglog"`.
 #' @param zoi_shape `[character(1)="linear"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}` \cr
@@ -108,39 +109,40 @@ plot_response.bag <- function(x,
 
   # predict
   pred <- predict(x,
-                      newdata = dfvar,
-                      data = data,
-                      type = type,
-                      wmean = TRUE,
-                      wq_probs = wq_probs,
-                      include = include,
-                      baseline = baseline,
-                      zoi = zoi,
-                      zoi_shape = zoi_shape,
-                      which_cumulative = which_cumulative,
-                      type_feature = type_feature,
-                      n_features = n_features,
-                      resolution = resolution,
-                      line_value = line_value)
+                  newdata = dfvar,
+                  data = data,
+                  type = type,
+                  wmean = TRUE,
+                  wq_probs = wq_probs,
+                  include = include,
+                  baseline = baseline,
+                  zoi = zoi,
+                  zoi_shape = zoi_shape,
+                  which_cumulative = which_cumulative,
+                  type_feature = type_feature,
+                  n_features = n_features,
+                  resolution = resolution,
+                  line_value = line_value)
+  names(pred) <- if(is.null(wq_probs)) c("mean") else c("lower", "mid", "higher", "mean")
 
-  names(pred) <- c("lower", "mid", "higher", "mean")
+
   # predict for individual models
   if(indiv_pred) {
     pred_indiv <- predict(x,
-                              newdata = dfvar,
-                              data = data,
-                              type = type,
-                              wmean = FALSE,
-                              wq_probs = NULL,
-                              include = include,
-                              baseline = baseline,
-                              zoi = zoi,
-                              zoi_shape = zoi_shape,
-                              which_cumulative = which_cumulative,
-                              type_feature = type_feature,
-                              n_features = n_features,
-                              resolution = resolution,
-                              line_value = line_value)[, x$weights > 0]
+                          newdata = dfvar,
+                          data = data,
+                          type = type,
+                          wmean = FALSE,
+                          wq_probs = NULL,
+                          include = include,
+                          baseline = baseline,
+                          zoi = zoi,
+                          zoi_shape = zoi_shape,
+                          which_cumulative = which_cumulative,
+                          type_feature = type_feature,
+                          n_features = n_features,
+                          resolution = resolution,
+                          line_value = line_value)[, x$weights > 0]
   }
 
 
@@ -286,6 +288,7 @@ plot_response.bag <- function(x,
   } else{
 
     pred <- cbind(dfvar, pred)
+    if(indiv_pred) pred <- cbind(pred, pred_indiv)
     return(pred)
 
   }
