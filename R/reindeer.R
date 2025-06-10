@@ -107,6 +107,13 @@
 #' @format A data frame with 31,735 rows and 28 variables:
 #' \describe{
 #'   \item{use}{Case in the use-availability setup; 1 represents a used location, 0 represents a random locations.}
+#'   \item{norway_pca_klima_axis1-4}{Components 1 to 4 from a principal component analysis
+#'         representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
+#'         PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
+#'         More information in Niebuhr et al. 2023.}
+#'   \item{norway_pca_klima_axis1-2_sq}{Squared value for components 1 and 2 to from a principal component analysis
+#'         representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.}
+#'   \item{NORUTreclass}{Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.}
 #'   \item{private_cabins_cumulative_exp_decay_XXX}{Cumulative zone of influence of private cabins at each location,
 #'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
 #'   \item{private_cabins_nearest_exp_decay_XXX}{Zone of influence of the nearest private cabin at each location,
@@ -115,13 +122,18 @@
 #'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
 #'   \item{public_cabins_nearest_exp_decay_XXX}{Zone of influence of the nearest public resort at each location,
 #'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{NORUTreclass}{Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.}
-#'   \item{norway_pca_klima_axis1-4}{Components 1 to 4 from a principal component analysis
-#'         representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
-#'         PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
-#'         More information in Niebuhr et al. 2023.}
-#'   \item{norway_pca_klima_axis1-2_sq}{Squared value for components 1 and 2 to from a principal component analysis
-#'         representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.}
+#'   \item{roads_low_cumulative_exp_decay_XXX}{Cumulative zone of influence of private, low traffic roads,
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+#'   \item{roads_low_nearest_exp_decay_XXX}{Zone of influence of the nearest private, low traffic road
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+#'   \item{roads_high_cumulative_exp_decay_XXX}{Cumulative zone of influence of public, high traffic roads,
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+#'   \item{roads_high_nearest_exp_decay_XXX}{Zone of influence of the nearest public, high traffic road
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+#'   \item{trails_cumulative_exp_decay_XXX}{Cumulative zone of influence of trails, weighted by the number
+#'   of tourists in each trail, with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+#'   \item{trails_nearest_exp_decay_XXX}{Zone of influence of the nearest trail, weighted by the number
+#'   of tourists in the trail, with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
 #' }
 #'
 #' @source Niebuhr, B. B., Van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,

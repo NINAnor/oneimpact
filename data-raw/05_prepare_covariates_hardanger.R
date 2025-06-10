@@ -12,7 +12,7 @@ source("/data/P-Prosjekter/41203800_oneimpact/05_papers/02_cumulative_zoi_paper/
 # region
 rgrass::execGRASS("g.region", vector = "study_area", flags = c("a", "p"))
 # mask
-rgrass::execGRASS("r.mask", vector = "study_area")
+rgrass::execGRASS("r.mask", vector = "study_area", flags = "overwrite")
 
 # rasters - additional ones besides the ones in the MEE paper
 
@@ -27,8 +27,19 @@ priv_cab_g <- util_find_layer_GRASS(list("private_cabins", "exp_decay"),
 pub_cab_high_g <- util_find_layer_GRASS(list("public_cabins_high", "exp_decay"),
                                         layers_grass = layers) |>
   grep(pattern = "_bin_|30000", value = TRUE, invert = TRUE)
+priv_road_g <- util_find_layer_GRASS(list("roads_low", "exp_decay"),
+                                    layers_grass = layers) |>
+  grep(pattern = "30000", value = TRUE, invert = TRUE)
+public_road_g <- util_find_layer_GRASS(list("roads_high", "exp_decay"),
+                                     layers_grass = layers) |>
+  grep(pattern = "30000", value = TRUE, invert = TRUE)
+trails_g <- util_find_layer_GRASS(list("trail", "exp_decay"),
+                                       layers_grass = layers) |>
+  grep(pattern = "30000", value = TRUE, invert = TRUE)
+
 
 m_vars_g <- c(priv_cab_g, pub_cab_high_g)
+m_vars_g <- c(priv_road_g, public_road_g, trails_g)
 
 # mapsets where variables are located
 ms_cuminf <- "u_bb_cuminf"
@@ -40,15 +51,23 @@ raster_names <- paste(m_vars_g, mapsets, sep = "@")
 rasters_cabins <- rgrass::read_RAST(raster_names, return_format = "terra")
 names(rasters_cabins) <- m_vars_g
 
+# retrieve rasters - linear infrastructure
+rasters_linear <- rgrass::read_RAST(raster_names, return_format = "terra")
+names(rasters_linear) <- m_vars_g
+
 # remove mask from GRASS GIS
-rgrass7::execGRASS("r.mask", flags = "r")
+rgrass::execGRASS("r.mask", flags = "r")
 
 # check
 plot(rasters_cabins[[1]])
+plot(rasters_linear[[2]])
 
 # stack and save rasters
 paste0("'", names(rasters_cabins), "'", collapse = ",")
 terra::writeRaster(rasters_cabins, "/data/P-Prosjekter/41203800_oneimpact/05_papers/02_cumulative_zoi_paper/data/analysis_GPS/complementary_rasters_to_predict_rsf_cabins.tif")
+
+# paste0("'", names(rasters_linear), "'", collapse = ",")
+terra::writeRaster(rasters_linear, "data-raw/rast_predictors_hardanger_100_linear.tif", gdal = c("COMPRESS=DEFLATE"))
 
 # preparing and saving it
 # model

@@ -472,3 +472,55 @@ grid_zoi <- ff$grid
 # get data
 reindeer_rsf <- dat[,all.vars(f)]
 # save
+
+#-----------------------------------------------------
+
+# add linear infrastructure to Hander RSF example
+library(terra)
+
+# prepared data
+reindeer_rsf
+# saveRDS(reindeer_rsf, "data-raw/reindeer_rsf_old_only_cabins_pca_landuse_hardanger.rda")
+
+# base data
+load("/data/P-Prosjekter/41203800_oneimpact/04_tools/support_oneimpact/cuminf_zoi_GPS_dataset_annotated.rda")
+dat
+str(dat)
+
+# check
+nrow(reindeer_rsf)
+nrow(dat)
+
+# subset
+dat <- dat |>
+  dplyr::select(points_id, x33, y33, herd, use)
+
+# annotate
+r1 <- terra::rast("data-raw/rast_predictors_hardanger_100.tif")
+r2 <- terra::rast("data-raw/rast_predictors_hardanger_100_linear.tif")
+names(r2) <- names(r2) |>
+  sub(pattern = "bin_", replacement = "") |>
+  sub(pattern = "inf_", replacement = "")
+ext1 <- terra::extract(r1, dat[, c("x33", "y33")])
+ext2 <- terra::extract(r2, dat[, c("x33", "y33")])
+
+colnames(reindeer_rsf) %in% colnames(ext1)
+colnames(ext1) %in% colnames(reindeer_rsf)
+
+# combine
+names(ext1)
+ext1[, c(2:5, 39:40, 6, 6+c(1,5,7,2,6,8,3,4), 14+c(1,5,7,2,6,8,3,4), 22+c(1,5,7,2,6,8,3,4), 30+c(1,5,7,2,6,8,3,4))] |> names()
+ext1 <- ext1[, c(2:5, 39:40, 6, 6+c(1,5,7,2,6,8,3,4), 14+c(1,5,7,2,6,8,3,4), 22+c(1,5,7,2,6,8,3,4), 30+c(1,5,7,2,6,8,3,4))]
+
+names(ext2)
+ext2[, c(1+c(1,5,7,2,6,8,3,4), 9+c(1,5,7,2,6,8,3,4), 17+c(1,5,7,2,6,8,3,4), 25+c(1,5,7,2,6,8,3,4), 33+c(1,5,7,2,6,8,3,4), 41+c(1,5,7,2,6,8,3,4))] |> names()
+ext2 <- ext2[, c(1+c(1,5,7,2,6,8,3,4), 9+c(1,5,7,2,6,8,3,4), 17+c(1,5,7,2,6,8,3,4), 25+c(1,5,7,2,6,8,3,4), 33+c(1,5,7,2,6,8,3,4), 41+c(1,5,7,2,6,8,3,4))]
+
+reindeer_rsf <- cbind(dat[, 5, drop = FALSE], ext1, ext2)
+names(reindeer_rsf)
+
+names(reindeer_rsf) <- names(reindeer_rsf) |>
+  sub(pattern = "decay_", replacement = "decay")
+
+# export for the package
+usethis::use_data(reindeer_rsf, overwrite = TRUE)
