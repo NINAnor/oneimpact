@@ -18,6 +18,8 @@ plot_response(
   zoi = FALSE,
   zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
   type_feature = c("point", "line", "area")[1],
+  type_feature_recompute = FALSE,
+  zoi_limit = 0.05,
   resolution = 100,
   line_value = 1,
   ggplot = T,
@@ -79,6 +81,7 @@ The function \code{plot_response} uses the \code{predict} to produce the predict
 
 # load packages
 library(glmnet)
+library(ggplot2)
 
 # load data
 data("reindeer_rsf")
@@ -87,6 +90,7 @@ dat <- reindeer_rsf
 
 # formula initial structure
 f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+  trails_XXX +
   NORUTreclass +
   # poly(norway_pca_klima_axis1, 2, raw = TRUE) +
   # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
@@ -98,7 +102,7 @@ f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
 zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
 f <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
                      type = c("cumulative_exp_decay"),
-                     separator = "_", predictor_table = TRUE)$formula
+                     separator = "", predictor_table = TRUE)$formula
 
 # sampling - random sampling
 set.seed(1234)
@@ -151,6 +155,39 @@ plot_response(bag_object,
 
 # define newdata based only on the distances from the source (public cabins)
 dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+
+# plot mean response in exponential scale, with individual lines, x in log scale
+# in exponential scale, relative selection strength = 1 corresponse to no effect
+# prediction for for 1 cabin only
+plot_response(bag_object,
+              dfvar = dfvar,
+              data = dat,
+              type = "exp",
+              zoi = TRUE,
+              ci = FALSE,
+              indiv_pred = TRUE,
+              logx = TRUE,
+              ylim = ylim(0, 2))
+
+# prediction for for 10 cabins located at the origin
+plot_response(bag_object,
+              dfvar = dfvar,
+              data = dat,
+              type = "exp",
+              zoi = TRUE,
+              n_features = 10,
+              ci = FALSE,
+              indiv_pred = TRUE,
+              logx = TRUE,
+              ylim = ylim(0, 2))
+
+#---
+# plot predictions for linear ZOI variables
+
+# plot for tourist trails
+
+# define newdata based only on the distances from the source (public cabins)
+dfvar = data.frame(trails = 1e3*seq(0.2, 20, length.out = 100))
 
 # plot mean response in exponential scale, with individual lines, x in log scale
 # in exponential scale, relative selection strength = 1 corresponse to no effect

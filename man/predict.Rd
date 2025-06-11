@@ -29,7 +29,9 @@ predict(
   zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
   which_cumulative = "cumulative",
   type_feature = c("point", "line", "area")[1],
+  type_feature_recompute = FALSE,
   n_features = 1,
+  zoi_limit = 0.05,
   resolution = 100,
   line_value = 1,
   ...

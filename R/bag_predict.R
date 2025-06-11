@@ -78,7 +78,9 @@ predict.bag <- function(x,
                         zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
                         which_cumulative = "cumulative",
                         type_feature = c("point", "line", "area")[1],
+                        type_feature_recompute = FALSE,
                         n_features = 1,
+                        zoi_limit = 0.05, # for computing line ZOI
                         resolution = 100, # resolution for the raster created in create_line_feature_zoi
                         line_value = 1, # value sey to the linear inftastructure raster created in create_line_feature_zoi
                         ...) {
@@ -128,6 +130,8 @@ predict.bag <- function(x,
     if(type_feature == "line") fact <- create_linear_feature_zoi(radii = zoi_radii,
                                                                  type = zoi_shape,
                                                                  radius_max = max(zoi_radii),
+                                                                 type_feature_recompute = type_feature_recompute,
+                                                                 zoi_limit = zoi_limit,
                                                                  res = resolution,
                                                                  value = line_value)
     dfvar2 <- as.data.frame(do.call("cbind", lapply(c(1:ncol(dfvar2)), function(i) {
@@ -334,6 +338,8 @@ combine_zoi_components <- function(x, zoi=c(250, 500, 1000, 2500, 5000, 10000)){
 #' create_linear_feature_zoi(radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
 #'                           type = "exp_decay",
 #'                           res = 100)
+#' create_linear_feature_zoi(type = "exp_decay",
+#'                           type_feature_recompute = FALSE)
 #'
 #' @keywords internal
 #' @export
@@ -341,31 +347,58 @@ create_linear_feature_zoi <- function(radii = c(100, 250, 500, 1000, 2500, 5000,
                                       type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
                                                "mfilter")[1],
                                       radius_max = max(radii),
+                                      zoi_limit = 0.05,
+                                      type_feature_recompute = FALSE,
                                       res = 100,
                                       value = 1) {
 
-  # create line feature
-  line <- data.frame(
-    x = c(-radius_max, radius_max),
-    y = c(0, 0)
-  ) |>
-    terra::vect(geom = c("x", "y"), keepgeom = TRUE) |>
-    terra::as.lines()
-  # plot(line)
-  # rasterize it
-  rr <- terra::rast(nrows = radius_max, ncols = radius_max,
-                    xmin = -radius_max, xmax = radius_max,
-                    ymin = -radius_max, ymax = radius_max,
-                    res = res)
-  # multiple the line by value
-  r_line <- value * terra::rasterize(line, rr, touches= TRUE, background = 0)
-  r_line
-  # plot(r_line)
+  # compute
+  if(type_feature_recompute) {
+    # create line feature
+    line <- data.frame(
+      x = c(-radius_max, radius_max),
+      y = c(0, 0)
+    ) |>
+      terra::vect(geom = c("x", "y"), keepgeom = TRUE) |>
+      terra::as.lines()
+    # plot(line)
+    # rasterize it
+    rr <- terra::rast(nrows = radius_max, ncols = radius_max,
+                      xmin = -radius_max, xmax = radius_max,
+                      ymin = -radius_max, ymax = radius_max,
+                      res = res)
+    # multiple the line by value
+    r_line <- value * terra::rasterize(line, rr, touches= TRUE, background = 0)
+    r_line
+    # plot(r_line)
 
-  # compute zois
-  zois <- calc_zoi_cumulative(r_line, radius = radii, type = type)
-  # plot(zois)
+    # compute zois
+    zois <- calc_zoi_cumulative(r_line, radius = radii, type = type, zoi_limit = zoi_limit)
+    # plot(zois)
 
-  # return(setNames(zois[radius_max/res+1, radius_max/res], radii))
-  return(setNames(unlist(terra::global(zois, max)), radii))
+    # return(setNames(zois[radius_max/res+1, radius_max/res], radii))
+    return(setNames(unlist(terra::global(zois, max)), radii))
+  } else {
+
+    # if we want to use values already computed
+    radii <- c(100, 250, 500, 1000, 2500, 5000, 10000)
+
+    if(type %in% c("bartlett", "linear")) {
+      vals <- c(1, 2.6, 5, 10, 25, 50, 100)
+    }
+    if(type %in% c("exp_decay")) {
+      vals <- c(1.105250, 1.861974, 3.426254, 6.690854, 16.580199, 33.088243, 63.428301)
+    }
+    if(type %in% c("circle", "threshold")) {
+      vals <- c(3, 5, 11, 21, 51, 101, 200)
+    }
+    if(type %in% c("Gauss")) {
+      vals <- c(1.100013, 2.560138, 5.120141, 10.236728, 25.564112, 51.106633, 100.932931)
+    }
+
+    return(setNames(vals, radii))
+  }
+
+
 }
+

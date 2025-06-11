@@ -29,6 +29,8 @@ hypothesis_func(coefs)
 
 x <- seq(-2, 2, length.out = 101)
 plot(x, hypothesis_func(x), ylab = "Penalties")
-plot(x, exp(x), ylab = "Penalties")
+plot(x, hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
+plot(x, exp(x)*hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
 
 }
+\keyword{internal}

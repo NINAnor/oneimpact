@@ -9,6 +9,8 @@ create_linear_feature_zoi(
   type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
     "mfilter")[1],
   radius_max = max(radii),
+  zoi_limit = 0.05,
+  type_feature_recompute = FALSE,
   res = 100,
   value = 1
 )
@@ -44,6 +46,8 @@ This function could be extended to the nearest ZOI, if needed.
 create_linear_feature_zoi(radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
                           type = "exp_decay",
                           res = 100)
+create_linear_feature_zoi(type = "exp_decay",
+                          type_feature_recompute = FALSE)
 
 }
 \seealso{
