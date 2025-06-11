@@ -283,14 +283,14 @@ fit_net_clogit <- function(f, data,
       }
     }
 
+    # formula
+    ff <- as.formula(paste0("~ -1 +", wcols$covars))
+    covars <- all.vars(ff)
+    # model matrix with data
+    M <- stats::model.matrix(ff, data)
+
     # if Decay
     if(grepl("Decay|DD", method[1], ignore.case = TRUE)) {
-
-      # formula
-      ff <- as.formula(paste0("~ -1 +", wcols$covars))
-      covars <- all.vars(ff)
-      # model matrix with data
-      M <- stats::model.matrix(ff, data)
 
       # variables and terms
       terms_order <- attributes(M)$assign
@@ -335,6 +335,11 @@ fit_net_clogit <- function(f, data,
           if(metric == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max
           coef_ridge <- matrix(coef(ridge_fit, s = ridge_fit$lambda[opt_fun(d)])) # coefficients
           rownames(coef_ridge) <- rownames(coef(ridge_fit))
+
+          # this should always be done
+
+          # model matrix with data
+          M <- stats::model.matrix(f2, data)
 
           #---- prepation to standardize coefs
           if(standardize == "internal" & tolower(method[1]) != "ridge") {
@@ -544,7 +549,7 @@ fit_net_clogit <- function(f, data,
 
   # register used penalty.factor
   penalty_factor_modified <- penalty.factor
-  names(penalty_factor_modified) <- var_names
+  if(!is.null(penalty_factor_modified)) names(penalty_factor_modified) <- var_names
 
   # prepare SDs for unstardization
   # if(standardize != FALSE) {

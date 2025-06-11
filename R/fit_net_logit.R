@@ -264,14 +264,14 @@ fit_net_logit <- function(f, data,
       }
     }
 
+    # formula
+    ff <- as.formula(paste0("~ -1 +", wcols$covars))
+    covars <- all.vars(ff)
+    # model matrix with data
+    M <- stats::model.matrix(ff, data)
+
     # if Decay
     if(grepl("Decay|DD", method[1], ignore.case = TRUE)) {
-
-      # formula
-      ff <- as.formula(paste0("~ -1 +", wcols$covars))
-      covars <- all.vars(ff)
-      # model matrix with data
-      M <- stats::model.matrix(ff, data)
 
       # variables and terms
       terms_order <- attributes(M)$assign
@@ -384,8 +384,6 @@ fit_net_logit <- function(f, data,
           if(tolower(method[1]) == "onezoi-adaptivelasso" | tolower(method[1]) == "oz-adaptivelasso") {
 
             if(verbose) print("Fitting One-ZOI AdaptiveLasso...")
-
-            # prepare from predictor table
 
             # variables and terms
             terms_order <- attributes(M)$assign
@@ -522,7 +520,7 @@ fit_net_logit <- function(f, data,
 
   # register used penalty.factor
   penalty_factor_modified <- penalty.factor
-  names(penalty_factor_modified) <- var_names
+  if(!is.null(penalty_factor_modified)) names(penalty_factor_modified) <- var_names
 
   # prepare SDs for unstardization
   # if(standardize != FALSE) {
@@ -932,7 +930,10 @@ bag_fit_net_logit <- function(f, data,
 #'
 #' x <- seq(-2, 2, length.out = 101)
 #' plot(x, hypothesis_func(x), ylab = "Penalties")
-#' plot(x, exp(x), ylab = "Penalties")
+#' plot(x, hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
+#' plot(x, exp(x)*hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
+#'
+#' @keywords internal
 #'
 #' @export
 hypothesis_func <- function(coefs, expectation = -1, phi_hyp = 1) {
