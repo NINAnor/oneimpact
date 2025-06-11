@@ -62,6 +62,7 @@ reference:
   - bag_predict_spat
   - weirdness
   - rescale_coefficients
+  - contains("hypothesis")
 - title: "Raster processing ancillary functions"
   desc: >
     GRASS GIS ancillary functions to process rasters and prepare inputs

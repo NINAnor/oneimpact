@@ -934,7 +934,6 @@ bag_fit_net_logit <- function(f, data,
 #' plot(x, exp(x)*hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
 #'
 #' @keywords internal
-#'
 #' @export
 hypothesis_func <- function(coefs, expectation = -1, phi_hyp = 1) {
 
