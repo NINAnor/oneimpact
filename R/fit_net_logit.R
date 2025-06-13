@@ -58,7 +58,6 @@ fit_net_logit <- function(f, data,
                           predictor_table = NULL,
                           function_lasso_decay = c(log, function(x) x/1000)[[1]],
                           value_lasso_decay = 1,
-                          # factor_hypothesis = 1,
                           function_hypothesis = c(exp)[[1]],
                           expected_sign_hypothesis = -1,
                           factor_grouped_lasso = 1,
@@ -83,7 +82,7 @@ fit_net_logit <- function(f, data,
                 function_lasso_decay = function_lasso_decay,
                 value_lasso_decay = value_lasso_decay,
                 function_hypothesis = function_hypothesis,
-                # factor_hypothesis = factor_hypothesis,
+                expected_sign_hypothesis = expected_sign_hypothesis,
                 factor_grouped_lasso = factor_grouped_lasso,
                 replace_missing_NA = replace_missing_NA)
 
@@ -929,9 +928,10 @@ bag_fit_net_logit <- function(f, data,
 #' hypothesis_func(coefs)
 #'
 #' x <- seq(-2, 2, length.out = 101)
-#' plot(x, hypothesis_func(x), ylab = "Penalties")
-#' plot(x, hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
-#' plot(x, exp(x)*hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
+#' plot(x, exp(x), ylab = "Penalty", xlab = "Coefficient")
+#' plot(x, hypothesis_func(x), ylab = "Penalty", xlab = "Coefficient")
+#' plot(x, hypothesis_func(x, phi_hyp = 50), ylab = "Penalty", xlab = "Coefficient")
+#' plot(x, exp(x)*hypothesis_func(x, phi_hyp = 10), ylab = "Penalty", xlab = "Coefficient")
 #'
 #' @keywords internal
 #' @export

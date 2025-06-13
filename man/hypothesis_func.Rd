@@ -28,9 +28,10 @@ expected_sign <- -1
 hypothesis_func(coefs)
 
 x <- seq(-2, 2, length.out = 101)
-plot(x, hypothesis_func(x), ylab = "Penalties")
-plot(x, hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
-plot(x, exp(x)*hypothesis_func(x, phi_hyp = 10), ylab = "Penalties")
+plot(x, exp(x), ylab = "Penalty", xlab = "Coefficient")
+plot(x, hypothesis_func(x), ylab = "Penalty", xlab = "Coefficient")
+plot(x, hypothesis_func(x, phi_hyp = 50), ylab = "Penalty", xlab = "Coefficient")
+plot(x, exp(x)*hypothesis_func(x, phi_hyp = 10), ylab = "Penalty", xlab = "Coefficient")
 
 }
 \keyword{internal}

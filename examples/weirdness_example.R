@@ -79,6 +79,9 @@ fittedl <- bag_fit_net_logit(f,
 # bag models in a single object
 bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
 
+# bag_object$coef %*% bag_object$weights
+# sapply(fittedl, function(x) x$train_score)
+
 #---
 # plot to check
 
@@ -91,6 +94,7 @@ plot_response(bag_object,
               data = dat,
               type = "linear", zoi = TRUE,
               type_feature =  "line",
+              type_feature_recompute = TRUE,
               resolution = 300,
               ci = FALSE, indiv_pred = TRUE)
 # with no line, just as an example
