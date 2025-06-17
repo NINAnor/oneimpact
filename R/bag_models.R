@@ -89,8 +89,8 @@ bag_models <- function(fitted, data,
     colnames(coef) <- names(lres[!err])
     if(!is.null(coef_std)) colnames(coef_std) <- colnames(coef)
 
-    fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$fit_score} ))
-    calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$calibration_score} ))
+    fit_score <- do.call("cbind", lapply(lres[!err], function(x) { x$train_score} ))
+    calibration_score <- do.call("cbind", lapply(lres[!err], function(x) { x$test_score} ))
     validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$validation_score} ))
     habitat_validation_score <- do.call("cbind", lapply(lres[!err], function(x) { x$habitat_validation_score} ))
 
