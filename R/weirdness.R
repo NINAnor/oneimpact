@@ -1,13 +1,13 @@
 #' Computes ecological weirdness for a fitted model or it estimated  coefficients
 #'
 #' @param x Bag.
-#' @param measure `[string(1)]{""coef_sign", "n_crosses", "response_auc""}` \cr Measure used
+#' @param measure `[string(1)]{""coef_sign", "n_crosses", "response_area""}` \cr Measure used
 #' to quantify "weirdness" in the model or coefficients, based on the coeffcients and the response
 #' plots for each type of covariate with zone of influence in a model.
 #' It can be one or multiple of these options:
 #' - `"coef_sign"`: counts the number of coefficients whose signal is opposite to the ecologically expected signal;
 #' - `"n_crosses"`: counting the number of crosses in signal for the coefficients of the same covariate;
-#' - `"response_auc"`: computing the area under the response plot curve which is in the unexpected
+#' - `"response_area"`: computing the area under the response plot curve which is in the unexpected
 #' direction.
 #' @param which_coef \cr Which measure to use for the coefficients, when `measure = "coef_sign"`. If `count` (default),
 #' only the sign matterns and we count the number of coefficients with unexpected sign.
@@ -21,7 +21,7 @@
 #'
 #' @export
 weirdness <- function(x,
-                      measure = c("coef_sign", "n_crosses", "response_auc"),
+                      measure = c("coef_sign", "n_crosses", "response_area"),
                       wmean = TRUE,
                       which_coef_sign = c("count", "sum")[1],
                       expected_sign = -1,
@@ -63,7 +63,8 @@ weirdness.numeric <- function(x,
 weirdness.data.frame <- function(x,
                                  expected_sign = -1,
                                  response = c("mean", "mid")[1],
-                                 measure = c("n_crosses", "response_auc_opposite", "response_auc_ratio")[1]) {
+                                 measure = c("n_crosses", "response_area_opposite", "response_area_ratio",
+                                             "n_inflection", "difference_inflection", "response_area_inflection")[1]) {
 
   # x = data.frame with first column as the explanatory variable and columns "mid" or "mean" as response
   resp_var <- x[[response]]
@@ -73,16 +74,38 @@ weirdness.data.frame <- function(x,
     weird <- sum(sapply(2:length(resp_var), function(i) resp_var[i]/resp_var[i-1]) < 0)
   } else {
 
-    if(any(grepl("response_auc", measure))) {
+    if(any(grepl("response_area_opposite|response_area_ratio", measure))) {
       # AUC for places on the side of the curve opposite to expectation
-      auc_opposite <- DescTools::AUC(x[[1]][resp_var*expected_sign < 0], resp_var[resp_var*expected_sign < 0])
+      area_opposite <- DescTools::AUC(x[[1]][resp_var*expected_sign < 0], resp_var[resp_var*expected_sign < 0])
       # AUC for places on the side of the curve as expected
-      auc_expected <- DescTools::AUC(x[[1]][resp_var*expected_sign >= 0], resp_var[resp_var*expected_sign >= 0])
+      area_expected <- DescTools::AUC(x[[1]][resp_var*expected_sign >= 0], resp_var[resp_var*expected_sign >= 0])
 
-      if(any(grepl("response_auc_opposite", measure))) {
-        weird <- auc_opposite
+      if(any(grepl("response_area_opposite", measure))) {
+        weird <- area_opposite
       } else {
-        weird <- auc_opposite/abs(auc_expected)
+        weird <- area_opposite/abs(area_expected)
+      }
+
+    } else {
+
+      if(any(grepl("n_inflection", measure))) {
+        weird <- sum(inflection(resp_var))
+      } else {
+
+        if(any(grepl("difference_inflection", measure))) {
+          which_inflection <- which(inflection(resp_var))
+          if(length(which_inflection) < 2) {
+            weird <- 0
+          } else {
+            weird <- sum(abs(diff(resp_var[which_inflection])))
+          }
+
+        }
+
+        if(any(grepl("response_area_inflection", measure))) {
+          stop("Response area between inflection points to be implemented.")
+        }
+
       }
 
     }
@@ -95,7 +118,8 @@ weirdness.data.frame <- function(x,
 #' @export
 weirdness.bag <- function(x,
                           data,
-                          measure = c("coef_sign", "n_crosses", "response_auc"),
+                          measure = c("coef_sign", "n_crosses", "response_area_opposite",
+                                      "n_inflection", "difference_inflection"),
                           wmean = TRUE,
                           which_coef_sign = c("count", "sum")[1],
                           expected_sign = -1,
@@ -133,10 +157,14 @@ weirdness.bag <- function(x,
                              coef_sign_sum = NULL,
                              n_crosses = NULL,
                              n_crosses_total = NULL,
-                             response_auc_opposite = NULL,
-                             response_auc_opposite_total = NULL,
-                             response_auc_ratio = NULL,
-                             response_auc_ratio_total = NULL)
+                             response_area_opposite = NULL,
+                             response_area_opposite_total = NULL,
+                             response_area_ratio = NULL,
+                             response_area_ratio_total = NULL,
+                             n_inflection = NULL,
+                             n_inflection_total = NULL,
+                             difference_inflection = NULL,
+                             difference_inflection_total = NULL)
 
   # compute measure for the signal of coefficients
   if("coef_sign" %in% measure) {
@@ -206,15 +234,15 @@ weirdness.bag <- function(x,
     if(wmean) {
       weirdness_measures$n_crosses <- sapply(dfs, function(i) {
         weirdness(i,
-                  expected_sign = -1,
+                  expected_sign = expected_sign,
                   response = response,
                   measure = "n_crosses")
       })
       weirdness_measures$n_crosses_total <- sum(weirdness_measures$n_crosses)
     } else {
       weirdness_measures$n_crosses <- sapply(dfs, function(i) {
-        sapply(colnames(i), function(z) weirdness(i,
-                                                  expected_sign = -1,
+        sapply(colnames(i)[-1], function(z) weirdness(i,
+                                                  expected_sign = expected_sign,
                                                   response = z,
                                                   measure = "n_crosses"))
       }) |>
@@ -225,34 +253,86 @@ weirdness.bag <- function(x,
 
   }
 
-  # compute auc
-  if(any(grepl("response_auc", measure))) {
+  # compute area
+  if(any(grepl("response_area_opposite|response_area_ratio", measure))) {
 
     if(wmean) {
-      weirdness_measures$response_auc_opposite <- sapply(dfs, function(i) {
+      weirdness_measures$response_area_opposite <- sapply(dfs, function(i) {
         weirdness(i,
-                  expected_sign = -1,
+                  expected_sign = expected_sign,
                   response = response,
-                  measure = "response_auc_opposite")
+                  measure = "response_area_opposite")
       })
-      weirdness_measures$response_auc_opposite_total <- sum(weirdness_measures$response_auc_opposite)
+      weirdness_measures$response_area_opposite_total <- sum(weirdness_measures$response_area_opposite)
 
-      weirdness_measures$response_auc_ratio <- sapply(dfs, function(i) {
+      weirdness_measures$response_area_ratio <- sapply(dfs, function(i) {
         weirdness(i,
-                  expected_sign = -1,
+                  expected_sign = expected_sign,
                   response = response,
-                  measure = "response_auc_ratio")
+                  measure = "response_area_ratio")
       })
-      weirdness_measures$response_auc_ratio_total <- sum(weirdness_measures$response_auc_ratio)
+      weirdness_measures$response_area_ratio_total <- sum(weirdness_measures$response_area_ratio)
     } else {
       # implement later
-      weirdness_measures$response_auc_opposite <- paste0("This needs to be implemented for individual models. Please raise na issue on our Github repo.")
-      weirdness_measures$response_auc_opposite_total <- weirdness_measures$response_auc_ratio <- weirdness_measures$response_auc_ratio_total <- weirdness_measures$response_auc_opposite
+      weirdness_measures$response_area_opposite <- paste0("This needs to be implemented for individual models. Please raise na issue on our Github repo.")
+      weirdness_measures$response_area_opposite_total <- weirdness_measures$response_area_ratio <- weirdness_measures$response_area_ratio_total <- weirdness_measures$response_area_opposite
     }
 
+  }
+
+  if(any(grepl("n_inflection", measure))) {
+    if(wmean) {
+      weirdness_measures$n_inflection <- sapply(dfs, function(i) {
+        weirdness(i,
+                  expected_sign = expected_sign,
+                  response = response,
+                  measure = "n_inflection")
+      })
+      weirdness_measures$n_inflection_total <- sum(weirdness_measures$n_inflection)
+    } else {
+      weirdness_measures$n_inflection <- sapply(dfs, function(i) {
+        sapply(colnames(i)[-1], function(z) weirdness(i,
+                                                  expected_sign = expected_sign,
+                                                  response = z,
+                                                  measure = "n_crosses"))
+      }) |>
+        apply(MARGIN = 2, FUN = get(which_n_cross))
+      weirdness_measures$n_inflection_total <- sum(weirdness_measures$n_inflection)
+    }
+
+    if(any(grepl("difference_inflection", measure))) {
+      if(wmean) {
+        weirdness_measures$difference_inflection <- sapply(dfs, function(i) {
+          weirdness(i,
+                    expected_sign = expected_sign,
+                    response = response,
+                    measure = "difference_inflection")
+        })
+        weirdness_measures$difference_inflection_total <- sum(weirdness_measures$difference_inflection)
+      } else {
+        weirdness_measures$difference_inflection <- sapply(dfs, function(i) {
+          sapply(colnames(i)[-1], function(z) weirdness(i,
+                                                        expected_sign = -1,
+                                                        response = z,
+                                                        measure = "difference_inflection"))
+        }) |>
+          apply(MARGIN = 2, FUN = get(which_n_cross))
+        weirdness_measures$difference_inflection_total <- sum(weirdness_measures$difference_inflection)
+      }
+    }
   }
 
   # return
   weirdness_measures
 }
 
+#' Find inflection points in a curve
+#'
+#' Helper function to find inflection points in a curve, using the response axis values.
+#'
+#' @param `x` `[vector,numeric]` \cr Vector of `y` values, i.e., the response variable of
+#' a curve.
+#'
+#' @keywords internal
+#' @export
+inflection <- function(x) c(FALSE, diff(diff(x) > 0) != 0)

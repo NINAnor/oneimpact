@@ -6,7 +6,7 @@
 \usage{
 weirdness(
   x,
-  measure = c("coef_sign", "n_crosses", "response_auc"),
+  measure = c("coef_sign", "n_crosses", "response_area"),
   wmean = TRUE,
   which_coef_sign = c("count", "sum")[1],
   expected_sign = -1,
@@ -22,14 +22,14 @@ weirdness(
 \arguments{
 \item{x}{Bag.}
 
-\item{measure}{\verb{[string(1)]\{""coef_sign", "n_crosses", "response_auc""\}} \cr Measure used
+\item{measure}{\verb{[string(1)]\{""coef_sign", "n_crosses", "response_area""\}} \cr Measure used
 to quantify "weirdness" in the model or coefficients, based on the coeffcients and the response
 plots for each type of covariate with zone of influence in a model.
 It can be one or multiple of these options:
 \itemize{
 \item \code{"coef_sign"}: counts the number of coefficients whose signal is opposite to the ecologically expected signal;
 \item \code{"n_crosses"}: counting the number of crosses in signal for the coefficients of the same covariate;
-\item \code{"response_auc"}: computing the area under the response plot curve which is in the unexpected
+\item \code{"response_area"}: computing the area under the response plot curve which is in the unexpected
 direction.
 }}
 
@@ -69,10 +69,31 @@ plot(x, y); abline(h = 0, col = "red")
 
 # n crosses
 weirdness(df, response = "y", measure = "n_crosses")
-# auc on the opposite side of the expected sign
-weirdness(df, response = "y", measure = "response_auc_opposite")
-# ratio between auc above and auc on the expected sign
-weirdness(df, response = "y", measure = "response_auc_ratio")
+# area on the opposite side of the expected sign
+weirdness(df, response = "y", measure = "response_area_opposite")
+# ratio between area above and area on the expected sign
+weirdness(df, response = "y", measure = "response_area_ratio")
+
+# checking for inflection points
+x <- seq(-4, 10, 0.01)
+y <- -8 + 10 * x - 20 * x**2 + 3*x**3
+df <- data.frame(x = x, y = y)
+plot(x, y); abline(h = 0, col = "red")
+
+# inflection points
+which(inflection(y))
+abline(v = x[inflection(y)], lty = 2)
+
+# n crosses
+weirdness(df, response = "y", measure = "n_crosses")
+# area on the opposite side of the expected sign
+weirdness(df, response = "y", measure = "response_area_opposite")
+# ratio between area above and area on the expected sign
+weirdness(df, response = "y", measure = "response_area_ratio")
+# n inflection points
+weirdness(df, response = "y", measure = "n_inflection")
+# difference between inflection points
+weirdness(df, response = "y", measure = "difference_inflection")
 
 #-------
 # weirdness for bag
@@ -128,9 +149,8 @@ fittedl <- bag_fit_net_logit(f,
 # bag models in a single object
 bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
 
-bag_object$coef \%*\% bag_object$weights
-
-sapply(fittedl, function(x) x$train_score)
+# bag_object$coef \%*\% bag_object$weights
+# sapply(fittedl, function(x) x$train_score)
 
 #---
 # plot to check

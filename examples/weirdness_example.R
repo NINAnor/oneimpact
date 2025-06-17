@@ -20,10 +20,31 @@ plot(x, y); abline(h = 0, col = "red")
 
 # n crosses
 weirdness(df, response = "y", measure = "n_crosses")
-# auc on the opposite side of the expected sign
-weirdness(df, response = "y", measure = "response_auc_opposite")
-# ratio between auc above and auc on the expected sign
-weirdness(df, response = "y", measure = "response_auc_ratio")
+# area on the opposite side of the expected sign
+weirdness(df, response = "y", measure = "response_area_opposite")
+# ratio between area above and area on the expected sign
+weirdness(df, response = "y", measure = "response_area_ratio")
+
+# checking for inflection points
+x <- seq(0, 14, 0.01)
+y <- -560 + 314 * x - 56 * x**2 + 3*x**3
+df <- data.frame(x = x, y = y)
+plot(x, y); abline(h = 0, col = "red")
+
+# inflection points
+which(inflection(y))
+abline(v = x[inflection(y)], lty = 2)
+
+# n crosses
+weirdness(df, response = "y", measure = "n_crosses")
+# area on the opposite side of the expected sign
+weirdness(df, response = "y", measure = "response_area_opposite")
+# ratio between area above and area on the expected sign
+weirdness(df, response = "y", measure = "response_area_ratio")
+# n inflection points
+weirdness(df, response = "y", measure = "n_inflection")
+# difference between inflection points
+weirdness(df, response = "y", measure = "difference_inflection")
 
 #-------
 # weirdness for bag
