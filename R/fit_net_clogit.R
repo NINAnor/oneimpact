@@ -49,7 +49,7 @@ fit_net_clogit <- function(f, data,
                            metric = c("coxnet.deviance", "Cindex", "conditionalAUC", "conditionalSomersD")[1], #, "conditionalBoyce"),
                            metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"), #, "conditionalBoyce"),
                            method = c("Lasso", "Ridge", "AdaptiveLasso",
-                                      "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
+                                      "DistanceDecayLasso", "DDLasso",
                                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                                       "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                                       "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
@@ -99,7 +99,7 @@ fit_net_clogit <- function(f, data,
     stop(paste0("Invalid parameter 'standardize'. It should be one of ", paste(sd_options, collapse = ","), "."))
   # method
   method_options <- c("Lasso", "Ridge", "AdaptiveLasso",
-                      "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
+                      "DistanceDecayLasso", "DDLasso",
                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                       "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                       "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
@@ -264,6 +264,11 @@ fit_net_clogit <- function(f, data,
       # If Ridge
       if(grepl("Ridge", method[1], ignore.case = TRUE)) {
         alpha <- 0
+      } else {
+        # If ElasticNet, set alpha = 0.5; a different alpha can be provided as well
+        if(grepl("ElasticNet", method[1], ignore.case = TRUE)) {
+          alpha <- 0.5
+        }
       }
     }
   }
@@ -274,12 +279,12 @@ fit_net_clogit <- function(f, data,
     # check
     # variable grid to define penalties
     if(is.null(predictor_table)) {
-      methods_pred_table <- c("Decay-AdaptiveLasso", "DD-AdaptiveLasso",
+      methods_pred_table <- c("DistanceDecayLasso", "DDLasso",
                               "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                               "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                               "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso")
       if(grepl(paste0(methods_pred_table, collapse = "|"), method[1], ignore.case = TRUE)) {
-        stop("If 'method' is 'DistanceDecay-AdaptiveLasso', 'OneZOI-AdaptiveLasso', 'Grouped-AdaptiveLasso' or 'HypothesisDriven-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
+        stop("If 'method' is 'DistanceDecayLasso', 'OneZOI-AdaptiveLasso', 'Grouped-AdaptiveLasso' or 'HypothesisDriven-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
       }
     }
 
@@ -307,7 +312,7 @@ fit_net_clogit <- function(f, data,
 
     } else {
 
-      if(tolower(method[1]) != "lasso") {
+      if(tolower(method[1]) != "lasso" & tolower(method[1]) != "elasticnet") {
 
         if(verbose) print("Fitting Ridge...")
 
@@ -746,8 +751,9 @@ fit_net_clogit <- function(f, data,
     results$covariate_mean_sd <- NULL
   }
 
-  # lambda and coefs for the selected metric
+  # lambda, alpha, and coefs for the selected metric
   results$metric <- metric
+  results$alpha <- alpha
   results$lambda <- metrics_evaluated[[metric]]$lambda_opt
 
   results$coef <- metrics_evaluated[[metric]]$coef
@@ -844,7 +850,7 @@ bag_fit_net_clogit <- function(f, data,
                                metric = c("coxnet.deviance", "Cindex", "conditionalAUC", "conditionalSomersD")[1],
                                metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
                                method = c("Lasso", "Ridge", "AdaptiveLasso",
-                                          "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
+                                          "DistanceDecayLasso", "DDLasso",
                                           "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                                           "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                                           "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",

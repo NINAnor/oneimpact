@@ -46,7 +46,7 @@ fit_net_logit <- function(f, data,
                           metric = c("AUC")[1],
                           metrics_evaluate = c("AUC"),
                           method = c("Lasso", "Ridge", "AdaptiveLasso",
-                                     "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
+                                     "DistanceDecayLasso", "DDLasso",
                                      "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                                      "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                                      "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
@@ -94,7 +94,7 @@ fit_net_logit <- function(f, data,
     stop(paste0("Invalid parameter 'standardize'. It should be one of ", paste(sd_options, collapse = ","), "."))
   # method
   method_options <- c("Lasso", "Ridge", "AdaptiveLasso",
-                      "DistanceDecay-AdaptiveLasso", "DD-AdaptiveLasso",
+                      "DistanceDecayLasso", "DDLasso",
                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                       "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                       "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
@@ -244,6 +244,10 @@ fit_net_logit <- function(f, data,
       # If Ridge
       if(grepl("Ridge", method[1], ignore.case = TRUE)) {
         alpha <- 0
+      } else {
+        if(grepl("ElasticNet", method[1], ignore.case = TRUE)) {
+          alpha <- 0.5
+        }
       }
     }
   }
@@ -254,12 +258,12 @@ fit_net_logit <- function(f, data,
     # check
     # variable grid to define penalties
     if(is.null(predictor_table)) {
-      methods_pred_table <- c("Decay-AdaptiveLasso", "DD-AdaptiveLasso",
+      methods_pred_table <- c("DistanceDecayLasso", "DDLasso",
                               "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                               "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
                               "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso")
       if(grepl(paste0(methods_pred_table, collapse = "|"), method[1], ignore.case = TRUE)) {
-        stop("If 'method' is 'DistanceDecay-AdaptiveLasso', 'OneZOI-AdaptiveLasso', 'Grouped-AdaptiveLasso' or 'HypothesisDriven-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
+        stop("If 'method' is 'DistanceDecayLasso', 'OneZOI-AdaptiveLasso', 'Grouped-AdaptiveLasso' or 'HypothesisDriven-AdaptiveLasso', the parameter 'predictor_table' must be provided.")
       }
     }
 
@@ -269,7 +273,7 @@ fit_net_logit <- function(f, data,
     # model matrix with data
     M <- stats::model.matrix(ff, data)
 
-    # if Decay
+    # if Decay - without the Adaptive part, just Lasso
     if(grepl("Decay|DD", method[1], ignore.case = TRUE)) {
 
       # variables and terms
@@ -287,7 +291,7 @@ fit_net_logit <- function(f, data,
 
     } else {
 
-      if(tolower(method[1]) != "lasso") {
+      if(tolower(method[1]) != "lasso" & tolower(method[1]) != "elasticnet") {
 
         if(verbose) print("Fitting Ridge...")
 
@@ -680,6 +684,7 @@ fit_net_logit <- function(f, data,
 
   # lambda and coefs for the selected metric
   results$metric <- metric
+  results$alpha <- alpha
   results$lambda <- metrics_evaluated[[metric]]$lambda_opt
 
   results$coef <- metrics_evaluated[[metric]]$coef
@@ -766,7 +771,7 @@ fit_net_rsf <- fit_net_logit
 bag_fit_net_logit <- function(f, data,
                               samples,
                               metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-                              method = c("Lasso", "Ridge", "AdaptiveLasso", "DecayAdaptiveLasso", "ElasticNet")[1],
+                              method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "ElasticNet")[1],
                               standardize = c("internal", "external", FALSE)[1],
                               alpha = NULL,
                               penalty.factor = NULL,
