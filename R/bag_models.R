@@ -48,7 +48,7 @@ bag_models <- function(fitted, data,
   result$method <- fitted$method
   # metric
   result$metric <- metric
-  # metric
+  # metrics evaluated
   result$metrics_evaluated <- sapply(lres[[1]]$metrics_evaluated, function(x) x$metric)
   # samples
   result$samples <- fitted$samples
@@ -77,12 +77,16 @@ bag_models <- function(fitted, data,
   result$parms <- lres[[1]]$parms
   # removing redundant elements
   result$parms[c("samples", "i", "metric", "method", "standardize")] <- NULL
+  # alpha
+  result$alpha <- lres[!err][[1]]$alpha
   # other model outputs
   result$var_names <- lres[!err][[1]]$var_names
 
   # synthesize results
   if(metric == fitted$metric) {
 
+    # lambda
+    lambda <- do.call("cbind", lapply(lres[!err], function(x) { x$lambda } ))
     # coefficients
     coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coef } ))
     coef_std <- do.call("cbind", lapply(lres[!err], function(x) { x$coef_std } ))
@@ -96,6 +100,8 @@ bag_models <- function(fitted, data,
 
   } else {
 
+    # lambda
+    lambda <- do.call("cbind", lapply(lres[!err], function(x) { x$lambdas[names(x$lambdas) == metric] } ))
     # coefficients
     coef <- do.call("cbind", lapply(lres[!err], function(x) { x$coefs_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
     coef_std <- do.call("cbind", lapply(lres[!err], function(x) { x$coefs_std_all[,colnames(x$coefs_all) == metric, drop = FALSE] } ))
@@ -125,6 +131,8 @@ bag_models <- function(fitted, data,
     stop("All resamples have NaN weight. Please check the models' validation scores and possibly increase the 'score_threshold' parameter.")
   }
 
+  # lambda
+  result$lambda <- lambda
   # weights column
   result$weight_ref <- weights_col
   # weights threshold
