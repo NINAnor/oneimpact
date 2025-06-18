@@ -192,8 +192,7 @@ mod <- fit_net_logit(f,
                      samples = samples, 
                      i = 1, 
                      metric = "AUC",
-                     method = "AdaptiveLasso")#,
-                     # upper.limits = c(rep(0, 16), rep(Inf, 21)))
+                     method = "Lasso")
 ```
 
 We will just examine the structure of the output object now. It comprises a list with:
@@ -250,9 +249,8 @@ fittedl <- bag_fit_net_logit(f, dat,
                              samples = samples,
                              standardize = "internal", # glmnet does the standardization of covariates
                              metric = "AUC",
-                             method = "AdaptiveLasso",
+                             method = "Lasso",
                              parallel = "mclapply",
-                             # upper.limits = c(rep(0, 16), rep(Inf, 21)),
                              mc.cores = 8)
 
 # bag models in a single object
@@ -511,7 +509,7 @@ dfvar = data.frame(norway_pca_klima_axis3 = seq(min(bag_object$data_summary$norw
                                                 length.out = 100))
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
-              type = "logit", 
+              type = "exp", 
               ci = FALSE, indiv_pred = TRUE)
 ```
 
@@ -527,9 +525,9 @@ relative selection strength considering the impact of one single private cabin.
 dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
-              type = "logit", zoi = TRUE, 
+              type = "exp", zoi = TRUE, 
               ci = FALSE, indiv_pred = TRUE, 
-              logx = TRUE, ylim = ggplot2::ylim(0, 1))
+              logx = TRUE, ylim = ggplot2::ylim(0, 2))
 ```
 
 We see that the effects of a private cabin vary from strong effects up to ca. 2.5km to
@@ -546,17 +544,17 @@ below the response plot for a set of 10 and 100 cabins.
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
               n_features = 10,
-              type = "logit", zoi = TRUE, 
+              type = "exp", zoi = TRUE, 
               ci = FALSE, indiv_pred = TRUE, 
-              logx = TRUE, ylim = ggplot2::ylim(0, 1))
+              logx = TRUE, ylim = ggplot2::ylim(0, 2))
 
 # 100 features
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
-              type = "logit", zoi = TRUE, 
+              type = "exp", zoi = TRUE, 
               n_features = 100,
               ci = FALSE, indiv_pred = TRUE, 
-              logx = TRUE, ylim = ggplot2::ylim(0, 1))
+              logx = TRUE, ylim = ggplot2::ylim(0, 2))
 ```
 
 ### Public resorts
@@ -571,10 +569,10 @@ dfvar = data.frame(public_cabins = 1e3*seq(0.2, 20, length.out = 100))
 # 1 feature
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
-              type = "logit", zoi = TRUE, 
+              type = "exp", zoi = TRUE, 
               n_features = 1,
               ci = FALSE, indiv_pred = TRUE, 
-              logx = TRUE, ylim = ggplot2::ylim(0, 1))
+              logx = TRUE, ylim = ggplot2::ylim(0, 2))
 ```
 
 We see a negative impact of a public resort, non-linearly, up to 20 km, with high variation
@@ -587,7 +585,7 @@ negative effect which only starts to decrease after 10 km.
 # 3 features
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
-              type = "logit", zoi = TRUE, 
+              type = "exp", zoi = TRUE, 
               n_features = 3, 
               ci = FALSE, indiv_pred = TRUE, 
               logx = TRUE, ylim = ggplot2::ylim(0, 1))
@@ -603,7 +601,7 @@ private and public cabins. The data is loaded for the whole study area -
 the Hardangervidda wild reindeer area in Norway and its surroundings.
 
 ```{r}
-(f <- system.file("raster/rast_predictors_hardanger_500.tif", package = "oneimpact"))
+(f <- system.file("raster/rast_predictors_hardanger_500m.tif", package = "oneimpact"))
 rast_predictors <- terra::rast(f)
 ```
 
