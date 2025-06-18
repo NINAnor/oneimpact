@@ -31,12 +31,13 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/oneimpact.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/oneimpact.html">Getting started</a></li>
     <li><a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence</a></li>
     <li><a class="dropdown-item" href="../articles/zoi_on_grass.html">Zones of influence on GRASS GIS</a></li>
+    <li><a class="dropdown-item" href="../articles/fitting_ZOI_logit.html">Estimating zones of influence using penalized regression</a></li>
   </ul>
 </li>
       </ul>
@@ -160,46 +161,94 @@ please check Niebuhr et al. 2023.</p>
 <span></span>
 <span><span class="co"># explore columns</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] "use"                                          </span></span>
-<span><span class="co">##  [2] "private_cabins_cumulative_exp_decay_100"      </span></span>
-<span><span class="co">##  [3] "private_cabins_cumulative_exp_decay_250"      </span></span>
-<span><span class="co">##  [4] "private_cabins_cumulative_exp_decay_500"      </span></span>
-<span><span class="co">##  [5] "private_cabins_cumulative_exp_decay_1000"     </span></span>
-<span><span class="co">##  [6] "private_cabins_cumulative_exp_decay_2500"     </span></span>
-<span><span class="co">##  [7] "private_cabins_cumulative_exp_decay_5000"     </span></span>
-<span><span class="co">##  [8] "private_cabins_cumulative_exp_decay_10000"    </span></span>
-<span><span class="co">##  [9] "private_cabins_cumulative_exp_decay_20000"    </span></span>
-<span><span class="co">## [10] "private_cabins_nearest_exp_decay_100"         </span></span>
-<span><span class="co">## [11] "private_cabins_nearest_exp_decay_250"         </span></span>
-<span><span class="co">## [12] "private_cabins_nearest_exp_decay_500"         </span></span>
-<span><span class="co">## [13] "private_cabins_nearest_exp_decay_1000"        </span></span>
-<span><span class="co">## [14] "private_cabins_nearest_exp_decay_2500"        </span></span>
-<span><span class="co">## [15] "private_cabins_nearest_exp_decay_5000"        </span></span>
-<span><span class="co">## [16] "private_cabins_nearest_exp_decay_10000"       </span></span>
-<span><span class="co">## [17] "private_cabins_nearest_exp_decay_20000"       </span></span>
-<span><span class="co">## [18] "public_cabins_high_cumulative_exp_decay_100"  </span></span>
-<span><span class="co">## [19] "public_cabins_high_cumulative_exp_decay_250"  </span></span>
-<span><span class="co">## [20] "public_cabins_high_cumulative_exp_decay_500"  </span></span>
-<span><span class="co">## [21] "public_cabins_high_cumulative_exp_decay_1000" </span></span>
-<span><span class="co">## [22] "public_cabins_high_cumulative_exp_decay_2500" </span></span>
-<span><span class="co">## [23] "public_cabins_high_cumulative_exp_decay_5000" </span></span>
-<span><span class="co">## [24] "public_cabins_high_cumulative_exp_decay_10000"</span></span>
-<span><span class="co">## [25] "public_cabins_high_cumulative_exp_decay_20000"</span></span>
-<span><span class="co">## [26] "public_cabins_high_nearest_exp_decay_100"     </span></span>
-<span><span class="co">## [27] "public_cabins_high_nearest_exp_decay_250"     </span></span>
-<span><span class="co">## [28] "public_cabins_high_nearest_exp_decay_500"     </span></span>
-<span><span class="co">## [29] "public_cabins_high_nearest_exp_decay_1000"    </span></span>
-<span><span class="co">## [30] "public_cabins_high_nearest_exp_decay_2500"    </span></span>
-<span><span class="co">## [31] "public_cabins_high_nearest_exp_decay_5000"    </span></span>
-<span><span class="co">## [32] "public_cabins_high_nearest_exp_decay_10000"   </span></span>
-<span><span class="co">## [33] "public_cabins_high_nearest_exp_decay_20000"   </span></span>
-<span><span class="co">## [34] "NORUTreclass"                                 </span></span>
-<span><span class="co">## [35] "norway_pca_klima_axis1"                       </span></span>
-<span><span class="co">## [36] "norway_pca_klima_axis2"                       </span></span>
-<span><span class="co">## [37] "norway_pca_klima_axis3"                       </span></span>
-<span><span class="co">## [38] "norway_pca_klima_axis4"                       </span></span>
-<span><span class="co">## [39] "norway_pca_klima_axis1_sq"                    </span></span>
-<span><span class="co">## [40] "norway_pca_klima_axis2_sq"</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] "use"                                         </span></span>
+<span><span class="co">##  [2] "norway_pca_klima_axis1"                      </span></span>
+<span><span class="co">##  [3] "norway_pca_klima_axis2"                      </span></span>
+<span><span class="co">##  [4] "norway_pca_klima_axis3"                      </span></span>
+<span><span class="co">##  [5] "norway_pca_klima_axis4"                      </span></span>
+<span><span class="co">##  [6] "norway_pca_klima_axis1_sq"                   </span></span>
+<span><span class="co">##  [7] "norway_pca_klima_axis2_sq"                   </span></span>
+<span><span class="co">##  [8] "NORUTreclass"                                </span></span>
+<span><span class="co">##  [9] "private_cabins_cumulative_exp_decay100"      </span></span>
+<span><span class="co">## [10] "private_cabins_cumulative_exp_decay250"      </span></span>
+<span><span class="co">## [11] "private_cabins_cumulative_exp_decay500"      </span></span>
+<span><span class="co">## [12] "private_cabins_cumulative_exp_decay1000"     </span></span>
+<span><span class="co">## [13] "private_cabins_cumulative_exp_decay2500"     </span></span>
+<span><span class="co">## [14] "private_cabins_cumulative_exp_decay5000"     </span></span>
+<span><span class="co">## [15] "private_cabins_cumulative_exp_decay10000"    </span></span>
+<span><span class="co">## [16] "private_cabins_cumulative_exp_decay20000"    </span></span>
+<span><span class="co">## [17] "private_cabins_nearest_exp_decay100"         </span></span>
+<span><span class="co">## [18] "private_cabins_nearest_exp_decay250"         </span></span>
+<span><span class="co">## [19] "private_cabins_nearest_exp_decay500"         </span></span>
+<span><span class="co">## [20] "private_cabins_nearest_exp_decay1000"        </span></span>
+<span><span class="co">## [21] "private_cabins_nearest_exp_decay2500"        </span></span>
+<span><span class="co">## [22] "private_cabins_nearest_exp_decay5000"        </span></span>
+<span><span class="co">## [23] "private_cabins_nearest_exp_decay10000"       </span></span>
+<span><span class="co">## [24] "private_cabins_nearest_exp_decay20000"       </span></span>
+<span><span class="co">## [25] "public_cabins_high_cumulative_exp_decay100"  </span></span>
+<span><span class="co">## [26] "public_cabins_high_cumulative_exp_decay250"  </span></span>
+<span><span class="co">## [27] "public_cabins_high_cumulative_exp_decay500"  </span></span>
+<span><span class="co">## [28] "public_cabins_high_cumulative_exp_decay1000" </span></span>
+<span><span class="co">## [29] "public_cabins_high_cumulative_exp_decay2500" </span></span>
+<span><span class="co">## [30] "public_cabins_high_cumulative_exp_decay5000" </span></span>
+<span><span class="co">## [31] "public_cabins_high_cumulative_exp_decay10000"</span></span>
+<span><span class="co">## [32] "public_cabins_high_cumulative_exp_decay20000"</span></span>
+<span><span class="co">## [33] "public_cabins_high_nearest_exp_decay100"     </span></span>
+<span><span class="co">## [34] "public_cabins_high_nearest_exp_decay250"     </span></span>
+<span><span class="co">## [35] "public_cabins_high_nearest_exp_decay500"     </span></span>
+<span><span class="co">## [36] "public_cabins_high_nearest_exp_decay1000"    </span></span>
+<span><span class="co">## [37] "public_cabins_high_nearest_exp_decay2500"    </span></span>
+<span><span class="co">## [38] "public_cabins_high_nearest_exp_decay5000"    </span></span>
+<span><span class="co">## [39] "public_cabins_high_nearest_exp_decay10000"   </span></span>
+<span><span class="co">## [40] "public_cabins_high_nearest_exp_decay20000"   </span></span>
+<span><span class="co">## [41] "roads_low_cumulative_exp_decay100"           </span></span>
+<span><span class="co">## [42] "roads_low_cumulative_exp_decay250"           </span></span>
+<span><span class="co">## [43] "roads_low_cumulative_exp_decay500"           </span></span>
+<span><span class="co">## [44] "roads_low_cumulative_exp_decay1000"          </span></span>
+<span><span class="co">## [45] "roads_low_cumulative_exp_decay2500"          </span></span>
+<span><span class="co">## [46] "roads_low_cumulative_exp_decay5000"          </span></span>
+<span><span class="co">## [47] "roads_low_cumulative_exp_decay10000"         </span></span>
+<span><span class="co">## [48] "roads_low_cumulative_exp_decay20000"         </span></span>
+<span><span class="co">## [49] "roads_low_nearest_exp_decay100"              </span></span>
+<span><span class="co">## [50] "roads_low_nearest_exp_decay250"              </span></span>
+<span><span class="co">## [51] "roads_low_nearest_exp_decay500"              </span></span>
+<span><span class="co">## [52] "roads_low_nearest_exp_decay1000"             </span></span>
+<span><span class="co">## [53] "roads_low_nearest_exp_decay2500"             </span></span>
+<span><span class="co">## [54] "roads_low_nearest_exp_decay5000"             </span></span>
+<span><span class="co">## [55] "roads_low_nearest_exp_decay10000"            </span></span>
+<span><span class="co">## [56] "roads_low_nearest_exp_decay20000"            </span></span>
+<span><span class="co">## [57] "roads_high_cumulative_exp_decay100"          </span></span>
+<span><span class="co">## [58] "roads_high_cumulative_exp_decay250"          </span></span>
+<span><span class="co">## [59] "roads_high_cumulative_exp_decay500"          </span></span>
+<span><span class="co">## [60] "roads_high_cumulative_exp_decay1000"         </span></span>
+<span><span class="co">## [61] "roads_high_cumulative_exp_decay2500"         </span></span>
+<span><span class="co">## [62] "roads_high_cumulative_exp_decay5000"         </span></span>
+<span><span class="co">## [63] "roads_high_cumulative_exp_decay10000"        </span></span>
+<span><span class="co">## [64] "roads_high_cumulative_exp_decay20000"        </span></span>
+<span><span class="co">## [65] "roads_high_nearest_exp_decay100"             </span></span>
+<span><span class="co">## [66] "roads_high_nearest_exp_decay250"             </span></span>
+<span><span class="co">## [67] "roads_high_nearest_exp_decay500"             </span></span>
+<span><span class="co">## [68] "roads_high_nearest_exp_decay1000"            </span></span>
+<span><span class="co">## [69] "roads_high_nearest_exp_decay2500"            </span></span>
+<span><span class="co">## [70] "roads_high_nearest_exp_decay5000"            </span></span>
+<span><span class="co">## [71] "roads_high_nearest_exp_decay10000"           </span></span>
+<span><span class="co">## [72] "roads_high_nearest_exp_decay20000"           </span></span>
+<span><span class="co">## [73] "trails_cumulative_exp_decay100"              </span></span>
+<span><span class="co">## [74] "trails_cumulative_exp_decay250"              </span></span>
+<span><span class="co">## [75] "trails_cumulative_exp_decay500"              </span></span>
+<span><span class="co">## [76] "trails_cumulative_exp_decay1000"             </span></span>
+<span><span class="co">## [77] "trails_cumulative_exp_decay2500"             </span></span>
+<span><span class="co">## [78] "trails_cumulative_exp_decay5000"             </span></span>
+<span><span class="co">## [79] "trails_cumulative_exp_decay10000"            </span></span>
+<span><span class="co">## [80] "trails_cumulative_exp_decay20000"            </span></span>
+<span><span class="co">## [81] "trails_nearest_exp_decay100"                 </span></span>
+<span><span class="co">## [82] "trails_nearest_exp_decay250"                 </span></span>
+<span><span class="co">## [83] "trails_nearest_exp_decay500"                 </span></span>
+<span><span class="co">## [84] "trails_nearest_exp_decay1000"                </span></span>
+<span><span class="co">## [85] "trails_nearest_exp_decay2500"                </span></span>
+<span><span class="co">## [86] "trails_nearest_exp_decay5000"                </span></span>
+<span><span class="co">## [87] "trails_nearest_exp_decay10000"               </span></span>
+<span><span class="co">## [88] "trails_nearest_exp_decay20000"</span></span></code></pre>
 <p>The data set “reindeer_rsf” in the <code>oneimpact</code> package
 contains the wild reindeer data used to fit the resource selection
 functions using the cumulative ZOI approach in Niebuhr et al. 2023. The
@@ -240,7 +289,7 @@ add the ZOI metrics with multiple radii in the formula.</p>
 <span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span>, <span class="fl">20000</span><span class="op">)</span></span>
 <span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_zoi_formula.html">add_zoi_formula</a></span><span class="op">(</span><span class="va">f</span>, zoi_radius <span class="op">=</span> <span class="va">zois</span>, pattern <span class="op">=</span> <span class="st">"XXX"</span>, </span>
 <span>                      type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cumulative_exp_decay"</span><span class="op">)</span>,</span>
-<span>                      separator <span class="op">=</span> <span class="st">"_"</span>, predictor_table <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                      separator <span class="op">=</span> <span class="st">""</span>, predictor_table <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># get formula</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">ff</span><span class="op">$</span><span class="va">formula</span></span>
@@ -253,18 +302,18 @@ terms in the formula and use a penalized regression approach to both fit
 the model and select the variables.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">f</span></span></code></pre></div>
-<pre><code><span><span class="co">## use ~ private_cabins_cumulative_exp_decay_100 + private_cabins_cumulative_exp_decay_250 + </span></span>
-<span><span class="co">##     private_cabins_cumulative_exp_decay_500 + private_cabins_cumulative_exp_decay_1000 + </span></span>
-<span><span class="co">##     private_cabins_cumulative_exp_decay_2500 + private_cabins_cumulative_exp_decay_5000 + </span></span>
-<span><span class="co">##     private_cabins_cumulative_exp_decay_10000 + private_cabins_cumulative_exp_decay_20000 + </span></span>
-<span><span class="co">##     public_cabins_high_cumulative_exp_decay_100 + public_cabins_high_cumulative_exp_decay_250 + </span></span>
-<span><span class="co">##     public_cabins_high_cumulative_exp_decay_500 + public_cabins_high_cumulative_exp_decay_1000 + </span></span>
-<span><span class="co">##     public_cabins_high_cumulative_exp_decay_2500 + public_cabins_high_cumulative_exp_decay_5000 + </span></span>
-<span><span class="co">##     public_cabins_high_cumulative_exp_decay_10000 + public_cabins_high_cumulative_exp_decay_20000 + </span></span>
+<pre><code><span><span class="co">## use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 + </span></span>
+<span><span class="co">##     private_cabins_cumulative_exp_decay500 + private_cabins_cumulative_exp_decay1000 + </span></span>
+<span><span class="co">##     private_cabins_cumulative_exp_decay2500 + private_cabins_cumulative_exp_decay5000 + </span></span>
+<span><span class="co">##     private_cabins_cumulative_exp_decay10000 + private_cabins_cumulative_exp_decay20000 + </span></span>
+<span><span class="co">##     public_cabins_high_cumulative_exp_decay100 + public_cabins_high_cumulative_exp_decay250 + </span></span>
+<span><span class="co">##     public_cabins_high_cumulative_exp_decay500 + public_cabins_high_cumulative_exp_decay1000 + </span></span>
+<span><span class="co">##     public_cabins_high_cumulative_exp_decay2500 + public_cabins_high_cumulative_exp_decay5000 + </span></span>
+<span><span class="co">##     public_cabins_high_cumulative_exp_decay10000 + public_cabins_high_cumulative_exp_decay20000 + </span></span>
 <span><span class="co">##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + </span></span>
 <span><span class="co">##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + </span></span>
 <span><span class="co">##     norway_pca_klima_axis4</span></span>
-<span><span class="co">## &lt;environment: 0x5577b08b4860&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x55dae10cdfe8&gt;</span></span></code></pre>
 <p>The <code><a href="../reference/add_zoi_formula.html">add_zoi_formula()</a></code> function can also produce a
 <code>predictor_table</code> <code>data.frame</code>, which specifies
 characteristics of the covariates in the model - e.g. whether they are
@@ -287,17 +336,17 @@ flavors of “Adaptive Lasso” approaches.</p>
 <span><span class="co">## 8       1 cumulative exp_decay      20000     private_cabins_</span></span>
 <span><span class="co">## 9       1 cumulative exp_decay        100 public_cabins_high_</span></span>
 <span><span class="co">## 10      1 cumulative exp_decay        250 public_cabins_high_</span></span>
-<span><span class="co">##                                       term_zoi</span></span>
-<span><span class="co">## 1      private_cabins_cumulative_exp_decay_100</span></span>
-<span><span class="co">## 2      private_cabins_cumulative_exp_decay_250</span></span>
-<span><span class="co">## 3      private_cabins_cumulative_exp_decay_500</span></span>
-<span><span class="co">## 4     private_cabins_cumulative_exp_decay_1000</span></span>
-<span><span class="co">## 5     private_cabins_cumulative_exp_decay_2500</span></span>
-<span><span class="co">## 6     private_cabins_cumulative_exp_decay_5000</span></span>
-<span><span class="co">## 7    private_cabins_cumulative_exp_decay_10000</span></span>
-<span><span class="co">## 8    private_cabins_cumulative_exp_decay_20000</span></span>
-<span><span class="co">## 9  public_cabins_high_cumulative_exp_decay_100</span></span>
-<span><span class="co">## 10 public_cabins_high_cumulative_exp_decay_250</span></span></code></pre>
+<span><span class="co">##                                      term_zoi</span></span>
+<span><span class="co">## 1      private_cabins_cumulative_exp_decay100</span></span>
+<span><span class="co">## 2      private_cabins_cumulative_exp_decay250</span></span>
+<span><span class="co">## 3      private_cabins_cumulative_exp_decay500</span></span>
+<span><span class="co">## 4     private_cabins_cumulative_exp_decay1000</span></span>
+<span><span class="co">## 5     private_cabins_cumulative_exp_decay2500</span></span>
+<span><span class="co">## 6     private_cabins_cumulative_exp_decay5000</span></span>
+<span><span class="co">## 7    private_cabins_cumulative_exp_decay10000</span></span>
+<span><span class="co">## 8    private_cabins_cumulative_exp_decay20000</span></span>
+<span><span class="co">## 9  public_cabins_high_cumulative_exp_decay100</span></span>
+<span><span class="co">## 10 public_cabins_high_cumulative_exp_decay250</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="setting-samples">Setting samples<a class="anchor" aria-label="anchor" href="#setting-samples"></a>
@@ -358,18 +407,16 @@ advance.</p>
 <span>                     samples <span class="op">=</span> <span class="va">samples</span>, </span>
 <span>                     i <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>                     metric <span class="op">=</span> <span class="st">"AUC"</span>,</span>
-<span>                     method <span class="op">=</span> <span class="st">"AdaptiveLasso"</span><span class="op">)</span><span class="co">#,</span></span></code></pre></div>
+<span>                     method <span class="op">=</span> <span class="st">"Lasso"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =</span></span>
-<span><span class="co">## "AUC", : 89 missing observations were removed from the train set. 14778</span></span>
+<span><span class="co">## "AUC", : 100 missing observations were removed from the train set. 14767</span></span>
 <span><span class="co">## observations were kept.</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =</span></span>
-<span><span class="co">## "AUC", : 87 missing observations were removed from the test set. 14780</span></span>
+<span><span class="co">## "AUC", : 69 missing observations were removed from the test set. 14798</span></span>
 <span><span class="co">## observations were kept.</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =</span></span>
-<span><span class="co">## "AUC", : 85 missing observations were removed from the validate set. 14782</span></span>
+<span><span class="co">## "AUC", : 108 missing observations were removed from the validate set. 14759</span></span>
 <span><span class="co">## observations were kept.</span></span></code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>                     <span class="co"># upper.limits = c(rep(0, 16), rep(Inf, 21)))</span></span></code></pre></div>
 <p>We will just examine the structure of the output object now. It
 comprises a list with:</p>
 <ul>
@@ -434,35 +481,36 @@ as <code>coef</code>, <code>train_score</code>, <code>test_score</code>,
 and <code>validation_score</code>, but for all the
 <code>metrics_evaluated</code>, when there is more than one metric.</li>
 </ul>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 19</span></span>
-<span><span class="co">##  $ parms               :List of 15</span></span>
+<pre><code><span><span class="co">## List of 20</span></span>
+<span><span class="co">##  $ parms               :List of 16</span></span>
 <span><span class="co">##  $ glmnet_fit          :List of 13</span></span>
 <span><span class="co">##   ..- attr(*, "class")= chr [1:2] "lognet" "glmnet"</span></span>
 <span><span class="co">##  $ metrics_evaluated   :List of 1</span></span>
-<span><span class="co">##  $ var_names           : chr [1:36] "private_cabins_cumulative_exp_decay_100" "private_cabins_cumulative_exp_decay_250" "private_cabins_cumulative_exp_decay_500" "private_cabins_cumulative_exp_decay_1000" ...</span></span>
+<span><span class="co">##  $ var_names           : chr [1:36] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...</span></span>
 <span><span class="co">##  $ numeric_covs        : Named logi [1:23] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
-<span><span class="co">##   ..- attr(*, "names")= chr [1:23] "private_cabins_cumulative_exp_decay_100" "private_cabins_cumulative_exp_decay_250" "private_cabins_cumulative_exp_decay_500" "private_cabins_cumulative_exp_decay_1000" ...</span></span>
+<span><span class="co">##   ..- attr(*, "names")= chr [1:23] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...</span></span>
 <span><span class="co">##  $ covariate_mean_sd   :'data.frame':    22 obs. of  2 variables:</span></span>
 <span><span class="co">##  $ metric              : chr "AUC"</span></span>
-<span><span class="co">##  $ lambda              : num 0.00613</span></span>
+<span><span class="co">##  $ alpha               : num 1</span></span>
+<span><span class="co">##  $ lambda              : num 0.00123</span></span>
 <span><span class="co">##  $ coef                : num [1:36, 1] 0 0 0 0 0 ...</span></span>
 <span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">##  $ train_score         : num 0.915</span></span>
-<span><span class="co">##  $ test_score          : num 0.927</span></span>
-<span><span class="co">##  $ validation_score    : num 0.915</span></span>
-<span><span class="co">##  $ validation_score_avg: num 0.915</span></span>
-<span><span class="co">##  $ lambdas             : Named num 0.00613</span></span>
+<span><span class="co">##  $ test_score          : num 0.926</span></span>
+<span><span class="co">##  $ validation_score    : num 0.913</span></span>
+<span><span class="co">##  $ validation_score_avg: num 0.913</span></span>
+<span><span class="co">##  $ lambdas             : Named num 0.00123</span></span>
 <span><span class="co">##   ..- attr(*, "names")= chr "AUC"</span></span>
 <span><span class="co">##  $ coefs_all           : num [1:36, 1] 0 0 0 0 0 ...</span></span>
 <span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">##  $ coefs_std_all       :List of 1</span></span>
 <span><span class="co">##  $ train_score_all     : Named num 0.915</span></span>
 <span><span class="co">##   ..- attr(*, "names")= chr "AUC"</span></span>
-<span><span class="co">##  $ test_score_all      : Named num 0.927</span></span>
+<span><span class="co">##  $ test_score_all      : Named num 0.926</span></span>
 <span><span class="co">##   ..- attr(*, "names")= chr "AUC"</span></span>
-<span><span class="co">##  $ validation_score_all: Named num 0.915</span></span>
+<span><span class="co">##  $ validation_score_all: Named num 0.913</span></span>
 <span><span class="co">##   ..- attr(*, "names")= chr "AUC"</span></span></code></pre>
 <p>Here the model was calibrated and evaluated using the Area Under the
 ROC curve, AUC.</p>
@@ -478,15 +526,14 @@ of each model in a single “bag” object, of the class
 running time can be high for larger data sets and more complex models.
 The model fitting can be done in parallel, and also saved in external
 files if needed.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fit multiple models</span></span>
 <span><span class="va">fittedl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bag_fit_net_functions.html">bag_fit_net_logit</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">dat</span>,</span>
 <span>                             samples <span class="op">=</span> <span class="va">samples</span>,</span>
 <span>                             standardize <span class="op">=</span> <span class="st">"internal"</span>, <span class="co"># glmnet does the standardization of covariates</span></span>
 <span>                             metric <span class="op">=</span> <span class="st">"AUC"</span>,</span>
-<span>                             method <span class="op">=</span> <span class="st">"AdaptiveLasso"</span>,</span>
+<span>                             method <span class="op">=</span> <span class="st">"Lasso"</span>,</span>
 <span>                             parallel <span class="op">=</span> <span class="st">"mclapply"</span>,</span>
-<span>                             <span class="co"># upper.limits = c(rep(0, 16), rep(Inf, 21)),</span></span>
 <span>                             mc.cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># bag models in a single object</span></span>
@@ -509,15 +556,15 @@ parameter <code>weights_function</code>). As a consequence, a number of
 objects related to the weights and the weighted validation scores is
 also present in the bag object, as well as summaries of the data that
 are useful for model prediction.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">bag_object</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 28</span></span>
+<pre><code><span><span class="co">## List of 32</span></span>
 <span><span class="co">##  $ n                                : int 50</span></span>
-<span><span class="co">##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay_100 + private_cabins_cumulative_exp_decay_250 +      private_cabins_cum| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x5577b08b4860&gt; </span></span>
-<span><span class="co">##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay_100 + private_cabins_cumulative_exp_decay_250 +      private_cabin| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x5577b0cd4838&gt; </span></span>
-<span><span class="co">##  $ method                           : chr "AdaptiveLasso"</span></span>
+<span><span class="co">##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...</span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55dae10cdfe8&gt; </span></span>
+<span><span class="co">##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...</span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55dae14e5ac8&gt; </span></span>
+<span><span class="co">##  $ method                           : chr "Lasso"</span></span>
 <span><span class="co">##  $ metric                           : chr "AUC"</span></span>
 <span><span class="co">##  $ metrics_evaluated                : Named chr "AUC"</span></span>
 <span><span class="co">##   ..- attr(*, "names")= chr "AUC"</span></span>
@@ -528,11 +575,14 @@ are useful for model prediction.</p>
 <span><span class="co">##  $ error_message                    : logi [1:50] NA NA NA NA NA NA ...</span></span>
 <span><span class="co">##  $ n_errors                         : int 0</span></span>
 <span><span class="co">##  $ n_no_errors                      : int 50</span></span>
-<span><span class="co">##  $ parms                            :List of 10</span></span>
-<span><span class="co">##  $ var_names                        : chr [1:36] "private_cabins_cumulative_exp_decay_100" "private_cabins_cumulative_exp_decay_250" "private_cabins_cumulative_exp_decay_500" "private_cabins_cumulative_exp_decay_1000" ...</span></span>
+<span><span class="co">##  $ parms                            :List of 11</span></span>
+<span><span class="co">##  $ alpha                            : num 1</span></span>
+<span><span class="co">##  $ var_names                        : chr [1:36] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...</span></span>
+<span><span class="co">##  $ lambda                           : num [1, 1:50] 1.23e-03 8.70e-06 1.98e-04 8.52e-06 8.76e-06 ...</span></span>
+<span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">##  $ weight_ref                       : chr "validation_score"</span></span>
 <span><span class="co">##  $ weight_threshold                 : num 0.7</span></span>
-<span><span class="co">##  $ weights                          : Named num [1:50] 0.0198 0.02 0.02 0.0201 0.02 ...</span></span>
+<span><span class="co">##  $ weights                          : Named num [1:50] 0.0197 0.02 0.02 0.0201 0.02 ...</span></span>
 <span><span class="co">##   ..- attr(*, "names")= chr [1:50] "Resample01" "Resample02" "Resample03" "Resample04" ...</span></span>
 <span><span class="co">##  $ n_above_threshold                : int 50</span></span>
 <span><span class="co">##  $ coef                             : num [1:36, 1:50] 0 0 0 0 0 ...</span></span>
@@ -540,17 +590,21 @@ are useful for model prediction.</p>
 <span><span class="co">##  $ wcoef                            : num [1:36, 1:50] 0 0 0 0 0 ...</span></span>
 <span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">##  $ wcoef_std                        : num(0) </span></span>
-<span><span class="co">##  $ validation_score                 : num [1, 1:50] 0.915 0.92 0.921 0.922 0.921 ...</span></span>
+<span><span class="co">##  $ fit_score                        : num [1, 1:50] 0.915 0.921 0.921 0.918 0.923 ...</span></span>
+<span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">##  $ calibration_score                : num [1, 1:50] 0.926 0.919 0.915 0.917 0.914 ...</span></span>
+<span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">##  $ validation_score                 : num [1, 1:50] 0.913 0.92 0.919 0.921 0.92 ...</span></span>
 <span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">##  $ validation_score_summary         :'data.frame':   50 obs. of  1 variable:</span></span>
-<span><span class="co">##  $ weighted_validation_score        : num [1, 1] 0.92</span></span>
+<span><span class="co">##  $ weighted_validation_score        : num [1, 1] 0.919</span></span>
 <span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
-<span><span class="co">##  $ weighted_validation_score_summary: num [1, 1] 0.92</span></span>
+<span><span class="co">##  $ weighted_validation_score_summary: num [1, 1] 0.919</span></span>
 <span><span class="co">##   ..- attr(*, "dimnames")=List of 2</span></span>
 <span><span class="co">##  $ covariate_mean_sd                :'data.frame':   22 obs. of  2 variables:</span></span>
 <span><span class="co">##  $ data_summary                     :'data.frame':   11 obs. of  24 variables:</span></span>
 <span><span class="co">##  $ numeric_covs                     : Named logi [1:23] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
-<span><span class="co">##   ..- attr(*, "names")= chr [1:23] "private_cabins_cumulative_exp_decay_100" "private_cabins_cumulative_exp_decay_250" "private_cabins_cumulative_exp_decay_500" "private_cabins_cumulative_exp_decay_1000" ...</span></span>
+<span><span class="co">##   ..- attr(*, "names")= chr [1:23] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...</span></span>
 <span><span class="co">##  - attr(*, "class")= chr [1:2] "bag" "list"</span></span></code></pre>
 <p>Here we have two sets of functions important for defining the bag of
 models. The first function (defined by the parameter
@@ -575,17 +629,17 @@ to understand the model fit.</p>
 </h3>
 <p>First, it is possible to check and plot the validation scores to know
 how well the model performs under new conditions.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9153485 0.9197215 0.9205921 0.9219429 0.9207666 0.9198158 0.9171872</span></span>
-<span><span class="co">##  [8] 0.9156904 0.9192147 0.9196748</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9131054 0.9203894 0.9194246 0.9212400 0.9200966 0.9183340 0.9151591</span></span>
+<span><span class="co">##  [8] 0.9181758 0.9194765 0.9190469</span></span></code></pre>
 <p>In this example, all the models of the bag have a quite good (and
 equivalent) performance, with an average weighted validation AUC of `r
 round(bag_object$weighted_validation_score[1], 3). Here we go beyond
 just averaging the scores, but we also account for the weights of each
 model, with more weight for models better ranked. We can also plot the
 scores for each model in the bag:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Validation score"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0.7</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="co"># threshold</span></span></code></pre></div>
@@ -621,16 +675,16 @@ theoretically the same, up to a constant (see Supplementary
 Material).</p>
 <p>Variable importance can be visualized using the function
 <code><a href="../reference/plot_importance.html">oneimpact::plot_importance()</a></code>.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># variable importance</span></span>
 <span><span class="va">importance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/variable_importance.html">variable_importance</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>                                  data <span class="op">=</span> <span class="va">dat</span>, </span>
 <span>                                  type <span class="op">=</span> <span class="st">"drop"</span>, <span class="co"># method = drop variable</span></span>
 <span>                                  order <span class="op">=</span> <span class="st">"asc"</span><span class="op">)</span> <span class="co"># ascendent order</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in variable_importance(bag_object, data = dat, type = "drop", order =</span></span>
-<span><span class="co">## "asc"): 457 missing observations were removed from the validate set. 73880</span></span>
+<span><span class="co">## "asc"): 477 missing observations were removed from the validate set. 73860</span></span>
 <span><span class="co">## observations were kept.</span></span></code></pre>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#plot_importance(importance)</span></span>
 <span><span class="fu"><a href="../reference/plot_importance.html">plot_importance</a></span><span class="op">(</span><span class="va">importance</span>, remove_threshold <span class="op">=</span> <span class="fl">5e-3</span><span class="op">)</span> <span class="co"># remove vars with too low score from plot</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/variable_importance1-1.png" width="700"></p>
@@ -638,7 +692,7 @@ Material).</p>
 For instance, below we group all variables with similar ZOI metric
 (private cottages or public resorts) and all terms related to the same
 variable (e.g. quadratic terms).</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using variable block/type of variable</span></span>
 <span><span class="va">variable_blocks</span> <span class="op">&lt;-</span> <span class="va">bag_object</span><span class="op">$</span><span class="va">var_names</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"_cumulative_exp_decay|reclass|, 2)|, 2, raw = TRUE)|_sq"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -657,16 +711,16 @@ variable (e.g. quadratic terms).</p>
 <span><span class="co">## [28] "NORUT"                  "NORUT"                  "NORUT"                 </span></span>
 <span><span class="co">## [31] "norway_pca_klima_axis1" "norway_pca_klima_axis1" "norway_pca_klima_axis2"</span></span>
 <span><span class="co">## [34] "norway_pca_klima_axis2" "norway_pca_klima_axis3" "norway_pca_klima_axis4"</span></span></code></pre>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">importance_block</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/variable_importance.html">variable_importance</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>                                        data <span class="op">=</span> <span class="va">dat</span>, </span>
 <span>                                        type <span class="op">=</span> <span class="st">"drop"</span>,</span>
 <span>                                        order <span class="op">=</span> <span class="st">"asc"</span>,</span>
 <span>                                        variable_block <span class="op">=</span> <span class="va">variable_blocks</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in variable_importance(bag_object, data = dat, type = "drop", order =</span></span>
-<span><span class="co">## "asc", : 457 missing observations were removed from the validate set. 73880</span></span>
+<span><span class="co">## "asc", : 477 missing observations were removed from the validate set. 73860</span></span>
 <span><span class="co">## observations were kept.</span></span></code></pre>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_importance.html">plot_importance</a></span><span class="op">(</span><span class="va">importance_block</span>, normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/variable_importance3-1.png" width="700"></p>
 <p><strong>Add interpretation here</strong></p>
@@ -677,43 +731,43 @@ variable (e.g. quadratic terms).</p>
 <p>The estimated coefficients from the models in the bag can be seen in
 the <code>coef</code> element of the bag. It contains the coefficient of
 each model/resample of the bag, for each term of the formula:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># coefficients - already unstandardized by the fit_net_logit function</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">coef</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                              Resample01   Resample02</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_100      0.00000000  0.448801126</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_250      0.00000000  0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_500      0.00000000  0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_1000     0.00000000 -0.710565411</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_2500     0.00000000  0.213639731</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_5000     0.00000000 -0.144665204</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_10000   -0.01632160  0.005048874</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_20000   -0.00269365 -0.004659249</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_100  0.00000000  0.000000000</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_250  0.00000000  0.000000000</span></span>
-<span><span class="co">##                                                Resample03   Resample04</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_100      0.0000000000  0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_250      0.0000000000  0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_500      0.0752419601  0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_1000     0.0000000000  0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_2500     0.0001466526  0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_5000    -0.1253450535 -0.035759915</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_10000   -0.0048010485 -0.006291539</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_20000   -0.0032524797 -0.004526663</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_100  0.0000000000  0.000000000</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_250  0.0000000000  0.000000000</span></span>
-<span><span class="co">##                                               Resample05</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_100      0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_250      0.000000000</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_500      0.202985845</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_1000    -0.408656045</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_2500     0.002529909</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_5000    -0.100481661</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_10000    0.003054919</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_20000   -0.005547370</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_100  0.000000000</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_250  0.000000000</span></span></code></pre>
+<span><span class="co">## private_cabins_cumulative_exp_decay100      0.000000000 -0.217722480</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay250      0.000000000  2.789575426</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay500      0.000000000 -0.813622269</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay1000     0.000000000 -2.018471424</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay2500     0.000000000  0.756565090</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay5000     0.000000000 -0.273827316</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay10000   -0.013470941  0.018423904</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay20000   -0.002503842 -0.005660242</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay100  0.000000000  0.000000000</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay250  0.000000000  0.000000000</span></span>
+<span><span class="co">##                                              Resample03   Resample04</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay100      0.000000000  1.605574863</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay250      0.000000000  0.000000000</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay500      0.000000000 -0.956230606</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay1000     0.000000000 -0.630561170</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay2500     0.000000000  0.465549234</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay5000    -0.056312543 -0.174332629</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay10000   -0.013723062  0.010910344</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay20000   -0.002703108 -0.005957071</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay100  0.000000000  0.000000000</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay250  0.000000000  0.000000000</span></span>
+<span><span class="co">##                                              Resample05</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay100      5.155970443</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay250     -4.466015986</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay500      0.000000000</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay1000    -1.064460163</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay2500     0.602427134</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay5000    -0.214032542</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay10000    0.016697510</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay20000   -0.006600537</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay100  0.000000000</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay250  0.000000000</span></span></code></pre>
 <p>What is really going to be used for prediction, however, are the
 weighted coefficients. To understand that, it is important to understand
 that the model weights in the bag are defined based on the validation
@@ -721,103 +775,103 @@ scores, and they balance the contribution of the coefficients of each
 model. Below we see the validation scores and weights. We see that all
 models perform relatively well, which means all of them are given a
 relative similar weight:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weights and weighted coefficients</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9153485 0.9197215 0.9205921 0.9219429 0.9207666 0.9198158 0.9171872</span></span>
-<span><span class="co">##  [8] 0.9156904 0.9192147 0.9196748</span></span></code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">##  [1] 0.9131054 0.9203894 0.9194246 0.9212400 0.9200966 0.9183340 0.9151591</span></span>
+<span><span class="co">##  [8] 0.9181758 0.9194765 0.9190469</span></span></code></pre>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">weights</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## Resample01 Resample02 Resample03 Resample04 Resample05 Resample06 Resample07 </span></span>
-<span><span class="co">## 0.01980550 0.01999520 0.02003307 0.02009190 0.02004066 0.01999929 0.01988515 </span></span>
+<span><span class="co">## 0.01973010 0.02004613 0.02000413 0.02008320 0.02003338 0.01995670 0.01981895 </span></span>
 <span><span class="co">## Resample08 Resample09 Resample10 </span></span>
-<span><span class="co">## 0.01982030 0.01997316 0.01999317</span></span></code></pre>
+<span><span class="co">## 0.01994983 0.02000639 0.01998770</span></span></code></pre>
 <p>Now we can get the weighted coefficients for each model, and averaged
 over models.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weighted coefficients for each model</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">wcoef</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                                  Resample01    Resample02</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_100        0.000000e+00  8.973866e-03</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_250        0.000000e+00  0.000000e+00</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_500        0.000000e+00  0.000000e+00</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_1000       0.000000e+00 -1.420789e-02</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_2500       0.000000e+00  4.271768e-03</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_5000       0.000000e+00 -2.892609e-03</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_10000     -3.232575e-04  1.009532e-04</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_20000     -5.334909e-05 -9.316259e-05</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_100    0.000000e+00  0.000000e+00</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_250    0.000000e+00  0.000000e+00</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_500    0.000000e+00 -2.421666e-02</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_1000   0.000000e+00  0.000000e+00</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_2500   0.000000e+00  0.000000e+00</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_5000   0.000000e+00 -1.218914e-05</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_10000  4.128524e-02  9.766717e-02</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_20000 -6.678177e-02 -9.050448e-02</span></span>
-<span><span class="co">## NORUTreclass11forest                          -1.279705e-02 -2.967419e-02</span></span>
-<span><span class="co">## NORUTreclass12                                -2.420371e-03 -6.254816e-03</span></span>
-<span><span class="co">## NORUTreclass13                                 6.539043e-03  4.832404e-03</span></span>
-<span><span class="co">## NORUTreclass14                                 3.989362e-03  4.820598e-03</span></span>
-<span><span class="co">## NORUTreclass15                                 7.749996e-03 -6.175751e-03</span></span>
-<span><span class="co">## NORUTreclass16                                 8.003255e-03  7.094057e-03</span></span>
-<span><span class="co">## NORUTreclass17                                 1.130019e-03  3.173185e-03</span></span>
-<span><span class="co">## NORUTreclass18                                 4.047500e-03  8.695424e-03</span></span>
-<span><span class="co">## NORUTreclass19                                 7.815866e-06  1.950979e-05</span></span>
-<span><span class="co">## NORUTreclass20                                -6.442392e-03 -5.435490e-03</span></span>
-<span><span class="co">## NORUTreclassbog                                0.000000e+00  7.718936e-04</span></span>
-<span><span class="co">## NORUTreclassglacier                           -3.028061e-02 -1.387457e-02</span></span>
-<span><span class="co">## NORUTreclassother                              0.000000e+00  0.000000e+00</span></span>
-<span><span class="co">## NORUTreclasswater                             -3.363667e-02 -4.903663e-02</span></span>
-<span><span class="co">## norway_pca_klima_axis1                         2.089506e-02  2.556807e-02</span></span>
-<span><span class="co">## norway_pca_klima_axis1_sq                     -1.180755e-02 -1.289033e-02</span></span>
-<span><span class="co">## norway_pca_klima_axis2                        -2.394908e-02 -4.185132e-02</span></span>
-<span><span class="co">## norway_pca_klima_axis2_sq                      0.000000e+00 -4.473425e-03</span></span>
-<span><span class="co">## norway_pca_klima_axis3                         0.000000e+00  5.934431e-02</span></span>
-<span><span class="co">## norway_pca_klima_axis4                         0.000000e+00  5.329739e-02</span></span></code></pre>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">##                                                 Resample01    Resample02</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay100        0.000000e+00 -0.0043644941</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay250        0.000000e+00  0.0559202039</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay500        0.000000e+00 -0.0163099814</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay1000       0.000000e+00 -0.0404625495</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay2500       0.000000e+00  0.0151662055</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay5000       0.000000e+00 -0.0054891792</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay10000     -2.657830e-04  0.0003693280</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay20000     -4.940106e-05 -0.0001134660</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay100    0.000000e+00  0.0000000000</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay250    0.000000e+00  0.0000000000</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay500    0.000000e+00 -9.3952783723</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay1000   0.000000e+00  2.3601156273</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay2500   0.000000e+00 -0.4818601011</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay5000   3.523046e-02  0.1126046723</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay10000  0.000000e+00  0.0842044565</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay20000 -5.205598e-02 -0.0922131303</span></span>
+<span><span class="co">## NORUTreclass11forest                         -1.241574e-02 -0.0285041463</span></span>
+<span><span class="co">## NORUTreclassbog                              -2.014264e-03  0.0029726925</span></span>
+<span><span class="co">## NORUTreclass12                               -7.613544e-03 -0.0103235825</span></span>
+<span><span class="co">## NORUTreclass13                                5.008703e-03  0.0046508807</span></span>
+<span><span class="co">## NORUTreclass14                                2.422116e-03  0.0033569617</span></span>
+<span><span class="co">## NORUTreclass15                                5.028864e-03 -0.0029298083</span></span>
+<span><span class="co">## NORUTreclass16                                4.902450e-03  0.0036349092</span></span>
+<span><span class="co">## NORUTreclass17                                1.788630e-03  0.0006578782</span></span>
+<span><span class="co">## NORUTreclass18                                5.900950e-04  0.0021061214</span></span>
+<span><span class="co">## NORUTreclass19                                0.000000e+00 -0.0024586418</span></span>
+<span><span class="co">## NORUTreclass20                               -4.195502e-03 -0.0092122833</span></span>
+<span><span class="co">## NORUTreclassglacier                          -1.696987e-02 -0.0256767528</span></span>
+<span><span class="co">## NORUTreclasswater                            -3.444401e-02 -0.0506260406</span></span>
+<span><span class="co">## NORUTreclassother                             0.000000e+00  0.0000000000</span></span>
+<span><span class="co">## norway_pca_klima_axis1                        1.878606e-02  0.0253275529</span></span>
+<span><span class="co">## norway_pca_klima_axis1_sq                    -1.185219e-02 -0.0126788069</span></span>
+<span><span class="co">## norway_pca_klima_axis2                       -2.347891e-02 -0.0415971462</span></span>
+<span><span class="co">## norway_pca_klima_axis2_sq                     0.000000e+00 -0.0041635599</span></span>
+<span><span class="co">## norway_pca_klima_axis3                        0.000000e+00 -0.6751071263</span></span>
+<span><span class="co">## norway_pca_klima_axis4                        0.000000e+00  0.8133562429</span></span></code></pre>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weighted average coefficients</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">coef</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">bag_object</span><span class="op">$</span><span class="va">weights</span> <span class="co"># weighted average</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                                       [,1]</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_100       -0.048694906</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_250       -0.411007862</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_500        0.101166354</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_1000      -0.166395446</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_2500       0.011656937</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_5000      -0.086469921</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_10000     -0.004468734</span></span>
-<span><span class="co">## private_cabins_cumulative_exp_decay_20000     -0.004061957</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_100   -8.317833124</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_250    0.000000000</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_500   -1.207127034</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_1000  -4.178635573</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_2500  -0.236098016</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_5000  -1.350852883</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_10000  4.809521654</span></span>
-<span><span class="co">## public_cabins_high_cumulative_exp_decay_20000 -4.488092005</span></span>
-<span><span class="co">## NORUTreclass11forest                          -0.728161120</span></span>
-<span><span class="co">## NORUTreclass12                                -0.401451492</span></span>
-<span><span class="co">## NORUTreclass13                                 0.354694548</span></span>
-<span><span class="co">## NORUTreclass14                                 0.300219294</span></span>
-<span><span class="co">## NORUTreclass15                                 0.434482154</span></span>
-<span><span class="co">## NORUTreclass16                                 0.371324685</span></span>
-<span><span class="co">## NORUTreclass17                                 0.192265012</span></span>
-<span><span class="co">## NORUTreclass18                                 0.237818388</span></span>
-<span><span class="co">## NORUTreclass19                                -0.027263688</span></span>
-<span><span class="co">## NORUTreclass20                                -0.267582639</span></span>
-<span><span class="co">## NORUTreclassbog                                0.204388526</span></span>
-<span><span class="co">## NORUTreclassglacier                           -1.581837744</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay100        -0.456828583</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay250         0.452900863</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay500        -0.468653811</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay1000       -0.903680154</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay2500        0.473126528</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay5000       -0.179315177</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay10000       0.004527591</span></span>
+<span><span class="co">## private_cabins_cumulative_exp_decay20000      -0.004597786</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay100   -96.025425007</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay250    -4.356691525</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay500   -54.322366936</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay1000   -5.649409456</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay2500   -5.272557691</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay5000   -1.875809624</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay10000   5.675197007</span></span>
+<span><span class="co">## public_cabins_high_cumulative_exp_decay20000  -4.713887867</span></span>
+<span><span class="co">## NORUTreclass11forest                          -0.741419115</span></span>
+<span><span class="co">## NORUTreclassbog                                0.129552535</span></span>
+<span><span class="co">## NORUTreclass12                                -0.407923738</span></span>
+<span><span class="co">## NORUTreclass13                                 0.202352535</span></span>
+<span><span class="co">## NORUTreclass14                                 0.304247970</span></span>
+<span><span class="co">## NORUTreclass15                                 0.359671384</span></span>
+<span><span class="co">## NORUTreclass16                                 0.210433837</span></span>
+<span><span class="co">## NORUTreclass17                                 0.096818180</span></span>
+<span><span class="co">## NORUTreclass18                                 0.182645472</span></span>
+<span><span class="co">## NORUTreclass19                                -0.109029402</span></span>
+<span><span class="co">## NORUTreclass20                                -0.248141537</span></span>
+<span><span class="co">## NORUTreclassglacier                           -1.347011698</span></span>
+<span><span class="co">## NORUTreclasswater                             -2.287984502</span></span>
 <span><span class="co">## NORUTreclassother                              0.000000000</span></span>
-<span><span class="co">## NORUTreclasswater                             -2.354933393</span></span>
-<span><span class="co">## norway_pca_klima_axis1                         1.286029984</span></span>
-<span><span class="co">## norway_pca_klima_axis1_sq                     -0.602443961</span></span>
-<span><span class="co">## norway_pca_klima_axis2                        -3.132014957</span></span>
-<span><span class="co">## norway_pca_klima_axis2_sq                     -0.466207383</span></span>
-<span><span class="co">## norway_pca_klima_axis3                        35.000234441</span></span>
-<span><span class="co">## norway_pca_klima_axis4                        -7.188027660</span></span></code></pre>
+<span><span class="co">## norway_pca_klima_axis1                         1.331876146</span></span>
+<span><span class="co">## norway_pca_klima_axis1_sq                     -0.597549704</span></span>
+<span><span class="co">## norway_pca_klima_axis2                        -3.462926625</span></span>
+<span><span class="co">## norway_pca_klima_axis2_sq                     -0.543032968</span></span>
+<span><span class="co">## norway_pca_klima_axis3                        57.828769971</span></span>
+<span><span class="co">## norway_pca_klima_axis4                       -27.387982850</span></span></code></pre>
 <p>Finally, we can plot the coefficients in each model in different ways
 using the <code><a href="../reference/plot_coef.html">oneimpact::plot_coef()</a></code> function.</p>
 <p><strong>explain one by one</strong></p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted coefficients in each model, for all terms</span></span>
 <span><span class="co"># plot_coef(bag_object)</span></span>
 <span></span>
@@ -829,12 +883,12 @@ using the <code><a href="../reference/plot_coef.html">oneimpact::plot_coef()</a>
 <span><span class="co"># for one the 3 first models</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"private_cabins_cumulative"</span>, models <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef5-1.png" width="700"></p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only for private cabins, by resample, as points</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"private_cabins_cumulative"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, models <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef5-2.png" width="700"></p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only for private cabins, as histograms</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"private_cabins_cumulative"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></span></code></pre></div>
@@ -848,19 +902,21 @@ regression, that performs variable selection with model fitting.</p>
 be done for all terms, or for terms of one specific type of variable. In
 this case, for ZOI variables, it is advisable to order them according to
 the ZOI radius with the option <code>order_zoi_radius = TRUE</code>.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted average coefs - all terms</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef6-1.png" width="700"></p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted average coefs - public cabins</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span>, terms <span class="op">=</span> <span class="st">"public_cabins"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, order_zoi_radius <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef6-2.png" width="700"></p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># zoom</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span>, terms <span class="op">=</span> <span class="st">"public_cabins"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, order_zoi_radius <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">## (`geom_point()`).</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef6-3.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -933,7 +989,7 @@ ruggedness.</p>
 <span>                                                length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
-<span>              type <span class="op">=</span> <span class="st">"logit"</span>, </span>
+<span>              type <span class="op">=</span> <span class="st">"exp"</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response2-1.png" width="700"></p>
 </div>
@@ -951,9 +1007,9 @@ cabin.</p>
 <span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>private_cabins <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
-<span>              type <span class="op">=</span> <span class="st">"logit"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>              type <span class="op">=</span> <span class="st">"exp"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response3-1.png" width="700"></p>
 <p>We see that the effects of a private cabin vary from strong effects
 up to ca. 2.5km to very weak effect, depending on the model in the bag.
@@ -969,18 +1025,18 @@ cabins.</p>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
 <span>              n_features <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>              type <span class="op">=</span> <span class="st">"logit"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>              type <span class="op">=</span> <span class="st">"exp"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-1.png" width="700"></p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 100 features</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
-<span>              type <span class="op">=</span> <span class="st">"logit"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>              type <span class="op">=</span> <span class="st">"exp"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              n_features <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-2.png" width="700"></p>
 </div>
 <div class="section level4">
@@ -996,10 +1052,12 @@ single resort.</p>
 <span><span class="co"># 1 feature</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
-<span>              type <span class="op">=</span> <span class="st">"logit"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>              type <span class="op">=</span> <span class="st">"exp"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              n_features <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">## (`geom_line()`).</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response7-1.png" width="700"></p>
 <p>We see a negative impact of a public resort, non-linearly, up to 20
 km, with high variation in the range 100-2500 m, but with overall
@@ -1007,14 +1065,16 @@ average and median negative effects. We can also increase and evaluate
 the impact of three public resorts in a neighborhood, the maximum
 observed in the study area, which shows a more consistently negative
 effect which only starts to decrease after 10 km.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3 features</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
-<span>              type <span class="op">=</span> <span class="st">"logit"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>              type <span class="op">=</span> <span class="st">"exp"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              n_features <span class="op">=</span> <span class="fl">3</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">## (`geom_line()`).</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response8-1.png" width="700"></p>
 </div>
 </div>
@@ -1030,10 +1090,10 @@ included in the model above - land cover, the four bio-geo-climatic
 PCAs, and the different ZOI variables for private and public cabins. The
 data is loaded for the whole study area - the Hardangervidda wild
 reindeer area in Norway and its surroundings.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/rast_predictors_hardanger_500.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/home/runner/work/_temp/Library/oneimpact/raster/rast_predictors_hardanger_500.tif"</span></span></code></pre>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/rast_predictors_hardanger_500m.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "/home/runner/work/_temp/Library/oneimpact/raster/rast_predictors_hardanger_500m.tif"</span></span></code></pre>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rast_predictors</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></code></pre></div>
 <p>We can use the function <code><a href="../reference/bag_predict_spat.html">oneimpact::bag_predict_spat()</a></code> to
 make spatial predictions based on the bag of fitted models. It is
@@ -1046,7 +1106,7 @@ also possible to create individual predictions for each model in the bag
 and start by plotting the weighted average habitat suitability, which
 shows a similar pattern to the habitat suitability map presented in
 Niebuhr et al. 2023 (Fig. 5f).</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bag_predict_spat.html">bag_predict_spat</a></span><span class="op">(</span>bag <span class="op">=</span> <span class="va">bag_object</span>, data <span class="op">=</span> <span class="va">rast_predictors</span>,</span>
 <span>                         input_type <span class="op">=</span> <span class="st">"rast"</span>, what <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># if rast_df was a data.frame</span></span>
@@ -1067,7 +1127,7 @@ predictions for the habitat suitability. Which elements are returned
 depend on the values included in the <code>what</code> argument.</li>
 </ul>
 <p>Below we plot the first map, the weighted average prediction.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weighted average</span></span>
 <span><span class="va">map1</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_weighted_avg_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Greens"</span>, style <span class="op">=</span> <span class="st">"cont"</span>, title <span class="op">=</span> <span class="st">"Suitability"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1087,7 +1147,7 @@ depend on the values included in the <code>what</code> argument.</li>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named</span></span>
@@ -1096,7 +1156,7 @@ depend on the values included in the <code>what</code> argument.</li>
 <p>The weighted median suitability also produces a quite similar
 prediction. It is by default stored in as the first layer of the raster
 <code>pred$r_ind_summ_pred</code>.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># average/SD of individual pred</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Median"</span>, <span class="st">"IQR"</span>, <span class="st">"QCV"</span><span class="op">)</span></span>
 <span><span class="va">map2</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1117,7 +1177,7 @@ prediction. It is by default stored in as the first layer of the raster
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named</span></span>
@@ -1133,7 +1193,7 @@ different between the 25 and 75 weighted predicted percentiles), but
 other values might be selected through the argument
 <code>uncertainty_quantiles</code> in the
 <code><a href="../reference/bag_predict_spat.html">bag_predict_spat()</a></code> function.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map3</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Reds"</span>, style <span class="op">=</span> <span class="st">"cont"</span>, title <span class="op">=</span> <span class="st">"Uncertainty"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LEFT"</span>, <span class="st">"BOTTOM"</span><span class="op">)</span>,</span>
@@ -1152,7 +1212,7 @@ other values might be selected through the argument
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named</span></span>
@@ -1171,7 +1231,7 @@ is the <code>x%</code> percentile. We see now that this measures
 highlights the relative (not the absolute) variation in the prediction,
 which occurs close to the two types of cabins and in the areas of high
 variation in the other predictors as well.</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map4</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Reds"</span>, style <span class="op">=</span> <span class="st">"cont"</span>, title <span class="op">=</span> <span class="st">"Uncertainty"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LEFT"</span>, <span class="st">"BOTTOM"</span><span class="op">)</span>,</span>
@@ -1190,7 +1250,7 @@ variation in the other predictors as well.</p>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map4</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named</span></span>
@@ -1225,7 +1285,7 @@ objects, one for each variable list in <code>vars</code>.</li>
 </ul>
 <p>To make it fast, we produce only the mean weighted prediction for the
 partial effect of each of the covariates.</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># variables to be considered</span></span>
 <span><span class="va">predictor_table_zoi</span><span class="op">$</span><span class="va">variable</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "private_cabins_"           "private_cabins_"          </span></span>
@@ -1240,7 +1300,7 @@ partial effect of each of the covariates.</p>
 <span><span class="co">## [19] "norway_pca_klima_axis1_sq" "norway_pca_klima_axis2"   </span></span>
 <span><span class="co">## [21] "norway_pca_klima_axis2_sq" "norway_pca_klima_axis3"   </span></span>
 <span><span class="co">## [23] "norway_pca_klima_axis4"</span></span></code></pre>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># correct quadratic terms</span></span>
 <span><span class="va">predictor_table_zoi</span><span class="op">$</span><span class="va">variable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"poly("</span>, <span class="st">""</span>, <span class="va">predictor_table_zoi</span><span class="op">$</span><span class="va">variable</span>, fixed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">", 2, raw = TRUE)|_sq"</span>, replacement <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
@@ -1269,7 +1329,7 @@ partial effect of each of the covariates.</p>
 <span><span class="co">##   ..$ :'data.frame': 38204 obs. of  4 variables:</span></span>
 <span><span class="co">##   ..$ :'data.frame': 38204 obs. of  4 variables:</span></span>
 <span><span class="co">##   ..$ :'data.frame': 38204 obs. of  4 variables:</span></span>
-<span><span class="co">##  $ weights            : Named num [1:50] 0.0198 0.02 0.02 0.0201 0.02 ...</span></span>
+<span><span class="co">##  $ weights            : Named num [1:50] 0.0197 0.02 0.02 0.0201 0.02 ...</span></span>
 <span><span class="co">##   ..- attr(*, "names")= chr [1:50] "Resample01" "Resample02" "Resample03" "Resample04" ...</span></span>
 <span><span class="co">##  $ r_weighted_avg_pred:List of 7</span></span>
 <span><span class="co">##   ..$ :S4 class 'SpatRaster' [package "terra"]</span></span>
@@ -1286,7 +1346,7 @@ bio-geo-climatic PCAs (PCA3) and the land cover layer, as an example.
 Here, we have plotted the responses in the exponential scale, for
 simplicity. This means that values above 1 represent selection, and
 values below 1 represent avoidance.</p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span>, </span>
 <span>                <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co">#plot(x, main = names(x), col = map.pal("viridis")))</span></span>
 <span>                  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred_vars</span><span class="op">$</span><span class="va">r_weighted_avg_pred</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1313,7 +1373,7 @@ values below 1 represent avoidance.</p>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span></code></pre>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
@@ -1349,7 +1409,7 @@ avoid the lower lands with forests and climates which are too oceanic
 <p>We can now plot the spatial impact of private cabins and public
 cabins. As shown above, the effect of both types of infrastructure is
 very strong.</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># private cabins</span></span>
 <span><span class="va">map_plot</span> <span class="op">&lt;-</span> <span class="va">pred_vars</span><span class="op">$</span><span class="va">r_weighted_avg_pred</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">map1</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">map_plot</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1373,7 +1433,7 @@ very strong.</p>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
 <span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>
@@ -1382,7 +1442,7 @@ very strong.</p>
 <span><span class="co">## fit well, and are therefore rescaled.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># public cabins</span></span>
 <span><span class="va">map_plot</span> <span class="op">&lt;-</span> <span class="va">pred_vars</span><span class="op">$</span><span class="va">r_weighted_avg_pred</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">map2</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">map_plot</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1404,7 +1464,7 @@ very strong.</p>
 <span><span class="co">## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a</span></span>
 <span><span class="co">## list: 'col'.scale = list(&lt;scale1&gt;, &lt;scale2&gt;, ...)'<span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
 <span><span class="co">## visual variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'<span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map2</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>

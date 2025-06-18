@@ -38,6 +38,7 @@ within this GRASS GIS mapset."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/oneimpact.html">Getting started</a></li>
     <li><a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence</a></li>
     <li><a class="dropdown-item" href="../articles/zoi_on_grass.html">Zones of influence on GRASS GIS</a></li>
+    <li><a class="dropdown-item" href="../articles/fitting_ZOI_logit.html">Estimating zones of influence using penalized regression</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -258,13 +259,13 @@ and with raster <a href="https://rspatial.org/raster/pkg/4-algebra.html" class="
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpbbFezz/file2af252c57698.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpGAHqXb/file2a991ee982c4.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpbbFezz/file2af248f9f4a8.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpGAHqXb/file2a99a18bed6.grd&gt; created.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin1_2</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Binarized map keeping null"</span>, <span class="st">"Binarized map setting null to 0"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="grass_binarize-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -287,19 +288,19 @@ and with raster <a href="https://rspatial.org/raster/pkg/4-algebra.html" class="
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpbbFezz/file2af2359e36f6.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpGAHqXb/file2a99525f940d.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpbbFezz/file2af241a13475.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpGAHqXb/file2a996a527755.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpbbFezz/file2af218dde430.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpGAHqXb/file2a992e4bf23.grd&gt; created.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin2vals</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Original map"</span>,</span></span>
 <span class="r-in"><span>              <span class="st">"Binarized map, break = 0.3"</span>,</span></span>

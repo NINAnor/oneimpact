@@ -30,7 +30,9 @@
 <url><loc>https://ninanor.github.io/oneimpact/reference/grass_binarize.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/grass_find_layer.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/grass_v2rast_count.html</loc></url>
+<url><loc>https://ninanor.github.io/oneimpact/reference/hypothesis_func.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/index.html</loc></url>
+<url><loc>https://ninanor.github.io/oneimpact/reference/inflection.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/isolation.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/kernel_prediction.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/net_clogit.html</loc></url>
@@ -41,7 +43,7 @@
 <url><loc>https://ninanor.github.io/oneimpact/reference/plot_zoi1d.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/predict.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/pretty_seq.html</loc></url>
-<url><loc>https://ninanor.github.io/oneimpact/reference/rast_predictors_hardanger_500.tif.html</loc></url>
+<url><loc>https://ninanor.github.io/oneimpact/reference/rast_predictors_hardanger_500m.tif.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/raster_rescale.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/reindeer.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/reindeer_area.gpkg.html</loc></url>
@@ -62,6 +64,7 @@
 <url><loc>https://ninanor.github.io/oneimpact/reference/set_points_sample.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/spat_strat.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/variable_importance.html</loc></url>
+<url><loc>https://ninanor.github.io/oneimpact/reference/weirdness.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/zoi_functions.html</loc></url>
 </urlset>
 

@@ -38,6 +38,7 @@ in the penalized regression modeling."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/oneimpact.html">Getting started</a></li>
     <li><a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence</a></li>
     <li><a class="dropdown-item" href="../articles/zoi_on_grass.html">Zones of influence on GRASS GIS</a></li>
+    <li><a class="dropdown-item" href="../articles/fitting_ZOI_logit.html">Estimating zones of influence using penalized regression</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -157,7 +158,7 @@ columns in the data set.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> case_ ~ strata(step_id_) + sl_ * startpt_roads1000 + sl_ * startpt_roads2000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_roads3000 + sl_ * startpt_cabins1000 + sl_ * </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     startpt_cabins2000 + sl_ * startpt_cabins3000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5618391269d8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55f9dd6126c0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictor_table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -171,7 +172,7 @@ columns in the data set.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_roads_exp_decay_2000 + sl_ * startpt_roads_exp_decay_3000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_exp_decay_1000 + sl_ * startpt_cabins_exp_decay_2000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_exp_decay_3000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5618391f8920&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55f9dd6c5ae8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictor_table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -185,7 +186,7 @@ columns in the data set.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_exp_decay_2000 + sl_ * startpt_cabins_exp_decay_3000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_threshold_1000 + sl_ * startpt_cabins_threshold_2000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_threshold_3000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x56183926a348&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55f9dd729308&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictor_table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -203,7 +204,7 @@ columns in the data set.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_exp_decay_2000 + sl_ * startpt_cabins_exp_decay_3000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_threshold_1000 + sl_ * startpt_cabins_threshold_2000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_threshold_3000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5618393313a8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55f9dd7cf0d8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictor_table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    is_zoi cumulative     shape zoi_radius              variable</span>
@@ -248,7 +249,7 @@ columns in the data set.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_nearest_exp_decay_2000 + sl_ * startpt_cabins_nearest_exp_decay_3000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_nearest_threshold_1000 + sl_ * startpt_cabins_nearest_threshold_2000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_nearest_threshold_3000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5618394d32d0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55f9dd916060&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictor_table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    is_zoi cumulative     shape zoi_radius                        variable</span>
@@ -291,7 +292,7 @@ columns in the data set.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_nearest_exp_decay_2000 + sl_ * startpt_cabins_nearest_exp_decay_3000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_cumulative_exp_decay_1000 + sl_ * startpt_cabins_cumulative_exp_decay_2000 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sl_ * startpt_cabins_cumulative_exp_decay_3000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x56183962d838&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55f9dda6c308&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $predictor_table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    is_zoi cumulative     shape zoi_radius              variable</span>

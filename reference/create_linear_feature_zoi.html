@@ -26,6 +26,7 @@ linear infrastructure, considering the potential responses at multiple radii."><
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/oneimpact.html">Getting started</a></li>
     <li><a class="dropdown-item" href="../articles/computing_zoi.html">Computing zones of influence</a></li>
     <li><a class="dropdown-item" href="../articles/zoi_on_grass.html">Zones of influence on GRASS GIS</a></li>
+    <li><a class="dropdown-item" href="../articles/fitting_ZOI_logit.html">Estimating zones of influence using penalized regression</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -56,6 +57,8 @@ linear infrastructure, considering the potential responses at multiple radii.</p
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"circle"</span>, <span class="st">"Gauss"</span>, <span class="st">"rectangle"</span>, <span class="st">"exp_decay"</span>, <span class="st">"bartlett"</span>, <span class="st">"threshold"</span>,</span>
 <span>    <span class="st">"mfilter"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  radius_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">radii</span><span class="op">)</span>,</span>
+<span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  type_feature_recompute <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  res <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  value <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -107,6 +110,10 @@ linear feature as the roads traffic or another value for spatio-temporally dynam
 <span class="r-in"><span><span class="fu">create_linear_feature_zoi</span><span class="op">(</span>radii <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                          type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
 <span class="r-in"><span>                          res <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       100       250       500      1000      2500      5000     10000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1.105250  1.861974  3.426254  6.690854 16.580199 33.088243 63.428301 </span>
+<span class="r-in"><span><span class="fu">create_linear_feature_zoi</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"exp_decay"</span>,</span></span>
+<span class="r-in"><span>                          type_feature_recompute <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       100       250       500      1000      2500      5000     10000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1.105250  1.861974  3.426254  6.690854 16.580199 33.088243 63.428301 </span>
 <span class="r-in"><span></span></span>
