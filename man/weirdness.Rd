@@ -75,8 +75,8 @@ weirdness(df, response = "y", measure = "response_area_opposite")
 weirdness(df, response = "y", measure = "response_area_ratio")
 
 # checking for inflection points
-x <- seq(-4, 10, 0.01)
-y <- -8 + 10 * x - 20 * x**2 + 3*x**3
+x <- seq(0, 14, 0.01)
+y <- -560 + 314 * x - 56 * x**2 + 3*x**3
 df <- data.frame(x = x, y = y)
 plot(x, y); abline(h = 0, col = "red")
 
