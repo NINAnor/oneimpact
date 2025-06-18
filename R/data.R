@@ -211,9 +211,9 @@ NULL
 #' r <- terra::rast(f)
 #' plot(r)
 #'
-#' @name rast_predictors_hardanger_500.tif
+#' @name rast_predictors_hardanger_500m.tif
 #' @seealso
-#' Data for RSF analysis: [oneimpact::reindeer_rsf]
+#' Data for RSF analysis, incorporating these predictors: [oneimpact::reindeer_rsf]
 #'
 #' @source Niebuhr, B. B., Van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,
 #' Sandström, P., Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating the cumulative impact
