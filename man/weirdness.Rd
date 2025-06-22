@@ -57,6 +57,8 @@ coefs <- c(-1, -0.5, -0.1, 0.8, 0.3, -0.1)
 expected_sign <- -1
 weirdness(coefs, expected_sign = expected_sign)
 weirdness(coefs, expected_sign = expected_sign, which_coef = "sum")
+weirdness(coefs, expected_sign = expected_sign, which_coef = "raw")
+weirdness(coefs, expected_sign = expected_sign, which_coef = "index")
 
 #-------
 # weirdness for data.frame with (x,y) for line
@@ -65,10 +67,13 @@ weirdness(coefs, expected_sign = expected_sign, which_coef = "sum")
 x <- seq(0, 10, 0.01)
 y <- -8 + 10 * x - 1.5 * x**2
 df <- data.frame(x = x, y = y)
-plot(x, y); abline(h = 0, col = "red")
+plot(x, y, ylab = "Response", xlab = "Distance from source")
+abline(h = 0, col = "red")
 
 # n crosses
 weirdness(df, response = "y", measure = "n_crosses")
+# where does the curve crosses zero
+weirdness(df, response = "y", measure = "where_crosses")
 # area on the opposite side of the expected sign
 weirdness(df, response = "y", measure = "response_area_opposite")
 # ratio between area above and area on the expected sign
@@ -86,10 +91,6 @@ abline(v = x[inflection(y)], lty = 2)
 
 # n crosses
 weirdness(df, response = "y", measure = "n_crosses")
-# area on the opposite side of the expected sign
-weirdness(df, response = "y", measure = "response_area_opposite")
-# ratio between area above and area on the expected sign
-weirdness(df, response = "y", measure = "response_area_ratio")
 # n inflection points
 weirdness(df, response = "y", measure = "n_inflection")
 # difference between inflection points
@@ -184,4 +185,15 @@ weirdness(bag_object,
           data = dat,
           wmean = FALSE)
 
+truncate_bag()
+
+x <- bag_object
+data <- dat
+
+truncate <- function(x,
+                     data) {
+
+
+
+}
 }
