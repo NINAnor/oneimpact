@@ -12,6 +12,7 @@ truncate_bag(
   wmean = TRUE,
   expected_sign = -1,
   reassess = TRUE,
+  verbose = FALSE,
   ...
 )
 }

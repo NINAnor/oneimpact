@@ -53,6 +53,7 @@ truncate_bag <- function(x,
                          wmean = TRUE,
                          expected_sign = -1,
                          reassess = TRUE,
+                         verbose = FALSE,
                          ...) {
 
   # compute weirdness
@@ -96,6 +97,7 @@ truncate_bag <- function(x,
               }
             }
             new_bag$coef[rownames(new_bag$coef) %in% terms_to_zero,] <- 0
+            if(!is.null(new_bag$coef_std)) new_bag$coef_std[rownames(new_bag$coef_std) %in% terms_to_zero,] <- 0
 
           }
         } else {
@@ -119,6 +121,7 @@ truncate_bag <- function(x,
                 }
               }
               new_bag$coef[rownames(new_bag$coef) %in% terms_to_zero, col_weight_positive[vv]] <- 0
+              if(!is.null(new_bag$coef_std)) new_bag$coef_std[rownames(new_bag$coef_std) %in% terms_to_zero, col_weight_positive[vv]] <- 0
             }
           }
         }
@@ -133,7 +136,7 @@ truncate_bag <- function(x,
     f <- new_bag$formula
 
     # get variables
-    wcols <- extract_response_strata(f2, covars = TRUE)
+    wcols <- extract_response_strata(f, covars = TRUE)
 
     # case
     case <- wcols$response
@@ -152,10 +155,10 @@ truncate_bag <- function(x,
     all_vars <- all.vars(f)
 
     # in any case, we keep their mean and sd which might be useful
-    if(call == "fit_net_logit") {
-      all_covars <- all_vars[-1]
-    } else {
+    if(call == "fit_net_clogit") {
       all_covars <- grep(wcols$strata, all_vars[-1], invert = TRUE, value = TRUE)
+    } else {
+      all_covars <- all_vars[-1]
     }
 
     # get predictors
@@ -194,10 +197,12 @@ truncate_bag <- function(x,
 
     #----------------------
     # loop over samples
-    n_samp <- new_bag$n_no_errors
+    n_samp <- ncol(new_bag$coef)
 
     i <- 1
     for(i in seq_len(n_samp)) {
+
+      if(verbose) print(i)
 
       if(call == "fit_net_clogit") {
         # separate data for fitting, calibration, and validation
@@ -257,7 +262,7 @@ truncate_bag <- function(x,
       f2 <- new_bag$formula_no_strata
 
       # only single metric
-      metrics_evaluate <- new_bag$metrics
+      metrics_evaluate <- new_bag$metric
       # compute optimal score for multiple selected metrics
       metrics_evaluated <- list()
       mt <- metrics_evaluate[1]
@@ -265,18 +270,18 @@ truncate_bag <- function(x,
 
         # get metric function
         mt_fun <- getFromNamespace(mt, ns = "oneimpact")
-
-        # set min or max as optim function
-        if(mt == "coxnet.deviance") opt_fun <- which.min else opt_fun <- which.max
+        # if the metric is coxnet.deviance, use it for the tuning parameter but compute
+        # the validation score using the Cindex
+        if(mt == "coxnet.deviance") mt_fun <- oneimpact::Cindex
 
         # coefs
         coef <- new_bag$coef
-        coef_std <- new_bag$coef_std
+        if(new_bag$standardize == "external") coef <- new_bag$coef_std
 
         # get predicted values based on the training, testing, and validation data
-        train_pred_vals <- model.matrix(f2, train_data) %*% coef
-        test_pred_vals <- model.matrix(f2, test_data) %*% coef
-        val_pred_vals <- model.matrix(f2, validate_data) %*% coef
+        train_pred_vals <- model.matrix(f2, train_data) %*% coef[,i]
+        test_pred_vals <- model.matrix(f2, test_data) %*% coef[,i]
+        val_pred_vals <- model.matrix(f2, validate_data) %*% coef[,i]
 
         if(call == "fit_net_clogit") {
           if(new_bag$parms$kernel_vars[1] != "") {
@@ -285,10 +290,6 @@ truncate_bag <- function(x,
                                                   coefs = coef[,1])
           }
         }
-
-        # if the metric is coxnet.deviance, use it for the tuning parameter but compute
-        # the validation score using the Cindex
-        if(mt == "coxnet.deviance") mt_fun <- oneimpact::Cindex
 
         if(call == "fit_net_logit") {
           wcols$strata <- "strat"

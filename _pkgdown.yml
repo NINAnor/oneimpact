@@ -47,9 +47,9 @@ reference:
   - starts_with("bag_fit")
   - bag_load_models
   - bag_models
+  - truncate_bag
   - concordance_indices
   - kernel_prediction
-  - pretty_seq
 - title: "Estimating ZOI - interpret and visualize models"
   desc: >
     Functions to help interpreting parameters and visualizing
