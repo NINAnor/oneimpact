@@ -411,9 +411,9 @@ truncate_bag <- function(x,
     ###
     # Do we need to reassess weights???
 
-    weights_matrix <- matrix(rep(new_bag$weights, each = nrow(coef)), nrow = nrow(coef))
-    new_bag$wcoef <- coef * as.vector(weights_matrix) # each model
-    new_bag$wcoef_std <- coef_std * as.vector(weights_matrix) # each model
+    # weights_matrix <- matrix(rep(new_bag$weights, each = nrow(coef)), nrow = nrow(coef))
+    # new_bag$wcoef <- coef * as.vector(weights_matrix) # each model
+    # new_bag$wcoef_std <- coef_std * as.vector(weights_matrix) # each model
 
     # summary validation scores
     if(nrow(new_bag$validation_score) > 1) {
