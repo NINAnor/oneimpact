@@ -60,7 +60,7 @@ bag_load_models <- function(data,
     model_number <- strsplit(model_files, split = name_from_file_pattern) |>
       sapply(function(x) x[2]) |>
       sapply(function(x) as.numeric(gsub("\\D", "", x)))
-    names_out <- oneimpact:::pretty_seq(1:999)[unname(model_number)]
+    names_out <- oneimpact::pretty_seq(1:999)[unname(model_number)]
     names(fitted_list) <- names_out
   } else {
     names(fitted_list) <- names(fitted_list[[1]]$parms$samples$train)

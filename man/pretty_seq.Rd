@@ -2,26 +2,21 @@
 % Please edit documentation in R/create_resamples.R
 \name{pretty_seq}
 \alias{pretty_seq}
-\title{Set sampling parameters}
+\title{Create pretty, standardized sequences from numbers}
 \usage{
 pretty_seq(x, name = "Resample")
 }
 \arguments{
-\item{max_validation_size_blockH0}{= 1000,}
+\item{x}{\verb{[vector,numeric]} \cr Vector of integers.}
 
-\item{max_number_blocksH1_train}{Default = 10. Maximum number of blocks at level H1,
-used for fitting the model. Why do we set a maximum here?
-If all blocks should be used, use \code{max_number_blocksH1_train = Inf}.}
-
-\item{max_fit_size}{1000}
-}
-\value{
-List of sampling parameters for the spatial stratified cross-validation,
-with size of blocks of H0, H1, and H2.
+\item{name}{\verb{[character(1)="Resample"]} \cr String to be
+added to the numbers in the sequence.}
 }
 \description{
-This function sets the sampling parameters.
+Create pretty, standardized sequences from numbers
 }
 \examples{
-set_sampling_params(1000, 10, 1000)
+pretty_seq(1:20)
+
 }
+\keyword{internal}

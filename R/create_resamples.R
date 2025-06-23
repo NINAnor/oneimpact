@@ -329,7 +329,7 @@ create_resamples <- function (y, times = 10,
   #   out <- lapply(indexes, function(x) {
   #     out_samp <- as.data.frame(x, stringsAsFactors = TRUE)
   #     attributes(out_samp) <- NULL
-  #     names(out_samp) <- oneimpact:::pretty_seq(out_samp)
+  #     names(out_samp) <- oneimpact::pretty_seq(out_samp)
   #     out_samp
   #   })
   #   names(out) <- c("train", "test", "validate")
@@ -338,7 +338,7 @@ create_resamples <- function (y, times = 10,
   # else {
   #   out <- lapply(indexes, function(x) {
   #     out_samp <- x
-  #     colnames(out_samp) <- oneimpact:::pretty_seq(1:ncol(out_samp))
+  #     colnames(out_samp) <- oneimpact::pretty_seq(1:ncol(out_samp))
   #     out_samp
   #   })
   #   names(out) <- c("train", "test", "validate")
@@ -346,7 +346,7 @@ create_resamples <- function (y, times = 10,
   out <- lapply(indexes, function(x) {
     out_samp <- as.data.frame(x, stringsAsFactors = TRUE)
     attributes(out_samp) <- NULL
-    names(out_samp) <- oneimpact:::pretty_seq(out_samp)
+    names(out_samp) <- oneimpact::pretty_seq(out_samp)
     out_samp
   })
   names(out) <- c("train", "test", "validate")
@@ -364,35 +364,16 @@ create_resamples <- function (y, times = 10,
   out
 }
 
-#' Set sampling parameters
+#' Create pretty, standardized sequences from numbers
 #'
-#' This function sets the sampling parameters.
-#'
-#' @param max_validation_size_blockH0 = 1000,
-#' @param max_number_blocksH1_train Default = 10. Maximum number of blocks at level H1,
-#' used for fitting the model. Why do we set a maximum here?
-#' If all blocks should be used, use `max_number_blocksH1_train = Inf`.
-#' @param max_fit_size 1000
-#'
-#' @returns List of sampling parameters for the spatial stratified cross-validation,
-#' with size of blocks of H0, H1, and H2.
+#' @param x `[vector,numeric]` \cr Vector of integers.
+#' @param name `[character(1)="Resample"]` \cr String to be
+#' added to the numbers in the sequence.
 #'
 #' @examples
-#' set_sampling_params(1000, 10, 1000)
-# set_sampling_params <- function(max_size_validate_blockH0 = 1000,
-#                                 max_number_blocksH1_train = 10,
-#                                 max_size_fit_blockH1 = 1000) {
-#
-#   # Create list
-#   sampling_params <- list()
-#   # Set parameters
-#   sampling_params$max_size_validate_blockH0 <- max_size_validate_blockH0
-#   sampling_params$max_number_blocksH1_train <- max_number_blocksH1_train
-#   sampling_params$max_size_fit_blockH1 <- max_size_fit_blockH1
-#
-#   sampling_params
-# }
-
-# Helper function to create resample names
+#' pretty_seq(1:20)
+#'
+#' @keywords internal
+#' @export
 pretty_seq <- function (x, name = "Resample")
   paste(name, gsub(" ", "0", format(seq(along = x))), sep = "")

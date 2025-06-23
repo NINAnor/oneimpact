@@ -811,7 +811,7 @@ fit_net_clogit <- function(f, data,
   # whether to save the results externally
   if (!is.null(out_dir_file)){
     # change if there are more than 999 samples
-    names_out <- oneimpact:::pretty_seq(1:999)[i]
+    names_out <- oneimpact::pretty_seq(1:999)[i]
     saveRDS(results, file = paste0(out_dir_file, "_", names_out, ".rds"))
   }
 
