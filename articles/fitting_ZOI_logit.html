@@ -313,7 +313,7 @@ the model and select the variables.</p>
 <span><span class="co">##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + </span></span>
 <span><span class="co">##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + </span></span>
 <span><span class="co">##     norway_pca_klima_axis4</span></span>
-<span><span class="co">## &lt;environment: 0x55dae10cdfe8&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x562e02896338&gt;</span></span></code></pre>
 <p>The <code><a href="../reference/add_zoi_formula.html">add_zoi_formula()</a></code> function can also produce a
 <code>predictor_table</code> <code>data.frame</code>, which specifies
 characteristics of the covariates in the model - e.g. whether they are
@@ -484,7 +484,7 @@ and <code>validation_score</code>, but for all the
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 20</span></span>
-<span><span class="co">##  $ parms               :List of 16</span></span>
+<span><span class="co">##  $ parms               :List of 17</span></span>
 <span><span class="co">##  $ glmnet_fit          :List of 13</span></span>
 <span><span class="co">##   ..- attr(*, "class")= chr [1:2] "lognet" "glmnet"</span></span>
 <span><span class="co">##  $ metrics_evaluated   :List of 1</span></span>
@@ -561,9 +561,9 @@ are useful for model prediction.</p>
 <pre><code><span><span class="co">## List of 32</span></span>
 <span><span class="co">##  $ n                                : int 50</span></span>
 <span><span class="co">##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55dae10cdfe8&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x562e02896338&gt; </span></span>
 <span><span class="co">##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55dae14e5ac8&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x562e02cb34c0&gt; </span></span>
 <span><span class="co">##  $ method                           : chr "Lasso"</span></span>
 <span><span class="co">##  $ metric                           : chr "AUC"</span></span>
 <span><span class="co">##  $ metrics_evaluated                : Named chr "AUC"</span></span>
@@ -575,7 +575,7 @@ are useful for model prediction.</p>
 <span><span class="co">##  $ error_message                    : logi [1:50] NA NA NA NA NA NA ...</span></span>
 <span><span class="co">##  $ n_errors                         : int 0</span></span>
 <span><span class="co">##  $ n_no_errors                      : int 50</span></span>
-<span><span class="co">##  $ parms                            :List of 11</span></span>
+<span><span class="co">##  $ parms                            :List of 12</span></span>
 <span><span class="co">##  $ alpha                            : num 1</span></span>
 <span><span class="co">##  $ var_names                        : chr [1:36] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...</span></span>
 <span><span class="co">##  $ lambda                           : num [1, 1:50] 1.23e-03 8.70e-06 1.98e-04 8.52e-06 8.76e-06 ...</span></span>
