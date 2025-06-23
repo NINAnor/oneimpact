@@ -27,8 +27,8 @@ to quantify "weirdness" in the model or coefficients, based on the coeffcients a
 plots for each type of covariate with zone of influence in a model.
 It can be one or multiple of these options:
 \itemize{
-\item \code{"coef_sign"}: counts the number of coefficients whose signal is opposite to the ecologically expected signal;
-\item \code{"n_crosses"}: counting the number of crosses in signal for the coefficients of the same covariate;
+\item \code{"coef_sign"}: counts the number of coefficients whose sign is opposite to the ecologically expected sign;
+\item \code{"n_crosses"}: counting the number of crosses in sign for the coefficients of the same covariate;
 \item \code{"response_area"}: computing the area under the response plot curve which is in the unexpected
 direction.
 }}
@@ -38,6 +38,8 @@ direction.
 
 \item{zero_coefficient_limit}{\verb{[numeric(1)=1e8]} \cr Value above which an estimated coefficient is considered
 non-zero. Default is 1e-8. Useful for comparing coefficients which are expected to be zero (i.e. to have no effect).}
+
+\item{data}{\verb{[data.frame]} \cr The original, complete data used for model fitting.}
 
 \item{which_coef}{\cr Which measure to use for the coefficients, when \code{measure = "coef_sign"}. If \code{count} (default),
 only the sign matterns and we count the number of coefficients with unexpected sign.
@@ -175,6 +177,15 @@ plot_response(bag_object,
               type = "linear", zoi = TRUE,
               ci = FALSE, indiv_pred = TRUE)
 
+plot_response(bag_object,
+              dfvar = dfvar,
+              data = dat,
+              type = "linear", zoi = TRUE,
+              ci = FALSE, indiv_pred = TRUE,
+              ggplot = FALSE) |>
+  ggplot(aes(trails_cumulative, Resample01)) +
+  geom_line()
+
 # we try the function with the curve above, but then test how we could work with the more correct one below
 # weirdness measures
 weirdness(bag_object,
@@ -185,15 +196,4 @@ weirdness(bag_object,
           data = dat,
           wmean = FALSE)
 
-truncate_bag()
-
-x <- bag_object
-data <- dat
-
-truncate <- function(x,
-                     data) {
-
-
-
-}
 }

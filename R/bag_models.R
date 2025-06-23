@@ -1,8 +1,6 @@
 #' Summary of a bag of models
 #'
-#' ### Add option to read the models from a set of rds/rda files.
-#'
-#' @param data Input data (whole dataset)
+#' @param data `[data.frame,tibble]` \cr Complete data set used to fit the models.
 #' @param score2weight Function to set validation scores into weights, with two arguments:
 #' x, the result of one model of the bag, and col, the column to be used for setting the
 #' scores. See the argument `weights_col`.

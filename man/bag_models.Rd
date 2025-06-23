@@ -34,7 +34,7 @@ score2weight_invmean(x, col = "validation_score", score_threshold = 0.7)
 score2weight_min_invmean(x, col = "validation_score", score_threshold = 0.7)
 }
 \arguments{
-\item{data}{Input data (whole dataset)}
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set used to fit the models.}
 
 \item{score2weight}{Function to set validation scores into weights, with two arguments:
 x, the result of one model of the bag, and col, the column to be used for setting the
@@ -44,6 +44,5 @@ scores. See the argument \code{weights_col}.}
 \code{"habitat_validation_score"}.}
 }
 \description{
-\subsection{Add option to read the models from a set of rds/rda files.}{
-}
+Summary of a bag of models
 }

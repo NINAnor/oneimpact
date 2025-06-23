@@ -72,7 +72,8 @@ fit_net_clogit <- function(f, data,
 
   #-----------------------------
   # record initial parameters
-  parms <- list(f = f,
+  parms <- list(call = "fit_net_clogit",
+                f = f,
                 samples = samples,
                 i = i,
                 kernel_vars = kernel_vars,

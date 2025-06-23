@@ -50,7 +50,7 @@ All other variables are set to their mean or median, or to zero (this is set by 
 The column names of the \code{data.frame} might correspond exactly to the model covariates or to
 parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).}
 
-\item{data}{\verb{[data.frame]} \cr The original data used for model fitting. Used only for
+\item{data}{\verb{[data.frame]} \cr The original, complete data used for model fitting. Used only for
 taking the categories of the categorical variables. Irrelevant if there is no categorical variables.}
 
 \item{type}{\verb{[character(1)="linear"]\{"linear", "exponential", "logit", "cloglog"\}} \cr Type of response.

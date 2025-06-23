@@ -14,7 +14,7 @@
 #' All other variables are set to their mean or median, or to zero (this is set by the parameter `baseline`).
 #' The column names of the `data.frame` might correspond exactly to the model covariates or to
 #' parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).
-#' @param data `[data.frame]` \cr The original data used for model fitting. Used only for
+#' @param data `[data.frame]` \cr The original, complete data used for model fitting. Used only for
 #' taking the categories of the categorical variables. Irrelevant if there is no categorical variables.
 #' @param type `[character(1)="linear"]{"linear", "exponential", "logit", "cloglog"}` \cr Type of response.
 #' Might be `"linear"` (default), `"exponential"`, `"logit"`, and `"cloglog"`.
