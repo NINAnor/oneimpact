@@ -93,6 +93,44 @@ are kept constant, as defined by the <code>baseline</code> parameter.</p>
 <span>  linewidth_median <span class="op">=</span> <span class="fl">1.2</span>,</span>
 <span>  alpha_ci <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  alpha_indiv <span class="op">=</span> <span class="fl">0.3</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'bag'</span></span>
+<span><span class="fu">plot_response</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">dfvar</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"exponential"</span>, <span class="st">"logit"</span>, <span class="st">"cloglog"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  zoi_shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp_decay"</span>, <span class="st">"gaussian_decay"</span>, <span class="st">"linear_decay"</span>, <span class="st">"threshold_decay"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  which_cumulative <span class="op">=</span> <span class="st">"cumulative"</span>,</span>
+<span>  ci <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  indiv_pred <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  wq_probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"mean"</span>, <span class="st">"zero"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  zoi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  zoi_vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span><span class="op">)</span>,</span>
+<span>  type_feature <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point"</span>, <span class="st">"line"</span>, <span class="st">"area"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  type_feature_recompute <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  resolution <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  line_value <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  ggplot <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  plot_mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot_median <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  n_features <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  normalize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="st">"mean"</span>, <span class="st">"median"</span>, <span class="st">"ci"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  logx <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  y_lab <span class="op">=</span> <span class="st">"Relative Selection Strength"</span>,</span>
+<span>  col_ci <span class="op">=</span> <span class="st">"grey"</span>,</span>
+<span>  col_indiv <span class="op">=</span> <span class="st">"grey"</span>,</span>
+<span>  col_mean <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>  col_median <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>  linewidth_indiv <span class="op">=</span> <span class="fl">1.2</span>,</span>
+<span>  linewidth_mean <span class="op">=</span> <span class="fl">1.2</span>,</span>
+<span>  linewidth_median <span class="op">=</span> <span class="fl">1.2</span>,</span>
+<span>  alpha_ci <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  alpha_indiv <span class="op">=</span> <span class="fl">0.3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
