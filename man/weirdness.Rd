@@ -2,25 +2,36 @@
 % Please edit documentation in R/weirdness.R
 \name{weirdness}
 \alias{weirdness}
+\alias{weirdness.numeric}
+\alias{weirdness.data.frame}
 \title{Computes ecological weirdness for a fitted model or it estimated  coefficients}
 \usage{
-weirdness(
+weirdness(x, ...)
+
+\method{weirdness}{numeric}(
   x,
-  measure = c("coef_sign", "n_crosses", "response_area"),
-  wmean = TRUE,
-  which_coef_sign = c("count", "sum")[1],
+  which_coef_sign = c("count", "sum", "raw", "index")[1],
   expected_sign = -1,
-  zero_coefficient_limit = 1e-08,
+  zero_coefficient_limit = 1e-08
+)
+
+\method{weirdness}{data.frame}(
+  x,
+  expected_sign = -1,
   response = c("mean", "mid")[1],
-  radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
-  type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
-    "mfilter")[1],
-  radius_max = 10000,
-  ...
+  measure = c("n_crosses", "where_crosses", "response_area_opposite",
+    "response_area_ratio", "n_inflection", "difference_inflection",
+    "response_area_inflection")[1]
 )
 }
 \arguments{
 \item{x}{Bag.}
+
+\item{expected_sign}{\verb{[numeric(1)=-1]} \cr Expected sign of the coefficient. Either -1 (negative),
++1 (positive), or 0 (no effect).}
+
+\item{zero_coefficient_limit}{\verb{[numeric(1)=1e8]} \cr Value above which an estimated coefficient is considered
+non-zero. Default is 1e-8. Useful for comparing coefficients which are expected to be zero (i.e. to have no effect).}
 
 \item{measure}{\verb{[string(1)]\{""coef_sign", "n_crosses", "response_area""\}} \cr Measure used
 to quantify "weirdness" in the model or coefficients, based on the coeffcients and the response
@@ -32,12 +43,6 @@ It can be one or multiple of these options:
 \item \code{"response_area"}: computing the area under the response plot curve which is in the unexpected
 direction.
 }}
-
-\item{expected_sign}{\verb{[numeric(1)=-1]} \cr Expected sign of the coefficient. Either -1 (negative),
-+1 (positive), or 0 (no effect).}
-
-\item{zero_coefficient_limit}{\verb{[numeric(1)=1e8]} \cr Value above which an estimated coefficient is considered
-non-zero. Default is 1e-8. Useful for comparing coefficients which are expected to be zero (i.e. to have no effect).}
 
 \item{data}{\verb{[data.frame]} \cr The original, complete data used for model fitting.}
 
@@ -189,7 +194,8 @@ plot_response(bag_object,
 # we try the function with the curve above, but then test how we could work with the more correct one below
 # weirdness measures
 weirdness(bag_object,
-          data = dat)
+          data = dat,
+          type_feature = c("point", "line", "line"))
 
 # for each individual model
 weirdness(bag_object,

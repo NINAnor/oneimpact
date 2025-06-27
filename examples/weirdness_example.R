@@ -138,7 +138,8 @@ plot_response(bag_object,
 # we try the function with the curve above, but then test how we could work with the more correct one below
 # weirdness measures
 weirdness(bag_object,
-          data = dat)
+          data = dat,
+          type_feature = c("point", "line", "line"))
 
 # for each individual model
 weirdness(bag_object,

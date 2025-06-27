@@ -20,22 +20,14 @@
 #'
 #' @example examples/weirdness_example.R
 #'
+#' @name weirdness
 #' @export
-weirdness <- function(x,
-                      measure = c("coef_sign", "n_crosses", "response_area"),
-                      wmean = TRUE,
-                      which_coef_sign = c("count", "sum")[1],
-                      expected_sign = -1,
-                      zero_coefficient_limit = 1e-8,
-                      response = c("mean", "mid")[1],
-                      radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
-                      type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
-                               "mfilter")[1],
-                      radius_max = 10000, ...) {
+weirdness <- function(x, ...) {
   UseMethod("weirdness")
 }
 
 # here x is a numeric vector of coefficients
+#' @rdname weirdness
 #' @export
 weirdness.numeric <- function(x,
                               which_coef_sign = c("count", "sum", "raw", "index")[1],
@@ -83,6 +75,7 @@ weirdness.numeric <- function(x,
   weird
 }
 
+#' @rdname weirdness
 #' @export
 weirdness.data.frame <- function(x,
                                  expected_sign = -1,
@@ -162,11 +155,15 @@ weirdness.bag <- function(x,
                           zero_coefficient_limit = 1e-8,
                           which_n_cross = c("mean", "sum")[1],
                           response = c("mean", "mid")[1],
+                          baseline = "zero",
+                          type_feature_recompute = TRUE,
+                          resolution = 200,
+                          type_feature =  "point",
                           radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
                           type = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
                                    "mfilter")[1],
-                          radius_max = NULL) {
-
+                          radius_max = NULL,
+                          ...) {
 
   # get ZOI variables and terms from predictor table
   pred_table <- x$parms$predictor_table
@@ -179,6 +176,11 @@ weirdness.bag <- function(x,
 
   # unique variables
   zoi_vars_unique <- unique(zoi_vars)
+
+  # check parameters
+  if(length(type_feature) == 1) {
+    type_feature <- rep(type_feature, times = length(zoi_vars_unique))
+  }
 
   # coefs
   if(wmean) {
@@ -279,37 +281,47 @@ weirdness.bag <- function(x,
 
   # if we want to look into the wmean or wmedian curve
   if(wmean) {
-    dfs <- lapply(zoi_vars_unique, function(i) {
+    dfs <- lapply(seq_along(zoi_vars_unique), function(i) {
       dfvar <- data.frame(var = seq(0, radius_max, length.out = 10001))
-      names(dfvar) <- i
+      names(dfvar) <- zoi_vars_unique[i]
+      type_feat <- type_feature[i]
       plot_response(x,
                     dfvar = dfvar,
                     data = data,
                     type = "linear",
                     zoi = TRUE,
-                    # type_feature =  "line",
-                    # resolution = 300
+                    type_feature_recompute = type_feature_recompute,
+                    resolution = resolution,
+                    type_feature = type_feat,
+                    # resolution = 300,
+                    baseline = baseline,
                     ci = TRUE,
                     indiv_pred = FALSE,
-                    ggplot = FALSE)
+                    ggplot = FALSE,
+                    ...)
     })
   } else {
 
     # if not, look into each individual plots
-    dfs <- lapply(zoi_vars_unique, function(i) {
+    dfs <- lapply(seq_along(zoi_vars_unique), function(i) {
       dfvar <- data.frame(var = seq(0, radius_max, length.out = 10001))
-      names(dfvar) <- i
+      names(dfvar) <- zoi_vars_unique[i]
+      type_feat <- type_feature[i]
       plot_response(x,
                     dfvar = dfvar,
                     data = data,
                     type = "linear",
                     zoi = TRUE,
-                    # type_feature =  "line",
+                    type_feature_recompute = type_feature_recompute,
+                    resolution = resolution,
+                    type_feature = type_feat,
                     # resolution = 300,
+                    baseline = baseline,
                     wq_probs = NULL,
                     ci = FALSE,
                     indiv_pred = TRUE,
-                    ggplot = FALSE)|>
+                    ggplot = FALSE,
+                    ...) |>
         dplyr::select(-mean)
     })
 
