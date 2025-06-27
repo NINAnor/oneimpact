@@ -6,15 +6,7 @@
 \alias{predict.formula}
 \title{Prediction of a bag of models to new data}
 \usage{
-predict(
-  x,
-  newdata,
-  type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
-  wmean = TRUE,
-  wq_probs = NULL,
-  include = "all",
-  ...
-)
+predict(x, newdata, ...)
 
 \method{predict}{bag}(
   x,
@@ -56,6 +48,8 @@ or a \code{formula} used to fit the models in the bag.}
 \item{newdata}{\cr New data set to be used for prediction. It can include all the variables in the formula
 or only those for which the user is interested in making a prediction from.}
 
+\item{...}{\cr Additional parameters. None implemented.}
+
 \item{type}{\verb{[character="linear"]\{"linear", "exponential", "exp", "logit", "cloglog"\}} \cr Type of prediction.
 One of \code{"linear"} (default), \code{"exp"} or \code{"exponential"}, \code{"logit"}, or \code{"cloglog"}.}
 
@@ -69,8 +63,6 @@ to be predicted for. This does not restrict which terms we are focusing on - thi
 by the definition of the \code{newdata} dataset and by which columns are in there. What
 the \code{include} parameters does is to set which other variables will be used for prediction,
 at their mean or median values, for instance.}
-
-\item{...}{\cr Additional parameters. None implemented.}
 
 \item{baseline}{\verb{[character="median"]\{"median", "mean", "zero")\}} \cr What values to
 choose for the baseline, i.e., for all other variables/terms not contained in

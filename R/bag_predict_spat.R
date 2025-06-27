@@ -73,7 +73,7 @@ bag_predict_spat <- function(bag,
     # check
     if(is.null(bag$coef_std)) stop("There are no standardized coefficients estimated in the bag. Please check if the parameter 'standardize' should be FALSE.")
 
-    grd <- cbind(data[, c(gid, coords)], scale(data[model_vars], center = bag_summary$data_summary[10,-1], scale = bag_summary$data_summary[11,-1]))
+    grd <- cbind(data[, c(gid, coords)], scale(data[model_vars], center = bag$data_summary[10,-1], scale = bag$data_summary[11,-1]))
   } else {
     grd <- data[, c(gid, coords, model_vars)]
   }
@@ -327,7 +327,7 @@ bag_predict_spat_vars <- function(bag,
     # check
     if(is.null(bag$coef_std)) stop("There are no standardized coefficients estimated in the bag. Please check if the parameter 'standardize' should be FALSE.")
 
-    grd <- cbind(data[, c(gid, coords)], scale(data[model_vars], center = bag_summary$data_summary[10,-1], scale = bag_summary$data_summary[11,-1]))
+    grd <- cbind(data[, c(gid, coords)], scale(data[model_vars], center = bag$data_summary[10,-1], scale = bag$data_summary[11,-1]))
 
   } else {
     grd <- data[, c(gid, coords, model_vars)]

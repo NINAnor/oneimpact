@@ -2,9 +2,47 @@
 % Please edit documentation in R/bag_plot_response.R
 \name{plot_response}
 \alias{plot_response}
+\alias{plot_response.bag}
 \title{Plot responses from a bag of models}
 \usage{
 plot_response(
+  x,
+  dfvar,
+  data,
+  type = c("linear", "exponential", "logit", "cloglog")[1],
+  zoi_shape = c("exp_decay", "gaussian_decay", "linear_decay", "threshold_decay")[1],
+  which_cumulative = "cumulative",
+  ci = TRUE,
+  indiv_pred = FALSE,
+  wq_probs = c(0.025, 0.5, 0.975),
+  baseline = c("median", "mean", "zero")[1],
+  zoi = FALSE,
+  zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
+  type_feature = c("point", "line", "area")[1],
+  type_feature_recompute = FALSE,
+  zoi_limit = 0.05,
+  resolution = 100,
+  line_value = 1,
+  ggplot = T,
+  plot_mean = TRUE,
+  plot_median = TRUE,
+  n_features = 1,
+  normalize = c(FALSE, "mean", "median", "ci")[1],
+  logx = FALSE,
+  ylim = NULL,
+  y_lab = "Relative Selection Strength",
+  col_ci = "grey",
+  col_indiv = "grey",
+  col_mean = "black",
+  col_median = "red",
+  linewidth_indiv = 1.2,
+  linewidth_mean = 1.2,
+  linewidth_median = 1.2,
+  alpha_ci = 0.5,
+  alpha_indiv = 0.3
+)
+
+\method{plot_response}{bag}(
   x,
   dfvar,
   data,

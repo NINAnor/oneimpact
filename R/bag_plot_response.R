@@ -29,6 +29,7 @@
 #'
 #' @example examples/bag_plot_response_example.R
 #'
+#' @name plot_response
 #' @export
 plot_response <- function(x,
                           dfvar,
@@ -70,6 +71,7 @@ plot_response <- function(x,
 }
 
 
+#' @rdname plot_response
 #' @export
 plot_response.bag <- function(x,
                               dfvar,
@@ -112,45 +114,45 @@ plot_response.bag <- function(x,
   if(zoi) include <- colnames(dfvar) else include = "all"
 
   # predict
-  pred <- predict(x,
-                  newdata = dfvar,
-                  data = data,
-                  type = type,
-                  wmean = TRUE,
-                  wq_probs = wq_probs,
-                  include = include,
-                  baseline = baseline,
-                  zoi = zoi,
-                  zoi_shape = zoi_shape,
-                  which_cumulative = which_cumulative,
-                  type_feature = type_feature,
-                  type_feature_recompute = type_feature_recompute,
-                  n_features = n_features,
-                  zoi_limit = zoi_limit,
-                  resolution = resolution,
-                  line_value = line_value)
+  pred <- oneimpact::predict(x,
+                             newdata = dfvar,
+                             data = data,
+                             type = type,
+                             wmean = TRUE,
+                             wq_probs = wq_probs,
+                             include = include,
+                             baseline = baseline,
+                             zoi = zoi,
+                             zoi_shape = zoi_shape,
+                             which_cumulative = which_cumulative,
+                             type_feature = type_feature,
+                             type_feature_recompute = type_feature_recompute,
+                             n_features = n_features,
+                             zoi_limit = zoi_limit,
+                             resolution = resolution,
+                             line_value = line_value)
   names(pred) <- if(is.null(wq_probs)) c("mean") else c("lower", "mid", "higher", "mean")
 
 
   # predict for individual models
   if(indiv_pred) {
-    pred_indiv <- predict(x,
-                          newdata = dfvar,
-                          data = data,
-                          type = type,
-                          wmean = FALSE,
-                          wq_probs = NULL,
-                          include = include,
-                          baseline = baseline,
-                          zoi = zoi,
-                          zoi_shape = zoi_shape,
-                          which_cumulative = which_cumulative,
-                          type_feature = type_feature,
-                          type_feature_recompute = type_feature_recompute,
-                          n_features = n_features,
-                          zoi_limit = zoi_limit,
-                          resolution = resolution,
-                          line_value = line_value)[, x$weights > 0]
+    pred_indiv <- oneimpact::predict(x,
+                                     newdata = dfvar,
+                                     data = data,
+                                     type = type,
+                                     wmean = FALSE,
+                                     wq_probs = NULL,
+                                     include = include,
+                                     baseline = baseline,
+                                     zoi = zoi,
+                                     zoi_shape = zoi_shape,
+                                     which_cumulative = which_cumulative,
+                                     type_feature = type_feature,
+                                     type_feature_recompute = type_feature_recompute,
+                                     n_features = n_features,
+                                     zoi_limit = zoi_limit,
+                                     resolution = resolution,
+                                     line_value = line_value)[, x$weights > 0]
   }
 
 

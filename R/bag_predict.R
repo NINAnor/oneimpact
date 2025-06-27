@@ -54,13 +54,9 @@
 #'
 #' @example examples/bag_predict_example.R
 #'
+#'
 #' @export
-predict <- function(x,
-                    newdata,
-                    type = c("linear", "exponential", "exp", "logit", "cloglog")[1],
-                    wmean = TRUE,
-                    wq_probs = NULL,
-                    include = "all", ...) {
+predict <- function(x, newdata, ...) {
   UseMethod("predict")
 }
 
@@ -383,10 +379,10 @@ create_linear_feature_zoi <- function(radii = c(100, 250, 500, 1000, 2500, 5000,
     # if we want to use values already computed
     radii <- c(100, 250, 500, 1000, 2500, 5000, 10000)
 
-    if(type %in% c("bartlett", "linear")) {
+    if(type %in% c("bartlett", "linear", "bartlett_decay", "linear_decay")) {
       vals <- c(1, 2.6, 5, 10, 25, 50, 100)
     }
-    if(type %in% c("exp_decay")) {
+    if(type %in% c("exp_decay", "exp", "exponential_decay", "exponential")) {
       vals <- c(1.105250, 1.861974, 3.426254, 6.690854, 16.580199, 33.088243, 63.428301)
     }
     if(type %in% c("circle", "threshold")) {
