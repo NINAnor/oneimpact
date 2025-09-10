@@ -286,7 +286,7 @@ truncate_bag <- function(x,
         if(call == "fit_net_clogit") {
           if(new_bag$parms$kernel_vars[1] != "") {
             pred_vals_kernel <- kernel_prediction(f, validate_data,
-                                                  kernel_vars = kernel_vars,
+                                                  kernel_vars = new_bag$parms$kernel_vars,
                                                   coefs = coef[,1])
           }
         }
