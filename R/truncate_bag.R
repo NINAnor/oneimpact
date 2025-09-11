@@ -91,8 +91,10 @@ truncate_bag <- function(x,
               dplyr::pull(term_zoi)
             if(criterion == "first_coef") {
               coefs_term <- new_bag$coef[rownames(new_bag$coef) %in% terms_to_zero,] %*% new_bag$weights
-              first_coefs_term_againt_expected <- min(weirdness(coefs_term, expected_sign = expected_sign, which_coef_sign = "index"))
+              coefs_term
+              first_coefs_term_againt_expected <- weirdness(coefs_term, expected_sign = expected_sign, which_coef_sign = "index")
               if(length(first_coefs_term_againt_expected) > 0) {
+                first_coefs_term_againt_expected <- min(first_coefs_term_againt_expected)
                 terms_to_zero <- terms_to_zero[first_coefs_term_againt_expected:length(terms_to_zero)]
               }
             }
