@@ -225,16 +225,19 @@ truncate_bag <- function(x,
           # train_data <- filter_na_strata(f, train_data)
           train_data <- filter_na_strata(f, na.omit(train_data))
           nNA <- n_bef - nrow(train_data)
+          warning(paste0(nNA, " missing observations were removed from the train set. ", nrow(train_data), " observations were kept."))
         }
         if(anyNA(test_data)) {
           n_bef <- nrow(test_data)
           test_data <- filter_na_strata(f, na.omit(test_data))
           nNA <- n_bef - nrow(test_data)
+          warning(paste0(nNA, " missing observations were removed from the test set. ", nrow(test_data), " observations were kept."))
         }
         if(anyNA(validate_data)) {
           n_bef <- nrow(validate_data)
           validate_data <- filter_na_strata(f, na.omit(validate_data))
           nNA <- n_bef - nrow(validate_data)
+          warning(paste0(nNA, " missing observations were removed from the validate set. ", nrow(validate_data), " observations were kept."))
         }
 
 
@@ -391,9 +394,11 @@ truncate_bag <- function(x,
               }
             }
             validation_score <- unlist(lapply(val2, mt_fun))
+            new_bag$validation_score[,i] <- validation_score
 
           } else {
             validation_score <- mt_fun(val)
+            new_bag$validation_score[i] <- validation_score
           }
 
           # Validation habitat only
