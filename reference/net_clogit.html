@@ -105,7 +105,7 @@ Function with similar name"></head><body>
 <dd><p>Default is L1-regularization (Lasso regression), with <code>alpha = 1</code>.
 L2-regularization (Ridge regression) is done with <code>alpha = 0</code>, and elastic-net regression
 is performed for any <code>alpha</code> value between <code>0</code> and <code>1</code>. For more details, see the
-<code><a href="https://rdrr.io/pkg/glmnet/man/glmnet.html" class="external-link">glmnet::glmnet()</a></code> documentation. For Adaptive and Decay Adaptive Lasso, keep <code>alpha = 1</code>.</p></dd>
+<code><a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet::glmnet()</a></code> documentation. For Adaptive and Decay Adaptive Lasso, keep <code>alpha = 1</code>.</p></dd>
 
 
 <dt id="arg-penalty-factor">penalty.factor<a class="anchor" aria-label="anchor" href="#arg-penalty-factor"></a></dt>
@@ -116,7 +116,7 @@ fitting. The vector might have the same length as the the number of columns give
 
 <dt id="arg-type-measure">type.measure<a class="anchor" aria-label="anchor" href="#arg-type-measure"></a></dt>
 <dd><p><code>[character(1)="deviance"]</code> <br> Type of measure to evaluate the model internally
-in <code><a href="https://rdrr.io/pkg/glmnet/man/glmnet.html" class="external-link">glmnet::glmnet()</a></code>. For logistic and conditional logistic regression, it is by default <code>"deviance"</code>.</p></dd>
+in <code><a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet::glmnet()</a></code>. For logistic and conditional logistic regression, it is by default <code>"deviance"</code>.</p></dd>
 
 
 <dt id="arg-na-action">na.action<a class="anchor" aria-label="anchor" href="#arg-na-action"></a></dt>
@@ -126,7 +126,7 @@ removed from the <code>model.matrix</code> used for fitting.</p></dd>
 
 <dt id="arg-func">func<a class="anchor" aria-label="anchor" href="#arg-func"></a></dt>
 <dd><p><code>[character(1)="glmnet"]{"glmnet", "cv.glmnet"}</code> <br> The function to be used for
-fitting. Default is <code><a href="https://rdrr.io/pkg/glmnet/man/glmnet.html" class="external-link">glmnet::glmnet()</a></code>. The second option is <code><a href="https://rdrr.io/pkg/glmnet/man/cv.glmnet.html" class="external-link">glmnet::cv.glmnet()</a></code> which
+fitting. Default is <code><a href="https://glmnet.stanford.edu/reference/glmnet.html" class="external-link">glmnet::glmnet()</a></code>. The second option is <code><a href="https://glmnet.stanford.edu/reference/cv.glmnet.html" class="external-link">glmnet::cv.glmnet()</a></code> which
 already performs the cross-validation and might include the variable selection/callibration
 within.</p>
 <p>Check option parallel = TRUE from glmnet.</p></dd>
