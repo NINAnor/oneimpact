@@ -139,7 +139,7 @@ please check Niebuhr et al. 2023.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># for plotting</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span> <span class="co"># for plotting maps</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># for spatial predictions</span></span></code></pre></div>
-<pre><code><span><span class="co">## terra 1.8.60</span></span></code></pre>
+<pre><code><span><span class="co">## terra 1.8.70</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -313,7 +313,7 @@ the model and select the variables.</p>
 <span><span class="co">##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + </span></span>
 <span><span class="co">##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + </span></span>
 <span><span class="co">##     norway_pca_klima_axis4</span></span>
-<span><span class="co">## &lt;environment: 0x56257a3a9788&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x55a708cdfbc8&gt;</span></span></code></pre>
 <p>The <code><a href="../reference/add_zoi_formula.html">add_zoi_formula()</a></code> function can also produce a
 <code>predictor_table</code> <code>data.frame</code>, which specifies
 characteristics of the covariates in the model - e.g. whether they are
@@ -561,9 +561,9 @@ are useful for model prediction.</p>
 <pre><code><span><span class="co">## List of 32</span></span>
 <span><span class="co">##  $ n                                : int 50</span></span>
 <span><span class="co">##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x56257a3a9788&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55a708cdfbc8&gt; </span></span>
 <span><span class="co">##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x56257a810710&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55a709143928&gt; </span></span>
 <span><span class="co">##  $ method                           : chr "Lasso"</span></span>
 <span><span class="co">##  $ metric                           : chr "AUC"</span></span>
 <span><span class="co">##  $ metrics_evaluated                : Named chr "AUC"</span></span>
