@@ -1,0 +1,170 @@
+#---
+# fit a bag to be tested
+
+# load packages
+library(glmnet)
+
+# load data
+data("reindeer_rsf")
+# rename it just for convenience
+dat <- reindeer_rsf
+
+# formula initial structure
+f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+  NORUTreclass +
+  # poly(norway_pca_klima_axis1, 2, raw = TRUE) +
+  # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
+  norway_pca_klima_axis1 + norway_pca_klima_axis1_sq +
+  norway_pca_klima_axis2 + norway_pca_klima_axis2_sq +
+  norway_pca_klima_axis3 + norway_pca_klima_axis4
+
+# add ZOI terms to the formula
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+f <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
+                     type = c("cumulative_exp_decay"),
+                     separator = "_", predictor_table = TRUE)$formula
+
+# sampling - random sampling
+set.seed(1234)
+samples <- create_resamples(y = dat$use,
+                            p = c(0.2, 0.2, 0.2),
+                            times = 10,
+                            colH0 = NULL)
+
+# fit multiple models
+fittedl <- bag_fit_net_logit(f,
+                             data = dat,
+                             samples = samples,
+                             standardize = "internal", # glmnet does the standardization of covariates
+                             metric = "AUC",
+                             method = "AdaptiveLasso",
+                             parallel = "mclapply",
+                             mc.cores = 2)
+
+# bag models in a single object
+bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
+
+# df
+dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+
+#----
+# 1 feature
+# prediction
+pred <- predict(x = bag_object,
+                newdata = dfvar,
+                data = dat,
+                type = "linear",
+                wq_probs = c(0.025, 0.5, 0.975),
+                zoi = TRUE,
+                n_features = 1,
+                baseline = "zero")
+
+# df with prediction
+x <- cbind(dfvar, pred)
+(tab <- zoi_from_curve(x))
+# (tab_exp <- zoi_from_curve(x, type = "exp"))
+
+# plot
+
+# plot lines
+plot(dfvar[,1], pred$`quantile:0.025`, type = "l", col = "grey", xlim = c(0, 5000))
+lines(dfvar[,1], pred$`quantile:0.975`, col = "grey")
+lines(dfvar[,1], pred$mean, col = "red")
+lines(dfvar[,1], pred$`quantile:0.5`, col = "black")
+# plot zoi radius + ci
+points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
+lines(tab[2,3:4], tab[3,3:4], lwd = 2)
+# plot max effect size
+points(0, tab[1,1], pch = 19, cex = 1.5)
+lines(c(0, 0), tab[1,3:4], lwd = 2)
+
+#----
+# 30 features - ZOI radius dos not change
+# prediction
+pred <- predict(x = bag_object,
+                newdata = dfvar,
+                data = dat,
+                type = "linear",
+                wq_probs = c(0.025, 0.5, 0.975),
+                zoi = TRUE,
+                n_features = 30,
+                baseline = "zero")
+
+# df with prediction
+x <- cbind(dfvar, pred)
+(tab <- zoi_from_curve(x))
+# (tab_exp <- zoi_from_curve(x, type = "exp"))
+
+# plot
+
+# plot lines
+plot(dfvar[,1], pred$`quantile:0.025`, type = "l", col = "grey", xlim = c(0, 5000))
+lines(dfvar[,1], pred$`quantile:0.975`, col = "grey")
+lines(dfvar[,1], pred$mean, col = "red")
+lines(dfvar[,1], pred$`quantile:0.5`, col = "black")
+# plot zoi radius + ci
+points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
+lines(tab[2,3:4], tab[3,3:4], lwd = 2)
+# plot max effect size
+points(0, tab[1,1], pch = 19, cex = 1.5)
+lines(c(0, 0), tab[1,3:4], lwd = 2)
+
+#----
+# 1 feature - exponential
+# prediction
+pred <- predict(x = bag_object,
+                newdata = dfvar,
+                data = dat,
+                type = "linear",
+                wq_probs = c(0.025, 0.5, 0.975),
+                zoi = TRUE,
+                n_features = 1,
+                baseline = "zero")
+
+# df with prediction
+x <- cbind(dfvar, pred)
+(tab <- zoi_from_curve(x, type = "exp"))
+
+# plot
+
+# plot lines
+plot(dfvar[,1], exp(pred$`quantile:0.025`), type = "l", col = "grey", xlim = c(0, 5000), ylim = c(0, 1))
+lines(dfvar[,1], exp(pred$`quantile:0.975`), col = "grey")
+lines(dfvar[,1], exp(pred$mean), col = "red")
+lines(dfvar[,1], exp(pred$`quantile:0.5`), col = "black")
+# plot zoi radius + ci
+points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
+lines(tab[2,3:4], tab[3,3:4], lwd = 2)
+# plot max effect size
+points(0, tab[1,1], pch = 19, cex = 1.5)
+lines(c(0, 0), tab[1,3:4], lwd = 2)
+
+#----
+# 30 features - exponential
+# prediction
+pred <- predict(x = bag_object,
+                newdata = dfvar,
+                data = dat,
+                type = "linear",
+                wq_probs = c(0.025, 0.5, 0.975),
+                zoi = TRUE,
+                n_features = 30,
+                baseline = "zero")
+
+# df with prediction
+x <- cbind(dfvar, pred)
+(tab <- zoi_from_curve(x, type = "exp"))
+
+# plot
+
+# plot lines
+plot(dfvar[,1], exp(pred$`quantile:0.025`), type = "l", col = "grey", xlim = c(0, 10000), ylim = c(0, 1))
+lines(dfvar[,1], exp(pred$`quantile:0.975`), col = "grey")
+lines(dfvar[,1], exp(pred$mean), col = "red")
+lines(dfvar[,1], exp(pred$`quantile:0.5`), col = "black")
+# plot zoi radius + ci
+points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
+lines(tab[2,3:4], tab[3,3:4], lwd = 2)
+# plot max effect size
+points(0, tab[1,1], pch = 19, cex = 1.5)
+lines(c(0, 0), tab[1,3:4], lwd = 2)
