@@ -56,6 +56,7 @@ reference:
     cumulative impacts
   contents:
   - predict
+  - zoi_from_curve
   - contains("importance")
   - plot_coef
   - plot_response
