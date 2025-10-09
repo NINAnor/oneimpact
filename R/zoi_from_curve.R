@@ -1,10 +1,13 @@
 #' Get estimates of zone of influence (ZOI) from response curves
 #'
-#' This generic function computes ZOI metrics—**maximum effect size**,
-#' **ZOI radius**, and **impact**—
-#' for ZOI predictor variables based on response curves.
-#' The ZOI radius is estimated as the
-#' It supports two types of input: a data.frame of predictions
+#' This generic function computes ZOI metrics (maximum effect size,
+#' ZOI radius and impact) for ZOI predictor variables based on response curves.
+#' The ZOI radius is estimated as the distance/radius in which the
+#' relative selection strength corresponds to on a given percentage of
+#' the maximum effect size (e.g. 95% ZOI radius). The impact accounts for
+#' both the effect size and the ZOI radius and corresponds to the area under
+#' (or over, if negative) the ZOI response curve.
+#' The function supports two types of input: a data.frame of predictions
 #' or a bag of models.
 #'
 #' @param x Either a `data.frame` containing response curve predictions for a single variable,
@@ -12,7 +15,7 @@
 #' @param ... Additional arguments passed to the appropriate method.
 #'
 #' @return A `data.frame` or a `list` containing ZOI metrics:
-#' - `max_effect_size`: Maximum effect size on the relative selection strength (y) axis.
+#' - `max_effect_size`: Maximum effect size on the relative selection strength (y axis).
 #' - `zoi_radius`: Distance at which the effect drops below a threshold,
 #' defined by the parameter `percentage`.
 #' - `effect_zoi_radius`: Relative selection strength (y axis) valye in which the ZOI
@@ -21,8 +24,8 @@
 #' combining the varying effect size with distance.
 #' Each ZOI measure presents mean, median, CI lower, and CI upper.
 #'
-#' @example examples/zoi_from_curve_example.R
-#' @seealso [oneimpact::predict], [oneimpact::plot_response], [oneimpact::weirdness]
+#' @seealso [oneimpact::predict()], [oneimpact::plot_response()], [oneimpact::weirdness()]
+#' ##example examples/zoi_from_curve_example.R
 #'
 #' @name zoi_from_curve
 #' @export

@@ -48,7 +48,7 @@ fittedl <- bag_fit_net_logit(f,
 
 # bag models in a single object
 bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
-#
+
 # bag_object <- truncate_bag(bag_object, dat)
 
 #----
@@ -99,10 +99,10 @@ p <- plot_response(bag_object,
                    logx = FALSE)#,
 # ylim = ylim(0, 2))
 p +
-  annotate("pointrange", x = tab1[2,1], y = tab1[3,1],
-           xmin = tab1[2,3], xmax = tab1[2,4], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab1[1,1],
-           ymin = tab1[1,3], ymax = tab1[1,4], size = 0.5) +
+  annotate("pointrange", x = tab1[2,2], y = tab1[3,2],
+           xmin = tab1[2,4], xmax = tab1[2,5], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab1[1,2],
+           ymin = tab1[1,4], ymax = tab1[1,5], size = 0.5) +
   xlim(0, 5000)
 
 #----
@@ -135,15 +135,18 @@ p <- plot_response(bag_object,
                    logx = FALSE)#,
 # ylim = ylim(0, 2))
 p +
-  annotate("pointrange", x = tab30[2,1], y = tab30[3,1],
-           xmin = tab30[2,3], xmax = tab30[2,4], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab30[1,1],
-           ymin = tab30[1,3], ymax = tab30[1,4], size = 0.5) +
+  annotate("pointrange", x = tab30[2,2], y = tab30[3,2],
+           xmin = tab30[2,4], xmax = tab30[2,5], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab30[1,2],
+           ymin = tab30[1,4], ymax = tab30[1,5], size = 0.5) +
   xlim(0, 5000)
 
 # additive effect on both max_effect_size and impact
 # cbind(30*impact_of_one_cabin, impact_of_30_cabins)
-cbind(tab1[c(1,4),1]*30, tab30[c(1,4),1])
+tibble::tibble(zoi_measure = tab_exp1[c(1,4),1],
+               one_feature_x30 = tab1[c(1,4),2]*30,
+               thirty_features = tab30[c(1,4),2])
+
 
 #----
 # compute ZOI for 1 feature - exponential
@@ -174,10 +177,10 @@ p <- plot_response(bag_object,
                    logx = FALSE)#,
 # ylim = ylim(0, 2))
 p +
-  annotate("pointrange", x = tab_exp1[2,1], y = tab_exp1[3,1],
-           xmin = tab_exp1[2,3], xmax = tab_exp1[2,4], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp1[1,1],
-           ymin = tab_exp1[1,3], ymax = tab_exp1[1,4], size = 0.5) +
+  annotate("pointrange", x = tab_exp1[2,2], y = tab_exp1[3,2],
+           xmin = tab_exp1[2,4], xmax = tab_exp1[2,5], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp1[1,2],
+           ymin = tab_exp1[1,4], ymax = tab_exp1[1,5], size = 0.5) +
   xlim(0, 10000)
 
 #----
@@ -209,15 +212,16 @@ p <- plot_response(bag_object,
                    logx = FALSE)#,
 # ylim = ylim(0, 2))
 p +
-  annotate("pointrange", x = tab_exp30[2,1], y = tab_exp30[3,1],
-           xmin = tab_exp30[2,3], xmax = tab_exp30[2,4], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp30[1,1],
-           ymin = tab_exp30[1,3], ymax = tab_exp30[1,4], size = 0.5) +
+  annotate("pointrange", x = tab_exp30[2,2], y = tab_exp30[3,2],
+           xmin = tab_exp30[2,4], xmax = tab_exp30[2,5], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp30[1,2],
+           ymin = tab_exp30[1,4], ymax = tab_exp30[1,5], size = 0.5) +
   xlim(0, 10000)
 
 # max effect size is multiplicative (power),
-cbind(c(tab_exp1[c(1),1]**30, tab_exp1[c(4),1]*30),
-      c(tab_exp30[c(1),1], tab_exp30[c(4),1]))
+tibble::tibble(zoi_measure = tab_exp1[c(1,4),1],
+               one_feature = c(tab_exp1[c(1),2]**30, tab_exp1[c(4),2]*30),
+               thirty_features = c(tab_exp30[c(1),2], tab_exp30[c(4),2]))
 
 #----
 # compute ZOI for 1 linear feature - exponential response
@@ -259,10 +263,10 @@ p <- plot_response(bag_object,
                    logx = FALSE)#,
 # ylim = ylim(0, 2))
 p +
-  annotate("pointrange", x = tab_exp1_line[2,1], y = tab_exp1_line[3,1],
-           xmin = tab_exp1_line[2,3], xmax = tab_exp1_line[2,4], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp1_line[1,1],
-           ymin = tab_exp1_line[1,3], ymax = tab_exp1_line[1,4], size = 0.5) +
+  annotate("pointrange", x = tab_exp1_line[2,2], y = tab_exp1_line[3,2],
+           xmin = tab_exp1_line[2,4], xmax = tab_exp1_line[2,5], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp1_line[1,2],
+           ymin = tab_exp1_line[1,4], ymax = tab_exp1_line[1,5], size = 0.5) +
   xlim(0, 20000)
 
 #-----
@@ -303,10 +307,10 @@ p <- plot_response(bag_object,
                    logx = FALSE)#,
 # ylim = ylim(0, 2))
 p +
-  annotate("pointrange", x = tab_exp1_line[2,1], y = tab_exp1_line[3,1],
-           xmin = tab_exp1_line[2,3], xmax = tab_exp1_line[2,4], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp1_line[1,1],
-           ymin = tab_exp1_line[1,3], ymax = tab_exp1_line[1,4], size = 0.5) +
+  annotate("pointrange", x = tab_exp1_line[2,2], y = tab_exp1_line[3,2],
+           xmin = tab_exp1_line[2,4], xmax = tab_exp1_line[2,5], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp1_line[1,2],
+           ymin = tab_exp1_line[1,4], ymax = tab_exp1_line[1,5], size = 0.5) +
   xlim(0, 20000)
 
 #------------
@@ -344,15 +348,15 @@ weirdness(bag_object,
 #---
 # now we compute ZOI parameters for all variables
 zois <- zoi_from_curve(x = bag_object,
-                                 data = dat,
-                                 type = "linear",
-                                 wq_probs = c(0.025, 0.5, 0.975),
-                                 n_features = 1,
-                                 baseline = "zero",
-                                 type_feature = c("point", "point", "line"),
-                                 type_feature_recompute = TRUE,
-                                 resolution = 200,
-                                 zoi_shape = "exp_decay")
+                       data = dat,
+                       type = "linear",
+                       wq_probs = c(0.025, 0.5, 0.975),
+                       n_features = 1,
+                       baseline = "zero",
+                       type_feature = c("point", "point", "line"),
+                       type_feature_recompute = TRUE,
+                       resolution = 200,
+                       zoi_shape = "exp_decay")
 zois
 
 # plot
