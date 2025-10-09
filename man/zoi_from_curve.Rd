@@ -2,9 +2,13 @@
 % Please edit documentation in R/zoi_from_curve.R
 \name{zoi_from_curve}
 \alias{zoi_from_curve}
-\title{Get estimates of ZOI from response curves}
+\alias{zoi_from_curve.data.frame}
+\alias{zoi_from_curve.bag}
+\title{Get estimates of zone of influence (ZOI) from response curves}
 \usage{
-zoi_from_curve(
+zoi_from_curve(x, ...)
+
+\method{zoi_from_curve}{data.frame}(
   x,
   percentage = 0.95,
   curve = c("median", "mean"),
@@ -14,9 +18,126 @@ zoi_from_curve(
   median_col_name = "quantile:0.5",
   ci_col_name = c("quantile:0.025", "quantile:0.975")
 )
+
+\method{zoi_from_curve}{bag}(
+  x,
+  data,
+  include = "all",
+  percentage = 0.95,
+  curve = c("median", "mean"),
+  type = c("linear", "exp")[1],
+  return_predictions = FALSE,
+  return_format = c("list", "df")[2],
+  ci = TRUE,
+  wq_probs = c(0.025, 0.5, 0.975),
+  n_features = 1,
+  mean_col_name = "mean",
+  median_col_name = "quantile:0.5",
+  ci_col_name = c("quantile:0.025", "quantile:0.975"),
+  radius_max = NULL,
+  baseline = "zero",
+  type_feature = "line",
+  type_feature_recompute = TRUE,
+  resolution = 200,
+  radii = c(100, 250, 500, 1000, 2500, 5000, 10000),
+  zoi_shape = c("circle", "Gauss", "rectangle", "exp_decay", "bartlett", "threshold",
+    "mfilter")[1],
+  ...
+)
+}
+\arguments{
+\item{x}{Either a \code{data.frame} containing response curve predictions for a single variable,
+or a \code{bag} object containing an ensemble of models.}
+
+\item{...}{Additional arguments passed to the appropriate method.}
+
+\item{percentage}{\verb{[numeric(1)=0.95]} \cr Numeric between 0 and 1. Defines the
+threshold for ZOI radius as a proportion of the maximum effect size.
+Default is \code{0.95}.}
+
+\item{curve}{\verb{[character(1)=c("mean", "median")]} \cr Character vector.
+Which central tendency curves to use: \code{"median"}, \code{"mean"}, or both.}
+
+\item{ci}{\verb{[logical(1)=TRUE]} \cr Logical. Whether to compute ZOI estimates for
+the upper and lower limits of the confidence interval. Default is TRUE.}
+
+\item{type}{\verb{[character(1)="linear"]\{"linear", "exp"\}} \cr Character. Defines whether
+the calculation of ZOI should be based on the prediction of at linear
+or response (exponential) scale: \code{"linear"} or \code{"exp"}, respectively.}
+
+\item{mean_col_name}{\verb{[character="mean"]} \cr Name of the column containing
+the mean response curve.}
+
+\item{median_col_name}{\verb{[character="quantile:0.5"]} \cr Name of the column
+containing the median response curve.}
+
+\item{ci_col_name}{\verb{[character=c("quantile:0.255", "quantile:0.975")]} \cr Character
+vector of length 2. Names of columns for lower and upper confidence intervals.}
+
+\item{data}{\verb{[data.frame]} \cr The original dataset used for model fitting.}
+
+\item{include}{\verb{[character="all"]} \cr Character. Either \code{"all"} or a
+regex pattern to filter selected ZOI variables.}
+
+\item{return_predictions}{\verb{[logical=FALSE]} \cr Logical. Whether to return
+the prediction curves alongside ZOI metrics. If \code{TRUE}, the output is necessarily
+a \code{list} with predictions and the ZOI parameters.}
+
+\item{return_format}{\verb{[character="df"]\{"list", "df"\}} \cr
+Format of the returned ZOI metrics. Either a list of data.frames (if \code{return_format = "list"}),
+one for each variable, or a single \code{data.frame} (default, if \code{return_format = "df"}).}
+
+\item{wq_probs}{\verb{[numeric,vector=c(0.025, 0.975)]} \cr Numeric vector of quantiles
+used for prediction summaries.}
+
+\item{n_features}{\verb{[numeric=1]} \cr Number of features used in ZOI prediction.
+It can a single number (considered the same for all ZOI variables) or a vector
+with the same number of elements as ZOI variables in the model.}
+
+\item{radius_max}{\verb{[numeric=NULL]} \cr Numeric. Maximum distance/radius to use for
+prediction curves. If \code{NULL} (default), the maximum value present in the bag's
+predictor table is used.}
+
+\item{baseline}{\verb{[character="zero"]} \cr Character. Baseline used in \code{predict()} (e.g., \code{"zero"}).}
+
+\item{type_feature}{\verb{[character="point"]} \cr Character or vector. Type of spatial feature used in
+\code{predict()}.}
+
+\item{type_feature_recompute}{\verb{[logical=FALSE]} \cr Logical. Whether to recompute spatial
+features within \code{predict()}, for linear features.}
+
+\item{resolution}{\verb{[numeric=200]} \cr Integer. Resolution used in the recomuptation
+of ZOIs for linear features.}
+
+\item{radii}{\verb{[vector]} \cr Numeric vector. Radii used for ZOI modeling.}
+
+\item{zoi_shape}{\verb{[character]} \cr Character. Shape of the ZOI used in the model
+(e.g., \code{"circle"}, \code{"Gauss"}, \code{"exp_decay"}).}
+}
+\value{
+A \code{data.frame} or a \code{list} containing ZOI metrics:
+\itemize{
+\item \code{max_effect_size}: Maximum effect size on the relative selection strength (y) axis.
+\item \code{zoi_radius}: Distance at which the effect drops below a threshold,
+defined by the parameter \code{percentage}.
+\item \code{effect_zoi_radius}: Relative selection strength (y axis) valye in which the ZOI
+is reached.
+\item \code{impact}: Area under the curve up to the ZOI radius,
+combining the varying effect size with distance.
+Each ZOI measure presents mean, median, CI lower, and CI upper.
+}
+
+If \code{x} is a bag object, the function returns wither a \code{list} or
+\code{data.frame} of ZOI measures for each ZOI variable in the bag.
+If \code{return_predictions = TRUE}, also returns the prediction curves.
 }
 \description{
-Get estimates of ZOI from response curves
+This generic function computes ZOI metrics—\strong{maximum effect size},
+\strong{ZOI radius}, and \strong{impact}—
+for ZOI predictor variables based on response curves.
+The ZOI radius is estimated as the
+It supports two types of input: a data.frame of predictions
+or a bag of models.
 }
 \examples{
 #---
@@ -24,6 +145,7 @@ Get estimates of ZOI from response curves
 
 # load packages
 library(glmnet)
+library(ggplot2)
 
 # load data
 data("reindeer_rsf")
@@ -32,6 +154,7 @@ dat <- reindeer_rsf
 
 # formula initial structure
 f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+  trails_XXX +
   NORUTreclass +
   # poly(norway_pca_klima_axis1, 2, raw = TRUE) +
   # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
@@ -41,9 +164,11 @@ f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
 
 # add ZOI terms to the formula
 zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
-f <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
-                     type = c("cumulative_exp_decay"),
-                     separator = "_", predictor_table = TRUE)$formula
+ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
+                      type = c("cumulative_exp_decay"),
+                      separator = "", predictor_table = TRUE)
+f <- ff$formula
+pred_table <- ff$predictor_table
 
 # sampling - random sampling
 set.seed(1234)
@@ -58,18 +183,37 @@ fittedl <- bag_fit_net_logit(f,
                              samples = samples,
                              standardize = "internal", # glmnet does the standardization of covariates
                              metric = "AUC",
-                             method = "AdaptiveLasso",
+                             method = "Lasso",
+                             predictor_table = pred_table,
                              parallel = "mclapply",
                              mc.cores = 2)
 
 # bag models in a single object
 bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
-
-# df
-dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+#
+# bag_object <- truncate_bag(bag_object, dat)
 
 #----
-# 1 feature
+# first we take a look at a response curve, just have an idea
+
+# private cabins
+dfvar <- data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+plot_response(bag_object,
+              dfvar = dfvar,
+              data = dat,
+              type = "exp",
+              zoi = TRUE,
+              ci = FALSE,
+              indiv_pred = TRUE,
+              logx = TRUE,
+              ylim = ylim(0, 2))
+
+#-----
+# compute ZOI using data.frames with prediction
+
+#---
+# compute ZOI for 1 feature
+
 # prediction
 pred <- predict(x = bag_object,
                 newdata = dfvar,
@@ -82,25 +226,31 @@ pred <- predict(x = bag_object,
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab <- zoi_from_curve(x))
-# (tab_exp <- zoi_from_curve(x, type = "exp"))
+(tab1 <- zoi_from_curve(x))
 
 # plot
 
 # plot lines
-plot(dfvar[,1], pred$`quantile:0.025`, type = "l", col = "grey", xlim = c(0, 5000))
-lines(dfvar[,1], pred$`quantile:0.975`, col = "grey")
-lines(dfvar[,1], pred$mean, col = "red")
-lines(dfvar[,1], pred$`quantile:0.5`, col = "black")
-# plot zoi radius + ci
-points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
-lines(tab[2,3:4], tab[3,3:4], lwd = 2)
-# plot max effect size
-points(0, tab[1,1], pch = 19, cex = 1.5)
-lines(c(0, 0), tab[1,3:4], lwd = 2)
+p <- plot_response(bag_object,
+                   dfvar = dfvar,
+                   data = dat,
+                   type = "linear",
+                   zoi = TRUE,
+                   ci = FALSE,
+                   indiv_pred = TRUE,
+                   logx = FALSE)#,
+# ylim = ylim(0, 2))
+p +
+  annotate("pointrange", x = tab1[2,1], y = tab1[3,1],
+           xmin = tab1[2,3], xmax = tab1[2,4], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab1[1,1],
+           ymin = tab1[1,3], ymax = tab1[1,4], size = 0.5) +
+  xlim(0, 5000)
 
 #----
-# 30 features - ZOI radius dos not change
+# # compute ZOI for 30 features
+# At the linear scale, the estimated ZOI radius dos not change
+
 # prediction
 pred <- predict(x = bag_object,
                 newdata = dfvar,
@@ -113,30 +263,38 @@ pred <- predict(x = bag_object,
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab <- zoi_from_curve(x))
-# (tab_exp <- zoi_from_curve(x, type = "exp"))
+(tab30 <- zoi_from_curve(x))
 
 # plot
+p <- plot_response(bag_object,
+                   dfvar = dfvar,
+                   data = dat,
+                   type = "linear",
+                   zoi = TRUE,
+                   n_features = 30,
+                   ci = FALSE,
+                   indiv_pred = TRUE,
+                   logx = FALSE)#,
+# ylim = ylim(0, 2))
+p +
+  annotate("pointrange", x = tab30[2,1], y = tab30[3,1],
+           xmin = tab30[2,3], xmax = tab30[2,4], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab30[1,1],
+           ymin = tab30[1,3], ymax = tab30[1,4], size = 0.5) +
+  xlim(0, 5000)
 
-# plot lines
-plot(dfvar[,1], pred$`quantile:0.025`, type = "l", col = "grey", xlim = c(0, 5000))
-lines(dfvar[,1], pred$`quantile:0.975`, col = "grey")
-lines(dfvar[,1], pred$mean, col = "red")
-lines(dfvar[,1], pred$`quantile:0.5`, col = "black")
-# plot zoi radius + ci
-points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
-lines(tab[2,3:4], tab[3,3:4], lwd = 2)
-# plot max effect size
-points(0, tab[1,1], pch = 19, cex = 1.5)
-lines(c(0, 0), tab[1,3:4], lwd = 2)
+# additive effect on both max_effect_size and impact
+# cbind(30*impact_of_one_cabin, impact_of_30_cabins)
+cbind(tab1[c(1,4),1]*30, tab30[c(1,4),1])
 
 #----
-# 1 feature - exponential
+# compute ZOI for 1 feature - exponential
+
 # prediction
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
-                type = "linear",
+                type = "exp",
                 wq_probs = c(0.025, 0.5, 0.975),
                 zoi = TRUE,
                 n_features = 1,
@@ -144,29 +302,34 @@ pred <- predict(x = bag_object,
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab <- zoi_from_curve(x, type = "exp"))
+(tab_exp1 <- zoi_from_curve(x, type = "exp"))
 
 # plot
-
-# plot lines
-plot(dfvar[,1], exp(pred$`quantile:0.025`), type = "l", col = "grey", xlim = c(0, 5000), ylim = c(0, 1))
-lines(dfvar[,1], exp(pred$`quantile:0.975`), col = "grey")
-lines(dfvar[,1], exp(pred$mean), col = "red")
-lines(dfvar[,1], exp(pred$`quantile:0.5`), col = "black")
-# plot zoi radius + ci
-points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
-lines(tab[2,3:4], tab[3,3:4], lwd = 2)
-# plot max effect size
-points(0, tab[1,1], pch = 19, cex = 1.5)
-lines(c(0, 0), tab[1,3:4], lwd = 2)
+p <- plot_response(bag_object,
+                   dfvar = dfvar,
+                   data = dat,
+                   type = "exp",
+                   zoi = TRUE,
+                   n_features = 1,
+                   ci = FALSE,
+                   indiv_pred = TRUE,
+                   logx = FALSE)#,
+# ylim = ylim(0, 2))
+p +
+  annotate("pointrange", x = tab_exp1[2,1], y = tab_exp1[3,1],
+           xmin = tab_exp1[2,3], xmax = tab_exp1[2,4], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp1[1,1],
+           ymin = tab_exp1[1,3], ymax = tab_exp1[1,4], size = 0.5) +
+  xlim(0, 10000)
 
 #----
-# 30 features - exponential
+# compute ZOI for 30 features - exponential
+
 # prediction
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
-                type = "linear",
+                type = "exp",
                 wq_probs = c(0.025, 0.5, 0.975),
                 zoi = TRUE,
                 n_features = 30,
@@ -174,19 +337,221 @@ pred <- predict(x = bag_object,
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab <- zoi_from_curve(x, type = "exp"))
+(tab_exp30 <- zoi_from_curve(x, type = "exp"))
 
 # plot
+p <- plot_response(bag_object,
+                   dfvar = dfvar,
+                   data = dat,
+                   type = "exp",
+                   zoi = TRUE,
+                   n_features = 30,
+                   ci = FALSE,
+                   indiv_pred = TRUE,
+                   logx = FALSE)#,
+# ylim = ylim(0, 2))
+p +
+  annotate("pointrange", x = tab_exp30[2,1], y = tab_exp30[3,1],
+           xmin = tab_exp30[2,3], xmax = tab_exp30[2,4], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp30[1,1],
+           ymin = tab_exp30[1,3], ymax = tab_exp30[1,4], size = 0.5) +
+  xlim(0, 10000)
 
-# plot lines
-plot(dfvar[,1], exp(pred$`quantile:0.025`), type = "l", col = "grey", xlim = c(0, 10000), ylim = c(0, 1))
-lines(dfvar[,1], exp(pred$`quantile:0.975`), col = "grey")
-lines(dfvar[,1], exp(pred$mean), col = "red")
-lines(dfvar[,1], exp(pred$`quantile:0.5`), col = "black")
-# plot zoi radius + ci
-points(tab[2,1], tab[3,1], pch = 19, cex = 1.5)
-lines(tab[2,3:4], tab[3,3:4], lwd = 2)
-# plot max effect size
-points(0, tab[1,1], pch = 19, cex = 1.5)
-lines(c(0, 0), tab[1,3:4], lwd = 2)
+# max effect size is multiplicative (power),
+cbind(c(tab_exp1[c(1),1]**30, tab_exp1[c(4),1]*30),
+      c(tab_exp30[c(1),1], tab_exp30[c(4),1]))
+
+#----
+# compute ZOI for 1 linear feature - exponential response
+# (there are issues when it is linear, check later)
+
+# prediction
+dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
+pred <- predict(x = bag_object,
+                newdata = dfvar,
+                data = dat,
+                type = "exp",
+                wq_probs = c(0.025, 0.5, 0.975),
+                zoi = TRUE,
+                n_features = 1,
+                baseline = "zero",
+                type_feature = "line",
+                type_feature_recompute = TRUE,
+                zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
+                resolution = 200)
+
+# df with prediction
+x <- cbind(dfvar, pred)
+(tab_exp1_line <- zoi_from_curve(x, type = "exp"))
+
+# plot
+p <- plot_response(bag_object,
+                   dfvar = dfvar,
+                   data = dat,
+                   type = "exp",
+                   zoi = TRUE,
+                   n_features = 1,
+                   baseline = "zero",
+                   type_feature = "line",
+                   type_feature_recompute = TRUE,
+                   zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
+                   resolution = 200,
+                   ci = FALSE,
+                   indiv_pred = TRUE,
+                   logx = FALSE)#,
+# ylim = ylim(0, 2))
+p +
+  annotate("pointrange", x = tab_exp1_line[2,1], y = tab_exp1_line[3,1],
+           xmin = tab_exp1_line[2,3], xmax = tab_exp1_line[2,4], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp1_line[1,1],
+           ymin = tab_exp1_line[1,3], ymax = tab_exp1_line[1,4], size = 0.5) +
+  xlim(0, 20000)
+
+#-----
+# check using linear response, then we have issues
+# prediction
+dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
+pred <- predict(x = bag_object,
+                newdata = dfvar,
+                data = dat,
+                type = "linear",
+                wq_probs = c(0.025, 0.5, 0.975),
+                zoi = TRUE,
+                n_features = 1,
+                baseline = "zero",
+                type_feature = "line",
+                type_feature_recompute = TRUE,
+                zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
+                resolution = 200)
+
+# df with prediction
+x <- cbind(dfvar, pred)
+(tab_exp1_line <- zoi_from_curve(x, type = "linear"))
+
+# plot
+p <- plot_response(bag_object,
+                   dfvar = dfvar,
+                   data = dat,
+                   type = "linear",
+                   zoi = TRUE,
+                   n_features = 1,
+                   baseline = "zero",
+                   type_feature = "line",
+                   type_feature_recompute = TRUE,
+                   zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
+                   resolution = 200,
+                   ci = FALSE,
+                   indiv_pred = TRUE,
+                   logx = FALSE)#,
+# ylim = ylim(0, 2))
+p +
+  annotate("pointrange", x = tab_exp1_line[2,1], y = tab_exp1_line[3,1],
+           xmin = tab_exp1_line[2,3], xmax = tab_exp1_line[2,4], size = 0.5) +
+  annotate("pointrange", x = 0, y = tab_exp1_line[1,1],
+           ymin = tab_exp1_line[1,3], ymax = tab_exp1_line[1,4], size = 0.5) +
+  xlim(0, 20000)
+
+#------------
+# zoi_from curve applied to a whole bag of models
+
+# first let's check all the fitted ZOI response curves
+vars <- c("private_cabins", "public_cabins", "trails")
+type_feat <- c("point", "point", "line")
+rad <- unique(bag_object$parms$predictor_table$zoi_radius); rad <- rad[!is.na(rad)]
+plots <- lapply(seq_along(vars), function(i) {
+  df <- data.frame(col = 1e3*seq(0.002, 20.002, length.out = 1001))
+  names(df) <- vars[i]
+  plot_response(bag_object,
+                dfvar = df,
+                data = dat,
+                type = "linear",
+                zoi = TRUE,
+                n_features = 1,
+                ci = FALSE,
+                indiv_pred = TRUE,
+                logx = FALSE,
+                type_feature = type_feat[i],
+                type_feature_recompute = TRUE,
+                zoi_vals = rad,
+                resolution = 200)#,
+})
+plots
+
+# we can also evaluate if there are weirdness in these curves, as
+# we see them
+weirdness(bag_object,
+          data = dat,
+          type_feature = c("point", "point", "line"))
+
+#---
+# now we compute ZOI parameters for all variables
+zois <- zoi_from_curve(x = bag_object,
+                                 data = dat,
+                                 type = "linear",
+                                 wq_probs = c(0.025, 0.5, 0.975),
+                                 n_features = 1,
+                                 baseline = "zero",
+                                 type_feature = c("point", "point", "line"),
+                                 type_feature_recompute = TRUE,
+                                 resolution = 200,
+                                 zoi_shape = "exp_decay")
+zois
+
+# plot
+i <- 1
+# for(i in seq_along(vars)) {
+var <- vars[i]
+pp <- plots[[i]] +
+  annotate("pointrange",
+           x = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$mean,
+           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "effect_zoi_radius",]$mean,
+           xmin = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.025`,
+           xmax = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.975`,
+           size = 0.5) +
+  annotate("pointrange",
+           x = 0,
+           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$mean,
+           ymin = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.025`,
+           ymax = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.975`,
+           size = 0.5) +
+  xlim(0, 5000)
+print(pp + ggtitle(var))
+
+i <- 2
+# for(i in seq_along(vars)) {
+var <- vars[i]
+pp <- plots[[i]] +
+  annotate("pointrange",
+           x = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$mean,
+           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "effect_zoi_radius",]$mean,
+           xmin = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.025`,
+           xmax = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.975`,
+           size = 0.5) +
+  annotate("pointrange",
+           x = 0,
+           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$mean,
+           ymin = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.025`,
+           ymax = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.975`,
+           size = 0.5) +
+  xlim(0, 5000)
+print(pp + ggtitle(var))
+
+i <- 3
+# for(i in seq_along(vars)) {
+var <- vars[i]
+pp <- plots[[i]] +
+  annotate("pointrange",
+           x = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$mean,
+           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "effect_zoi_radius",]$mean,
+           xmin = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.025`,
+           xmax = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.975`,
+           size = 0.5) +
+  annotate("pointrange",
+           x = 0,
+           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$mean,
+           ymin = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.025`,
+           ymax = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.975`,
+           size = 0.5) +
+  xlim(0, 20000)
+print(pp + ggtitle(var))
 }
