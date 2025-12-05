@@ -32,6 +32,8 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v1
+        with:
+          persist-credentials: false
       -
         name: Build
         run: docker compose build
