@@ -1,0 +1,14 @@
+# Articles
+
+### All vignettes
+
+- [Computing zones of influence for different types of
+  variable](https://ninanor.github.io/oneimpact/articles/computing_zoi.md):
+- [Estimating zones of influence in resource selection functions using
+  bagging and penalized
+  regression](https://ninanor.github.io/oneimpact/articles/fitting_ZOI_logit.md):
+- [Getting started with the oneimpact package in
+  R](https://ninanor.github.io/oneimpact/articles/oneimpact.md):
+- [Computing zones of influence on GRASS GIS through the oneimpact
+  package in
+  R](https://ninanor.github.io/oneimpact/articles/zoi_on_grass.md):

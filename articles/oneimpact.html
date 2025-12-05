@@ -375,7 +375,7 @@ increases for both sides in the x axis:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># threshold ZOI with radius = 10</span></span>
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">threshold_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/plot_threshold-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/plot_threshold-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 1. Illustration of a threshold decay ZOI with ZOI radius = 10." -->
 </div>
 <div class="section level5">
@@ -401,7 +401,7 @@ function <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>:</
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># threshold ZOI with radius = 10</span></span>
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">linear_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/plot_linear-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/plot_linear-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 2. Illustration of a linear decay ZOI with ZOI radius = 10." -->
 </div>
 </div>
@@ -459,7 +459,7 @@ parameter, though:</p>
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.05</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/plot_exp-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/plot_exp-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 3. Illustration of an exponential decay ZOI with ZOI radius = 10 and ZOI limit = 0.05." -->
 <p>We add to the plot a horizontal dashed line at
 <code>zoi_limit = 0.05</code> and vertical dashed lines at
@@ -492,7 +492,7 @@ functions:</p>
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.05</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/plot_gauss-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/plot_gauss-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 4. Illustration of a Gaussian decay ZOI with ZOI radius = 10 and ZOI limit = 0.05." -->
 <p>Notice that, even though the ZOI radius
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
@@ -531,7 +531,7 @@ feature alone by setting <code>zoi_metric = "nearest"</code>:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Space"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/zoi_metrics_near-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/zoi_metrics_near-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 5. Metric of ZOI of the neareast feature for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZOI with radius = 3." -->
 <p>The location of the disturbance sources is shown by the vertical
 dashed lines. Notice that the the maximum value for the ZOI of the
@@ -545,7 +545,7 @@ in <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Space"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">disturbance_locations</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/zoi_metrics_cum-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/zoi_metrics_cum-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 6. Metric of cumulative ZOI for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZOI with radius = 3."} -->
 <p>Notice that the the maximum value for the cumulative ZOI of multiple
 features might be higher than 1 where the ZOI of different features
@@ -586,7 +586,7 @@ file using the package <code>terra</code> and plot it:</p>
 <span><span class="co">#&gt;                    3       161   604     1</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/read_vect-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/read_vect-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 7. Location of private cabins in a study area in Souther Norway." -->
 <p>If the input map is already in raster format, it can be used directly
 in the <code>calc_zoi_*()</code> functions. In our case, since it is in
@@ -622,7 +622,7 @@ for the area to use it as a grid for the rasterization process.</p>
 <span><span class="co">#&gt; max value   :  8</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_rast</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/rasterize-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/rasterize-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 8. Raster with number of private cabins per pixel, used as input for calculating the ZOI metrics." -->
 <p>This map presents the number of cabins in each pixel and
 <code>NA</code> where there are no cabins. As a similar procedure in
@@ -645,7 +645,7 @@ computation is done in R (parameter <code>where = "R"</code>).</p>
 <span><span class="va">cabins_nearest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="va">cabins_rast</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"Gauss"</span><span class="op">)</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_nearest</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/calc_zoi_near-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/calc_zoi_near-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 9. Zone of influence of the nearest feature for private cabins, using a Gaussian ZOI with radius = 1000 m." -->
 <p>The shape of the ZOI might be changed through the parameter
 <code>type</code>, using the functions presented above. This parameter
@@ -676,7 +676,7 @@ shaped ZOI with radius = 1000 m.</p>
 <span>                                    zeroAsNA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_cumul</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/calc_zoi_cum-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/calc_zoi_cum-1.png" class="r-plt" width="700"></p>
 <!-- fig.cap="Figure 10. Cumulative zone of influence of multiple features for private cabins, using a Gaussian ZOI with radius = 1000 m." -->
 <p>Notice that the output map differs considerably from the ZOI of the
 nearest feature only. Here the shape of the ZOI might also be changed
@@ -717,7 +717,7 @@ below). Therefore, the evaluation of how the impact of multiple
 infrastructure features accumulate and the identification of the ZOI
 shape and radius are recasted as a model selection rather than a
 parameterization problem.</p>
-<p><img src="figure_workflow.png" width="100%"></p>
+<p><img src="figure_workflow.png" class="r-plt" width="100%"></p>
 <!-- fig.cap="Figure 11. Workflow for calculating infrastructure ZOI and estimating the cumulative impact and ZOI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZOI of the nearest feaure and the cumulative ZOI based on arguments for the ZOI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZOI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I." -->
 <p>The figure above shows a workflow for calculating the ZOI metrics and
 using them to annotate biological data for the estimation of cumulative
@@ -757,7 +757,7 @@ The simulated sampled data is plotted below.</p>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bio_data</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/set_points-1.png" width="700"><!-- fig.cap="Figure 12. Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins." --></p>
+<p><img src="oneimpact_files/figure-html/set_points-1.png" class="r-plt" width="700"><!-- fig.cap="Figure 12. Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins." --></p>
 <p>Now we use the same procedure presented above to calculate the ZOI of
 the nearest feature and the cumulative ZOI for different radii. We use
 an exponential decay ZOI and vary the ZOI radius from 500 m to 1500 m.
@@ -777,7 +777,7 @@ below.</p>
 <span>                                zeroAsNA <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_all</span><span class="op">)</span></span></code></pre></div>
-<p><img src="oneimpact_files/figure-html/calc_zoi_data-1.png" width="700"></p>
+<p><img src="oneimpact_files/figure-html/calc_zoi_data-1.png" class="r-plt" width="700"></p>
 <p>Finally, the ZOI variables can be used to annotate the biological
 data for statistical analysis.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
@@ -872,7 +872,7 @@ computing. R Foundation for Statistical Computing, Vienna, Austria. <a href="htt
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

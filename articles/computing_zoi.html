@@ -136,7 +136,7 @@ building and municipality where each feature is located. We can
 visualize the cabins to have an idea of how they are distributed:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="computing_zoi_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><img src="computing_zoi_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" width="700"></p>
 <p>We can now load the road data for the same area.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load roads vector data</span></span>
@@ -160,7 +160,7 @@ road is public or private, and if the road traffic is high or low.</p>
 <p>Now we plot the roads data set:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads_vect</span><span class="op">)</span></span></code></pre></div>
-<p><img src="computing_zoi_files/figure-html/plot_roads-1.png" width="700"></p>
+<p><img src="computing_zoi_files/figure-html/plot_roads-1.png" class="r-plt" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="rasterizing-the-data">Rasterizing the data<a class="anchor" aria-label="anchor" href="#rasterizing-the-data"></a>
@@ -228,7 +228,7 @@ the <code><a href="https://rspatial.github.io/terra/reference/rasterize.html" cl
 <p>Now we plot the map to visualize the result:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span></span></code></pre></div>
-<p><img src="computing_zoi_files/figure-html/plot_cabins_rast-1.png" width="700"></p>
+<p><img src="computing_zoi_files/figure-html/plot_cabins_rast-1.png" class="r-plt" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="input-rasters-for-linear-data">Input rasters for linear data<a class="anchor" aria-label="anchor" href="#input-rasters-for-linear-data"></a>
@@ -257,7 +257,7 @@ binary input raster, where 1 represents the presence of roads and
 <p>Now we plot the map to visualize the result:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">roads</span><span class="op">)</span></span></code></pre></div>
-<p><img src="computing_zoi_files/figure-html/plot_roads_rast-1.png" width="700"></p>
+<p><img src="computing_zoi_files/figure-html/plot_roads_rast-1.png" class="r-plt" width="700"></p>
 <p>Note that here we did not fill the background of the map (areas
 without roads) with zero but kept the <code>NA</code> values. We did so
 on purpose to illustrate the use of the <code>zeroAsNA</code> parameter
@@ -323,7 +323,7 @@ plot these layers to visualize the different spatial patterns:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_cabins</span><span class="op">)</span></span></code></pre></div>
-<p><img src="computing_zoi_files/figure-html/plot_zoi_cabins-1.png" width="700"></p>
+<p><img src="computing_zoi_files/figure-html/plot_zoi_cabins-1.png" class="r-plt" width="700"></p>
 <p>The figure shows the two measures of the ZOI of the nearest feature
 in the row above (for radius = 500 and 1000 m) and the two measures of
 the cumulative ZOI below. Note that, while both ZOI metrics equivalently
@@ -372,7 +372,7 @@ for the different radii:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_roads</span><span class="op">)</span></span></code></pre></div>
-<p><img src="computing_zoi_files/figure-html/plot_zoi_roads-1.png" width="700"></p>
+<p><img src="computing_zoi_files/figure-html/plot_zoi_roads-1.png" class="r-plt" width="700"></p>
 <p>Here the ZOI of the nearest feature has a similar interpretation to
 the point data example. The ZOI in a given site represents the influence
 of the nearest road segment, which decay with the distance to this road
@@ -476,7 +476,7 @@ activity. Polar Biology, 31(4), 399–407. </p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
