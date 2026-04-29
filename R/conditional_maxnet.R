@@ -1,4 +1,21 @@
-#' @export
+#' Fits a conditional maxnet model for presence-only species distribution modeling
+#'
+#' This function fits a conditional maxnet model using glmnet with stratified sampling,
+#' suitable for presence-only species distribution models with stratified data structure.
+#'
+#' @param p `[numeric]` \cr Presence indicator vector (1 for presence, 0 for background).
+#' @param strata `[factor or numeric]` \cr Stratification factor for conditional logistic regression.
+#' @param data `[data.frame]` \cr Data frame containing predictor variables and strata information.
+#' @param f `[formula]` \cr Model formula. If not provided, uses `maxnet::maxnet.formula(p, data)`.
+#' @param regmult `[numeric(1)=1.0]` \cr Regularization multiplier for penalty factors.
+#' @param regfun `[function]` \cr Regularization function. Default is `maxnet::maxnet.default.regularization`.
+#' @param ... Additional arguments passed to `glmnet::glmnet()`.
+#'
+#' @return A `maxnet` object with fitted model coefficients, penalties, and data characteristics.
+#'
+#' @seealso [glmnet::glmnet()], [maxnet::maxnet()]
+#'
+#' @keywords internal
 conditional_maxnet <-
   function(p, strata, data, f=maxnet::maxnet.formula(p, data), regmult=1.0,
            regfun=maxnet::maxnet.default.regularization, ...)

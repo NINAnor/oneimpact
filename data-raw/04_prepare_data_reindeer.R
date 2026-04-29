@@ -524,3 +524,17 @@ names(reindeer_rsf) <- names(reindeer_rsf) |>
 
 # export for the package
 usethis::use_data(reindeer_rsf, overwrite = TRUE)
+
+
+##-----------------------
+# for Ron
+
+library(arrow)
+dat_ron <- dat |>
+  dplyr::select(points_id, x33, y33, herd, use)
+dat_ron |>
+  arrow::write_parquet("/data/P-Prosjekter/41203800_oneimpact/02_sam/02_data/bio/processed/data_hardanger_ron.parquet")
+
+rr <- terra::rast("data-raw/rast_predictors_hardanger_100.tif")
+rr[[1:5]] |>
+  terra::writeRaster("/data/P-Prosjekter/41203800_oneimpact/02_sam/02_data/bio/processed/env_pcas_landcover.tif")

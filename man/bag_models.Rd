@@ -2,12 +2,6 @@
 % Please edit documentation in R/bag_models.R
 \name{bag_models}
 \alias{bag_models}
-\alias{w_strech_maxmin_squared}
-\alias{w_strech_max_squared}
-\alias{score2weight_mean}
-\alias{score2weight_min_mean}
-\alias{score2weight_invmean}
-\alias{score2weight_min_invmean}
 \title{Summary of a bag of models}
 \usage{
 bag_models(
@@ -17,32 +11,76 @@ bag_models(
   metric = fitted$metric,
   weights_col = c("validation_score", "habitat_validation_score")[1],
   score_threshold = 0.7,
-  weights_function = NULL,
-  out_dir
+  weights_function = NULL
 )
-
-w_strech_maxmin_squared(x)
-
-w_strech_max_squared(x)
-
-score2weight_mean(x, col = "validation_score", score_threshold = 0.7)
-
-score2weight_min_mean(x, col = "validation_score", score_threshold = 0.7)
-
-score2weight_invmean(x, col = "validation_score", score_threshold = 0.7)
-
-score2weight_min_invmean(x, col = "validation_score", score_threshold = 0.7)
 }
 \arguments{
-\item{data}{\verb{[data.frame,tibble]} \cr Complete data set used to fit the models.}
+\item{fitted}{\verb{[list]} \cr Object containing fitted models, typically output from
+\verb{[oneimpact::fit_net_logit()]} or \verb{[oneimpact::fit_net_clogit()]} with multiple resamples.
+Must contain elements: \verb{$models}, \verb{$metric}, \verb{$formula}, \verb{$method}, \verb{$standardize}, and \verb{$samples}.}
 
-\item{score2weight}{Function to set validation scores into weights, with two arguments:
-x, the result of one model of the bag, and col, the column to be used for setting the
-scores. See the argument \code{weights_col}.}
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set used to fit the models.
+Used here only to compute summary statistics and covariate scaling information.}
 
-\item{weights_col}{Column to use for scores. One of \code{"validation_score"} or
-\code{"habitat_validation_score"}.}
+\item{score2weight}{\verb{[function]} \cr Function to convert validation scores to model weights.
+Should accept arguments: \code{x} (model result), \code{weights_col} (column name), and \code{score_threshold}.
+Default is \code{score2weight_min_invmean}. See \verb{[oneimpact::score2weight_min_invmean()]} and related functions.}
+
+\item{metric}{\verb{[character]} \cr Name of the evaluation metric to extract from models.
+Default uses the same metric from the fitted models. Common values: \code{"AUC"}, \code{"Cindex"}, \code{"conditionalAUC"},
+\code{"conditionalSomersD"}.}
+
+\item{weights_col}{\verb{[character(1)="validation_score"]} \cr Column name containing validation scores
+to be converted to weights. One of \code{"validation_score"} or \code{"habitat_validation_score"}. The latter
+is used when habitat-specific validation scores are available, such as in step-selection functions
+in which one wants to disentangle the effects of movement and habitat.}
+
+\item{score_threshold}{\verb{[numeric(1)=0.7]} \cr Minimum validation score threshold.
+Models with validation score below this threshold are assigned zero weight and excluded from
+the bag.}
+
+\item{weights_function}{\verb{[function or NULL]} \cr Function to normalize and transform weights into the
+range \link{0,1}. Default is \code{w_strech_maxmin_squared}. See \verb{[oneimpact::w_strech_maxmin_squared()]}
+and related functions.}
+}
+\value{
+A \code{bag} object (also a \code{list}) containing:
+\describe{
+\item{n}{Total number of models in the bag}
+\item{n_no_errors}{Number of successfully fitted models}
+\item{n_errors}{Number of models that failed to fit}
+\item{n_above_threshold}{Number of models with weights above zero}
+\item{formula}{Model formula used for fitting}
+\item{formula_no_strata}{Formula without strata terms}
+\item{method}{Modeling method (e.g., "Lasso", "Ridge", "AdaptiveLasso", etc.)}
+\item{metric}{Evaluation metric used (e.g. "AUC", "Cindex", etc.)}
+\item{weights}{Vector of model weights (normalized)}
+\item{coef}{Matrix of raw coefficients for each model}
+\item{coef_std}{Matrix of standardized coefficients for each model}
+\item{wcoef}{Weighted coefficients}
+\item{wcoef_std}{Weighted standardized coefficients}
+\item{validation_score}{Matrix of validation scores}
+\item{weighted_validation_score}{Weighted validation scores}
+\item{covariate_mean_sd}{Data frame with mean and SD of covariates}
+\item{data_summary}{Summary statistics of variables in the original data}
+\item{errors}{Logical vector indicating which models failed}
+}
 }
 \description{
-Summary of a bag of models
+Creates a bag of models object from a fitted ensemble of models. This function
+synthesizes results from multiple model resamples, assigns weights based on validation
+scores, and computes weighted coefficients and predictions for ensemble modeling.
+}
+\examples{
+\dontrun{
+# Assuming you have fitted models from fit_net_logit or fit_net_clogit
+fitted_models <- bag_fit_net_logit(f = case_ ~ x + y, data = mydata, samples = samples_list)
+bag <- bag_models(fitted = fitted_models, data = mydata, metric = "AUC")
+}
+
+}
+\seealso{
+\code{\link[=fit_net_logit]{fit_net_logit()}}, \code{\link[=fit_net_clogit]{fit_net_clogit()}},
+\code{\link[=predict.bag]{predict.bag()}}, \code{\link[=score2weight_min_invmean]{score2weight_min_invmean()}},
+\code{\link[=w_strech_maxmin_squared]{w_strech_maxmin_squared()}}
 }

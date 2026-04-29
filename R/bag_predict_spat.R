@@ -389,9 +389,9 @@ bag_predict_spat_vars <- function(bag,
 
     if(length(vars_full) > 0) {
 
-      rows_i <- which(grepl(paste0(vars_full, collapse = "|"), rownames(coefs1)))
+      rows_i <- which(grepl(paste0(paste0(vars_full, collapse = "|"), "$"), rownames(coefs1)))
       # other rows
-      rows_non_i <- which(!grepl(paste0(vars_full, collapse = "|"), rownames(coefs1)))
+      rows_non_i <- which(!grepl(paste0(paste0(vars_full, collapse = "|"), "$"), rownames(coefs1)))
       # make them zero
       coefs1[rows_non_i,] <- 0
 

@@ -143,7 +143,7 @@ p +
 
 # additive effect on both max_effect_size and impact
 # cbind(30*impact_of_one_cabin, impact_of_30_cabins)
-tibble::tibble(zoi_measure = tab_exp1[c(1,4),1],
+tibble::tibble(zoi_measure = tab1[c(1,4),1],
                one_feature_x30 = tab1[c(1,4),2]*30,
                thirty_features = tab30[c(1,4),2])
 
