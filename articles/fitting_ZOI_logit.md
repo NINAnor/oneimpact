@@ -79,7 +79,7 @@ library(tmap) # for plotting maps
 library(terra) # for spatial predictions
 ```
 
-    ## terra 1.8.86
+    ## terra 1.9.11
 
 ``` r
 library(oneimpact)
@@ -269,7 +269,7 @@ f
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x55e8b44ddae8>
+    ## <environment: 0x55d69f910c48>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -528,9 +528,9 @@ str(bag_object, max.level = 1)
     ## List of 32
     ##  $ n                                : int 50
     ##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55e8b44ddae8> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55d69f910c48> 
     ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55e8b491a660> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55d69fd69a70> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"
@@ -1491,12 +1491,11 @@ print(plots)
 
     ## [[1]]
 
+    ## The visual variable `col` of the layer "raster" contains a unique value.
+    ## Therefore a discrete scale is applied (tm_scale_discrete).
     ## [cols4all] color palettes: use palettes from the R package cols4all. Run
     ## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named
     ## "brewer.pi_yg"
-    ## [plot mode] fit legend/component: Some legend items or map compoments do not
-    ## fit well, and are therefore rescaled.
-    ## ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-1.png)
 

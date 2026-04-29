@@ -106,7 +106,7 @@ library(rgrass) # for connecting R and GRASS
 #> GRASS GIS interface loaded with GRASS version: sh: line 1: g.version: command not found
 #> and location: ETRS_33N/
 library(terra) # for geodata in R
-#> terra 1.8.86
+#> terra 1.9.11
 
 # load cabins raster data into R
 (f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact"))
@@ -393,10 +393,10 @@ cabins_zoi_cumulative
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
 #> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
-#> sources     : file3bd928b4d6f8.grd  
-#>               file3bd946e5c3a0.grd  
-#>               file3bd9228c38aa.grd  
-#>               file3bd96e8852db.grd  
+#> sources     : file3bfc76acf188.grd  
+#>               file3bfc6446a00f.grd  
+#>               file3bfc2b6c682f.grd  
+#>               file3bfc14c64e08.grd  
 #> color table : 1, 2, 3, 4 
 #> names       : cabins_~lett500, cabins_~ett1000, cabins_~lett500, cabins_~ett1000 
 #> min values  :               0,               0,         0.00000,          0.0000 

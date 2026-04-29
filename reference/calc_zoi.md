@@ -122,7 +122,7 @@ and
 
 ``` r
 library(terra)
-#> terra 1.8.86
+#> terra 1.9.11
 
 # Load raster data
 f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")

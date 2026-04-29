@@ -93,12 +93,6 @@ Functions to fit RSF and SSF and estimate ZOI using penalized regression
   : Load a series of files output of fit_net_clogit models and put them
   on a bag
 - [`bag_models()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
-  [`w_strech_maxmin_squared()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
-  [`w_strech_max_squared()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
-  [`score2weight_mean()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
-  [`score2weight_min_mean()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
-  [`score2weight_invmean()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
-  [`score2weight_min_invmean()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
   : Summary of a bag of models
 - [`truncate_bag()`](https://ninanor.github.io/oneimpact/reference/truncate_bag.md)
   : Truncate bag to avoid weirdness in the model

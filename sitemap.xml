@@ -11,6 +11,7 @@
 <url><loc>https://ninanor.github.io/oneimpact/reference/add_zoi_layers.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/bag_load_models.html</loc></url>
+<url><loc>https://ninanor.github.io/oneimpact/reference/bag_model_weights.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/bag_models.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/bag_predict_spat.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/calc_zoi.html</loc></url>
@@ -18,8 +19,10 @@
 <url><loc>https://ninanor.github.io/oneimpact/reference/calc_zoi_nearest.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/calc_zoi_sql.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/concordance_indices.html</loc></url>
+<url><loc>https://ninanor.github.io/oneimpact/reference/conditional_maxnet.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/create_linear_feature_zoi.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/create_resamples.html</loc></url>
+<url><loc>https://ninanor.github.io/oneimpact/reference/data_summary.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/explore_blocks.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/explore_blocks_pre.html</loc></url>
 <url><loc>https://ninanor.github.io/oneimpact/reference/extract_response_strata.html</loc></url>

@@ -139,7 +139,7 @@ please check Niebuhr et al. 2023.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># for plotting</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span> <span class="co"># for plotting maps</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># for spatial predictions</span></span></code></pre></div>
-<pre><code><span><span class="co">## terra 1.8.86</span></span></code></pre>
+<pre><code><span><span class="co">## terra 1.9.11</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -313,7 +313,7 @@ the model and select the variables.</p>
 <span><span class="co">##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + </span></span>
 <span><span class="co">##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + </span></span>
 <span><span class="co">##     norway_pca_klima_axis4</span></span>
-<span><span class="co">## &lt;environment: 0x55e8b44ddae8&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x55d69f910c48&gt;</span></span></code></pre>
 <p>The <code><a href="../reference/add_zoi_formula.html">add_zoi_formula()</a></code> function can also produce a
 <code>predictor_table</code> <code>data.frame</code>, which specifies
 characteristics of the covariates in the model - e.g. whether they are
@@ -561,9 +561,9 @@ are useful for model prediction.</p>
 <pre><code><span><span class="co">## List of 32</span></span>
 <span><span class="co">##  $ n                                : int 50</span></span>
 <span><span class="co">##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55e8b44ddae8&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55d69f910c48&gt; </span></span>
 <span><span class="co">##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55e8b491a660&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55d69fd69a70&gt; </span></span>
 <span><span class="co">##  $ method                           : chr "Lasso"</span></span>
 <span><span class="co">##  $ metric                           : chr "AUC"</span></span>
 <span><span class="co">##  $ metrics_evaluated                : Named chr "AUC"</span></span>
@@ -687,7 +687,7 @@ Material).</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#plot_importance(importance)</span></span>
 <span><span class="fu"><a href="../reference/plot_importance.html">plot_importance</a></span><span class="op">(</span><span class="va">importance</span>, remove_threshold <span class="op">=</span> <span class="fl">5e-3</span><span class="op">)</span> <span class="co"># remove vars with too low score from plot</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/variable_importance1-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/variable_importance1-1.png" class="r-plt" alt="" width="700"></p>
 <p>Variable importance might also be computed for groups of variables.
 For instance, below we group all variables with similar ZOI metric
 (private cottages or public resorts) and all terms related to the same
@@ -722,7 +722,7 @@ variable (e.g. quadratic terms).</p>
 <span><span class="co">## observations were kept.</span></span></code></pre>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_importance.html">plot_importance</a></span><span class="op">(</span><span class="va">importance_block</span>, normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/variable_importance3-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/variable_importance3-1.png" class="r-plt" alt="" width="700"></p>
 <p><strong>Add interpretation here</strong></p>
 </div>
 <div class="section level3">
@@ -882,18 +882,18 @@ using the <code><a href="../reference/plot_coef.html">oneimpact::plot_coef()</a>
 <span><span class="co"># plot_coef(bag_object, terms = "private_cabins_cumulative")</span></span>
 <span><span class="co"># for one the 3 first models</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"private_cabins_cumulative"</span>, models <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/coef5-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/coef5-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only for private cabins, by resample, as points</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"private_cabins_cumulative"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, models <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/coef5-2.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/coef5-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only for private cabins, as histograms</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"private_cabins_cumulative"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/coef5-3.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/coef5-3.png" class="r-plt" alt="" width="700"></p>
 <p>It is possible to see that several of the terms/covariates were
 removed from the models in some of the resamples, i.e., their estimated
 coefficients were zero. That is a property of Lasso and Adaptive Lasso
@@ -905,19 +905,19 @@ the ZOI radius with the option <code>order_zoi_radius = TRUE</code>.</p>
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted average coefs - all terms</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/coef6-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/coef6-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted average coefs - public cabins</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span>, terms <span class="op">=</span> <span class="st">"public_cabins"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, order_zoi_radius <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/coef6-2.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/coef6-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># zoom</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span>, terms <span class="op">=</span> <span class="st">"public_cabins"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, order_zoi_radius <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">## (`geom_point()`).</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/coef6-3.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/coef6-3.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="plot-the-effect-of-each-predictor-on-the-response-variable">Plot the effect of each predictor on the response variable<a class="anchor" aria-label="anchor" href="#plot-the-effect-of-each-predictor-on-the-response-variable"></a>
@@ -959,7 +959,7 @@ relative selection as the variable increases or decreases.</p>
 <span>              data <span class="op">=</span> <span class="va">dat</span>, </span>
 <span>              type <span class="op">=</span> <span class="st">"exp"</span>, ci <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              wq_probs <span class="op">=</span> <span class="va">wQ_probs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response-1.png" class="r-plt" alt="" width="700"></p>
 <p>An alternative way to represent the variability in the model
 predictions in the bag is also to plot the individual model predictions
 as lines, instead of the weighted confidence interval. This is done
@@ -972,7 +972,7 @@ setting the parameters <code>individ_pred = TRUE</code> and
 <span>              type <span class="op">=</span> <span class="st">"exp"</span>, </span>
 <span>              indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response1.2-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response1.2-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="pca3---terrain-ruggedness">PCA3 - terrain ruggedness<a class="anchor" aria-label="anchor" href="#pca3---terrain-ruggedness"></a>
@@ -991,7 +991,7 @@ ruggedness.</p>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
 <span>              type <span class="op">=</span> <span class="st">"exp"</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response2-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response2-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="private-cabins">Private cabins<a class="anchor" aria-label="anchor" href="#private-cabins"></a>
@@ -1010,7 +1010,7 @@ cabin.</p>
 <span>              type <span class="op">=</span> <span class="st">"exp"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response3-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response3-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see that the effects of a private cabin vary from strong effects
 up to ca. 2.5km to very weak effect, depending on the model in the bag.
 This means that there is a high variation on the effect size and ZOI of
@@ -1028,7 +1028,7 @@ cabins.</p>
 <span>              type <span class="op">=</span> <span class="st">"exp"</span>, zoi <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 100 features</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
@@ -1037,7 +1037,7 @@ cabins.</p>
 <span>              n_features <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-2.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="public-resorts">Public resorts<a class="anchor" aria-label="anchor" href="#public-resorts"></a>
@@ -1058,7 +1058,7 @@ single resort.</p>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">## (`geom_line()`).</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response7-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response7-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see a negative impact of a public resort, non-linearly, up to 20
 km, with high variation in the range 100-2500 m, but with overall
 average and median negative effects. We can also increase and evaluate
@@ -1075,7 +1075,7 @@ effect which only starts to decrease after 10 km.</p>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">## (`geom_line()`).</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/plot_response8-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/plot_response8-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 </div>
@@ -1152,7 +1152,7 @@ depend on the values included in the <code>what</code> argument.</li>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named</span></span>
 <span><span class="co">## <span style="color: #0000BB;">"brewer.greens"</span></span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="700"></p>
 <p>The weighted median suitability also produces a quite similar
 prediction. It is by default stored in as the first layer of the raster
 <code>pred$r_ind_summ_pred</code>.</p>
@@ -1182,7 +1182,7 @@ prediction. It is by default stored in as the first layer of the raster
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named</span></span>
 <span><span class="co">## <span style="color: #0000BB;">"brewer.greens"</span></span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"></p>
 <p>When the argument <code>what = "median"</code> is used in the
 <code><a href="../reference/bag_predict_spat.html">bag_predict_spat()</a></code> function, it also allows us to compute
 measures of uncertainty. The first measure (stored as the second layer
@@ -1217,7 +1217,7 @@ other values might be selected through the argument
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named</span></span>
 <span><span class="co">## <span style="color: #0000BB;">"brewer.reds"</span></span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see that the largest absolute variation between individual model
 predictions is in the areas with high predicted average/median
 suitability, which are the areas far away from all types of tourist
@@ -1255,7 +1255,7 @@ variation in the other predictors as well.</p>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named</span></span>
 <span><span class="co">## <span style="color: #0000BB;">"brewer.reds"</span></span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="predictor-impact-maps">Predictor impact maps<a class="anchor" aria-label="anchor" href="#predictor-impact-maps"></a>
@@ -1376,13 +1376,12 @@ values below 1 represent avoidance.</p>
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
+<pre><code><span><span class="co">## The visual variable `col` of the layer "raster" contains a unique value.</span></span>
+<span><span class="co">## Therefore a discrete scale is applied (tm_scale_discrete).</span></span>
+<span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
 <span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.pi_yg"</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
-<span><span class="co">## fit well, and are therefore rescaled.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" width="700"></p>
+<span><span class="co">## <span style="color: #0000BB;">"brewer.pi_yg"</span></span></span></code></pre>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="700"></p>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
@@ -1391,7 +1390,7 @@ values below 1 represent avoidance.</p>
 <span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
 <span><span class="co">## fit well, and are therefore rescaled.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-2.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-2.png" class="r-plt" alt="" width="700"></p>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## [[3]]</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
@@ -1400,7 +1399,7 @@ values below 1 represent avoidance.</p>
 <span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
 <span><span class="co">## fit well, and are therefore rescaled.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-3.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-3.png" class="r-plt" alt="" width="700"></p>
 <p>We see in these images that the effect of PC1 (continentality) is the
 largest between those variables, followed by that of land cover and
 effect of PCA3 (terrain ruggedness). We also see that reindeer in summer
@@ -1441,7 +1440,7 @@ very strong.</p>
 <span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
 <span><span class="co">## fit well, and are therefore rescaled.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># public cabins</span></span>
 <span><span class="va">map_plot</span> <span class="op">&lt;-</span> <span class="va">pred_vars</span><span class="op">$</span><span class="va">r_weighted_avg_pred</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
@@ -1472,7 +1471,7 @@ very strong.</p>
 <span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
 <span><span class="co">## fit well, and are therefore rescaled.</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
-<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-2.png" class="r-plt" width="700"></p>
+<p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 <div class="section level2">
