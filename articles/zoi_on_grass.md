@@ -95,6 +95,7 @@ tourist cabins in a sample area in Southern Norway, stored in the
 for more information). We first load this data set.
 
 ``` r
+
 # load packages
 library(oneimpact)
 #> 
@@ -119,6 +120,7 @@ executable files are located. The following command works in Linux,
 MacOS, and within the OSGeo4W in Windows:
 
 ``` r
+
 # For linux or within OSGeo4W shell
 grassdir <- system("grass --config path", intern = TRUE)
 grassdir
@@ -128,6 +130,7 @@ grassdir
 Now we can create a GRASS GIS location and connect our R session to it:
 
 ``` r
+
 gisDB <- "." # create location and mapset in the working directory
 loc <- "test_location/" # name of the location
 ms <- "PERMANENT" # name of the mapset
@@ -205,6 +208,7 @@ location. The same might be checked at any time by using the
 function:
 
 ``` r
+
 # check grass connection
 rgrass::gmeta()
 ```
@@ -276,6 +280,7 @@ using the
 function:
 
 ``` r
+
 # write raster into GRASS
 rgrass::write_RAST(cabins_count, 
                    vname = "cabins_count", # name of the map in GRASS
@@ -306,6 +311,7 @@ were running them through the GRASS console.
 In this case, the following command would also work:
 
 ``` r
+
 # get path to the raster file
 f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact")
 f
@@ -330,6 +336,7 @@ a vector strings for multiple maps). To inform R that we wish to make
 processing in GRASS, we must set `where = "GRASS"`:
 
 ``` r
+
 # compute zoi
 zoi_metrics <- calc_zoi(x = "cabins_count", # string as input
                         radius = c(500, 1000),
@@ -383,6 +390,7 @@ object from the `sp` package. Here we prefer to specify
 `SpatRaster` object.
 
 ``` r
+
 # retireve maps
 cabins_zoi_cumulative <- rgrass::read_RAST(zoi_metrics, 
                                            return_format = "terra",
@@ -393,10 +401,10 @@ cabins_zoi_cumulative
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
 #> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
-#> sources     : file3bfc76acf188.grd  
-#>               file3bfc6446a00f.grd  
-#>               file3bfc2b6c682f.grd  
-#>               file3bfc14c64e08.grd  
+#> sources     : file2fa07c75d74a.grd  
+#>               file2fa036f33266.grd  
+#>               file2fa045e89bd5.grd  
+#>               file2fa043b59275.grd  
 #> color table : 1, 2, 3, 4 
 #> names       : cabins_~lett500, cabins_~ett1000, cabins_~lett500, cabins_~ett1000 
 #> min values  :               0,               0,         0.00000,          0.0000 
@@ -406,6 +414,7 @@ cabins_zoi_cumulative
 Now we can plot the ZOI metrics computed in GRASS:
 
 ``` r
+
 # plot ZOI metrics
 terra::plot(cabins_zoi_cumulative)
 ```

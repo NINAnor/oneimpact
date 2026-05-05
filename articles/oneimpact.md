@@ -41,6 +41,7 @@ To install the `oneimpact` package, it is possible to use the
 `devtools::install_github()` function:
 
 ``` r
+
 library(devtools)
 devtools::install_github(repo = "NINAnor/oneimpact", ref = "HEAD")
 ```
@@ -49,6 +50,7 @@ Once installed, we now load the `oneimpact` package and other packages
 used in this vignette.
 
 ``` r
+
 library(oneimpact)
 
 library(ggplot2) # for plots
@@ -138,29 +140,29 @@ influence. They are divided in three types: zone of influence functions
 (“Compute ZOI”), and functions to create filters or weight matrices for
 use in the computation of the cumulative ZOI (“Create filters”).
 
-| Type of function | Function                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Input                                                                                                         | Output                                                                                                                                                 |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ZOI functions    | [`dist_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`threshold_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`step_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`linear_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`bartlett_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`tent_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`exp_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`gaussian_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`half_norm_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md) | These functions compute Zone of Influence (ZOI) decay values. The shape of the zone of influence might be changed through the argument `type` in the generic function [`dist_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md), or through calling the other specific functions. The functions with different shapes represent multiple ways the ZOI of an infrastructure or disturbance might affect a given process in space, and the ZOI radius (parameter `radius`) controls how far this effect reaches. The rate of decay of the different ZOI functions is parameterized based on the ZOI radius – e.g the slope of [`linear_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md) is defined so that the function decreases to zero at the ZOI radius. These functions can be used to transform arrays of (Euclidean) distance values (in one dimension) or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. | Vector of distance values or raster of (Euclidean) distance from sources of disturbance; ZOI shape and radius | Vector or raster of ZOI values                                                                                                                         |
-| ZOI functions    | [`plot_zoi1d()`](https://ninanor.github.io/oneimpact/reference/plot_zoi1d.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | This function plots the zone of influence functions in 1 dimensional space, for illustration purposes. When there is more than one value for `points` (the location of infrastructure or sources of disturbance), either the ZOI of the nearest feature or the cumulative ZOI can be plotted. The ZOI of the nearest feature corresponds to the maximum ZOI value from all infrastructure at each position. The cumulative ZOI corresponds to the sum of the ZOI of all infrastructure at each position.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                                                                                                               |                                                                                                                                                        |
-| Compute ZOI      | [`calc_zoi_nearest()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_nearest.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the zone of influence from the neareast feature of that type of infrastructure. Zones of influence are defined by functions that decay with the distance from each infrastructure and their rate of decay is controlled by the ZOI radius (parameter `radius`), which defines how far the influence of an infrastructure feature goes. By default, the Gaussian decay ZOI is calculated, but other decay functions might be used (parameter `type`). The [`calc_zoi_nearest()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_nearest.md) function might also return the Euclidean distance to the nearest feature or a transformation from it (e.g. log- and sqrt-distance from the nearest feature).                                                                                                                                                                                                                                                                                                                                   | Raster(s) with location of disturbance sources; ZOI shape and radius                                          | Raster(s) of ZOI of the nearest feature                                                                                                                |
-| Compute ZOI      | [`calc_zoi_cumulative()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_cumulative.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the cumulative zone of influence or the density of features in space. The process is done through a moving window/neighborhood analysis. The ZOI or weight matrix is defined from zone of influence functions, which might follow different shapes (parameter `type`) and cover an area according to the ZOI radius (parameter `radius`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Raster(s) with location of disturbance sources; ZOI shape and radius                                          | Raster(s) of the cumulative ZOI of multiple features                                                                                                   |
-| Compute ZOI      | [`calc_zoi()`](https://ninanor.github.io/oneimpact/reference/calc_zoi.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | This function takes in a raster with locations or counts of infrastructure and calculates a raster with either or both zone of influence metrics: the ZOI of the nearest feature and the cumulative ZOI. I.e., [`calc_zoi()`](https://ninanor.github.io/oneimpact/reference/calc_zoi.md) can compute both `calc_zoi_nearest` and `calc_zoi_cumulative` in a single run.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Raster(s) with location of disturbance sources; ZOI shape and radius                                          | Raster(s) with either the ZOI of the nearest feature or the cumulative ZOI, or both                                                                    |
-| Create filters   | [`filter_create()`](https://ninanor.github.io/oneimpact/reference/filter_create.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | This function creates matrices of weights following different functions to be used in neighborhood analyses for rasters. In the context of cumulative impact analysis, they represent the Zone of Influence (ZOI) of each infrastructure point/pixel, to be used to calculate the cumulative ZOI or density of features.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Reference raster; ZOI shape and radius                                                                        | Weight matrix (or matrices when there is more than one value for the ZOI shape or radius). It can also write the matrices to files using `filter_save` |
-| Create filters   | [`filter_save()`](https://ninanor.github.io/oneimpact/reference/filter_save.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | This function saves a matrix with weights (filter or kernel matrix) in an external text file. It can save either the raw matrix or save a file using the standards for running the [`r.mfilter`](https://grass.osgeo.org/grass82/manuals/r.mfilter.html) algorithm within GRASS GIS.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Matrix of weights                                                                                             | Text file (no output within R)                                                                                                                         |
+| Type of function | Function | Description | Input | Output |
+|----|----|----|----|----|
+| ZOI functions | [`dist_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`threshold_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`step_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`linear_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`bartlett_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`tent_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`exp_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`gaussian_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)  [`half_norm_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md) | These functions compute Zone of Influence (ZOI) decay values. The shape of the zone of influence might be changed through the argument `type` in the generic function [`dist_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md), or through calling the other specific functions. The functions with different shapes represent multiple ways the ZOI of an infrastructure or disturbance might affect a given process in space, and the ZOI radius (parameter `radius`) controls how far this effect reaches. The rate of decay of the different ZOI functions is parameterized based on the ZOI radius – e.g the slope of [`linear_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md) is defined so that the function decreases to zero at the ZOI radius. These functions can be used to transform arrays of (Euclidean) distance values (in one dimension) or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. | Vector of distance values or raster of (Euclidean) distance from sources of disturbance; ZOI shape and radius | Vector or raster of ZOI values |
+| ZOI functions | [`plot_zoi1d()`](https://ninanor.github.io/oneimpact/reference/plot_zoi1d.md) | This function plots the zone of influence functions in 1 dimensional space, for illustration purposes. When there is more than one value for `points` (the location of infrastructure or sources of disturbance), either the ZOI of the nearest feature or the cumulative ZOI can be plotted. The ZOI of the nearest feature corresponds to the maximum ZOI value from all infrastructure at each position. The cumulative ZOI corresponds to the sum of the ZOI of all infrastructure at each position. |  |  |
+| Compute ZOI | [`calc_zoi_nearest()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_nearest.md) | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the zone of influence from the neareast feature of that type of infrastructure. Zones of influence are defined by functions that decay with the distance from each infrastructure and their rate of decay is controlled by the ZOI radius (parameter `radius`), which defines how far the influence of an infrastructure feature goes. By default, the Gaussian decay ZOI is calculated, but other decay functions might be used (parameter `type`). The [`calc_zoi_nearest()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_nearest.md) function might also return the Euclidean distance to the nearest feature or a transformation from it (e.g. log- and sqrt-distance from the nearest feature). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of ZOI of the nearest feature |
+| Compute ZOI | [`calc_zoi_cumulative()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_cumulative.md) | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the cumulative zone of influence or the density of features in space. The process is done through a moving window/neighborhood analysis. The ZOI or weight matrix is defined from zone of influence functions, which might follow different shapes (parameter `type`) and cover an area according to the ZOI radius (parameter `radius`). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of the cumulative ZOI of multiple features |
+| Compute ZOI | [`calc_zoi()`](https://ninanor.github.io/oneimpact/reference/calc_zoi.md) | This function takes in a raster with locations or counts of infrastructure and calculates a raster with either or both zone of influence metrics: the ZOI of the nearest feature and the cumulative ZOI. I.e., [`calc_zoi()`](https://ninanor.github.io/oneimpact/reference/calc_zoi.md) can compute both `calc_zoi_nearest` and `calc_zoi_cumulative` in a single run. | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) with either the ZOI of the nearest feature or the cumulative ZOI, or both |
+| Create filters | [`filter_create()`](https://ninanor.github.io/oneimpact/reference/filter_create.md) | This function creates matrices of weights following different functions to be used in neighborhood analyses for rasters. In the context of cumulative impact analysis, they represent the Zone of Influence (ZOI) of each infrastructure point/pixel, to be used to calculate the cumulative ZOI or density of features. | Reference raster; ZOI shape and radius | Weight matrix (or matrices when there is more than one value for the ZOI shape or radius). It can also write the matrices to files using `filter_save` |
+| Create filters | [`filter_save()`](https://ninanor.github.io/oneimpact/reference/filter_save.md) | This function saves a matrix with weights (filter or kernel matrix) in an external text file. It can save either the raw matrix or save a file using the standards for running the [`r.mfilter`](https://grass.osgeo.org/grass82/manuals/r.mfilter.html) algorithm within GRASS GIS. | Matrix of weights | Text file (no output within R) |
 
 ## The concept of zone of influence
 
-The zone of influence (ZOI) is the function $\phi$ that informs how the
-impact of a given infrastructure feature, source of disturbance, or
+The zone of influence (ZOI) is the function $`\phi`$ that informs how
+the impact of a given infrastructure feature, source of disturbance, or
 landscape element decreases with distance. Formally, the ZOI
-$\phi = f(d,r)$ is any decay function that has a maximum value 1 where
-disturbance is located, decreases towards zero as the distance $d$
-increases, and possibly vanishes at a given point, the ZOI radius $r$.
-Broadly speaking, the ZOI is characterized by its shape and radius. Four
-sets of functions are implemented in `oneimpact`: threshold decay,
-linear decay, exponential decay, and Gaussian decay. Some of these
-functions present the same definition with multiple function names, to
-accommodate how different algorithms call the same functions
+$`\phi = f(d, r)`$ is any decay function that has a maximum value 1
+where disturbance is located, decreases towards zero as the distance
+$`d`$ increases, and possibly vanishes at a given point, the ZOI radius
+$`r`$. Broadly speaking, the ZOI is characterized by its shape and
+radius. Four sets of functions are implemented in `oneimpact`: threshold
+decay, linear decay, exponential decay, and Gaussian decay. Some of
+these functions present the same definition with multiple function
+names, to accommodate how different algorithms call the same functions
 (e.g. [`linear_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)
 and
 [`bartlett_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)
@@ -171,21 +173,23 @@ represent the same function).
 #### Functions with a well-defined ZOI radius
 
 Some functions vanish for a certain non-infinite distance and therefore
-present well-defined ZOI radii. Here the ZOI radius $r$ represents the
-distance at which $\phi = 0$. Two functions of this type are implemented
-in `oneimpact`: the threshold and the linear decay functions.
+present well-defined ZOI radii. Here the ZOI radius $`r`$ represents the
+distance at which $`\phi = 0`$. Two functions of this type are
+implemented in `oneimpact`: the threshold and the linear decay
+functions.
 
 ##### Threshold decay function
 
-The threshold function is constant if the distance $d$ to infrastructure
-or source of disturbance is smaller than the ZOI radius $r$, and zero
-beyond that. It can be computed using the
+The threshold function is constant if the distance $`d`$ to
+infrastructure or source of disturbance is smaller than the ZOI radius
+$`r`$, and zero beyond that. It can be computed using the
 [`threshold_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)
 or the
 [`step_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)
 functions:
 
 ``` r
+
 # threshold ZOI with radius = 10
 threshold_decay(5, radius = 10) # within the radius
 #> [1] 1
@@ -200,6 +204,7 @@ This plot assumes the source of disturbance is located at `x = 0` and
 the distance to it increases for both sides in the x axis:
 
 ``` r
+
 # threshold ZOI with radius = 10
 plot_zoi1d(points = 0, radius = 10, fun = threshold_decay, range_plot = c(-20, 20))
 ```
@@ -209,9 +214,9 @@ plot_zoi1d(points = 0, radius = 10, fun = threshold_decay, range_plot = c(-20, 2
 ##### Linear decay function
 
 The linear decay (also Bartlett or tent decay) function decreases
-linearly with the distance $d$ to infrastructure or source of
-disturbance and becomes zero at and beyond the ZOI radius $r$. It can be
-computed using the following functions:
+linearly with the distance $`d`$ to infrastructure or source of
+disturbance and becomes zero at and beyond the ZOI radius $`r`$. It can
+be computed using the following functions:
 [`linear_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md),
 [`bartlett_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md),
 and
@@ -219,6 +224,7 @@ and
 Here we show the use of the function:
 
 ``` r
+
 # linear decay ZOI with radius = 10
 linear_decay(5, radius = 10) # within the radius
 #> [1] 0.5
@@ -231,6 +237,7 @@ function
 [`plot_zoi1d()`](https://ninanor.github.io/oneimpact/reference/plot_zoi1d.md):
 
 ``` r
+
 # threshold ZOI with radius = 10
 plot_zoi1d(points = 0, radius = 10, fun = linear_decay, range_plot = c(-20, 20))
 ```
@@ -240,25 +247,26 @@ plot_zoi1d(points = 0, radius = 10, fun = linear_decay, range_plot = c(-20, 20))
 #### Functions that do not vanish with distance
 
 Some functions decrease but do not vanish as the distance from
-infrastructure increases. In these cases we define the ZOI radius $r$ as
-the distance at which the ZOI decreases to $\phi = \phi_{limit}$, an
-arbitrary small ZOI value beyond which the influence of the
+infrastructure increases. In these cases we define the ZOI radius $`r`$
+as the distance at which the ZOI decreases to $`\phi = \phi_{limit}`$,
+an arbitrary small ZOI value beyond which the influence of the
 infrastructure is considered to be negligible. In these cases, the ZOI
 definition needs an extra parameter and is defined as
-$\phi = f\left( d,r,\phi_{limit} \right)$. Two functions of this type
-are implemented in `oneimpact`: the exponential decay and the Gaussian
-decay functions.
+$`\phi = f(d, r, \phi_{limit})`$. Two functions of this type are
+implemented in `oneimpact`: the exponential decay and the Gaussian decay
+functions.
 
 ##### Exponential decay function
 
 The exponential decay function decays exponentially with the distance
-$d$ to infrastructure, and the rate of decay is set so that
-$\phi = \phi_{limit}$ at the ZOI radius ($d = r$). The exponential decay
-might be calculated using the
+$`d`$ to infrastructure, and the rate of decay is set so that
+$`\phi = \phi_{limit}`$ at the ZOI radius ($`d = r`$). The exponential
+decay might be calculated using the
 [`exp_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)
 function:
 
 ``` r
+
 # exponential decay ZOI with radius = 10
 exp_decay(5, radius = 10) # within the radius
 #> [1] 0.2236068
@@ -276,6 +284,7 @@ Changing `zoi_limit` changes the interpretation of the ZOI radius
 parameter, though:
 
 ``` r
+
 # changing zoi_limit changes the interpretation of radius
 exp_decay(5, radius = 10, zoi_limit = 0.01) # within the radius
 #> [1] 0.1
@@ -288,6 +297,7 @@ exp_decay(15, radius = 10, zoi_limit = 0.01) # beyond the radius
 We visualize the function shape in 1 dimension space:
 
 ``` r
+
 # threshold ZOI with radius = 10
 plot_zoi1d(points = 0, radius = 10, fun = exp_decay, range_plot = c(-20, 20)) +
   geom_hline(yintercept = 0.05, linetype = 2, color = "grey") +
@@ -304,15 +314,16 @@ reaches `zoi_limit`.
 ##### Gaussian decay function
 
 The Gaussian (or half-normal) decay function decays following a half
-normal shape, and the rate of decay is set so that $\phi = \phi_{limit}$
-at the ZOI radius ($d = r$). The Gaussian decay might be calculated
-using the
+normal shape, and the rate of decay is set so that
+$`\phi = \phi_{limit}`$ at the ZOI radius ($`d = r`$). The Gaussian
+decay might be calculated using the
 [`gaussian_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)
 and
 [`half_norm_decay()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md)
 functions:
 
 ``` r
+
 # Gaussian decay ZOI with radius = 10
 gaussian_decay(5, radius = 10) # within the radius
 #> [1] 0.4728708
@@ -325,6 +336,7 @@ gaussian_decay(15, radius = 10) # at or beyond the radius
 We visualize the function shape in 1 dimension space:
 
 ``` r
+
 # threshold ZOI with radius = 10
 plot_zoi1d(points = 0, radius = 10, fun = gaussian_decay, range_plot = c(-20, 20)) +
   geom_hline(yintercept = 0.05, linetype = 2, color = "grey") +
@@ -333,7 +345,7 @@ plot_zoi1d(points = 0, radius = 10, fun = gaussian_decay, range_plot = c(-20, 20
 
 ![](oneimpact_files/figure-html/plot_gauss-1.png)
 
-Notice that, even though the ZOI radius $r$ is defined for all the
+Notice that, even though the ZOI radius $`r`$ is defined for all the
 functions, the change in their shape strongly modifies the
 interpretation of how the ZOI changes with distance. These functions set
 here might be used to calculate the ZOI of nearest feature or to define
@@ -363,6 +375,7 @@ feature as `radius = 3`. We start by plotting the ZOI of the nearest
 feature alone by setting `zoi_metric = "nearest"`:
 
 ``` r
+
 disturbance_locations <- c(0, 2, 8, 12)
 plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
            zoi_metric = "nearest", range_plot = c(-10, 20)) +
@@ -382,6 +395,7 @@ accumulates. We do it by setting `zoi_metric = "cumulative"` in
 [`plot_zoi1d()`](https://ninanor.github.io/oneimpact/reference/plot_zoi1d.md):
 
 ``` r
+
 plot_zoi1d(points = disturbance_locations, radius = 3, fun = gaussian_decay,
            zoi_metric = "cumulative", range_plot = c(-10, 20)) +
   labs(x = "Space") +
@@ -412,6 +426,7 @@ might be found using the command
 We read the vector file using the package `terra` and plot it:
 
 ``` r
+
 # file path
 s <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact")
 # read file
@@ -454,6 +469,7 @@ resolution for the area to use it as a grid for the rasterization
 process.
 
 ``` r
+
 # load grid
 s2 <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 grid <- terra::rast(s2)
@@ -494,6 +510,7 @@ radius = 1000 m. By default, the computation is done in R (parameter
 `where = "R"`).
 
 ``` r
+
 # calculate ZOI
 cabins_nearest <- calc_zoi_nearest(cabins_rast, radius = 1000, type = "Gauss")
 # plot
@@ -525,6 +542,7 @@ cumulative ZOI of multiple features using the same setup – a Gaussian
 shaped ZOI with radius = 1000 m.
 
 ``` r
+
 # calculate ZOI
 cabins_cumul <- calc_zoi_cumulative(cabins_rast, 
                                     radius = 1000, 
@@ -567,13 +585,13 @@ their values is different.
 ## Using the ZOI approach to annotate and analyze data
 
 In the cumulative impact assessment proposed in `oneimpact`, the
-calculation of the ZOI ($\phi$) is done before statistical analysis. In
-this formulation, $\phi$ defined based on different shapes and radii are
-considered as different candidates of predictor variables in statistical
-models (see figure below). Therefore, the evaluation of how the impact
-of multiple infrastructure features accumulate and the identification of
-the ZOI shape and radius are recasted as a model selection rather than a
-parameterization problem.
+calculation of the ZOI ($`\phi`$) is done before statistical analysis.
+In this formulation, $`\phi`$ defined based on different shapes and
+radii are considered as different candidates of predictor variables in
+statistical models (see figure below). Therefore, the evaluation of how
+the impact of multiple infrastructure features accumulate and the
+identification of the ZOI shape and radius are recasted as a model
+selection rather than a parameterization problem.
 
 ![](figure_workflow.png)
 
@@ -599,10 +617,11 @@ sampling points for a given response variable `z` (e.g. species richness
 or abundance). We sample the locations using the
 [`set_points()`](https://ninanor.github.io/oneimpact/reference/set_points.md)
 function from the package `oneimpact` and simulate the response variable
-`z` as a Poisson distributed random variable with mean $\lambda = 10$.
+`z` as a Poisson distributed random variable with mean $`\lambda = 10`$.
 The simulated sampled data is plotted below.
 
 ``` r
+
 # seed
 set.seed(111)
 # get extent of the study area
@@ -631,6 +650,7 @@ the parameter `zeroAsNA` to `FALSE`, since our input raster map has `NA`
 as background values. We plot the ZOI layers below.
 
 ``` r
+
 # radii
 radii <- c(500, 1000, 1500)
 # exp decay ZOI - both nearest and cumulative
@@ -649,6 +669,7 @@ Finally, the ZOI variables can be used to annotate the biological data
 for statistical analysis.
 
 ``` r
+
 # extract values
 zoi_sampling_pts <- terra::extract(zoi_all, bio_data, )
 # combine response variable with extracted data
@@ -681,7 +702,7 @@ head(bio_data_annotated)
 
 From this point, biological data can also be annotated with the ZOI of
 other disturbance variables and with other environmental covariates and
-used as input for the estimation of the effect sizes $\beta$ and
+used as input for the estimation of the effect sizes $`\beta`$ and
 evaluation of the cumulative effects for different types of
 infrastructure through statistical models. Statistical analyses can make
 use of model selection (Burnham & Anderson, 2002; Jackson & Fahrig,

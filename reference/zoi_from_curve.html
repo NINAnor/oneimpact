@@ -75,13 +75,15 @@ or a bag of models.</p>
 <span><span class="co"># S3 method for class 'data.frame'</span></span>
 <span><span class="fu">zoi_from_curve</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  <span class="va">weights</span>,</span>
 <span>  percentage <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  curve <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"mean"</span><span class="op">)</span>,</span>
+<span>  wq_probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
 <span>  ci <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"exp"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  mean_col_name <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  median_col_name <span class="op">=</span> <span class="st">"quantile:0.5"</span>,</span>
-<span>  ci_col_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile:0.025"</span>, <span class="st">"quantile:0.975"</span><span class="op">)</span></span>
+<span>  NAasZero <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'bag'</span></span>
@@ -95,11 +97,12 @@ or a bag of models.</p>
 <span>  return_predictions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="st">"df"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
 <span>  ci <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  wq_probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
+<span>  wq_probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
+<span>  format_long <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  n_features <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  mean_col_name <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  median_col_name <span class="op">=</span> <span class="st">"quantile:0.5"</span>,</span>
-<span>  ci_col_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quantile:0.025"</span>, <span class="st">"quantile:0.975"</span><span class="op">)</span>,</span>
+<span>  NAasZero <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  radius_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  baseline <span class="op">=</span> <span class="st">"zero"</span>,</span>
 <span>  type_feature <span class="op">=</span> <span class="st">"line"</span>,</span>
@@ -136,6 +139,11 @@ Default is <code>0.95</code>.</p></dd>
 Which central tendency curves to use: <code>"median"</code>, <code>"mean"</code>, or both.</p></dd>
 
 
+<dt id="arg-wq-probs">wq_probs<a class="anchor" aria-label="anchor" href="#arg-wq-probs"></a></dt>
+<dd><p><code>[numeric,vector=c(0.025, 0.975)]</code> <br> Numeric vector of quantiles
+used for prediction summaries.</p></dd>
+
+
 <dt id="arg-ci">ci<a class="anchor" aria-label="anchor" href="#arg-ci"></a></dt>
 <dd><p><code>[logical(1)=TRUE]</code> <br> Logical. Whether to compute ZOI estimates for
 the upper and lower limits of the confidence interval. Default is TRUE.</p></dd>
@@ -157,11 +165,6 @@ the mean response curve.</p></dd>
 containing the median response curve.</p></dd>
 
 
-<dt id="arg-ci-col-name">ci_col_name<a class="anchor" aria-label="anchor" href="#arg-ci-col-name"></a></dt>
-<dd><p><code>[character=c("quantile:0.255", "quantile:0.975")]</code> <br> Character
-vector of length 2. Names of columns for lower and upper confidence intervals.</p></dd>
-
-
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p><code>[data.frame]</code> <br> The original dataset used for model fitting.</p></dd>
 
@@ -181,11 +184,6 @@ a <code>list</code> with predictions and the ZOI parameters.</p></dd>
 <dd><p><code>[character="df"]{"list", "df"}</code> <br>
 Format of the returned ZOI metrics. Either a list of data.frames (if <code>return_format = "list"</code>),
 one for each variable, or a single <code>data.frame</code> (default, if <code>return_format = "df"</code>).</p></dd>
-
-
-<dt id="arg-wq-probs">wq_probs<a class="anchor" aria-label="anchor" href="#arg-wq-probs"></a></dt>
-<dd><p><code>[numeric,vector=c(0.025, 0.975)]</code> <br> Numeric vector of quantiles
-used for prediction summaries.</p></dd>
 
 
 <dt id="arg-n-features">n_features<a class="anchor" aria-label="anchor" href="#arg-n-features"></a></dt>
@@ -226,6 +224,11 @@ of ZOIs for linear features.</p></dd>
 <dt id="arg-zoi-shape">zoi_shape<a class="anchor" aria-label="anchor" href="#arg-zoi-shape"></a></dt>
 <dd><p><code>[character]</code> <br> Character. Shape of the ZOI used in the model
 (e.g., <code>"circle"</code>, <code>"Gauss"</code>, <code>"exp_decay"</code>).</p></dd>
+
+
+<dt id="arg-ci-col-name">ci_col_name<a class="anchor" aria-label="anchor" href="#arg-ci-col-name"></a></dt>
+<dd><p><code>[character=c("quantile:0.255", "quantile:0.975")]</code> <br> Character
+vector of length 2. Names of columns for lower and upper confidence intervals.</p></dd>
 
 </dl></div>
     <div class="section level2">

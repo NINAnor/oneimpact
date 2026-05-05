@@ -152,7 +152,7 @@ predictions.
 # load packages
 library(glmnet)
 #> Loading required package: Matrix
-#> Loaded glmnet 4.1-10
+#> Loaded glmnet 5.0
 #> 
 #> Attaching package: ‘glmnet’
 #> The following objects are masked from ‘package:oneimpact’:

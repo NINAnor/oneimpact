@@ -325,7 +325,7 @@ algorithm within GRASS GIS.</td>
 that informs how the impact of a given infrastructure feature, source of
 disturbance, or landscape element decreases with distance. Formally, the
 ZOI
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>r</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\phi = f(d, r)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>=</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>r</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\phi = f(d, r)</annotation></semantics></math>
 is any decay function that has a maximum value 1 where disturbance is
 located, decreases towards zero as the distance
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
@@ -416,7 +416,7 @@ as the distance at which the ZOI decreases to
 an arbitrary small ZOI value beyond which the influence of the
 infrastructure is considered to be negligible. In these cases, the ZOI
 definition needs an extra parameter and is defined as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>r</mi><mo>,</mo><msub><mi>ϕ</mi><mrow><mi>l</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>t</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\phi = f(d, r, \phi_{limit})</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>=</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo>,</mo><mi>r</mi><mo>,</mo><msub><mi>ϕ</mi><mrow><mi>l</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\phi = f(d, r, \phi_{limit})</annotation></semantics></math>.
 Two functions of this type are implemented in <code>oneimpact</code>:
 the exponential decay and the Gaussian decay functions.</p>
 <div class="section level5">

@@ -65,15 +65,17 @@ environmental/zone of influence data and data annotation workflow,
 please check Niebuhr et al. 2023.
 
 ``` r
+
 # load packages
 library(glmnet) # for fitting
 ```
 
     ## Loading required package: Matrix
 
-    ## Loaded glmnet 4.1-10
+    ## Loaded glmnet 5.0
 
 ``` r
+
 library(ggplot2) # for plotting
 library(tmap) # for plotting maps
 library(terra) # for spatial predictions
@@ -82,6 +84,7 @@ library(terra) # for spatial predictions
     ## terra 1.9.11
 
 ``` r
+
 library(oneimpact)
 ```
 
@@ -101,6 +104,7 @@ library(oneimpact)
     ##     predict
 
 ``` r
+
 # load data
 data("reindeer_rsf")
 # rename it just for convenience
@@ -227,6 +231,7 @@ to make it easier to add the ZOI metrics with multiple radii in the
 formula.
 
 ``` r
+
 # formula initial structure
 f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
   NORUTreclass +
@@ -255,6 +260,7 @@ in the formula and use a penalized regression approach to both fit the
 model and select the variables.
 
 ``` r
+
 f
 ```
 
@@ -269,7 +275,7 @@ f
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x55d69f910c48>
+    ## <environment: 0x56302a7fcca0>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -284,6 +290,7 @@ flavors of “Adaptive Lasso” approaches.
 Here we take a glance on the structure of this table:
 
 ``` r
+
 head(predictor_table_zoi, 10)
 ```
 
@@ -325,6 +332,7 @@ data observations that goes into fitting, calibration, and validation
 sampling here, but the sampling can also be spatially stratified.
 
 ``` r
+
 # sampling - random sampling
 set.seed(1234)
 samples <- create_resamples(y = dat$use,
@@ -342,6 +350,7 @@ original data set) that will be used for (i) model fitting
 (`samples$test`), and for (iii) model validation (`samples$validate`).
 
 ``` r
+
 str(samples, max.level = 1)
 ```
 
@@ -368,6 +377,7 @@ is printed in these cases; but we recommend that missing data is checked
 in advance.
 
 ``` r
+
 # dat2 <- dat
 # dat$public_cabins_high_cumulative_exp_decay_1000 <- 0
 mod <- fit_net_logit(f, 
@@ -436,6 +446,7 @@ comprises a list with:
   `metrics_evaluated`, when there is more than one metric.
 
 ``` r
+
 str(mod, max.level = 1)
 ```
 
@@ -488,6 +499,7 @@ fitting can be done in parallel, and also saved in external files if
 needed.
 
 ``` r
+
 # fit multiple models
 fittedl <- bag_fit_net_logit(f, dat,
                              samples = samples,
@@ -522,15 +534,16 @@ present in the bag object, as well as summaries of the data that are
 useful for model prediction.
 
 ``` r
+
 str(bag_object, max.level = 1)
 ```
 
     ## List of 32
     ##  $ n                                : int 50
     ##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55d69f910c48> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x56302a7fcca0> 
     ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55d69fd69a70> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x56302ac4a610> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"
@@ -597,6 +610,7 @@ First, it is possible to check and plot the validation scores to know
 how well the model performs under new conditions.
 
 ``` r
+
 bag_object$validation_score[1:10]
 ```
 
@@ -611,6 +625,7 @@ model, with more weight for models better ranked. We can also plot the
 scores for each model in the bag:
 
 ``` r
+
 hist(bag_object$validation_score, xlim = c(0,1),
      xlab = "Validation score")
 abline(v = 0.7, col = "red") # threshold
@@ -651,6 +666,7 @@ Variable importance can be visualized using the function
 [`oneimpact::plot_importance()`](https://ninanor.github.io/oneimpact/reference/plot_importance.md).
 
 ``` r
+
 # variable importance
 importance <- variable_importance(bag_object, 
                                   data = dat, 
@@ -663,6 +679,7 @@ importance <- variable_importance(bag_object,
     ## observations were kept.
 
 ``` r
+
 #plot_importance(importance)
 plot_importance(importance, remove_threshold = 5e-3) # remove vars with too low score from plot
 ```
@@ -675,6 +692,7 @@ cottages or public resorts) and all terms related to the same variable
 (e.g. quadratic terms).
 
 ``` r
+
 # Using variable block/type of variable
 variable_blocks <- bag_object$var_names |>
   strsplit(split = "_cumulative_exp_decay|reclass|, 2)|, 2, raw = TRUE)|_sq") |>
@@ -697,6 +715,7 @@ variable_blocks
     ## [34] "norway_pca_klima_axis2" "norway_pca_klima_axis3" "norway_pca_klima_axis4"
 
 ``` r
+
 importance_block <- variable_importance(bag_object, 
                                         data = dat, 
                                         type = "drop",
@@ -709,6 +728,7 @@ importance_block <- variable_importance(bag_object,
     ## observations were kept.
 
 ``` r
+
 plot_importance(importance_block, normalize = T)
 ```
 
@@ -723,6 +743,7 @@ The estimated coefficients from the models in the bag can be seen in the
 model/resample of the bag, for each term of the formula:
 
 ``` r
+
 # coefficients - already unstandardized by the fit_net_logit function
 bag_object$coef[,1:5] |> 
   head(10)
@@ -771,6 +792,7 @@ models perform relatively well, which means all of them are given a
 relative similar weight:
 
 ``` r
+
 # weights and weighted coefficients
 bag_object$validation_score[1:10]
 ```
@@ -779,6 +801,7 @@ bag_object$validation_score[1:10]
     ##  [8] 0.9181758 0.9194765 0.9190469
 
 ``` r
+
 bag_object$weights[1:10]
 ```
 
@@ -791,6 +814,7 @@ Now we can get the weighted coefficients for each model, and averaged
 over models.
 
 ``` r
+
 # weighted coefficients for each model
 bag_object$wcoef[,1:2]
 ```
@@ -834,6 +858,7 @@ bag_object$wcoef[,1:2]
     ## norway_pca_klima_axis4                        0.000000e+00  0.8133562429
 
 ``` r
+
 # weighted average coefficients
 bag_object$coef %*% bag_object$weights # weighted average
 ```
@@ -884,6 +909,7 @@ function.
 **explain one by one**
 
 ``` r
+
 # plot weighted coefficients in each model, for all terms
 # plot_coef(bag_object)
 
@@ -899,6 +925,7 @@ plot_coef(bag_object, terms = "private_cabins_cumulative", models = 1:3)
 ![](fitting_ZOI_logit_files/figure-html/coef5-1.png)
 
 ``` r
+
 # only for private cabins, by resample, as points
 plot_coef(bag_object, terms = "private_cabins_cumulative", 
           plot_type = "points", models = 1:3)
@@ -907,6 +934,7 @@ plot_coef(bag_object, terms = "private_cabins_cumulative",
 ![](fitting_ZOI_logit_files/figure-html/coef5-2.png)
 
 ``` r
+
 # only for private cabins, as histograms
 plot_coef(bag_object, terms = "private_cabins_cumulative", 
           plot_type = "histogram")
@@ -927,6 +955,7 @@ this case, for ZOI variables, it is advisable to order them according to
 the ZOI radius with the option `order_zoi_radius = TRUE`.
 
 ``` r
+
 # plot weighted average coefs - all terms
 plot_coef(bag_object, what = "average")
 ```
@@ -934,6 +963,7 @@ plot_coef(bag_object, what = "average")
 ![](fitting_ZOI_logit_files/figure-html/coef6-1.png)
 
 ``` r
+
 # plot weighted average coefs - public cabins
 plot_coef(bag_object, what = "average", terms = "public_cabins", 
           plot_type = "points", order_zoi_radius = TRUE)
@@ -942,6 +972,7 @@ plot_coef(bag_object, what = "average", terms = "public_cabins",
 ![](fitting_ZOI_logit_files/figure-html/coef6-2.png)
 
 ``` r
+
 # zoom
 plot_coef(bag_object, what = "average", terms = "public_cabins", 
           plot_type = "points", order_zoi_radius = TRUE) + ylim(-50, 50)
@@ -977,6 +1008,7 @@ more easily interpreted as the gradient of change in relative selection
 as the variable increases or decreases.
 
 ``` r
+
 # plot responses
 
 # PCA1
@@ -1002,6 +1034,7 @@ instead of the weighted confidence interval. This is done setting the
 parameters `individ_pred = TRUE` and `ci = FALSE`.
 
 ``` r
+
 # reference median
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
@@ -1017,6 +1050,7 @@ plot_response(bag_object,
 Now we plot the effect of PCA3, which is related to terrain ruggedness.
 
 ``` r
+
 # plot responses
 
 # PCA3
@@ -1042,6 +1076,7 @@ visualization. We start by plotting the relative selection strength
 considering the impact of one single private cabin.
 
 ``` r
+
 # ZOI private cabins
 dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
 plot_response(bag_object, 
@@ -1065,6 +1100,7 @@ gets less uncertain. See below the response plot for a set of 10 and 100
 cabins.
 
 ``` r
+
 # 10 features
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
@@ -1077,6 +1113,7 @@ plot_response(bag_object,
 ![](fitting_ZOI_logit_files/figure-html/plot_response4-1.png)
 
 ``` r
+
 # 100 features
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
@@ -1095,6 +1132,7 @@ the relative selection strength considering the impact of one single
 resort.
 
 ``` r
+
 # ZOI public resorts cumulative
 dfvar = data.frame(public_cabins = 1e3*seq(0.2, 20, length.out = 100))
 
@@ -1120,6 +1158,7 @@ in the study area, which shows a more consistently negative effect which
 only starts to decrease after 10 km.
 
 ``` r
+
 # 3 features
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
@@ -1145,12 +1184,14 @@ loaded for the whole study area - the Hardangervidda wild reindeer area
 in Norway and its surroundings.
 
 ``` r
+
 (f <- system.file("raster/rast_predictors_hardanger_500m.tif", package = "oneimpact"))
 ```
 
     ## [1] "/home/runner/work/_temp/Library/oneimpact/raster/rast_predictors_hardanger_500m.tif"
 
 ``` r
+
 rast_predictors <- terra::rast(f)
 ```
 
@@ -1167,6 +1208,7 @@ suitability, which shows a similar pattern to the habitat suitability
 map presented in Niebuhr et al. 2023 (Fig. 5f).
 
 ``` r
+
 pred <- bag_predict_spat(bag = bag_object, data = rast_predictors,
                          input_type = "rast", what = c("mean", "median"))
 # if rast_df was a data.frame
@@ -1188,6 +1230,7 @@ The function produces a list with:
 Below we plot the first map, the weighted average prediction.
 
 ``` r
+
 # weighted average
 map1 <- tmap::tm_shape(pred[["r_weighted_avg_pred"]]) +
   tmap::tm_raster(palette = "Greens", style = "cont", title = "Suitability") +
@@ -1213,6 +1256,7 @@ map1 <- tmap::tm_shape(pred[["r_weighted_avg_pred"]]) +
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
+
 print(map1)
 ```
 
@@ -1227,6 +1271,7 @@ prediction. It is by default stored in as the first layer of the raster
 `pred$r_ind_summ_pred`.
 
 ``` r
+
 # average/SD of individual pred
 names(pred[["r_ind_summ_pred"]]) <- c("Median", "IQR", "QCV")
 map2 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[1]]) +
@@ -1253,6 +1298,7 @@ map2 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[1]]) +
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
+
 print(map2)
 ```
 
@@ -1275,6 +1321,7 @@ argument `uncertainty_quantiles` in the
 function.
 
 ``` r
+
 map3 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[2]]) +
   tmap::tm_raster(palette = "Reds", style = "cont", title = "Uncertainty") +
   tmap::tm_layout(legend.position = c("LEFT", "BOTTOM"),
@@ -1299,6 +1346,7 @@ map3 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[2]]) +
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
+
 print(map3)
 ```
 
@@ -1315,13 +1363,14 @@ cabins.
 
 The function also computes (by default) the quartile coefficient of
 variation (QCV), which is defined as the ratio
-$QCV = \frac{p_{75} - p_{25}}{p_{75} + p_{25}}$, where $p_{x}$ is the
+$`QCV = \frac{p_{75} - p_{25}}{p_{75} + p_{25}}`$, where $`p_x`$ is the
 `x%` percentile. We see now that this measures highlights the relative
 (not the absolute) variation in the prediction, which occurs close to
 the two types of cabins and in the areas of high variation in the other
 predictors as well.
 
 ``` r
+
 map4 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[3]]) +
   tmap::tm_raster(palette = "Reds", style = "cont", title = "Uncertainty") +
   tmap::tm_layout(legend.position = c("LEFT", "BOTTOM"),
@@ -1346,6 +1395,7 @@ map4 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[3]]) +
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
+
 print(map4)
 ```
 
@@ -1386,6 +1436,7 @@ To make it fast, we produce only the mean weighted prediction for the
 partial effect of each of the covariates.
 
 ``` r
+
 # variables to be considered
 predictor_table_zoi$variable
 ```
@@ -1404,6 +1455,7 @@ predictor_table_zoi$variable
     ## [23] "norway_pca_klima_axis4"
 
 ``` r
+
 # correct quadratic terms
 predictor_table_zoi$variable <- gsub("poly(", "", predictor_table_zoi$variable, fixed = T) |>
         gsub(pattern = ", 2, raw = TRUE)|_sq", replacement = "")
@@ -1454,6 +1506,7 @@ simplicity. This means that values above 1 represent selection, and
 values below 1 represent avoidance.
 
 ``` r
+
 plots <- lapply(c(3,4,6), 
                 function(x) #plot(x, main = names(x), col = map.pal("viridis")))
                   tmap::tm_shape(pred_vars$r_weighted_avg_pred[[x]]) +
@@ -1486,6 +1539,7 @@ plots <- lapply(c(3,4,6),
     ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
 
 ``` r
+
 print(plots)
 ```
 
@@ -1534,6 +1588,7 @@ As shown above, the effect of both types of infrastructure is very
 strong.
 
 ``` r
+
 # private cabins
 map_plot <- pred_vars$r_weighted_avg_pred[[1]]
 map1 <- tmap::tm_shape(map_plot) +
@@ -1563,6 +1618,7 @@ map1 <- tmap::tm_shape(map_plot) +
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
+
 print(map1)
 ```
 
@@ -1576,6 +1632,7 @@ print(map1)
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-1.png)
 
 ``` r
+
 # public cabins
 map_plot <- pred_vars$r_weighted_avg_pred[[2]]
 map2 <- tmap::tm_shape(map_plot) +
@@ -1601,6 +1658,7 @@ map2 <- tmap::tm_shape(map_plot) +
     ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'[v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
+
 print(map2)
 ```
 

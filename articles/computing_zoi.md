@@ -39,6 +39,7 @@ infrastructure: private tourist cabins and main roads, using a sample
 landscape from Southern Norway.
 
 ``` r
+
 library(oneimpact)
 library(terra) # for processing with geodata
 ```
@@ -52,6 +53,7 @@ metrics. Both loading and rasterizing maps can be accomplished e.g. with
 the package `terra`.
 
 ``` r
+
 # Load cabins vector data
 f <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact")
 cabins_vect <- terra::vect(f)
@@ -75,6 +77,7 @@ building and municipality where each feature is located. We can
 visualize the cabins to have an idea of how they are distributed:
 
 ``` r
+
 plot(cabins_vect, cex = 0.5)
 ```
 
@@ -83,6 +86,7 @@ plot(cabins_vect, cex = 0.5)
 We can now load the road data for the same area.
 
 ``` r
+
 # Load roads vector data
 f2 <- system.file("vector/sample_area_roads.gpkg", package = "oneimpact")
 roads_vect <- terra::vect(f2)
@@ -107,6 +111,7 @@ road is public or private, and if the road traffic is high or low.
 Now we plot the roads data set:
 
 ``` r
+
 plot(roads_vect)
 ```
 
@@ -138,6 +143,7 @@ just use it to define the resolution of the output raster maps in the
 rasterization process.
 
 ``` r
+
 # Load vase raster data
 f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
 r <- terra::rast(f)
@@ -162,6 +168,7 @@ is not default in the
 function.
 
 ``` r
+
 # rasterize cabins counting the number of features in each pixel
 cabins <- terra::rasterize(cabins_vect, r, fun = length)
 # fill background as zero
@@ -183,6 +190,7 @@ cabins
 Now we plot the map to visualize the result:
 
 ``` r
+
 plot(cabins)
 ```
 
@@ -198,6 +206,7 @@ binary input raster, where 1 represents the presence of roads and `NA`
 represent the absence of roads in the pixel.
 
 ``` r
+
 # rasterize roads into a binary map 1/NA
 roads <- terra::rasterize(roads_vect, r)
 # output
@@ -217,6 +226,7 @@ roads
 Now we plot the map to visualize the result:
 
 ``` r
+
 plot(roads)
 ```
 
@@ -259,6 +269,7 @@ parameter `zeroAsNA = TRUE` (default), which means we do need to treat
 background zero values as `NA`:
 
 ``` r
+
 # compute both Zoi metrics with exponential decay, radius = 500 and 1000 m
 # since the background is NA, we use zeroAsNA = FALSE
 zoi_cabins <- calc_zoi(cabins,
@@ -284,6 +295,7 @@ resulting raster is composed of \$\verb\|2 x 2 = 4\|\$ layers. Below we
 plot these layers to visualize the different spatial patterns:
 
 ``` r
+
 # plot
 plot(zoi_cabins)
 ```
@@ -313,6 +325,7 @@ radii of 1000 and 2000 m. Since the background of the input map is `NA`,
 we now need to set the parameter `zeroAsNA = FALSE`:
 
 ``` r
+
 # compute both Zoi metrics with Gaussian decay, radius = 500 and 1000 m
 # since the background is NA, we use zeroAsNA = FALSE
 zoi_roads <- calc_zoi(roads,
@@ -336,6 +349,7 @@ We again have four layers representing the two ZOI metrics for roads for
 the different radii:
 
 ``` r
+
 # plot
 plot(zoi_roads)
 ```
@@ -355,7 +369,7 @@ the ZOI of 1000 m-radius, for instance, a site with a cumulative ZOI of
 radius around this site (but remember this is not a simple count but an
 exponentially-weighted count of the number of road pixels). If
 multiplied by the pixel size and divided by the size of the neighborhood
-($\pi \cdot r^{2}$), the cumulative ZOI metric represents the
+($`\pi \cdot r^2`$), the cumulative ZOI metric represents the
 exponentially-weighted density of roads at 1000 m scale.
 
 ### Area infrastructure

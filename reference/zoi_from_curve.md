@@ -17,13 +17,15 @@ zoi_from_curve(x, ...)
 # S3 method for class 'data.frame'
 zoi_from_curve(
   x,
+  weights,
   percentage = 0.95,
   curve = c("median", "mean"),
+  wq_probs = c(0.025, 0.975),
   ci = TRUE,
   type = c("linear", "exp")[1],
   mean_col_name = "mean",
   median_col_name = "quantile:0.5",
-  ci_col_name = c("quantile:0.025", "quantile:0.975")
+  NAasZero = TRUE
 )
 
 # S3 method for class 'bag'
@@ -37,11 +39,12 @@ zoi_from_curve(
   return_predictions = FALSE,
   return_format = c("list", "df")[2],
   ci = TRUE,
-  wq_probs = c(0.025, 0.5, 0.975),
+  wq_probs = c(0.025, 0.975),
+  format_long = TRUE,
   n_features = 1,
   mean_col_name = "mean",
   median_col_name = "quantile:0.5",
-  ci_col_name = c("quantile:0.025", "quantile:0.975"),
+  NAasZero = TRUE,
   radius_max = NULL,
   baseline = "zero",
   type_feature = "line",
@@ -77,6 +80,11 @@ zoi_from_curve(
   Character vector. Which central tendency curves to use: `"median"`,
   `"mean"`, or both.
 
+- wq_probs:
+
+  `[numeric,vector=c(0.025, 0.975)]`  
+  Numeric vector of quantiles used for prediction summaries.
+
 - ci:
 
   `[logical(1)=TRUE]`  
@@ -99,12 +107,6 @@ zoi_from_curve(
 
   `[character="quantile:0.5"]`  
   Name of the column containing the median response curve.
-
-- ci_col_name:
-
-  `[character=c("quantile:0.255", "quantile:0.975")]`  
-  Character vector of length 2. Names of columns for lower and upper
-  confidence intervals.
 
 - data:
 
@@ -130,11 +132,6 @@ zoi_from_curve(
   Format of the returned ZOI metrics. Either a list of data.frames (if
   `return_format = "list"`), one for each variable, or a single
   `data.frame` (default, if `return_format = "df"`).
-
-- wq_probs:
-
-  `[numeric,vector=c(0.025, 0.975)]`  
-  Numeric vector of quantiles used for prediction summaries.
 
 - n_features:
 
@@ -186,6 +183,12 @@ zoi_from_curve(
   `[character]`  
   Character. Shape of the ZOI used in the model (e.g., `"circle"`,
   `"Gauss"`, `"exp_decay"`).
+
+- ci_col_name:
+
+  `[character=c("quantile:0.255", "quantile:0.975")]`  
+  Character vector of length 2. Names of columns for lower and upper
+  confidence intervals.
 
 ## Value
 
