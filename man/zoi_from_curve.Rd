@@ -10,13 +10,15 @@ zoi_from_curve(x, ...)
 
 \method{zoi_from_curve}{data.frame}(
   x,
+  weights,
   percentage = 0.95,
   curve = c("median", "mean"),
+  wq_probs = c(0.025, 0.975),
   ci = TRUE,
   type = c("linear", "exp")[1],
   mean_col_name = "mean",
   median_col_name = "quantile:0.5",
-  ci_col_name = c("quantile:0.025", "quantile:0.975")
+  NAasZero = TRUE
 )
 
 \method{zoi_from_curve}{bag}(
@@ -29,11 +31,12 @@ zoi_from_curve(x, ...)
   return_predictions = FALSE,
   return_format = c("list", "df")[2],
   ci = TRUE,
-  wq_probs = c(0.025, 0.5, 0.975),
+  wq_probs = c(0.025, 0.975),
+  format_long = TRUE,
   n_features = 1,
   mean_col_name = "mean",
   median_col_name = "quantile:0.5",
-  ci_col_name = c("quantile:0.025", "quantile:0.975"),
+  NAasZero = TRUE,
   radius_max = NULL,
   baseline = "zero",
   type_feature = "line",
@@ -58,6 +61,9 @@ Default is \code{0.95}.}
 \item{curve}{\verb{[character(1)=c("mean", "median")]} \cr Character vector.
 Which central tendency curves to use: \code{"median"}, \code{"mean"}, or both.}
 
+\item{wq_probs}{\verb{[numeric,vector=c(0.025, 0.975)]} \cr Numeric vector of quantiles
+used for prediction summaries.}
+
 \item{ci}{\verb{[logical(1)=TRUE]} \cr Logical. Whether to compute ZOI estimates for
 the upper and lower limits of the confidence interval. Default is TRUE.}
 
@@ -71,9 +77,6 @@ the mean response curve.}
 \item{median_col_name}{\verb{[character="quantile:0.5"]} \cr Name of the column
 containing the median response curve.}
 
-\item{ci_col_name}{\verb{[character=c("quantile:0.255", "quantile:0.975")]} \cr Character
-vector of length 2. Names of columns for lower and upper confidence intervals.}
-
 \item{data}{\verb{[data.frame]} \cr The original dataset used for model fitting.}
 
 \item{include}{\verb{[character="all"]} \cr Character. Either \code{"all"} or a
@@ -86,9 +89,6 @@ a \code{list} with predictions and the ZOI parameters.}
 \item{return_format}{\verb{[character="df"]\{"list", "df"\}} \cr
 Format of the returned ZOI metrics. Either a list of data.frames (if \code{return_format = "list"}),
 one for each variable, or a single \code{data.frame} (default, if \code{return_format = "df"}).}
-
-\item{wq_probs}{\verb{[numeric,vector=c(0.025, 0.975)]} \cr Numeric vector of quantiles
-used for prediction summaries.}
 
 \item{n_features}{\verb{[numeric=1]} \cr Number of features used in ZOI prediction.
 It can a single number (considered the same for all ZOI variables) or a vector
@@ -113,6 +113,9 @@ of ZOIs for linear features.}
 
 \item{zoi_shape}{\verb{[character]} \cr Character. Shape of the ZOI used in the model
 (e.g., \code{"circle"}, \code{"Gauss"}, \code{"exp_decay"}).}
+
+\item{ci_col_name}{\verb{[character=c("quantile:0.255", "quantile:0.975")]} \cr Character
+vector of length 2. Names of columns for lower and upper confidence intervals.}
 }
 \value{
 A \code{data.frame} or a \code{list} containing ZOI metrics:

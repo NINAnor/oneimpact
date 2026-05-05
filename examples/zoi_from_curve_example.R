@@ -1,6 +1,8 @@
 #---
 # fit a bag to be tested
 
+######## MAYBE USE A CONSTRAINED MODEL
+
 # load packages
 library(glmnet)
 library(ggplot2)
@@ -52,19 +54,7 @@ bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
 # bag_object <- truncate_bag(bag_object, dat)
 
 #----
-# first we take a look at a response curve, just have an idea
-
-# private cabins
-dfvar <- data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
-plot_response(bag_object,
-              dfvar = dfvar,
-              data = dat,
-              type = "exp",
-              zoi = TRUE,
-              ci = FALSE,
-              indiv_pred = TRUE,
-              logx = TRUE,
-              ylim = ylim(0, 2))
+# test for private cabins
 
 #-----
 # compute ZOI using data.frames with prediction
@@ -72,21 +62,22 @@ plot_response(bag_object,
 #---
 # compute ZOI for 1 feature
 
-# prediction
+# prediction for each model in the bag, using wmean = FALSE
+
+# private cabins
+dfvar <- data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
                 type = "linear",
-                wq_probs = c(0.025, 0.5, 0.975),
+                wmean = FALSE,
                 zoi = TRUE,
                 n_features = 1,
                 baseline = "zero")
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab1 <- zoi_from_curve(x))
-
-# plot
+(tab1 <- zoi_from_curve(x, weights = bag_object$weights))
 
 # plot lines
 p <- plot_response(bag_object,
@@ -96,34 +87,36 @@ p <- plot_response(bag_object,
                    zoi = TRUE,
                    ci = FALSE,
                    indiv_pred = TRUE,
-                   logx = FALSE)#,
-# ylim = ylim(0, 2))
+                   logx = FALSE)
 p +
-  annotate("pointrange", x = tab1[2,2], y = tab1[3,2],
-           xmin = tab1[2,4], xmax = tab1[2,5], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab1[1,2],
-           ymin = tab1[1,4], ymax = tab1[1,5], size = 0.5) +
+  # add median and CI for ZOI
+  annotate("pointrange", x = tab1$zoi_radius[2], y = tab1$effect_zoi_radius[2],
+           xmin = tab1$zoi_radius[3], xmax = tab1$zoi_radius[4], size = 0.5) +
+  # add median and CI for maximum effect size
+  annotate("pointrange", x = 0, y = tab1$max_effect_size[2],
+           ymin = tab1$max_effect_size[3], ymax = tab1$max_effect_size[4], size = 0.5) +
   xlim(0, 5000)
 
 #----
 # # compute ZOI for 30 features
-# At the linear scale, the estimated ZOI radius dos not change
+# At the linear scale, the estimated ZOI radius does not change
 
-# prediction
+# prediction for each model in the bag, using wmean = FALSE
+
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
                 type = "linear",
-                wq_probs = c(0.025, 0.5, 0.975),
+                wmean = FALSE,
                 zoi = TRUE,
                 n_features = 30,
                 baseline = "zero")
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab30 <- zoi_from_curve(x))
+(tab30 <- zoi_from_curve(x, weights = bag_object$weights))
 
-# plot
+# plot lines
 p <- plot_response(bag_object,
                    dfvar = dfvar,
                    data = dat,
@@ -132,75 +125,77 @@ p <- plot_response(bag_object,
                    n_features = 30,
                    ci = FALSE,
                    indiv_pred = TRUE,
-                   logx = FALSE)#,
-# ylim = ylim(0, 2))
+                   logx = FALSE)
 p +
-  annotate("pointrange", x = tab30[2,2], y = tab30[3,2],
-           xmin = tab30[2,4], xmax = tab30[2,5], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab30[1,2],
-           ymin = tab30[1,4], ymax = tab30[1,5], size = 0.5) +
+  # add median and CI for ZOI
+  annotate("pointrange", x = tab30$zoi_radius[2], y = tab30$effect_zoi_radius[2],
+           xmin = tab30$zoi_radius[3], xmax = tab30$zoi_radius[4], size = 0.5) +
+  # add median and CI for maximum effect size
+  annotate("pointrange", x = 0, y = tab30$max_effect_size[2],
+           ymin = tab30$max_effect_size[3], ymax = tab30$max_effect_size[4], size = 0.5) +
   xlim(0, 5000)
 
 # additive effect on both max_effect_size and impact
 # cbind(30*impact_of_one_cabin, impact_of_30_cabins)
-tibble::tibble(zoi_measure = tab1[c(1,4),1],
-               one_feature_x30 = tab1[c(1,4),2]*30,
-               thirty_features = tab30[c(1,4),2])
-
+tibble::tibble(zoi_measure = colnames(tab1)[c(1,4)],
+               one_feature = unlist(tab1[2,c(1,4)]),
+               one_feature_x30 = unlist(tab1[2,c(1,4)]*30),
+               thirty_features = unlist(tab30[2,c(1,4)]))
 
 #----
-# compute ZOI for 1 feature - exponential
+# compute ZOI for 1 feature - exponential response
 
-# prediction
+# prediction for each model in the bag, using wmean = FALSE
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
                 type = "exp",
-                wq_probs = c(0.025, 0.5, 0.975),
+                wmean = FALSE,
                 zoi = TRUE,
                 n_features = 1,
                 baseline = "zero")
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab_exp1 <- zoi_from_curve(x, type = "exp"))
+(tab_exp1 <- zoi_from_curve(x, weights = bag_object$weights, type = "exp"))
 
-# plot
+# plot lines
 p <- plot_response(bag_object,
                    dfvar = dfvar,
                    data = dat,
                    type = "exp",
                    zoi = TRUE,
-                   n_features = 1,
                    ci = FALSE,
                    indiv_pred = TRUE,
-                   logx = FALSE)#,
-# ylim = ylim(0, 2))
+                   logx = FALSE)
 p +
-  annotate("pointrange", x = tab_exp1[2,2], y = tab_exp1[3,2],
-           xmin = tab_exp1[2,4], xmax = tab_exp1[2,5], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp1[1,2],
-           ymin = tab_exp1[1,4], ymax = tab_exp1[1,5], size = 0.5) +
-  xlim(0, 10000)
+  # add median and CI for ZOI
+  annotate("pointrange", x = tab_exp1$zoi_radius[2], y = tab_exp1$effect_zoi_radius[2],
+           xmin = tab_exp1$zoi_radius[3], xmax = tab_exp1$zoi_radius[4], size = 0.5) +
+  # add median and CI for maximum effect size
+  annotate("pointrange", x = 0, y = tab_exp1$max_effect_size[2],
+           ymin = tab_exp1$max_effect_size[3], ymax = tab_exp1$max_effect_size[4], size = 0.5) +
+  xlim(0, 20000)
 
 #----
-# compute ZOI for 30 features - exponential
+# # compute ZOI for 30 features - expoenential response
+# At the exponential scale, the estimated ZOI radius does change
 
-# prediction
+# prediction for each model in the bag, using wmean = FALSE
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
                 type = "exp",
-                wq_probs = c(0.025, 0.5, 0.975),
+                wmean = FALSE,
                 zoi = TRUE,
                 n_features = 30,
                 baseline = "zero")
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab_exp30 <- zoi_from_curve(x, type = "exp"))
+(tab_exp30 <- zoi_from_curve(x, weights = bag_object$weights, type = "exp"))
 
-# plot
+# plot lines
 p <- plot_response(bag_object,
                    dfvar = dfvar,
                    data = dat,
@@ -209,75 +204,35 @@ p <- plot_response(bag_object,
                    n_features = 30,
                    ci = FALSE,
                    indiv_pred = TRUE,
-                   logx = FALSE)#,
-# ylim = ylim(0, 2))
+                   logx = FALSE)
 p +
-  annotate("pointrange", x = tab_exp30[2,2], y = tab_exp30[3,2],
-           xmin = tab_exp30[2,4], xmax = tab_exp30[2,5], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp30[1,2],
-           ymin = tab_exp30[1,4], ymax = tab_exp30[1,5], size = 0.5) +
-  xlim(0, 10000)
-
-# max effect size is multiplicative (power),
-tibble::tibble(zoi_measure = tab_exp1[c(1,4),1],
-               one_feature = c(tab_exp1[c(1),2]**30, tab_exp1[c(4),2]*30),
-               thirty_features = c(tab_exp30[c(1),2], tab_exp30[c(4),2]))
-
-#----
-# compute ZOI for 1 linear feature - exponential response
-# (there are issues when it is linear, check later)
-
-# prediction
-dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
-pred <- predict(x = bag_object,
-                newdata = dfvar,
-                data = dat,
-                type = "exp",
-                wq_probs = c(0.025, 0.5, 0.975),
-                zoi = TRUE,
-                n_features = 1,
-                baseline = "zero",
-                type_feature = "line",
-                type_feature_recompute = TRUE,
-                zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
-                resolution = 200)
-
-# df with prediction
-x <- cbind(dfvar, pred)
-(tab_exp1_line <- zoi_from_curve(x, type = "exp"))
-
-# plot
-p <- plot_response(bag_object,
-                   dfvar = dfvar,
-                   data = dat,
-                   type = "exp",
-                   zoi = TRUE,
-                   n_features = 1,
-                   baseline = "zero",
-                   type_feature = "line",
-                   type_feature_recompute = TRUE,
-                   zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
-                   resolution = 200,
-                   ci = FALSE,
-                   indiv_pred = TRUE,
-                   logx = FALSE)#,
-# ylim = ylim(0, 2))
-p +
-  annotate("pointrange", x = tab_exp1_line[2,2], y = tab_exp1_line[3,2],
-           xmin = tab_exp1_line[2,4], xmax = tab_exp1_line[2,5], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp1_line[1,2],
-           ymin = tab_exp1_line[1,4], ymax = tab_exp1_line[1,5], size = 0.5) +
+  # add median and CI for ZOI
+  annotate("pointrange", x = tab_exp30$zoi_radius[2], y = tab_exp30$effect_zoi_radius[2],
+           xmin = tab_exp30$zoi_radius[3], xmax = tab_exp30$zoi_radius[4], size = 0.5) +
+  # add median and CI for maximum effect size
+  annotate("pointrange", x = 0, y = tab_exp30$max_effect_size[2],
+           ymin = tab_exp30$max_effect_size[3], ymax = tab_exp30$max_effect_size[4], size = 0.5) +
   xlim(0, 20000)
 
-#-----
-# check using linear response, then we have issues
+# max effect size is multiplicative (power), but not impact
+# cbind(30*impact_of_one_cabin, impact_of_30_cabins)
+tibble::tibble(zoi_measure = colnames(tab_exp1)[c(1,4)],
+               one_feature = unlist(tab_exp1[2,c(1,4)]),
+               one_feature_x30 = unlist(tab_exp1[2,c(1,4)]*30),
+               thirty_features = unlist(tab_exp30[2,c(1,4)]))
+
+#----
+# test computing the distribution of ZOI values based on the individual models in the bag
+# now we use trails, a linear feature for the example
+# prediction for 1 trail at exponential response scale
+
 # prediction
 dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
                 type = "linear",
-                wq_probs = c(0.025, 0.5, 0.975),
+                wmean = FALSE,
                 zoi = TRUE,
                 n_features = 1,
                 baseline = "zero",
@@ -288,7 +243,14 @@ pred <- predict(x = bag_object,
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab_exp1_line <- zoi_from_curve(x, type = "linear"))
+(tab_exp1_line <- zoi_from_curve(x,
+                                 weights = bag_object$weights,
+                                 type = "linear"))
+# use ci = FALSE if we do not want the CI but all individual model values
+(tab_exp1_line <- zoi_from_curve(x,
+                                 weights = bag_object$weights,
+                                 type = "linear",
+                                 ci = FALSE))
 
 # plot
 p <- plot_response(bag_object,
@@ -304,16 +266,19 @@ p <- plot_response(bag_object,
                    resolution = 200,
                    ci = FALSE,
                    indiv_pred = TRUE,
-                   logx = FALSE)#,
-# ylim = ylim(0, 2))
+                   logx = FALSE)
 p +
-  annotate("pointrange", x = tab_exp1_line[2,2], y = tab_exp1_line[3,2],
-           xmin = tab_exp1_line[2,4], xmax = tab_exp1_line[2,5], size = 0.5) +
-  annotate("pointrange", x = 0, y = tab_exp1_line[1,2],
-           ymin = tab_exp1_line[1,4], ymax = tab_exp1_line[1,5], size = 0.5) +
+  # add median and CI for ZOI
+  annotate("pointrange", x = tab_exp1_line$zoi_radius[2], y = tab_exp1_line$effect_zoi_radius[2],
+           xmin = tab_exp1_line$zoi_radius[3], xmax = tab_exp1_line$zoi_radius[4], size = 0.5) +
+  # add median and CI for maximum effect size
+  annotate("pointrange", x = 0, y = tab_exp1_line$max_effect_size[2],
+           ymin = tab_exp1_line$max_effect_size[3], ymax = tab_exp1_line$max_effect_size[4], size = 0.5) +
   xlim(0, 20000)
 
-#------------
+#------------------------------
+# checking with predictions for each model, for all ZOI variables
+
 # zoi_from curve applied to a whole bag of models
 
 # first let's check all the fitted ZOI response curves
@@ -346,11 +311,12 @@ weirdness(bag_object,
           type_feature = c("point", "point", "line"))
 
 #---
-# now we compute ZOI parameters for all variables
+# now we compute ZOI parameters for all variables, with mean, median and CI
 zois <- zoi_from_curve(x = bag_object,
                        data = dat,
                        type = "linear",
-                       wq_probs = c(0.025, 0.5, 0.975),
+                       wq_probs = c(0.025, 0.975),
+                       ci = TRUE,
                        n_features = 1,
                        baseline = "zero",
                        type_feature = c("point", "point", "line"),
@@ -365,16 +331,22 @@ i <- 1
 var <- vars[i]
 pp <- plots[[i]] +
   annotate("pointrange",
-           x = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$mean,
-           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "effect_zoi_radius",]$mean,
-           xmin = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.025`,
-           xmax = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.975`,
+           x = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "mean",]$metric_value,
+           y = zois[grepl(var, zois$variable) & zois$zoi_metric == "effect_zoi_radius" & zois$stats == "mean",]$metric_value,
+           xmin = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "quantile:0.025",]$metric_value,
+           xmax = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "quantile:0.975",]$metric_value,
            size = 0.5) +
+  # annotate("pointrange",
+  #          x = 0,
+  #          y = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$mean,
+  #          ymin = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$`quantile:0.025`,
+  #          ymax = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$`quantile:0.975`,
+  #          size = 0.5) +
   annotate("pointrange",
            x = 0,
-           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$mean,
-           ymin = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.025`,
-           ymax = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.975`,
+           y = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "mean",]$metric_value,
+           ymin = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "quantile:0.025",]$metric_value,
+           ymax = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "quantile:0.975",]$metric_value,
            size = 0.5) +
   xlim(0, 5000)
 print(pp + ggtitle(var))
@@ -384,16 +356,22 @@ i <- 2
 var <- vars[i]
 pp <- plots[[i]] +
   annotate("pointrange",
-           x = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$mean,
-           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "effect_zoi_radius",]$mean,
-           xmin = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.025`,
-           xmax = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.975`,
+           x = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "mean",]$metric_value,
+           y = zois[grepl(var, zois$variable) & zois$zoi_metric == "effect_zoi_radius" & zois$stats == "mean",]$metric_value,
+           xmin = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "quantile:0.025",]$metric_value,
+           xmax = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "quantile:0.975",]$metric_value,
            size = 0.5) +
+  # annotate("pointrange",
+  #          x = 0,
+  #          y = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$mean,
+  #          ymin = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$`quantile:0.025`,
+  #          ymax = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$`quantile:0.975`,
+  #          size = 0.5) +
   annotate("pointrange",
            x = 0,
-           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$mean,
-           ymin = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.025`,
-           ymax = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.975`,
+           y = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "mean",]$metric_value,
+           ymin = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "quantile:0.025",]$metric_value,
+           ymax = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "quantile:0.975",]$metric_value,
            size = 0.5) +
   xlim(0, 5000)
 print(pp + ggtitle(var))
@@ -403,16 +381,50 @@ i <- 3
 var <- vars[i]
 pp <- plots[[i]] +
   annotate("pointrange",
-           x = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$mean,
-           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "effect_zoi_radius",]$mean,
-           xmin = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.025`,
-           xmax = zois[grepl(var, zois$variable) & zois$zoi_measure == "zoi_radius",]$`quantile:0.975`,
+           x = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "mean",]$metric_value,
+           y = zois[grepl(var, zois$variable) & zois$zoi_metric == "effect_zoi_radius" & zois$stats == "mean",]$metric_value,
+           xmin = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "quantile:0.025",]$metric_value,
+           xmax = zois[grepl(var, zois$variable) & zois$zoi_metric == "zoi_radius" & zois$stats == "quantile:0.975",]$metric_value,
            size = 0.5) +
+  # annotate("pointrange",
+  #          x = 0,
+  #          y = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$mean,
+  #          ymin = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$`quantile:0.025`,
+  #          ymax = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size",]$`quantile:0.975`,
+  #          size = 0.5) +
   annotate("pointrange",
            x = 0,
-           y = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$mean,
-           ymin = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.025`,
-           ymax = zois[grepl(var, zois$variable) & zois$zoi_measure == "max_effect_size",]$`quantile:0.975`,
+           y = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "mean",]$metric_value,
+           ymin = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "quantile:0.025",]$metric_value,
+           ymax = zois[grepl(var, zois$variable) & zois$zoi_metric == "max_effect_size" & zois$stats == "quantile:0.975",]$metric_value,
            size = 0.5) +
   xlim(0, 20000)
 print(pp + ggtitle(var))
+
+#-----------
+# Now we can also compute the values for each model and look at the distribution of ZOI values,
+# beyond the confidence interval
+
+# computing zoi metrics for each model, using ci = FALSE
+zois <- zoi_from_curve(x = bag_object,
+                       data = dat,
+                       type = "linear",
+                       ci = FALSE,
+                       n_features = 1,
+                       baseline = "zero",
+                       type_feature = c("point", "point", "line"),
+                       type_feature_recompute = TRUE,
+                       resolution = 200,
+                       zoi_shape = "exp_decay")
+zois
+
+# making a violin plot based on the distribution of ZOI values
+zois |>
+  dplyr::filter(grepl("Resample", stats), zoi_metric == "zoi_radius") |>
+  ggplot(aes(x = variable, y = metric_value)) +
+  geom_violin(fill = "red", alpha = 0.3) +
+  coord_flip() +
+  labs(y = "ZOI radius",
+       x = "Disturbance") +
+  scale_y_log10() +
+  theme_minimal()

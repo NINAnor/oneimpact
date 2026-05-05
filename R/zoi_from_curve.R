@@ -53,17 +53,24 @@ zoi_from_curve <- function(x, ...) {
 #' @rdname zoi_from_curve
 #' @export
 zoi_from_curve.data.frame <- function(x,
+                                      weights,
                                       percentage = 0.95,
                                       curve = c("median", "mean"),
+                                      wq_probs = c(0.025, 0.975),
                                       ci = TRUE,
                                       type = c("linear", "exp")[1],
                                       # n_features = 1,
                                       mean_col_name = "mean",
                                       median_col_name = "quantile:0.5",
-                                      ci_col_name = c("quantile:0.025", "quantile:0.975")) {
+                                      NAasZero = TRUE
+                                      # ci_col_name = c("quantile:0.025", "quantile:0.975"),
+                                      ) {
 
   # get predictor / ZOI variable
   xvar <- colnames(x)[1]
+  # only predicted values
+  pred <- x |>
+    dplyr::select(-all_of(xvar))
 
   if(type == "linear") {
     ref <- 0
@@ -72,23 +79,44 @@ zoi_from_curve.data.frame <- function(x,
   }
 
   # initialize output
-  # mean, median, 0.025, 0.975
-  max_effect_size <- rep(NA, 4)
-  zoi_radius <- rep(NA, 4)
-  effect_zoi_radius <- rep(NA, 4)
-  impact <- rep(NA, 4)
+  if(ci) {
+    # When ci=TRUE: mean, median, CI_lower, CI_upper (4 columns)
+    max_effect_size <- rep(NA, 4)
+    zoi_radius <- rep(NA, 4)
+    effect_zoi_radius <- rep(NA, 4)
+    impact <- rep(NA, 4)
+  } else {
+    # When ci=FALSE: mean, median, and individual models
+    # Identify individual model columns (all except xvar, mean, median)
+    individual_model_cols <- colnames(pred)
+    # individual_model_cols <- setdiff(all_response_cols, c(mean_col_name, median_col_name))
+    n_cols <- length(curve) + length(individual_model_cols)  # mean + median + individual models
+
+    max_effect_size <- rep(NA, n_cols)
+    zoi_radius <- rep(NA, n_cols)
+    effect_zoi_radius <- rep(NA, n_cols)
+    impact <- rep(NA, n_cols)
+  }
 
   # main and median effects
   i <- 1
+  main_col_names <- c()
   for(i in seq_along(curve)) {
 
     # get values of the main response - either mean or median
     if(curve[i] == "median") {
       id <- 2
-      main_response <- x[[median_col_name]]
+      main_col_names[id] <- median_col_name
+
+      main_response <- unname(apply(pred, 1, DescTools::Quantile,
+                                   weights = weights,
+                                   type = 5,
+                                   probs = 0.5))
     } else {
       id <- 1
-      main_response <- x[[mean_col_name]]
+      main_col_names[id] <- mean_col_name
+
+      main_response <- as.vector(as.matrix(pred) %*% weights)
     }
 
     # # max effect size
@@ -128,13 +156,16 @@ zoi_from_curve.data.frame <- function(x,
     impact[id] <- impact_main
   }
 
-  # repeat that for the CI
+  # CI bounds or individual models
   if(ci) {
+    ci_id <- 1
+    ci_col_name <- paste0("quantile:", wq_probs)
+    for(ci_id in seq_along(wq_probs)) {
 
-    ci_id <- 2
-    for(ci_id in seq(ci_col_name)) {
-
-      ci_response <- x[[ci_col_name[ci_id]]]
+      ci_response <- unname(apply(pred, 1, DescTools::Quantile,
+                                    weights = weights,
+                                    type = 5,
+                                    probs = wq_probs[ci_id]))
 
       # max effect size
       ci_max <- ci_response[which.max(abs(main_response - ref))]
@@ -163,23 +194,74 @@ zoi_from_curve.data.frame <- function(x,
 
       impact_ci <- signal * DescTools::AUC(x_vals, y_vals)
 
-      max_effect_size[ci_id + 2] <- ci_max
-      zoi_radius[ci_id + 2] <- zoi_radius_ci
-      effect_zoi_radius[ci_id + 2] <- y_value_percentage + ref
-      impact[ci_id + 2] <- impact_ci
+      # Store in position: mean (1) + median (2) + ci_idx
+      col_idx <- 2 + ci_id
+      max_effect_size[col_idx] <- ci_max
+      zoi_radius[col_idx] <- zoi_radius_ci
+      effect_zoi_radius[col_idx] <- y_value_percentage + ref
+      impact[col_idx] <- impact_ci
+    }
+  } else {
+    # Individual model computation
+    for(model_idx in seq_along(individual_model_cols)) {
+      model_response <- pred[[model_idx]]
+
+      # max effect size
+      model_max <- model_response[which.max(abs(model_response - ref))]
+
+      # zoi radius
+      if(type == "linear") {
+        x_radius_model_index <- which(abs(model_response) < abs(y_value_percentage + ref))[1] - 1
+      } else {
+        x_radius_model_index <- which(abs(model_response) > abs(y_value_percentage + ref))[1] - 1
+      }
+      if(is.na(x_radius_model_index)) {
+        x_radius_model_index <- length(model_response)
+      }
+      if(x_radius_model_index == 0) {
+        x_radius_model_index <- 1
+      }
+      zoi_radius_model <- x[[xvar]][x_radius_model_index]
+
+      # impact
+      x_vals <- x[[xvar]][1:x_radius_model_index]
+      y_vals <- model_response[1:x_radius_model_index] - ref
+      signal <- ifelse(y_vals[1] < 0, -1, 1)
+      y_vals <- abs(y_vals) - min(abs(y_vals)) # get positive and discount are above y(ZOI)
+
+      impact_model <- signal * DescTools::AUC(x_vals, y_vals)
+
+      # Store in position: mean (1) + median (2) + model_idx
+      col_idx <- 2 + model_idx
+      max_effect_size[col_idx] <- model_max
+      zoi_radius[col_idx] <- zoi_radius_model
+      effect_zoi_radius[col_idx] <- y_value_percentage + ref
+      impact[col_idx] <- impact_model
     }
   }
 
+  # set output data.frame
   out <- data.frame(max_effect_size = max_effect_size,
-              zoi_radius = zoi_radius,
-              effect_zoi_radius = effect_zoi_radius,
-              impact = impact) |>
-    # dplyr::bind_rows() |>
-    t() |>
-    as.data.frame() |>
-    tibble::rownames_to_column(var = "zoi_measure")
+                    zoi_radius = zoi_radius,
+                    effect_zoi_radius = effect_zoi_radius,
+                    impact = impact)
 
-  colnames(out)[-1] <- c(mean_col_name, median_col_name, ci_col_name[1], ci_col_name[2])
+  # check if both median and mean, or only on of them
+  if(!("mean" %in% curve)) {
+    out <- out[-1,]
+    main_col_names <- main_col_names[-1]
+  }
+  if(!("median" %in% curve)) out <- out[-2,]
+
+  # set rownames
+  if(ci) {
+    rownames(out) <- c(main_col_names, ci_col_name)
+  } else {
+    rownames(out) <- c(main_col_names, individual_model_cols)
+  }
+
+  if(NAasZero) out[is.na(out)] <- 0
+
   out
 }
 
@@ -226,11 +308,12 @@ zoi_from_curve.bag <- function(x,
                                return_predictions = FALSE,
                                return_format = c("list", "df")[2],
                                ci = TRUE,
-                               wq_probs = c(0.025, 0.5, 0.975),
+                               wq_probs = c(0.025, 0.975),
+                               format_long = TRUE,
                                n_features = 1,
                                mean_col_name = "mean",
                                median_col_name = "quantile:0.5",
-                               ci_col_name = c("quantile:0.025", "quantile:0.975"),
+                               NAasZero = TRUE,
                                radius_max = NULL,
                                baseline = "zero",
                                type_feature = "line",
@@ -280,7 +363,8 @@ zoi_from_curve.bag <- function(x,
                                newdata = dfvar,
                                data = data,
                                type = type,
-                               wq_probs = wq_probs,
+                               wmean = FALSE, # always use the individual model predictions
+                               wq_probs = NULL, # always NULL, compute quantiles below
                                zoi = TRUE,
                                n_features = n_features[i],
                                baseline = baseline,
@@ -296,13 +380,16 @@ zoi_from_curve.bag <- function(x,
   # compute zoi
   i <- 1
   zois <- lapply(seq_along(dfs), function(i) {
-    zoi_from_curve(dfs[[i]], type = type,
+    zoi_from_curve(dfs[[i]],
+                   weights = x$weights,
+                   type = type,
                    percentage = percentage,
+                   wq_probs = wq_probs,
                    curve = curve,
                    ci = ci,
                    mean_col_name = mean_col_name,
                    median_col_name = median_col_name,
-                   ci_col_name = ci_col_name)
+                   NAasZero = NAasZero)
   })
   names(zois) <- zoi_vars_unique
 
@@ -310,21 +397,25 @@ zoi_from_curve.bag <- function(x,
     # i <- 1
     zois <- lapply(seq_along(zois), function(i) {
       zois[[i]] |>
-        dplyr::mutate(variable = zoi_vars_unique[i])
+        dplyr::mutate(variable = zoi_vars_unique[i]) |>
+        tibble::rownames_to_column(var = "stats")
     }) |>
       dplyr::bind_rows() |>
       dplyr::relocate(variable, .before = 1) |>
       tibble::as_tibble()
+
+    if(format_long) {
+      zois <- zois |>
+        tidyr::pivot_longer(cols = max_effect_size:impact, names_to = "zoi_metric", values_to = "metric_value")
+    }
   }
 
   # return tables with zois
   if(return_predictions) {
-    return(list(predictions = df, zoi = zois))
+    return(list(predictions = dfs, zoi = zois))
   } else {
     return(zois)
   }
 }
 # implement function var
 # implement function bag - all vars
-
-
