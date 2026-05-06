@@ -4,7 +4,7 @@
 \alias{zoi_from_curve}
 \alias{zoi_from_curve.data.frame}
 \alias{zoi_from_curve.bag}
-\title{Get estimates of zone of influence (ZOI) from response curves}
+\title{Get estimates of zone of influence (ZOI) metrics from response curves}
 \usage{
 zoi_from_curve(x, ...)
 
@@ -12,7 +12,7 @@ zoi_from_curve(x, ...)
   x,
   weights,
   percentage = 0.95,
-  curve = c("median", "mean"),
+  curve = c("median", "mean")[1],
   wq_probs = c(0.025, 0.975),
   ci = TRUE,
   type = c("linear", "exp")[1],
@@ -26,7 +26,7 @@ zoi_from_curve(x, ...)
   data,
   include = "all",
   percentage = 0.95,
-  curve = c("median", "mean"),
+  curve = c("median", "mean")[1],
   type = c("linear", "exp")[1],
   return_predictions = FALSE,
   return_format = c("list", "df")[2],
@@ -54,6 +54,11 @@ or a \code{bag} object containing an ensemble of models.}
 
 \item{...}{Additional arguments passed to the appropriate method.}
 
+\item{weights}{\verb{[numeric]} \cr Numeric vector of model weights used to compute
+the weighted mean, weighted median, and weighted quantiles from the
+individual model prediction columns. This should match the number of
+individual model prediction columns in \code{x}.}
+
 \item{percentage}{\verb{[numeric(1)=0.95]} \cr Numeric between 0 and 1. Defines the
 threshold for ZOI radius as a proportion of the maximum effect size.
 Default is \code{0.95}.}
@@ -62,20 +67,27 @@ Default is \code{0.95}.}
 Which central tendency curves to use: \code{"median"}, \code{"mean"}, or both.}
 
 \item{wq_probs}{\verb{[numeric,vector=c(0.025, 0.975)]} \cr Numeric vector of quantiles
-used for prediction summaries.}
+used to compute confidence-interval for the ZOI metrics when \code{ci = TRUE}.
+Ignored when \code{ci = FALSE}.}
 
-\item{ci}{\verb{[logical(1)=TRUE]} \cr Logical. Whether to compute ZOI estimates for
-the upper and lower limits of the confidence interval. Default is TRUE.}
+\item{ci}{\verb{[logical(1)=TRUE]} \cr Logical. When \code{TRUE}, returns ZOI metrics for
+weighted mean and/or median, and the weighted confidence interval curves.
+When \code{FALSE}, returns ZOI metrics
+for weighted mean/median and all for each individual model prediction curve
+present in the input.}
 
 \item{type}{\verb{[character(1)="linear"]\{"linear", "exp"\}} \cr Character. Defines whether
-the calculation of ZOI should be based on the prediction of at linear
-or response (exponential) scale: \code{"linear"} or \code{"exp"}, respectively.}
+the calculation of ZOI should be based on the prediction on the linear scale
+or the response (exponential) scale.}
 
 \item{mean_col_name}{\verb{[character="mean"]} \cr Name of the column containing
-the mean response curve.}
+the weighted mean response curve.}
 
 \item{median_col_name}{\verb{[character="quantile:0.5"]} \cr Name of the column
-containing the median response curve.}
+containing the weighted median response curve.}
+
+\item{NAasZero}{\verb{[logical(1)=TRUE]} \cr Logical. If \code{TRUE}, any \code{NA} values in
+the final output are replaced by zero.}
 
 \item{data}{\verb{[data.frame]} \cr The original dataset used for model fitting.}
 
@@ -84,11 +96,15 @@ regex pattern to filter selected ZOI variables.}
 
 \item{return_predictions}{\verb{[logical=FALSE]} \cr Logical. Whether to return
 the prediction curves alongside ZOI metrics. If \code{TRUE}, the output is necessarily
-a \code{list} with predictions and the ZOI parameters.}
+a \code{list} with with all \code{predictions} and the \code{zoi} metrics.}
 
-\item{return_format}{\verb{[character="df"]\{"list", "df"\}} \cr
-Format of the returned ZOI metrics. Either a list of data.frames (if \code{return_format = "list"}),
+\item{return_format}{\verb{[character="df"]\{"list", "df"\}} \cr Format of the returned
+ZOI metrics. Either a list of data.frames (if \code{return_format = "list"}),
 one for each variable, or a single \code{data.frame} (default, if \code{return_format = "df"}).}
+
+\item{format_long}{\verb{[logical(1)=TRUE]} \cr Logical. Whether to return the
+ZOI metrics in long format (with a \code{zoi_metric} column) or wide format
+(with separate columns for each metric)..}
 
 \item{n_features}{\verb{[numeric=1]} \cr Number of features used in ZOI prediction.
 It can a single number (considered the same for all ZOI variables) or a vector
@@ -113,39 +129,53 @@ of ZOIs for linear features.}
 
 \item{zoi_shape}{\verb{[character]} \cr Character. Shape of the ZOI used in the model
 (e.g., \code{"circle"}, \code{"Gauss"}, \code{"exp_decay"}).}
-
-\item{ci_col_name}{\verb{[character=c("quantile:0.255", "quantile:0.975")]} \cr Character
-vector of length 2. Names of columns for lower and upper confidence intervals.}
 }
 \value{
 A \code{data.frame} or a \code{list} containing ZOI metrics:
 \itemize{
-\item \code{max_effect_size}: Maximum effect size on the relative selection strength (y axis).
-\item \code{zoi_radius}: Distance at which the effect drops below a threshold,
-defined by the parameter \code{percentage}.
-\item \code{effect_zoi_radius}: Relative selection strength (y axis) valye in which the ZOI
-is reached.
-\item \code{impact}: Area under the curve up to the ZOI radius,
-combining the varying effect size with distance.
-Each ZOI measure presents mean, median, CI lower, and CI upper.
+\item \code{max_effect_size}: Maximum effect size on the relative selection strength.
+\item \code{zoi_radius}: Distance/radius where the effect drops to a given threshold.
+\item \code{effect_zoi_radius}: Relative selection strength value at the ZOI radius.
+\item \code{impact}: Area under the curve up to the ZOI radius.
 }
 
-If \code{x} is a bag object, the function returns wither a \code{list} or
-\code{data.frame} of ZOI measures for each ZOI variable in the bag.
-If \code{return_predictions = TRUE}, also returns the prediction curves.
+For the \code{data.frame} method, the returned table has columns for each ZOI metric.
+When \code{ci = TRUE}, the rows are the weighted \code{mean}, \code{median}, and the lower
+and upper CI quantiles. When \code{ci = FALSE}, the rows are \code{mean}, \code{median},
+and one column per individual model prediction.
+For the \code{bag} method, the output is a \code{data.frame} with ZOI metrics for each
+ZOI variable in the bag.
+
+If \code{x} is a bag object, the function returns either a list or
+a data.frame of ZOI metrics for each ZOI variable in the bag.
+When \code{ci = TRUE}, the \code{stats} column contains
+\code{mean}, \code{median}, and the CI quantile labels. When \code{ci = FALSE}, the
+\code{stats} column contains one entry per individual model curve.
+If format_long is \code{TRUE}, the output data.frame is in long format,
+with a \code{zoi_metric} column indicating the type of ZOI metric
+(e.g., \code{max_effect_size}, \code{zoi_radius}, \code{impact}) and a
+\code{metric_value} column with the corresponding values.
+If \code{return_predictions = TRUE}, the function returns a list with
+two elements: \code{predictions}, which is a list of data.frames
+containing the prediction curves for each ZOI variable, and \code{zoi},
+which contains the ZOI metrics as described above.
 }
 \description{
 This generic function computes ZOI metrics (maximum effect size,
-ZOI radius and impact) for ZOI predictor variables based on response curves.
-The ZOI radius is estimated as the distance/radius in which the
-relative selection strength corresponds to on a given percentage of
-the maximum effect size (e.g. 95\% ZOI radius). The impact accounts for
+ZOI radius, and impact) for ZOI predictor variables based on response curves.
+The ZOI radius is estimated as the distance/radius at which the
+relative selection strength decays to a given percentage of
+the maximum effect size (e.g. 95\% ZOI radius for the distance at which the
+effect drops to 5\% of the maximum). The impact accounts for
 both the effect size and the ZOI radius and corresponds to the area under
 (or over, if negative) the ZOI response curve.
-The function supports two types of input: a data.frame of predictions
-or a bag of models.
+The function computes ZOI metrics based on from weighted summary response curves
+(mean or median), and based on that computes the confidence interval bounds
+or individual model ZOI metrics to represent uncertainty in the ZOI metrics.
+The function supports two types of input: a \code{data.frame} of individual model
+predictions or a \code{bag} object containing an ensemble of models.
 }
 \seealso{
-\code{\link[=predict]{predict()}}, \code{\link[=plot_response]{plot_response()}}, \code{\link[=weirdness]{weirdness()}}
+\code{\link[=predict]{predict()}}, \code{\link[=plot_response]{plot_response()}}, \code{\link[=implausibility]{implausibility()}}
 ##example examples/zoi_from_curve_example.R
 }

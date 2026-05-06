@@ -1,30 +1,37 @@
-#' Get estimates of zone of influence (ZOI) from response curves
+#' Get estimates of zone of influence (ZOI) metrics from response curves
 #'
 #' This generic function computes ZOI metrics (maximum effect size,
-#' ZOI radius and impact) for ZOI predictor variables based on response curves.
-#' The ZOI radius is estimated as the distance/radius in which the
-#' relative selection strength corresponds to on a given percentage of
-#' the maximum effect size (e.g. 95% ZOI radius). The impact accounts for
+#' ZOI radius, and impact) for ZOI predictor variables based on response curves.
+#' The ZOI radius is estimated as the distance/radius at which the
+#' relative selection strength decays to a given percentage of
+#' the maximum effect size (e.g. 95% ZOI radius for the distance at which the
+#' effect drops to 5% of the maximum). The impact accounts for
 #' both the effect size and the ZOI radius and corresponds to the area under
 #' (or over, if negative) the ZOI response curve.
-#' The function supports two types of input: a data.frame of predictions
-#' or a bag of models.
+#' The function computes ZOI metrics based on from weighted summary response curves
+#' (mean or median), and based on that computes the confidence interval bounds
+#' or individual model ZOI metrics to represent uncertainty in the ZOI metrics.
+#' The function supports two types of input: a `data.frame` of individual model
+#' predictions or a `bag` object containing an ensemble of models.
 #'
 #' @param x Either a `data.frame` containing response curve predictions for a single variable,
 #'   or a `bag` object containing an ensemble of models.
 #' @param ... Additional arguments passed to the appropriate method.
 #'
 #' @return A `data.frame` or a `list` containing ZOI metrics:
-#' - `max_effect_size`: Maximum effect size on the relative selection strength (y axis).
-#' - `zoi_radius`: Distance at which the effect drops below a threshold,
-#' defined by the parameter `percentage`.
-#' - `effect_zoi_radius`: Relative selection strength (y axis) valye in which the ZOI
-#' is reached.
-#' - `impact`: Area under the curve up to the ZOI radius,
-#' combining the varying effect size with distance.
-#' Each ZOI measure presents mean, median, CI lower, and CI upper.
+#' - `max_effect_size`: Maximum effect size on the relative selection strength.
+#' - `zoi_radius`: Distance/radius where the effect drops to a given threshold.
+#' - `effect_zoi_radius`: Relative selection strength value at the ZOI radius.
+#' - `impact`: Area under the curve up to the ZOI radius.
 #'
-#' @seealso [oneimpact::predict()], [oneimpact::plot_response()], [oneimpact::weirdness()]
+#' For the `data.frame` method, the returned table has columns for each ZOI metric.
+#' When `ci = TRUE`, the rows are the weighted `mean`, `median`, and the lower
+#' and upper CI quantiles. When `ci = FALSE`, the rows are `mean`, `median`,
+#' and one column per individual model prediction.
+#' For the `bag` method, the output is a `data.frame` with ZOI metrics for each
+#' ZOI variable in the bag.
+#'
+#' @seealso [oneimpact::predict()], [oneimpact::plot_response()], [oneimpact::implausibility()]
 #' ##example examples/zoi_from_curve_example.R
 #'
 #' @name zoi_from_curve
@@ -33,38 +40,46 @@ zoi_from_curve <- function(x, ...) {
   UseMethod("zoi_from_curve")
 }
 
+#' @param weights `[numeric]` \cr Numeric vector of model weights used to compute
+#'   the weighted mean, weighted median, and weighted quantiles from the
+#'   individual model prediction columns. This should match the number of
+#'   individual model prediction columns in `x`.
 #' @param percentage `[numeric(1)=0.95]` \cr Numeric between 0 and 1. Defines the
-#' threshold for ZOI radius as a proportion of the maximum effect size.
-#' Default is `0.95`.
+#'   threshold for ZOI radius as a proportion of the maximum effect size.
+#'   Default is `0.95`.
 #' @param curve `[character(1)=c("mean", "median")]` \cr Character vector.
-#' Which central tendency curves to use: `"median"`, `"mean"`, or both.
-#' @param ci `[logical(1)=TRUE]` \cr Logical. Whether to compute ZOI estimates for
-#' the upper and lower limits of the confidence interval. Default is TRUE.
+#'   Which central tendency curves to use: `"median"`, `"mean"`, or both.
+#' @param wq_probs `[numeric,vector=c(0.025, 0.975)]` \cr Numeric vector of quantiles
+#'   used to compute confidence-interval for the ZOI metrics when `ci = TRUE`.
+#'   Ignored when `ci = FALSE`.
+#' @param ci `[logical(1)=TRUE]` \cr Logical. When `TRUE`, returns ZOI metrics for
+#'   weighted mean and/or median, and the weighted confidence interval curves.
+#'   When `FALSE`, returns ZOI metrics
+#'   for weighted mean/median and all for each individual model prediction curve
+#'   present in the input.
 #' @param type `[character(1)="linear"]{"linear", "exp"}` \cr Character. Defines whether
-#' the calculation of ZOI should be based on the prediction of at linear
-#' or response (exponential) scale: `"linear"` or `"exp"`, respectively.
+#'   the calculation of ZOI should be based on the prediction on the linear scale
+#'   or the response (exponential) scale.
 #' @param mean_col_name `[character="mean"]` \cr Name of the column containing
-#' the mean response curve.
+#'   the weighted mean response curve.
 #' @param median_col_name `[character="quantile:0.5"]` \cr Name of the column
-#' containing the median response curve.
-#' @param ci_col_name `[character=c("quantile:0.255", "quantile:0.975")]` \cr Character
-#' vector of length 2. Names of columns for lower and upper confidence intervals.
+#'   containing the weighted median response curve.
+#' @param NAasZero `[logical(1)=TRUE]` \cr Logical. If `TRUE`, any `NA` values in
+#'   the final output are replaced by zero.
 #'
 #' @rdname zoi_from_curve
 #' @export
 zoi_from_curve.data.frame <- function(x,
                                       weights,
                                       percentage = 0.95,
-                                      curve = c("median", "mean"),
+                                      curve = c("median", "mean")[1],
                                       wq_probs = c(0.025, 0.975),
                                       ci = TRUE,
                                       type = c("linear", "exp")[1],
                                       # n_features = 1,
                                       mean_col_name = "mean",
                                       median_col_name = "quantile:0.5",
-                                      NAasZero = TRUE
-                                      # ci_col_name = c("quantile:0.025", "quantile:0.975"),
-                                      ) {
+                                      NAasZero = TRUE) {
 
   # get predictor / ZOI variable
   xvar <- colnames(x)[1]
@@ -101,30 +116,31 @@ zoi_from_curve.data.frame <- function(x,
   # main and median effects
   i <- 1
   main_col_names <- c()
+  # stats <- c("median", "mean")
+  # for(i in seq_along(stats)) {
   for(i in seq_along(curve)) {
 
     # get values of the main response - either mean or median
+    # if(stats[i] == "median") {
     if(curve[i] == "median") {
       id <- 2
       main_col_names[id] <- median_col_name
 
       main_response <- unname(apply(pred, 1, DescTools::Quantile,
-                                   weights = weights,
-                                   type = 5,
-                                   probs = 0.5))
+                                    weights = weights,
+                                    type = 5,
+                                    probs = 0.5))
+      if(curve[1] == "median") main_stats_response <- main_response
     } else {
       id <- 1
       main_col_names[id] <- mean_col_name
 
       main_response <- as.vector(as.matrix(pred) %*% weights)
+      if(curve[1] == "mean") main_stats_response <- main_response
     }
 
     # # max effect size
-    # if(type == "linear") {
-    # max_effect_size_main <- main_response[which.max(abs(main_response))]
-    # } else {
-    max_effect_size_main <- main_response[which.max(abs(main_response - ref))]
-    # }
+    max_effect_size_main <- main_response[which.max(abs(main_stats_response - ref))]
 
     # zoi radius main
     # y_value_percentage <- (1 - percentage) * (max_effect_size_main)
@@ -163,12 +179,12 @@ zoi_from_curve.data.frame <- function(x,
     for(ci_id in seq_along(wq_probs)) {
 
       ci_response <- unname(apply(pred, 1, DescTools::Quantile,
-                                    weights = weights,
-                                    type = 5,
-                                    probs = wq_probs[ci_id]))
+                                  weights = weights,
+                                  type = 5,
+                                  probs = wq_probs[ci_id]))
 
       # max effect size
-      ci_max <- ci_response[which.max(abs(main_response - ref))]
+      ci_max <- ci_response[which.max(abs(main_stats_response - ref))]
 
       # zoi radius main
       # y_value_percentage <- (1 - percentage) * max_effect_size
@@ -178,7 +194,7 @@ zoi_from_curve.data.frame <- function(x,
         x_radius_ci_index <- which(abs(ci_response) > abs(y_value_percentage + ref))[1] - 1
       }
       if(is.na(x_radius_ci_index)) {
-        x_radius_ci_index <- length(main_response)
+        x_radius_ci_index <- length(main_stats_response)
       }
       zoi_radius_ci <- x[[xvar]][x_radius_ci_index]
 
@@ -267,17 +283,18 @@ zoi_from_curve.data.frame <- function(x,
 
 #' @param data `[data.frame]` \cr The original dataset used for model fitting.
 #' @param include `[character="all"]` \cr Character. Either `"all"` or a
-#' regex pattern to filter selected ZOI variables.
+#'   regex pattern to filter selected ZOI variables.
 #' @param return_predictions `[logical=FALSE]` \cr Logical. Whether to return
-#' the prediction curves alongside ZOI metrics. If `TRUE`, the output is necessarily
-#' a `list` with predictions and the ZOI parameters.
-#' @param return_format `[character="df"]{"list", "df"}` \cr
-#' Format of the returned ZOI metrics. Either a list of data.frames (if `return_format = "list"`),
-#' one for each variable, or a single `data.frame` (default, if `return_format = "df"`).
-#' @param wq_probs `[numeric,vector=c(0.025, 0.975)]` \cr Numeric vector of quantiles
-#' used for prediction summaries.
+#'   the prediction curves alongside ZOI metrics. If `TRUE`, the output is necessarily
+#'   a `list` with with all `predictions` and the `zoi` metrics.
+#' @param return_format `[character="df"]{"list", "df"}` \cr Format of the returned
+#'   ZOI metrics. Either a list of data.frames (if `return_format = "list"`),
+#'   one for each variable, or a single `data.frame` (default, if `return_format = "df"`).
+#' @param format_long `[logical(1)=TRUE]` \cr Logical. Whether to return the
+#'   ZOI metrics in long format (with a `zoi_metric` column) or wide format
+#'   (with separate columns for each metric)..
 #' @param n_features `[numeric=1]` \cr Number of features used in ZOI prediction.
-#' It can a single number (considered the same for all ZOI variables) or a vector
+#'   It can a single number (considered the same for all ZOI variables) or a vector
 #' with the same number of elements as ZOI variables in the model.
 #' @param radius_max `[numeric=NULL]` \cr Numeric. Maximum distance/radius to use for
 #' prediction curves. If `NULL` (default), the maximum value present in the bag's
@@ -293,9 +310,19 @@ zoi_from_curve.data.frame <- function(x,
 #' @param zoi_shape `[character]` \cr Character. Shape of the ZOI used in the model
 #' (e.g., `"circle"`, `"Gauss"`, `"exp_decay"`).
 #'
-#' @return If `x` is a bag object, the function returns wither a `list` or
-#' `data.frame` of ZOI measures for each ZOI variable in the bag.
-#' If `return_predictions = TRUE`, also returns the prediction curves.
+#' @return If `x` is a bag object, the function returns either a list or
+#'   a data.frame of ZOI metrics for each ZOI variable in the bag.
+#'   When `ci = TRUE`, the `stats` column contains
+#'   `mean`, `median`, and the CI quantile labels. When `ci = FALSE`, the
+#'   `stats` column contains one entry per individual model curve.
+#'   If format_long is `TRUE`, the output data.frame is in long format,
+#'   with a `zoi_metric` column indicating the type of ZOI metric
+#'   (e.g., `max_effect_size`, `zoi_radius`, `impact`) and a
+#'   `metric_value` column with the corresponding values.
+#'   If `return_predictions = TRUE`, the function returns a list with
+#'   two elements: `predictions`, which is a list of data.frames
+#'   containing the prediction curves for each ZOI variable, and `zoi`,
+#'   which contains the ZOI metrics as described above.
 #'
 #' @rdname zoi_from_curve
 #' @export
@@ -303,7 +330,7 @@ zoi_from_curve.bag <- function(x,
                                data,
                                include = "all",
                                percentage = 0.95,
-                               curve = c("median", "mean"),
+                               curve = c("median", "mean")[1],
                                type = c("linear", "exp")[1],
                                return_predictions = FALSE,
                                return_format = c("list", "df")[2],
@@ -417,5 +444,3 @@ zoi_from_curve.bag <- function(x,
     return(zois)
   }
 }
-# implement function var
-# implement function bag - all vars
