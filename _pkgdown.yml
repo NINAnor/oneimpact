@@ -61,7 +61,7 @@ reference:
   - plot_coef
   - plot_response
   - bag_predict_spat
-  - weirdness
+  - implausibility
   - rescale_coefficients
   - contains("hypothesis")
 - title: "Raster processing ancillary functions"

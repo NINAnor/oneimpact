@@ -1,21 +1,23 @@
 #' Truncate bag to avoid weirdness in the model
 #'
-#' This function identifies sources of weirdness in the models in a bag and
-#' uses them to remove variables the produce such weirdness. Sources of
-#' weirdness might be coefficients with signs opposite to one's hypothesis,
+#' This function identifies sources of ecological implausibility 
+#' in the models in a bag and uses them to remove variables the produce 
+#' such implausibility. Sources of
+#' implausibility might be coefficients with signs opposite to one's hypothesis,
 #' response curves crossing zero, or response curves with multiple inflection
 #' points, for instance.
 #'
 #' Currently, this function is applied only to terms corresponding to zones
 #' of influence (ZOI). Importantly, this function does not re-fit the
 #' model, but only sets coefficients to zero for all ZOI terms above the
-#' radius in which a certain weirdness is identified.
+#' radius in which a certain implausibility is identified.
 #'
-#' @param x Bag.
+#' @param x `[bag]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()].
 #' @param data `[data.frame]` \cr The original, complete data used for model fitting.
 #' @param measure `[character(1)="cross"]{"coef_sign", "cross"}` \cr Measure used
-#' to quantify "weirdness" in the model or coefficients, based on the coefficients and
-#' the response plots for each type of covariate with zone of influence in a model.
+#' to quantify ecological implausibility in the model or coefficients, 
+#' based on the coefficients and the response plots for each type of 
+#' covariate with zone of influence in a model.
 #' It can be one of these:
 #' - `"coef_sign"`: The measure is based on the minimum ZOI radius for which the
 #' sign is opposite to the ecologically expected sign;
@@ -43,7 +45,7 @@
 #'
 #' @example examples/truncate_bag_example.R
 #'
-#' @seealso [oneimpact::weirdness()]
+#' @seealso [oneimpact::implausibility()]
 #'
 #' @export
 truncate_bag <- function(x,
@@ -56,12 +58,12 @@ truncate_bag <- function(x,
                          verbose = FALSE,
                          ...) {
 
-  # compute weirdness
-  weird <- weirdness(x = x,
-                     data = data,
-                     wmean = wmean,
-                     expected_sign = expected_sign,
-                     ...)
+  # compute implausibility
+  weird <- implausibility(x = x,
+                          data = data,
+                          wmean = wmean,
+                          expected_sign = expected_sign,
+                          ...)
 
   # modified bag
   new_bag <- x

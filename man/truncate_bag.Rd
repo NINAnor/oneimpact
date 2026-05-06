@@ -17,13 +17,14 @@ truncate_bag(
 )
 }
 \arguments{
-\item{x}{Bag.}
+\item{x}{\verb{[bag]} \cr  A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
 
 \item{data}{\verb{[data.frame]} \cr The original, complete data used for model fitting.}
 
 \item{measure}{\verb{[character(1)="cross"]\{"coef_sign", "cross"\}} \cr Measure used
-to quantify "weirdness" in the model or coefficients, based on the coefficients and
-the response plots for each type of covariate with zone of influence in a model.
+to quantify ecological implausibility in the model or coefficients,
+based on the coefficients and the response plots for each type of
+covariate with zone of influence in a model.
 It can be one of these:
 \itemize{
 \item \code{"coef_sign"}: The measure is based on the minimum ZOI radius for which the
@@ -57,9 +58,10 @@ Default is \code{TRUE}.}
 \item{...}{\cr Other parameters used in \code{\link[=weirdness]{weirdness()}}.}
 }
 \description{
-This function identifies sources of weirdness in the models in a bag and
-uses them to remove variables the produce such weirdness. Sources of
-weirdness might be coefficients with signs opposite to one's hypothesis,
+This function identifies sources of ecological implausibility
+in the models in a bag and uses them to remove variables the produce
+such implausibility. Sources of
+implausibility might be coefficients with signs opposite to one's hypothesis,
 response curves crossing zero, or response curves with multiple inflection
 points, for instance.
 }
@@ -67,7 +69,7 @@ points, for instance.
 Currently, this function is applied only to terms corresponding to zones
 of influence (ZOI). Importantly, this function does not re-fit the
 model, but only sets coefficients to zero for all ZOI terms above the
-radius in which a certain weirdness is identified.
+radius in which a certain implausibility is identified.
 }
 \examples{
 #-------
@@ -138,7 +140,7 @@ bag_object$validation_score - bag_object_trunc$validation_score
 bag_object$weighted_validation_score
 bag_object_trunc$weighted_validation_score
 
-# plot curves to check weirdness
+# plot curves to check implausibility
 
 # ZOI public cabins cumulative
 dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
@@ -168,9 +170,9 @@ plot_response(bag_object_trunc,
               # resolution = 300,
               ci = FALSE, indiv_pred = TRUE)
 
-# check weirdness
-weirdness(bag_object_trunc, dat)
+# check implausibility
+implausibility(bag_object_trunc, dat)
 }
 \seealso{
-\code{\link[=weirdness]{weirdness()}}
+\code{\link[=implausibility]{implausibility()}}
 }

@@ -1,35 +1,46 @@
-#' Computes ecological weirdness for a fitted model or it estimated  coefficients
+#' Computes ecological implausibility for a fitted model or its estimated coefficients
 #'
-#' @param x Bag.
+#' This function evaluates ecological plausibility in model coefficients and response
+#' curves. Ecological plausibility refers to whether estimated relationships
+#' between predictors and responses are consistent with prior ecological theory,
+#' expected species–environment relationships, and smooth asymptotic behavior.
+#' Implausible responses include abrupt sign changes, oscillations between selection
+#' and avoidance, and coefficient signs opposite to prior expectations.
+#'
+#' @param x `[bag]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()].
 #' @param data `[data.frame]` \cr The original, complete data used for model fitting.
 #' @param measure `[string(1)]{""coef_sign", "n_crosses", "response_area""}` \cr Measure used
-#' to quantify "weirdness" in the model or coefficients, based on the coeffcients and the response
-#' plots for each type of covariate with zone of influence in a model.
-#' It can be one or multiple of these options:
-#' - `"coef_sign"`: counts the number of coefficients whose sign is opposite to the ecologically expected sign;
-#' - `"n_crosses"`: counting the number of crosses in sign for the coefficients of the same covariate;
-#' - `"response_area"`: computing the area under the response plot curve which is in the unexpected
-#' direction.
-#' @param which_coef \cr Which measure to use for the coefficients, when `measure = "coef_sign"`. If `count` (default),
-#' only the sign matterns and we count the number of coefficients with unexpected sign.
-#' If `sum`, we count the sum of the (standardized) coefficients, to also account for their magnitude.
-#' @param expected_sign `[numeric(1)=-1]` \cr Expected sign of the coefficient. Either -1 (negative),
-#' +1 (positive), or 0 (no effect).
-#' @param zero_coefficient_limit `[numeric(1)=1e8]` \cr Value above which an estimated coefficient is considered
-#' non-zero. Default is 1e-8. Useful for comparing coefficients which are expected to be zero (i.e. to have no effect).
+#'   to quantify ecological implausibility in the model or coefficients.
+#'   It can be one or multiple of these options:
+#' - `"coef_sign"`: counts coefficients whose sign is opposite to the ecologically expected sign.
+#' - `"n_crosses"`: counts sign crossings for the response curve.
+#' - `"response_area"`: computes area under the response curve in the unexpected direction.
+#' @param which_coef \cr Which measure to use for the coefficients, when `measure = "coef_sign"`.
+#'   If `count` (default), only the sign matterns and we count the number of
+#'   coefficients with unexpected sign.
+#'   If `sum`, we count the sum of the (standardized) coefficients,
+#'   to also account for their magnitude.
+#' @param expected_sign `[numeric(1)=-1]` \cr Expected sign of the coefficient. Either -1,
+#'   +1, or 0 (no effect).
+#' @param zero_coefficient_limit `[numeric(1)=1e8]` \cr Value above which an estimated
+#'   coefficient is considered non-zero. Default is `1e-8`.
 #'
-#' @example examples/weirdness_example.R
+#' @example examples/implausibility_example.R
 #'
-#' @name weirdness
+#' @name implausibility
+#' @aliases weirdness
 #' @export
-weirdness <- function(x, ...) {
+implausibility <- function(x, ...) {
   UseMethod("weirdness")
 }
 
-# here x is a numeric vector of coefficients
-#' @rdname weirdness
 #' @export
-weirdness.numeric <- function(x,
+weirdness <- implausibility
+
+# here x is a numeric vector of coefficients
+#' @rdname implausibility
+#' @export
+implausibility.numeric <- function(x,
                               which_coef_sign = c("count", "sum", "raw", "index")[1],
                               expected_sign = -1,
                               zero_coefficient_limit = 1e-8) {
@@ -75,9 +86,9 @@ weirdness.numeric <- function(x,
   weird
 }
 
-#' @rdname weirdness
+#' @rdname implausibility
 #' @export
-weirdness.data.frame <- function(x,
+implausibility.data.frame <- function(x,
                                  expected_sign = -1,
                                  response = c("mean", "mid")[1],
                                  measure = c("n_crosses", "where_crosses",
@@ -142,8 +153,9 @@ weirdness.data.frame <- function(x,
   ifelse(is.na(weird), 0, weird)
 }
 
+#' @rdname implausibility
 #' @export
-weirdness.bag <- function(x,
+implausibility.bag <- function(x,
                           data,
                           measure = c("coef_sign",
                                       "n_crosses", "where_crosses",

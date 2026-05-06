@@ -66,7 +66,7 @@ bag_object$validation_score - bag_object_trunc$validation_score
 bag_object$weighted_validation_score
 bag_object_trunc$weighted_validation_score
 
-# plot curves to check weirdness
+# plot curves to check implausibility
 
 # ZOI public cabins cumulative
 dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
@@ -96,5 +96,5 @@ plot_response(bag_object_trunc,
               # resolution = 300,
               ci = FALSE, indiv_pred = TRUE)
 
-# check weirdness
-weirdness(bag_object_trunc, dat)
+# check implausibility
+implausibility(bag_object_trunc, dat)

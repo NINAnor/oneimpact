@@ -1,18 +1,18 @@
 #-------
-# weirdness for vector of coefficients
+# implausibility for vector of coefficients
 
-# weirdness for coefficients for one type of ZOI variable
+# implausibility for coefficients for one type of ZOI variable
 
 # set coefficients
 coefs <- c(-1, -0.5, -0.1, 0.8, 0.3, -0.1)
 expected_sign <- -1
-weirdness(coefs, expected_sign = expected_sign)
-weirdness(coefs, expected_sign = expected_sign, which_coef = "sum")
-weirdness(coefs, expected_sign = expected_sign, which_coef = "raw")
-weirdness(coefs, expected_sign = expected_sign, which_coef = "index")
+implausibility(coefs, expected_sign = expected_sign)
+implausibility(coefs, expected_sign = expected_sign, which_coef = "sum")
+implausibility(coefs, expected_sign = expected_sign, which_coef = "raw")
+implausibility(coefs, expected_sign = expected_sign, which_coef = "index")
 
 #-------
-# weirdness for data.frame with (x,y) for line
+# implausibility for data.frame with (x,y) for line
 
 # checking for lines crossing zero
 x <- seq(0, 10, 0.01)
@@ -22,13 +22,13 @@ plot(x, y, ylab = "Response", xlab = "Distance from source")
 abline(h = 0, col = "red")
 
 # n crosses
-weirdness(df, response = "y", measure = "n_crosses")
+implausibility(df, response = "y", measure = "n_crosses")
 # where does the curve crosses zero
-weirdness(df, response = "y", measure = "where_crosses")
+implausibility(df, response = "y", measure = "where_crosses")
 # area on the opposite side of the expected sign
-weirdness(df, response = "y", measure = "response_area_opposite")
+implausibility(df, response = "y", measure = "response_area_opposite")
 # ratio between area above and area on the expected sign
-weirdness(df, response = "y", measure = "response_area_ratio")
+implausibility(df, response = "y", measure = "response_area_ratio")
 
 # checking for inflection points
 x <- seq(0, 14, 0.01)
@@ -41,14 +41,14 @@ which(inflection(y))
 abline(v = x[inflection(y)], lty = 2)
 
 # n crosses
-weirdness(df, response = "y", measure = "n_crosses")
+implausibility(df, response = "y", measure = "n_crosses")
 # n inflection points
-weirdness(df, response = "y", measure = "n_inflection")
+implausibility(df, response = "y", measure = "n_inflection")
 # difference between inflection points
-weirdness(df, response = "y", measure = "difference_inflection")
+implausibility(df, response = "y", measure = "difference_inflection")
 
 #-------
-# weirdness for bag
+# implausibility for bag
 
 #---
 # fit a bag to be tested
@@ -136,13 +136,13 @@ plot_response(bag_object,
   geom_line()
 
 # we try the function with the curve above, but then test how we could work with the more correct one below
-# weirdness measures
-weirdness(bag_object,
+# implausibility measures
+implausibility(bag_object,
           data = dat,
           type_feature = c("point", "line", "line"))
 
 # for each individual model
-weirdness(bag_object,
+implausibility(bag_object,
           data = dat,
           wmean = FALSE)
 
