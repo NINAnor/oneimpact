@@ -151,13 +151,6 @@ predictions.
 
 # load packages
 library(glmnet)
-#> Loading required package: Matrix
-#> Loaded glmnet 5.0
-#> 
-#> Attaching package: ‘glmnet’
-#> The following objects are masked from ‘package:oneimpact’:
-#> 
-#>     Cindex, coxnet.deviance
 library(ggplot2)
 
 # load data

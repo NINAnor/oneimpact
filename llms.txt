@@ -339,7 +339,8 @@ impacts
 - [`predict()`](https://ninanor.github.io/oneimpact/reference/predict.md)
   : Prediction of a bag of models to new data
 - [`zoi_from_curve()`](https://ninanor.github.io/oneimpact/reference/zoi_from_curve.md)
-  : Get estimates of zone of influence (ZOI) from response curves
+  : Get estimates of zone of influence (ZOI) metrics from response
+  curves
 - [`plot_importance()`](https://ninanor.github.io/oneimpact/reference/plot_importance.md)
   : Plot variable importance
 - [`variable_importance()`](https://ninanor.github.io/oneimpact/reference/variable_importance.md)
@@ -351,9 +352,9 @@ impacts
 - [`bag_predict_spat()`](https://ninanor.github.io/oneimpact/reference/bag_predict_spat.md)
   [`bag_predict_spat_vars()`](https://ninanor.github.io/oneimpact/reference/bag_predict_spat.md)
   : Predict bag of models in space
-- [`weirdness()`](https://ninanor.github.io/oneimpact/reference/weirdness.md)
-  : Computes ecological weirdness for a fitted model or it estimated
-  coefficients
+- [`implausibility()`](https://ninanor.github.io/oneimpact/reference/implausibility.md)
+  : Computes ecological implausibility for a fitted model or its
+  estimated coefficients
 - [`rescale_coefficients()`](https://ninanor.github.io/oneimpact/reference/rescale_coefficients.md)
   : Rescale standardized coefficients back to their original range after
   model fitting
