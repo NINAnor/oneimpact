@@ -1,11 +1,12 @@
-#' Load a series of files output of fit_net_clogit models and put them on a bag
+#' Load a series of files output of fit_net_(c)logit models and put them on a bag
 #'
-#' @param f `[formula]` \cr Formula of the models fitted, with all possible candidate terms.
+#' This is a helper function aimed at loading a bag of models created through a call to
+#' the [oneimpact::fit_net_clogit()] or [oneimpact::bag_fit_net_clogit()] functions,
+#' when the output is saved in external files. Files saved in `.rds` format are here
+#' loaded together so they can be provided to the `bag_models()` function to build
+#' a `bag` object with the fitted models.
+#'
 #' @param data `[data.frame,tibble]` \cr Complete data set analyzed.
-#' @param samples `[list]` \cr List of samples with at least three elements: train, test,
-#' and validate. Each elements might have several elements, each representing
-#' the lines of `data` to be sampled for each resample. Typically, this is computed by
-#' the function [oneimpact::create_resamples()].
 #' @param load_models_path `[string="."]` \cr Path to the folder where the files
 #' are saved.
 #' @param load_models_pattern `[string="."]` \cr Pattern common to the file names,
@@ -14,15 +15,18 @@
 #' `out_dir_file` in [oneimpact::fit_net_clogit()] or [oneimpact::bag_fit_net_clogit()]
 #' functions.
 #' @param names_from_file `[logical(1)=TRUE]` \cr If `FALSE` (default), the names of
-#' the resamples are taken from the `samples` parameter. If `TRUE`, they are taken
+#' the resamples are taken from the loaded model objects. If `TRUE`, they are taken
 #' from the files names, instead. In this case, the string defined by the parameter
 #' `name_from_file_pattern` is used to identify the number of each resample.
 #' @param name_from_file_pattern `[string="Resample"]` \cr String used to separate the
 #' file name and identify the number of the resample of each model in the bag, when
 #' they are read from files.
+#' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
+#' be printed in the prompt along the computation?
 #'
-#' The parameters metric, standardize, and method should be same ones used to
-#' fit the bag of models.
+#' @returns A list of fitted models, in the same format as if all the models
+#' were fitted by the [oneimpact::fit_net_clogit()] or
+#' [oneimpact::bag_fit_net_clogit()] functions within a R session.
 #'
 #' @export
 bag_load_models <- function(data,
