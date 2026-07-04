@@ -34,7 +34,7 @@
 #' @param type_feature_recompute `[logical(1)=FALSE]` \cr If `TRUE`, recompute
 #' line- or area-feature raster representation for ZOI calculations.
 #' @param type_feature `[character(1)="point"]{"point", "line", "area"}` \cr Feature type
-#' for ZOI prediction. Used when recomputing the ZOI variables for line and area features.
+#' for ZOI prediction.
 #' @param zoi_limit `[numeric(1)=0.05]` \cr Lower influence threshold used by non-vanishing
 #' ZOI functions. See [oneimpact::zoi_functions()].
 #' @param resolution `[numeric(1)=100]` \cr Raster resolution used for line-feature ZOI

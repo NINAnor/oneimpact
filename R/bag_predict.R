@@ -1,59 +1,64 @@
-#' Prediction of a bag of models to new data
+#' Predict from a bag of models or from formula + coefficients
 #'
-#' The function `predict` makes a prediction for new data based wither on a bag of models or
-#' on its formula, coefficients, and weights. The prediction can be made either for a complete new dataset
-#' with all the variables included in the formula or to predict the specific response on one single or a
-#' group of variables in the model. In this case, all the other variables are set to their median or mean
-#' value, to to zero (defined by the `baseline` parameter). What controls that is which columns are added in
-#' the `newdata` data.frame.
+#' This function predicts responses for new data using either:
+#' - a `bag` object (via `predict.bag`), or
+#' - a model `formula` plus `coefs` and `weights` (via `predict.formula`).
 #'
-#' @param x `[bag,list or formula]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()],
-#' or a `formula` used to fit the models in the bag.
-#' @param newdata \cr New data set to be used for prediction. It can include all the variables in the formula
-#' or only those for which the user is interested in making a prediction from.
-#' @param type `[character="linear"]{"linear", "exponential", "exp", "logit", "cloglog"}` \cr Type of prediction.
-#' One of `"linear"` (default), `"exp"` or `"exponential"`, `"logit"`, or `"cloglog"`.
-#' @param wmean `[logical=TRUE]` \cr Should the weighted mean values be predicted? Default is `TRUE`.
-#' @param wq_probs `[vector,numeric(3)=c(0.025, 0.5, 0.975)]` \cr A three element vector with lower,
-#' mid, and higher weighted quantiles to be computed.
-#' @param include `[character="all"]` \cr String of vector of strings with the terms (or unique parts of terms)
-#' to be predicted for. This does not restrict which terms we are focusing on - this is done
-#' by the definition of the `newdata` dataset and by which columns are in there. What
-#' the `include` parameters does is to set which other variables will be used for prediction,
-#' at their mean or median values, for instance.
-#' @param baseline `[character="median"]{"median", "mean", "zero")}` \cr What values to
-#' choose for the baseline, i.e., for all other variables/terms not contained in
-#' `newdata`. It can be one of `median`, `"mean"`, or `"zero"`.
-#' @param zoi `[logical(1)=FALSE]` \cr Are the columns in `newdata` supposed to represent
-#' zones of influence (ZOI) variables?
-#' This parameter should be set to `TRUE` if you provided a set of distances from a source that need
-#' to be translated into ZOI variables (cumulative or nearest ZOI from sources).
+#' Predictions can be computed for full covariate data or for focal predictors only,
+#' while non-focal predictors are set to a baseline values (`median`, `mean`, or `zero`).
+#' It also supports ZOI-distance inputs that are internally transformed into ZOI predictors.
+#'
+#' @param x `[bag,list or formula]` \cr A bag of models from [oneimpact::bag_models()],
+#'   or a `formula` used to build the model matrix for prediction.
+#' @param newdata `[data.frame]` \cr New data for prediction. Can contain all model
+#'   variables or only focal variables.
+#' @param data `[data.frame=NULL]` \cr Original data used for model fitting. Used in
+#'   `predict.bag()` to recover baseline/categorical levels. Not used by `predict.formula()`.
+#' @param type `[character="linear"]{"linear", "exponential", "exp", "logit", "cloglog"}` \cr
+#'   Prediction scale.
+#' @param wmean `[logical(1)=TRUE]` \cr Whether to compute and return weighted mean prediction.
+#' @param wq_probs `[numeric,vector=c(0.025, 0.5, 0.975)]` \cr Weighted quantile
+#'   probabilities for prediction summaries. If `NULL`, quantiles are not returned.
+#' @param include `[character="all"]` \cr Terms to include in prediction.
+#'   Use `"all"` or one/more string patterns matching term names.
+#' @param baseline `[character="median"]{"median", "mean", "zero"}` \cr Baseline
+#'   values for non-focal predictors.
+#' @param zoi `[logical(1)=FALSE]` \cr If `TRUE`, columns in `newdata` are treated as
+#'   distance inputs and transformed into ZOI predictors.
 #' @param zoi_shape `[character="exp_decay"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}` \cr
-#' Shape of the zone of influence (ZOI), if `zoi = TRUE`. Default is `exp_decay"`. It can assume any of the
-#' possible values for the argument `type` in the function [oneimpact::dist_decay()].
-#' @param which_cumulative `[character="cumulative"]` \cr Which string or pattern to be searched on the column
-#' names of `newdata` and on the original data used to fit the models to represent the cumulative ZOI.
-#' It is used to break the names of the columns/terms in the formula and get the ZOI radii as numbers,
-#' to be able to create all the ZOI radii included in the model or bag of models.
-#' @param type_feature `[character="point"]{"point", "line", "area"}` \cr Type of feature we are predicting
-#' for, for zone of influence-type variables. Default is `"point"`. If `type_feature = "line"`, a line is simulated
-#' with the function [oneimpact::create_linear_feature_zoi()] to get the values and account for
-#' the number of pixels of each single linear feature in the neighborhhod and correclty estimate
-#' the effect of each linear feature ZOI. The option `"area"` is still not implemented and for now
-#' is treated as a point feature at the origin.
-#' @param n_features `[numeric(1)=1]` \cr Number of features to be used for prediction, for ZOI variables.
-#' Default is 1.
-#' @param resolution `[numeric(1)=100]` \cr Resolution for the raster created in [oneimpact::create_line_feature_zoi()],
-#' when `type_feature = "line"`.
-#' @param line_value `[numeric(1)=1]` \cr Value set to the raster line created by [oneimpact::create_line_feature_zoi()],
-#' when `type_feature = "line"`. It could be changed to different values if we want to represent e.g. the value in the
-#' linear feature as the roads traffic or another value for spatio-temporally dynamic variables.
-#' @param ... \cr Additional parameters. None implemented.
+#'   ZOI decay shape used when `zoi = TRUE`.
+#' @param which_cumulative `[character(1)="cumulative"]` \cr Pattern used to identify
+#'   cumulative ZOI terms.
+#' @param type_feature `[character="point"]{"point", "line", "area"}` \cr Feature type
+#'   for ZOI prediction.
+#' @param type_feature_recompute `[logical(1)=FALSE]` \cr Whether to recompute line-
+#'   and area-feature geometry approximation for ZOI calculations.
+#' @param n_features `[numeric(1)=1]` \cr Number of features used in ZOI prediction.
+#' @param zoi_limit `[numeric(1)=0.05]` \cr Lower influence threshold used by non-vanishing
+#'   ZOI decay functions (relevant for line-feature ZOI transformation).
+#'   See [oneimpact::zoi_functions()].
+#' @param resolution `[numeric(1)=100]` \cr Raster resolution used for line-feature ZOI
+#'   approximation. Used when recomputing the ZOI variables for line and area features.
+#' @param line_value `[numeric(1)=1]` \cr Value assigned to rasterized line cells when
+#'   `type_feature = "line"`.  Used when recomputing the ZOI variables for line and
+#'   area features.
+#' @param coefs `[numeric vector or matrix]` \cr Coefficients used by `predict.formula()`.
+#'   If matrix, rows are term names and columns are model/resample coefficients.
+#' @param weights `[numeric=1]` \cr Model weights used by `predict.formula()` when
+#'   combining predictions across models.
+#' @param ... \cr Additional arguments.
 #'
-#' @seealso [oneimpact::plot_response()], [oneimpact::create_line_feature_zoi()].
+#' @return A `data.frame` (or matrix-like object) with predicted values.
+#' Output columns depend on `wmean` and `wq_probs`:
+#' \itemize{
+#'   \item weighted quantiles (if `wq_probs` is not `NULL`)
+#'   \item weighted mean (if `wmean = TRUE`)
+#'   \item individual model predictions (if `wmean = FALSE` and `wq_probs = NULL`)
+#' }
+#'
+#' @seealso [oneimpact::plot_response()], [oneimpact::create_linear_feature_zoi()].
 #'
 #' @example examples/bag_predict_example.R
-#'
 #'
 #' @export
 predict <- function(x, newdata, ...) {
@@ -174,13 +179,6 @@ predict.bag <- function(x,
   pred
 }
 
-#' @param coefs `[vector,numeric]` \cr Either a named vector of coefficients (in case there is only one
-#' model) or a matrix of coefficients, with rownames as the term names and columns as the different models/resamples.
-#' Only relevant if `x` is a formula.
-#' @param weights `[vector,numeric=1]` \cr Vector of weights for the different models/resamples, i.e.
-#' the column from the `coefs` object with coefficients. A single number (by default, 1) in case there is only
-#' one model (`coefs` is a vector). Only relevant if `x` is a formula.
-#'
 #' @rdname predict
 #' @export
 predict.formula <- function(x,
@@ -244,7 +242,7 @@ predict.formula <- function(x,
     preddf <- data.frame(t(apply(pred, 1, DescTools::Quantile,
                                  weights = weights,
                                  type = 5,
-                                 probs=wq_probs)))
+                                 probs = wq_probs)))
     # preddf <- data.frame(t(apply(pred, 1, modi::weighted.quantile,
     #                              w = x$weights,
     #                              prob=wq_probs)))
