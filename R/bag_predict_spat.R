@@ -1,28 +1,50 @@
 #' Predict bag of models in space
 #'
-#' @param bag `[bag,list]` \cr A bag of models, resulting from a call to [oneimpact::bag_models()].
-#' @param data `[data.frame,SpatRaster]` \cr The spatial grid or stack of rasters
-#' with the layers in space, to be used for the spatial prediction. All variables in the
-#' bag$formula must be present in `data`.
-#' @param input_type `[string(1)="df"]{"df","rast"}` \cr Type of input object. Either a
-#' `data.frame` with the predictor variables as columns (if `input_type = "df"`, default),
-#' or a `SpatRaster` with the predictor variables as layers (if `input_type = "rast"`).
-#' So far, only `input_type = "df"` is implemented.
-#' @param output_type `[string(1)="rast"]{"df","rast"}` \cr Type of output object.
-#' Typically, the same type of object as `input_type`, but rasters can also be saved
-#' if the input is a `data.frame` when `output_type = "rast"`, and data.frames can
-#' also be saved if the input is a `SpatRaster` when `output_type = "df"`.
-#' @param prediction_type `[string(1)="exp"]{"exp", "exponential", "linear"}` Type
-#' of transformation for the prediction. One of `"exp"` or `"expornential"` for
-#' exponential response or `"linear"` for linear response.
-#' @param gid `[string(1)="gid"]` \cr String with the name of the "gid" or point ID
-#' column in `data`. Only relevant if `input_type = "df"`.
-#' @param coords `[vector,string(2)=c("x", "y")]` \cr Vector with two elements with
-#' the names of the coordinates representing (x,y) coordinates for the pixels.
-#' Only relevant if `input_type = "df"`.
-#' @param crs `[string(1)=NULL]` \cr Code for the coordinate reference system of the
-#' output raster. Only relevant if `input_type = "df"`. For more details, check
-#' [terra::crs()].
+#' Creates spatial predictions from a bag of models for a grid provided as a
+#' data frame or raster. It can return weighted mean predictions, weighted
+#' median/uncertainty summaries, and/or individual model predictions.
+#'
+#' @param bag `[bag,list]` \cr A bag of models from [oneimpact::bag_models()].
+#' @param data `[data.frame,SpatRaster]` \cr Spatial grid of predictors used for prediction.
+#'   All predictors in the model formula must be present.
+#' @param input_type `[character(1)="df"]{"df","rast"}` \cr Input type:
+#'   data frame with predictor values (`"df"`) or `SpatRaster`
+#'   raster stack/layers (`"rast"`).
+#' @param output_type `[character(1)="rast"]{"df","rast"}` \cr Output type:
+#'   data frame or raster outputs.
+#' @param prediction_type `[character(1)="exp"]{"exp","exponential","linear"}` \cr
+#'   Prediction scale.
+#' @param standardize `[logical(1)=FALSE]` \cr Whether to standardize predictors
+#'   before prediction using bag summary statistics.
+#' @param what `[character]` \cr Prediction outputs to compute. Any combination of
+#'   "mean", "median", and "ind" for the weighted mean, weighted median, and
+#'   individual model predictions, respectively.
+#' @param gid `[character(1)="gid"]` \cr Name of unique pixel/grid identifier column
+#'   (used for `df` input and output).
+#' @param coords `[character(2)=c("x","y")]` \cr Names of x/y coordinate columns.
+#'   Used if `input_type = "df"`.
+#' @param crs `[character(1)=NULL]` \cr Coordinate reference system for
+#'   raster output. Only relevant if `input_type = "df"`. For more details, check
+#'   [terra::crs()].
+#' @param gridalign `[logical(1)=FALSE]` \cr Whether to align output grid coordinates
+#'   before rasterization.
+#' @param output_rescale `[logical(1)=FALSE]` \cr Whether to rescale raster outputs
+#'   to [0,1] using prediction_max_quantile clipping.
+#' @param prediction_max_quantile `[numeric(1)=0.999]` \cr Quantile used as upper
+#'   truncation threshold when `output_rescale = TRUE`.
+#' @param uncertainty_quantiles `[numeric(2)=c(0.25, 0.75)]` \cr Quantiles used for
+#'   weighted uncertainty summaries when what includes "median".
+#' @param verbose `[logical(1)=FALSE]` \cr Print progress messages.
+#'
+#' @return A list with prediction outputs:
+#' \itemize{
+#'   \item grid: prediction table in tabular form (always returned).
+#'   \item weights: model weights used for prediction (non-zero weight models).
+#'   \item r_weighted_avg_pred: raster of weighted mean prediction (if requested and `output_type = "rast"`).
+#'   \item r_ind_summ_pred: raster stack with weighted median and uncertainty summaries, including the
+#'   interquartile range and the quantile coefficient of variation (if requested and `output_type = "rast"`).
+#'   \item r_ind_pred: raster stack of individual model predictions (if requested and `output_type = "rast"`).
+#' }
 #'
 #' @export
 bag_predict_spat <- function(bag,
@@ -275,8 +297,22 @@ bag_predict_spat <- function(bag,
   out
 }
 
-#' @export
+#' @param predictor_table_zoi `[data.frame]` \cr Predictor table with ZOI metadata
+#'   (for example from [oneimpact::add_zoi_formula()] predictor_table output), used to aggregate
+#'   predictions by ZOI variable groups in [oneimpact::bag_predict_spat_vars()].
+#'
+#' @return For `bag_predict_spat_vars()`, a list with:
+#' \itemize{
+#'   \item vars: per-variable prediction summaries.
+#'   \item grid: grid-level prediction table.
+#'   \item weights: model weights used for prediction.
+#'   \item r_weighted_avg_pred: raster output for weighted means (if requested).
+#'   \item r_ind_summ_pred: raster output for weighted uncertainty summaries (if requested).
+#'   \item r_ind_pred: raster output for individual-model predictions (if requested).
+#' }
+#'
 #' @rdname bag_predict_spat
+#' @export
 bag_predict_spat_vars <- function(bag,
                                   data,
                                   predictor_table_zoi,
