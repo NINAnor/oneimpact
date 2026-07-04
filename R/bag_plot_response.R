@@ -1,29 +1,71 @@
-#' Plot responses from a bag of models
+#' Plot response curves from a bag of models
 #'
-#' This function takes a bag of models (`x`) and a set of new data (`dfvar`) with variation for one or more
-#' specific predictor variables to predict and plot the predictions from the bag. One can either plot only the
-#' mean or (weighted) median response for specific preditor variables, and possibly also the
-#' confidence interval, computed from the weighted quantiles of the prediction. All other variables
-#' are kept constant, as defined by the `baseline` parameter.
+#' This function predicts and plots response curves from a bag of models while
+#' varying one or more focal predictors in `dfvar`. Non-focal predictors are kept
+#' at baseline values. It supports confidence intervals from weighted quantiles
+#' and optional individual-model predictions.
 #'
 #' The function `plot_response` uses the `predict` to produce the predictions.
 #'
-#' @param x `[bag,list]` \cr A bag of models, resulting from a call to [oneimpact::bag_models()].
-#' @param dfvar `[data.frame]` \cr A `data.frame` with the values of the variables one wants to vary
-#' and predict for.
-#' All other variables are set to their mean or median, or to zero (this is set by the parameter `baseline`).
-#' The column names of the `data.frame` might correspond exactly to the model covariates or to
+#' @param x `[bag,list]` \cr A bag of models created with [oneimpact::bag_models()].
+#' @param dfvar `[data.frame]` \cr Data frame with values of focal predictors to vary
+#' and predict over. The column names of the `data.frame` might correspond exactly to the model covariates or to
 #' parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).
-#' @param data `[data.frame]` \cr The original, complete data used for model fitting. Used only for
+#' @param data `[data.frame]` \cr Original data used for model fitting. Used only for
 #' taking the categories of the categorical variables. Irrelevant if there is no categorical variables.
-#' @param type `[character(1)="linear"]{"linear", "exponential", "logit", "cloglog"}` \cr Type of response.
-#' Might be `"linear"` (default), `"exponential"`, `"logit"`, and `"cloglog"`.
-#' @param zoi_shape `[character(1)="linear"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}` \cr
-#' Shape of the ZOI. Necessary to be specified to represent correctly the estimated ZOI of the
-#' preditor variables.
-#' @param wq_probs `[vector,numeric(3)=c(0.025, 0.5, 0.975)]` \cr A three element vector with lower,
-#' mid, and higher weighted quantiles to be computed.
-#' @param ci Should variation or confidence intervals be plotted?
+#' @param type `[character(1)="linear"]{"linear", "exponential", "logit", "cloglog"}` \cr
+#' Prediction scale.
+#' @param zoi_shape `[character(1)="exp_decay"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}` \cr
+#' ZOI decay shape used when `zoi = TRUE`.
+#' @param which_cumulative `[character(1)="cumulative"]` \cr Pattern used to identify
+#' cumulative ZOI terms.
+#' @param ci `[logical(1)=TRUE]` \cr If `TRUE` (default), plot weighted confidence intervals
+#' using `wq_probs`.
+#' @param indiv_pred `[logical(1)=FALSE]` \cr If `TRUE`, include curves from individual
+#' models (only models with positive weight).
+#' @param wq_probs `[numeric,vector=c(0.025, 0.5, 0.975)]` \cr Weighted quantile
+#' probabilities used for confidence intervals and median.
+#' @param baseline `[character(1)="median"]{"median", "mean", "zero"}` \cr Baseline
+#' value strategy for non-focal predictors. Variable are either kept constant at the mean
+#' or median values, or left as zero. Categorical variables are set to their reference
+#' level, retrieved from `data`.
+#' @param zoi `[logical(1)=FALSE]` \cr If `TRUE`, variables values in `dfvar` are
+#' interpreted as distance from a disturbance source, to be transformed into ZOI predictors.
+#' @param type_feature_recompute `[logical(1)=FALSE]` \cr If `TRUE`, recompute
+#' line- or area-feature raster representation for ZOI calculations.
+#' @param type_feature `[character(1)="point"]{"point", "line", "area"}` \cr Feature type
+#' for ZOI prediction. Used when recomputing the ZOI variables for line and area features.
+#' @param zoi_limit `[numeric(1)=0.05]` \cr Lower influence threshold used by non-vanishing
+#' ZOI functions. See [oneimpact::zoi_functions()].
+#' @param resolution `[numeric(1)=100]` \cr Raster resolution used for line-feature ZOI
+#' approximation. Used when recomputing the ZOI variables for line and area features.
+#' @param line_value `[numeric(1)=1]` \cr Value assigned to line raster cells when
+#' `type_feature = "line"`. Used when recomputing the ZOI variables for line and area features.
+#' @param ggplot `[logical(1)=TRUE]` \cr If `TRUE`, return a ggplot object; otherwise
+#' return a prediction data frame.
+#' @param plot_mean `[logical(1)=TRUE]` \cr Plot weighted mean response line.
+#' @param plot_median `[logical(1)=TRUE]` \cr Plot weighted median response line.
+#' @param n_features `[numeric(1)=1]` \cr Number of features used in ZOI prediction.
+#' To represent the cumulative impact of multiple features, use `n_features > 1`.
+#' @param normalize `[logical or character]` \cr Optional y-axis normalization:
+#' one of `FALSE`, `"mean"`, `"median"`, or `"ci"`. Default is `FALSE`, which assumes
+#' no normalization.
+#' @param logx `[logical(1)=FALSE]` \cr If `TRUE`, use log10 scaling on x-axis.
+#' @param ylim `[NULL or ggplot2 scale/coord limits]` \cr Optional y-axis limits.
+#' @param y_lab `[character(1)="Relative Selection Strength"]` \cr Y-axis label.
+#' @param col_ci `[character(1)="grey"]` \cr Fill color for confidence ribbon.
+#' @param col_indiv `[character(1)="grey"]` \cr Color for individual model lines.
+#' @param col_mean `[character(1)="black"]` \cr Color for weighted mean line.
+#' @param col_median `[character(1)="red"]` \cr Color for weighted median line.
+#' @param linewidth_indiv `[numeric(1)=1.2]` \cr Line width for individual model lines.
+#' @param linewidth_mean `[numeric(1)=1.2]` \cr Line width for weighted mean line.
+#' @param linewidth_median `[numeric(1)=1.2]` \cr Line width for weighted median line.
+#' @param alpha_ci `[numeric(1)=0.5]` \cr Alpha transparency for confidence ribbon.
+#' @param alpha_indiv `[numeric(1)=0.3]` \cr Alpha transparency for individual model lines.
+#'
+#' @return If `ggplot = TRUE`, a ggplot object with response curves.
+#' If `ggplot = FALSE`, a data frame with `dfvar`, summary predictions, and
+#' optionally individual-model predictions when `indiv_pred = TRUE`.
 #'
 #' @seealso [oneimpact::predict()]
 #'
@@ -42,7 +84,7 @@ plot_response <- function(x,
                           wq_probs = c(0.025, 0.5, 0.975),
                           baseline = c("median", "mean", "zero")[1],
                           zoi = FALSE,
-                          zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
+                          #zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
                           type_feature = c("point", "line", "area")[1],
                           type_feature_recompute = FALSE,
                           zoi_limit = 0.05,
@@ -84,7 +126,7 @@ plot_response.bag <- function(x,
                               wq_probs = c(0.025, 0.5, 0.975),
                               baseline = c("median", "mean", "zero")[1],
                               zoi = FALSE,
-                              zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
+                              # zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
                               type_feature = c("point", "line", "area")[1],
                               type_feature_recompute = FALSE,
                               zoi_limit = 0.05,
