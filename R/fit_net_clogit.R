@@ -1,15 +1,18 @@
-#' Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a train-validate-test setup
+#' Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a cross-validation setup
 #'
-#' By default, [fit_net_clogit()] does not standardize predictor variables. If you want numeric variables
-#' to be standardized, you can either use `[bag_fit_net_clogit()]` with parameter `standardize = TRUE`
+#' This function runs one single realization of a model fit for a specific sample composed by
+#' a fit set, a test set, and a validation set. This function does the actual data set up and model
+#' fitting by calling [oneimpact::net_clogit()] and [glmnet::glmnet()]. The function is also used within
+#' [oneimpact::bag_fit_net_clogit()].
+#'
+#' By default, [oneimpact::fit_net_clogit()] does not standardize predictor variables. If you want numeric variables
+#' to be standardized, you can either use `[oneimpact::bag_fit_net_clogit()]` with parameter `standardize = TRUE`
 #' or provide an already standardized data set as input.
 #'
 #' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
 #' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
 #' @param samples `[list]` \cr List of samples with at least three elements: train, test,
-#' and validate. Each elements might have several elements, each representing
-#' the lines of `data` to be sampled for each resample. Typically, this is computed by
-#' the function [oneimpact::create_resamples()].
+#'   and validate. Typically computed by [oneimpact::create_resamples()].
 #' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
 #' each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"` or different
 #' flavors of `"AdaptiveLasso"` (see details below).
@@ -18,12 +21,26 @@
 #' conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
 #' it must be maximized to find the best fit model. It can also be a character, in case it should be one
 #' of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
+#' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
 #' @param kernel_vars `[vector,character=c("step_length", "ta")]` \cr Vector of strings with the names of the variables related
 #' to the movement kernel, included in the model (for instance, `"step_length"` and `"turning_angle"`)
-#' @param standardize `[logical(1)=TRUE]` \cr Logical flag for predictor variable standardization,
-#' prior to fitting the model sequence. The coefficients are always returned on the original scale.
-#' Default is standardize=TRUE. If variables are in the same units already, you might not wish to
-#' standardize them.
+#' @param penalty.factor `[numeric]` \cr Penalty factors per coefficient. If `NULL`, set automatically by method.
+#' @param predictor_table `[data.frame,NULL]` \cr Predictor table with ZOI metadata, required for
+#'   distance-decay and ecology-constrained methods. Typically created through
+#'   `[oneimpact::add_zoi_formula()]`. If `NULL` (default), not used.
+#' @param na.action `[character(1)="na.pass"]` \cr Action to take for missing values during fitting.
+#' @param function_lasso_decay `[function=log]` \cr Function used to compute decay weights for adaptive lasso penalties.
+#' @param value_lasso_decay `[numeric(1)=1]` \cr Penalty for terms which are not subject to the lasso decay penalties,
+#' typically non-ZOI variables. Applied to the distance-decay lasso and its variations.
+#' @param function_hypothesis `[function]` \cr Hypothesis function used to compute additional penalty weights.
+#' @param expected_sign_hypothesis `[numeric(1)=-1]` \cr Expected coefficient sign used for hypothesis-driven penalization.
+#' @param factor_grouped_lasso `[numeric(1)=1]` \cr Scaling factor applied to grouped lasso penalties.
+#' @param na.action `[character(1)="na.pass"]` \cr Action to take for missing values during model fitting.
+#' @param verbose `[logical(1)=FALSE]` \cr Whether to print progress messages during the fitting process.
+#' @param standardize `[character(1)="internal"]{"internal","external",FALSE}` \cr Predictor
+#' standardization mode. `"internal"` delegates standardization to glmnet (also standardizes
+#' dummy variables, but returns coefficients on original scale). `"external"` standardizes
+#' predictors before calling glmnet. `FALSE` skips standardization.
 #' @param out_dir_file `[character(1)=NULL]` \cr String with the prefix of the file name (and
 #' the folder) where the result of each model will be saved. E.g. if `out_dir_file = "output/test_"`,
 #' the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
@@ -37,7 +54,21 @@
 #' (i.e. with variance zero) are removed from the formula for the model fitting procedure, and a `NA` is set
 #' as its coefficient in the output. If `FALSE`, the function raises an error if there are variables with
 #' variance zero in the formula.
-#' @param ... Options for [oneimpact::net_logit()] and [glmnet::glmnet()].
+#' @param ... `[any]` \cr Options for [oneimpact::net_logit()] and [glmnet::glmnet()].
+#'
+#' @return A named list with the results for the selected metric, including:
+#' \itemize{
+#'   \item `coef`: coefficient matrix at optimal lambda.
+#'   \item `coef_std`: standardized coefficient matrix (or `NULL`).
+#'   \item `lambda`: optimal lambda value.
+#'   \item `alpha`: alpha value used.
+#'   \item `train_score`, `test_score`, `validation_score`: performance scores.
+#'   \item `validation_score_avg`: mean validation score across blocks.
+#'   \item `coefs_all`, `lambdas`: coefficients and lambdas for all evaluated metrics.
+#'   \item `metrics_evaluated`: full detail of all evaluated metrics.
+#'   \item `glmnet_fit`: the raw fitted glmnet object.
+#'   \item `parms`: recorded input parameters.
+#' }
 #'
 #' @references Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 #'
@@ -827,20 +858,56 @@ fit_net_issf <- fit_net_clogit
 
 #' Fit a bag of conditional logistic regression/SSF/iSSF models with penalized regression in a train-validate-test setup
 #'
-#' @param ... Options for net_clogit and glmnet
-#' @param mc.cores Only relevant if `parallel == "mclapply"`. If `parallel == "foreach"`, cores must
-#' be assigned before running `fit_multi_net_logit()` using [parallel::makeCluster()] and
-#' [doParallel::registerDoParallel()].
-#' @param subset `[vector]` \cr Vector of samples to be run (e.g. `c(1,2,4,5)` or `3:10`).
-#' By default, all the samples in `samples` are run.
-#' @param standardize internal = internal glmnet standaridization, i.e. using glmnet with argument standardize = TRUE.
-#' This also standardizes dummy variables, but returns the estimated coefficients back to the original scale.
-#' This however can cause baises in the estimates because of the bias-variance tradeoff that L1 and L1 regularization
-#' methods try to minimize.
-#' See more info in https://stackoverflow.com/questions/17887747/how-does-glmnets-standardize-argument-handle-dummy-variables
-#' external = glmnet is called with argument standardize = FALSE, but standization is done by the
-#' bag_fit_net_logit function. Return coefs in the original scale?? Implement.
-#' If FALSE, no standardization of predictors is done.
+#' Fits a bag on conditional logistic regressions by calling [oneimpact::fit_net_clogit()]
+#' multiple times to fit different resamples of the input data.
+#'
+#' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
+#' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
+#' @param samples `[list]` \cr List of samples with at least three elements: train, test,
+#'   and validate. Typically computed by [oneimpact::create_resamples()].
+#' @param subset_samples `[vector]` \cr Vector of sample indices to run (e.g. `c(1,2,4,5)` or `3:10`).
+#'   By default, all samples in `samples` are run.
+#' @param kernel_vars `[character]` \cr Names of movement kernel variables in the model
+#'   (e.g. `"step_length"` and `"turning_angle"`).
+#' @param metric `[function,character]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
+#'   representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
+#'   conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
+#'   it must be maximized to find the best fit model. It can also be a character, in case it should be one
+#'   of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
+#' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for the evaluation of
+#'   prediction scores. It can be a single or multiple metrics - see description of the argument `metric`.
+#' @param method `[character(1)="Lasso"]` \cr Penalized regression method. Default is `method = "Lasso"`,
+#'   but it could be `method = "Ridge"`, `"AdaptiveLasso"`, `"ElasticNet"`, or different versions of
+#'   ecology-informed methods. See [oneimpact::fit_net_clogit()] for valid options.
+#' @param standardize `[character(1)="internal"]{"internal","external",FALSE}` \cr Predictor
+#'   standardization mode. `"internal"` uses glmnet's internal standardization; `"external"`
+#'   standardizes before calling glmnet; `FALSE` skips standardization, in case which the
+#'   standardization should have been done before calling the function to fit the models.
+#' @param alpha `[numeric(1)=NULL]` \cr Elastic net mixing parameter. If `NULL`, set automatically by method.
+#' @param penalty.factor `[numeric]` \cr Penalty factors per coefficient. If `NULL`, set automatically by method.
+#' @param predictor_table `[data.frame,NULL]` \cr Predictor table with ZOI metadata, required for
+#'   distance-decay and ecology-constrained methods. Typically created through
+#'   `[oneimpact::add_zoi_formula()]`.
+#' @param na.action `[character(1)="na.pass"]` \cr Action to take for missing values during fitting.
+#' @param out_dir_file `[character(1)=NULL]` \cr Prefix path for saving individual model results as RDS files.
+#' @param parallel `[character(1)=FALSE]{"FALSE","foreach","mclapply"}` \cr Parallelization backend.
+#'    If FALSE (default), not parallelization is made.
+#' @param mc.cores `[integer(1)=2]` \cr Number of cores for `mclapply`. If `parallel == "foreach"`,
+#'   cores must be registered beforehand using [parallel::makeCluster()] and [doParallel::registerDoParallel()].
+#' @param verbose `[logical(1)=FALSE]` \cr Whether to print progress messages during fitting.
+#' @param ... `[any]` \cr Additional options passed to [oneimpact::fit_net_clogit()],
+#' [oneimpact::net_clogit()] and [glmnet::glmnet()].
+#'
+#' @return A list with:
+#' \itemize{
+#'   \item `n`: total number of models (resamples).
+#'   \item `formula`: model formula.
+#'   \item `method`: fitting method used.
+#'   \item `metric`: metric used for lambda selection.
+#'   \item `samples`: resampling structure.
+#'   \item `standardize`: standardization mode used.
+#'   \item `models`: named list of fitted model objects, one per resample.
+#' }
 #'
 #' @name bag_fit_net_functions
 #' @export
