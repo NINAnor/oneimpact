@@ -14,7 +14,7 @@
 #' `load_models_path`. It should be the pattern present in the argument
 #' `out_dir_file` in [oneimpact::fit_net_clogit()] or [oneimpact::bag_fit_net_clogit()]
 #' functions.
-#' @param names_from_file `[logical(1)=TRUE]` \cr If `FALSE` (default), the names of
+#' @param names_from_file `[logical(1)=FALSE]` \cr If `FALSE` (default), the names of
 #' the resamples are taken from the loaded model objects. If `TRUE`, they are taken
 #' from the files names, instead. In this case, the string defined by the parameter
 #' `name_from_file_pattern` is used to identify the number of each resample.
@@ -24,9 +24,21 @@
 #' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
 #' be printed in the prompt along the computation?
 #'
-#' @returns A list of fitted models, in the same format as if all the models
+#' @returns A `list` with loaded model objects and metadata for bag construction,
+#' in the same format as if all the models
 #' were fitted by the [oneimpact::fit_net_clogit()] or
 #' [oneimpact::bag_fit_net_clogit()] functions within a R session.
+#' Key fields include:
+#' \itemize{
+#'   \item `n`: expected number of resamples/models.
+#'   \item `formula`: model formula used in the loaded fits.
+#'   \item `method`: fitting method used (e.g., `"Lasso"`, `"AdaptiveLasso"`).
+#'   \item `metric`: validation metric used in the loaded fits.
+#'   \item `samples`: resampling structure from the fitted objects.
+#'   \item `standardize`: standardization mode used during fitting.
+#'   \item `models`: named list of loaded model objects (from `.rds` files).
+#' }
+#' This object is intended as input to [oneimpact::bag_models()].
 #'
 #' @export
 bag_load_models <- function(data,
