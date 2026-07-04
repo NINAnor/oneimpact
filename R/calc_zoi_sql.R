@@ -1,30 +1,46 @@
-#' Compute Zone of Influence for points and annotate them to points using SQL
+#' Compute point-level Zone of Influence (ZOI) values with SQL
 #'
-#' This function computes the zone of influence (ZOI) for a set of points
-#' (typically a type of indrastructure, defined by the `infrastructure_layer` parameter)
-#' and extracts their values at given location (defined by the layer `input_points`),
-#' using a SQL query into a database (e.g. PostgreSQL or duckdb). Differently from
-#' the `calc_zoi` functions, it does not compute the ZOI for the whole study area,
-#' but only for the positions where the input points are located. For optimal use,
-#' both `input_points` and `infrastructure_layer` should be spatially indexed, so
-#' only closeby points are evaluated and the query is completed fast.
+#' Computes ZOI-based covariates from an infrastructure layer and annotates them
+#' to input points using SQL in a database connection (for example PostgreSQL).
+#' Unlike raster-based ZOI functions, this computes values only at input point locations.
+#' For optimal use, both `input_points` and `infrastructure_layer` should be spatially indexed,
+#' so only nearby points are evaluated and the query is completed fast.
 #'
-#' Need to check functions (gaussian, exp, linear) and check if this is correct
+#' So far, only linear decay/bartlett is implemented.
 #'
-#' @param con connection to a database.
-#' @param input_points `[character]` \cr Name of the input table of points to be annotated (within the connection `con`,
-#' a database), in the format `table_name` or `schema_name.table_name`.
-#' @param infrastructure_layer `[character]` \cr Name of the infrastructure covariate table for which
-#' the zone of influence will be computed (within the connection `con`, a database),
-#' in the format `table_name` or `schema_name.table_name`.
-#' @param radius `[numeric=100]` \cr Radius or scale of zone of influence, used to calculate the
-#' cumulative ZOI and density. The radius represent the distance at which the ZOI vanishes or
-#' goes below a given minimum limit value `zoi_limit`. ### CHECK THAT, so far only bartlett
-#' @param input_geom `[character]` \cr Name of the geometry column from the `input_points` table.
-#' @param infra_geom `[character]` \cr Name of the geometry column from the `infrastructure_layer` table.
-#' @param input_id `[character]` \cr Name of a ID column from the `input_points` table.
-#' @param output_type `[character]` \cr To be described.
-#' @param output_column_name `[character]` \cr To be described.
+#' @param con `[DBIConnection]` \cr Open database connection used to run the SQL query.
+#' @param input_points `[character(1)]` \cr Name of the input points table, in the format
+#' `table_name` or `schema_name.table_name`. The table needs to be within
+#' the connection `con`, a database.
+#' @param infrastructure_layer `[character(1)]` \cr Name of the infrastructure table used to
+#' compute ZOI, in the format `table_name` or `schema_name.table_name`.
+#' @param radius `[numeric]` \cr Radius used in the ZOI function. Can be a vector
+#' to compute multiple output columns.
+#' @param type `[character(1)="circle"]{"circle","Gauss","exp_decay","bartlett","threshold","linear","exponential"}` \cr
+#' Distance-decay function used to compute ZOI values.
+#' @param zoi_metric `[character(1)="cumulative"]{"cumulative","nearest"}` \cr Aggregation metric:
+#' `"cumulative"` uses `sum`, and `"nearest"` uses `max`.
+#' @param input_id `[character(1)="id"]` \cr Identifier column in `input_points`.
+#' @param input_geom `[character(1)="geom"]` \cr Geometry column in `input_points`.
+#' @param infra_geom `[character(1)="geom"]` \cr Geometry column in `infrastructure_layer`.
+#' @param output_type `[character(1)="cumulative_zoi"]{"cumulative_zoi","density"}` \cr Output
+#' interpretation used in naming and downstream use.
+#' @param zoi_limit `[numeric(1)=0.05]` \cr Limit value used in decay-based functions (for example
+#' exponential decay calibration). Not yet implemented, to be updated.
+#' @param output_column_name `[character]` \cr Output column name(s) for computed ZOI values.
+#' Length should match `radius` when multiple radii are provided.
+#' @param output_table `[character(1)=NULL]` \cr Optional output table name. If provided, the query
+#' is prefixed with `CREATE TABLE IF NOT EXISTS ... AS`.
+#' @param condition `[character(1)=""]` \cr Optional extra SQL condition appended to the spatial join
+#' clause (for example temporal filtering).
+#' @param limit `[numeric(1)=1000000000000000]` \cr Row limit applied to the final query.
+#' Useful for limiting the number of rows for testing purposes.
+#' @param verbose `[logical(1)=FALSE]` \cr Whether to print the generated SQL query.
+#'
+#' @return A `data.frame` with one row per input point and computed ZOI column(s). The output
+#' includes the input point ID column and one or more derived ZOI columns named by
+#' `output_column_name`. If `output_table` is provided, table creation is attempted before query
+#' execution, and returned result content may depend on database backend behavior.
 #'
 #' @example examples/calc_zoi_sql_example.R
 #'
