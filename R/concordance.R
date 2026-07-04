@@ -1,15 +1,35 @@
-#' Computes the conditional Boyce index for model evaluation
+#' Computes concordance indices for model evaluation
 #'
-#' @param x A data.frame with three columns: x, the predicted values; y, the case variable
-#' (use vs. available, 1/0); and strat, the stratum.
+#' These functions compute different concordance indices for use/availability data
+#' in a train-validate-test model evaluation context.
 #'
-#' @details The function [oneimpact::conditionalAUC()] is the implementation of the computation of the Area Under the Curve as related
-#' to the Sommers'D index, as described in https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf.
-#' It is implemented by accounting for strata, ideal for conditional logistic regression, but it is under testing.
-#' The function [oneimpact::AUC()] uses the [pROC::auc()] function and does not account for strata.
-#' Functions conditionalBoyce and conditionalSomersD both account for strata, but are under checking.
-#' The functions coxnet.deviance and Cindex are wrappers for the same functions from glmnet, which are
-#' suitable for cox models, but here they use the same arguments as all the other concordance variables.
+#' @param x `[data.frame]` \cr A data frame with three columns: `x` (predicted values),
+#'   `y` (use/available response, 1/0), and `strat` (stratum identifier).
+#' @param method `[character(1)="pearson"]{"pearson","kendall","spearman"}` \cr Correlation
+#'   method used to compute the Boyce index. Only used in `conditionalBoyce()`.
+#' @param plotit `[logical(1)=FALSE]` \cr Whether to plot the bin frequency distribution.
+#'   Only used in `conditionalBoyce()`.
+#' @param errors `[logical(1)=TRUE]` \cr Whether to raise an error if the number of
+#'   non-empty bins is insufficient for a reliable estimate.
+#' @param warnings `[logical(1)=TRUE]` \cr Whether to emit warnings for unequal strata
+#'   lengths or low bin counts.
+#'
+#' @return A single numeric value representing the concordance metric:
+#' \itemize{
+#'   \item `conditionalBoyce()`: Pearson/Kendall/Spearman correlation of bin frequencies.
+#'   \item `conditionalSomersD()`: Somers' D statistic (range -1 to 1).
+#'   \item `conditionalAUC()`: AUC derived from Somers' D (range 0 to 1).
+#'   \item `AUC()`: AUC from [pROC::auc()], ignoring strata.
+#'   \item `coxnet.deviance()`: Cox partial deviance via [glmnet::coxnet.deviance()].
+#'   \item `Cindex()`: Concordance index via [glmnet::Cindex()].
+#' }
+#'
+#' @details The function [oneimpact::conditionalAUC()] is the implementation of the AUC
+#' as related to the Somers' D index. It accounts for strata, ideal for conditional
+#' logistic regression, but is under testing. [oneimpact::AUC()] uses [pROC::auc()] and
+#' does not account for strata. `coxnet.deviance` and `Cindex` are wrappers for
+#' [glmnet::coxnet.deviance()] and [glmnet::Cindex()] using the same argument structure
+#' as the other concordance functions.
 #'
 #' @name concordance_indices
 #' @export
@@ -44,13 +64,6 @@ conditionalBoyce <- function(x,
   return(b)
 }
 
-#' Computes concordance indices for model evaluation
-#'
-#' These functions compute different concordance indices.
-#'
-#' @references https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
-#' @seealso [oneimpact::conditionalBoyce]
-#'
 #' @rdname concordance_indices
 #' @export
 conditionalSomersD <- function(x,
