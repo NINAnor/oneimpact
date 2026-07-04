@@ -15,6 +15,13 @@
 #' @param col_case `[string(1)="case"]` \cr Name of the column in `data` representing
 #' the case or used/available points. Default is `"case"`.
 #'
+#' @returns A `data.frame` with one row per unique combination of `colH0` (and
+#'   `animal_id` if provided), with columns:
+#' \itemize{
+#'   \item `n`: total number of observations in the group.
+#'   \item `n_presences`: number of used/presence points (`col_case == 1`) in the group.
+#' }
+#'
 #' @example examples/explore_blocks_pre_example.R
 #'
 #' @name explore_blocks_pre
