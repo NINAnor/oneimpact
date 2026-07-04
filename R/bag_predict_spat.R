@@ -35,8 +35,11 @@
 #' @param uncertainty_quantiles `[numeric(2)=c(0.25, 0.75)]` \cr Quantiles used for
 #'   weighted uncertainty summaries when what includes "median".
 #' @param verbose `[logical(1)=FALSE]` \cr Print progress messages.
+#' @param predictor_table_zoi `[data.frame]` \cr Predictor table with ZOI metadata
+#'   (for example from [oneimpact::add_zoi_formula()] predictor_table output), used to aggregate
+#'   predictions by ZOI variable groups in [oneimpact::bag_predict_spat_vars()].
 #'
-#' @return A list with prediction outputs:
+#' @return For `bag_predict_spat()`, a list with prediction outputs:
 #' \itemize{
 #'   \item grid: prediction table in tabular form (always returned).
 #'   \item weights: model weights used for prediction (non-zero weight models).
@@ -44,6 +47,16 @@
 #'   \item r_ind_summ_pred: raster stack with weighted median and uncertainty summaries, including the
 #'   interquartile range and the quantile coefficient of variation (if requested and `output_type = "rast"`).
 #'   \item r_ind_pred: raster stack of individual model predictions (if requested and `output_type = "rast"`).
+#' }
+#'
+#' For `bag_predict_spat_vars()`, a list with partial prediction outputs:
+#' \itemize{
+#'   \item vars: per-variable prediction summaries.
+#'   \item grid: grid-level prediction table.
+#'   \item weights: model weights used for prediction.
+#'   \item r_weighted_avg_pred: raster output for weighted means (if requested).
+#'   \item r_ind_summ_pred: raster output for weighted uncertainty summaries (if requested).
+#'   \item r_ind_pred: raster output for individual-model predictions (if requested).
 #' }
 #'
 #' @export
@@ -297,20 +310,6 @@ bag_predict_spat <- function(bag,
   out
 }
 
-#' @param predictor_table_zoi `[data.frame]` \cr Predictor table with ZOI metadata
-#'   (for example from [oneimpact::add_zoi_formula()] predictor_table output), used to aggregate
-#'   predictions by ZOI variable groups in [oneimpact::bag_predict_spat_vars()].
-#'
-#' @return For `bag_predict_spat_vars()`, a list with:
-#' \itemize{
-#'   \item vars: per-variable prediction summaries.
-#'   \item grid: grid-level prediction table.
-#'   \item weights: model weights used for prediction.
-#'   \item r_weighted_avg_pred: raster output for weighted means (if requested).
-#'   \item r_ind_summ_pred: raster output for weighted uncertainty summaries (if requested).
-#'   \item r_ind_pred: raster output for individual-model predictions (if requested).
-#' }
-#'
 #' @rdname bag_predict_spat
 #' @export
 bag_predict_spat_vars <- function(bag,
