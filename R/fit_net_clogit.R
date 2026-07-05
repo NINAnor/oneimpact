@@ -14,21 +14,22 @@
 #' @param samples `[list]` \cr List of samples with at least three elements: train, test,
 #'   and validate. Typically computed by [oneimpact::create_resamples()].
 #' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
-#' each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"` or different
-#' flavors of `"AdaptiveLasso"` (see details below).
+#'   each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"` or different
+#'   flavors of `"AdaptiveLasso"` (see details below).
 #' @param metric `[function,character]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
-#' representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
-#' conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
-#' it must be maximized to find the best fit model. It can also be a character, in case it should be one
-#' of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
+#'   representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
+#'   conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
+#'   it must be maximized to find the best fit model. It can also be a character, in case it should be one
+#'   of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
 #' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
 #' @param kernel_vars `[vector,character=c("step_length", "ta")]` \cr Vector of strings with the names of the variables related
-#' to the movement kernel, included in the model (for instance, `"step_length"` and `"turning_angle"`)
+#'   to the movement kernel, included in the model (for instance, `"step_length"` and `"turning_angle"`)
+#' @param alpha `[numeric(1)=NULL]` \cr Elastic net mixing parameter. If `NULL`, glmnet chooses a default behavior
+#'   (`alpha = 1` for Lasso, `alpha = 0` for Ridge, and `alpha = 0.5` for ElasticNet).
 #' @param penalty.factor `[numeric]` \cr Penalty factors per coefficient. If `NULL`, set automatically by method.
 #' @param predictor_table `[data.frame,NULL]` \cr Predictor table with ZOI metadata, required for
 #'   distance-decay and ecology-constrained methods. Typically created through
 #'   `[oneimpact::add_zoi_formula()]`. If `NULL` (default), not used.
-#' @param na.action `[character(1)="na.pass"]` \cr Action to take for missing values during fitting.
 #' @param function_lasso_decay `[function=log]` \cr Function used to compute decay weights for adaptive lasso penalties.
 #' @param value_lasso_decay `[numeric(1)=1]` \cr Penalty for terms which are not subject to the lasso decay penalties,
 #' typically non-ZOI variables. Applied to the distance-decay lasso and its variations.
@@ -54,7 +55,7 @@
 #' (i.e. with variance zero) are removed from the formula for the model fitting procedure, and a `NA` is set
 #' as its coefficient in the output. If `FALSE`, the function raises an error if there are variables with
 #' variance zero in the formula.
-#' @param ... `[any]` \cr Options for [oneimpact::net_logit()] and [glmnet::glmnet()].
+#' @param ... `[any]` \cr Options for [oneimpact::net_clogit()] and [glmnet::glmnet()].
 #'
 #' @return A named list with the results for the selected metric, including:
 #' \itemize{
@@ -883,7 +884,8 @@ fit_net_issf <- fit_net_clogit
 #'   standardization mode. `"internal"` uses glmnet's internal standardization; `"external"`
 #'   standardizes before calling glmnet; `FALSE` skips standardization, in case which the
 #'   standardization should have been done before calling the function to fit the models.
-#' @param alpha `[numeric(1)=NULL]` \cr Elastic net mixing parameter. If `NULL`, set automatically by method.
+#' @param alpha `[numeric(1)=NULL]` \cr Elastic net mixing parameter. If `NULL`, glmnet chooses a default behavior
+#'   (`alpha = 1` for Lasso, `alpha = 0` for Ridge, and `alpha = 0.5` for ElasticNet).
 #' @param penalty.factor `[numeric]` \cr Penalty factors per coefficient. If `NULL`, set automatically by method.
 #' @param predictor_table `[data.frame,NULL]` \cr Predictor table with ZOI metadata, required for
 #'   distance-decay and ecology-constrained methods. Typically created through
@@ -908,6 +910,8 @@ fit_net_issf <- fit_net_clogit
 #'   \item `standardize`: standardization mode used.
 #'   \item `models`: named list of fitted model objects, one per resample.
 #' }
+#'
+#' @seealso [oneimpact::fit_net_clogit()], [oneimpact::net_clogit()], [glmnet::glmnet()]
 #'
 #' @name bag_fit_net_functions
 #' @export
