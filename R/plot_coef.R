@@ -1,8 +1,25 @@
 #' Plot the coefficients of bags of models
 #'
-#' Options - one term, multiple bars side by side
-#' Colors for negative and positive
+#' Visualizes the distribution of coefficients across all models in a bag,
+#' optionally weighted, filtered by term, and plotted as bars, points, or histograms.
+#' Supports standardized, unstandardized, or raw coefficients.
 #'
+#' @param bag `[bag,list]` \cr Bag of models as returned by [oneimpact::bag_models()].
+#' @param terms `[character="all"]` \cr Which terms to include in the plot. Can be `"all"` or a pattern.
+#' @param models `[integer]` \cr Model indices to include. Default is `1:bag$n_above_threshold`.
+#' @param weighted `[logical(1)=TRUE]` \cr If `TRUE`, coefficients are weighted by model weights.
+#' @param remove_weight_zero `[logical(1)=TRUE]` \cr If `TRUE`, models with zero weight are excluded when weighting.
+#' @param what `[character="all_models"]{"all_models", "average"}` \cr Plot coefficients for all models or the weighted average.
+#' @param plot_type `[character="bars"]{"bars", "points", "histogram"}` \cr Plot type to use.
+#' @param remove_low `[numeric(1)=-1]` \cr Minimum coefficient value to include.
+#' @param remove_high `[numeric(1)=Inf]` \cr Maximum coefficient value to include.
+#' @param std `[logical,character="FALSE"]{FALSE,"std","unstd"}` \cr If `"std"`, use standardized coefficients;
+#'   if `"unstd"`, unstandardized; if `FALSE` (default), keep raw coefficients.
+#' @param data `[data.frame]` \cr Data used to standardize or unstandardize coefficients when `std` is not `FALSE`.
+#' @param order_zoi_radius `[logical(1)=FALSE]` \cr If `TRUE`, order ZOI terms by radius before plotting.
+#' @param show_legend `[logical(1)=FALSE]` \cr Whether to show a legend in the plot.
+#'
+#' @return A ggplot2 object representing the coefficient plot.
 #' @export
 plot_coef <- function(bag, terms = "all",
                       models = 1:bag$n_above_threshold,
