@@ -1,6 +1,21 @@
 #' Prediction based only on step length terms
 #'
+#' Computes model predictions based exclusively on movement kernel variables
+#' (e.g. step length and turning angle), using the fitted coefficients from
+#' a conditional logistic regression model.
+#'
+#' @param f `[formula]` \cr Model formula, used to identify kernel variable terms.
+#' @param data `[data.frame]` \cr Data set on which predictions are made.
+#' @param kernel_vars `[character=c("step_length","ta")]` \cr Names of the movement
+#'   kernel variables in the model.
+#' @param coefs `[numeric]` \cr Named numeric vector of fitted model coefficients.
+#'
+#' @return A numeric matrix of predicted values based on kernel variables only.
+#'
+#' @seealso [oneimpact::fit_net_clogit()], [oneimpact::bag_fit_net_clogit()]
+#'
 #' @export
+kernel_prediction <- function(f, data,
 kernel_prediction <- function(f, data,
                               kernel_vars = c("step_length", "ta"),
                               coefs) {
