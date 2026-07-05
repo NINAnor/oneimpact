@@ -1,13 +1,16 @@
 #' Setup blocks of points for fitting, calibration, and validation using spatial stratification
 #'
-#' H0: validation
-#' H1, H2
+#' Assigns data points to fitting (train), calibration (test), and validation sets based
+#' on a spatially stratified block structure with hierarchy levels H0, H1, and H2.
+#' Level H0 is typically used for validation validation while H1 and H2 are used for
+#' fitting and calibration.
 #'
-#' @param spStrat A `data.frame` with spatially stratified levels in blocks H0 (population,
-#' individual, or study area), H1 (level 1) and H2 (level 2). Each data point is associated
-#' to a different set of blocks.
-#' @param seed Seed for random sampling.
-#' @param sampling_params Sampling parameters, the output from [oneimpact::set_sampling_params].
+#' @param spStrat `[data.frame]` \cr Data frame with spatially stratified levels in blocks H0
+#'   (population, individual, or study area), H1 (level 1), and H2 (level 2). Each data point
+#'   is associated to a different set of blocks.
+#' @param seed `[numeric(1)=1234]` \cr Seed for random sampling.
+#' @param sampling_params `[list]` \cr Sampling parameters, the output from [
+#'   oneimpact::set_sampling_params()].
 #'
 #' @return A vector with length equals to the number of positions, setting whether the
 #' points are set to fitting (training), calibration (testing), and validation.
