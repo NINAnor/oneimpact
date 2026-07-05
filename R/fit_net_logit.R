@@ -842,7 +842,8 @@ fit_net_rsf <- fit_net_logit
 #'   \item `samples`: resampling structure.
 #'   \item `standardize`: standardization mode used.
 #'   \item `models`: named list of fitted model objects, one per resample.
-#'   \item `covariate_mean_sd`: mean and SD used for external standardization (or `NULL`).
+#'   \item `covariate_mean_sd`: data frame of predictor means and SDs used for external standardization (or `NULL`).
+#'   \item `numeric_covs`: logical vector identifying which covariates are numeric.
 #' }
 #'
 #' @seealso [oneimpact::fit_net_logit()], [oneimpact::net_logit()], [glmnet::glmnet()]
@@ -936,7 +937,7 @@ bag_fit_net_logit <- function(f, data,
                                                     metric = metric,
                                                     metrics_evaluate = metrics_evaluate,
                                                     method = method,
-                                                    standardize = standardize,
+                                                    standardize = if(standardize == "external") FALSE else standardize,
                                                     alpha = alpha,
                                                     penalty.factor = penalty.factor,
                                                     predictor_table = predictor_table,
@@ -961,7 +962,7 @@ bag_fit_net_logit <- function(f, data,
                         metric = metric,
                         metrics_evaluate = metrics_evaluate,
                         method = method,
-                        standardize = standardize,
+                        standardize = if(standardize == "external") FALSE else standardize,
                         alpha = alpha,
                         penalty.factor = penalty.factor,
                         predictor_table = predictor_table,
@@ -981,7 +982,7 @@ bag_fit_net_logit <- function(f, data,
                                             samples = samples,
                                             i = i,
                                             metric = metric,
-                                            metrics_evaluate = metrics_evaluate,
+                                            standardize = if(standardize == "external") FALSE else standardize,
                                             method = method,
                                             standardize = standardize,
                                             alpha = alpha,
@@ -994,11 +995,11 @@ bag_fit_net_logit <- function(f, data,
   }
 
   names(fitted_list) <- names(samples$train)
-  # define new class?
-  results$models <- fitted_list
 
   # Add info about the covariates - type
   results$numeric_covs <- numeric_covs
+  # fitted models
+  results$models <- fitted_list
 
   ##############
   # if standardize == "external", we should unstandardize the coefs here!

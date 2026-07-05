@@ -910,6 +910,8 @@ fit_net_issf <- fit_net_clogit
 #'   \item `samples`: resampling structure.
 #'   \item `standardize`: standardization mode used.
 #'   \item `models`: named list of fitted model objects, one per resample.
+#'   \item `covariate_mean_sd`: data frame of predictor means and SDs used for external standardization (or `NULL`).
+#'   \item `numeric_covs`: logical vector identifying which covariates are numeric.
 #' }
 #'
 #' @seealso [oneimpact::fit_net_clogit()], [oneimpact::net_clogit()], [glmnet::glmnet()]
@@ -939,6 +941,37 @@ bag_fit_net_clogit <- function(f, data,
                                verbose = FALSE,
                                ...) {
 
+  # get variables
+  wcols <- extract_response_strata(f, covars = TRUE)
+
+  # First we standardize covariates
+  # relevant columns (excluding strata)
+  all_vars <- all.vars(f)
+  all_covars <- grep(wcols$strata, all_vars[-1], invert = TRUE, value = TRUE)
+
+  # get predictors
+  data_covs <- data[, all_covars]
+  # select numeric predictors to be standardized
+  numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
+  # standardize
+  if(standardize == "external") {
+    data_covs_num <- data_covs[, numeric_covs]
+    # standardize
+    data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
+    # register mean and sd
+    covs_mean_sd <- data.frame(do.call("rbind", lapply(1:length(data_covs_num_std), function(i)
+      sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+    rownames(covs_mean_sd) <- colnames(data_covs_num)
+    colnames(covs_mean_sd) <- c("mean", "sd")
+    # merge standardized predictors with non numeric predictors
+    data_covs_std <- cbind(data_covs[, !numeric_covs], data.frame(do.call("cbind", data_covs_num_std)))
+    data_covs_std <- data_covs_std[, order(c(which(!numeric_covs), which(numeric_covs)))]
+    colnames(data_covs_std) <- colnames(data_covs)
+    data <- cbind(data[wcols$response], data[wcols$strata], data_covs_std)
+  } else {
+    data <- data[, all_vars]
+  }
+
   # initiate results object
   results <- list()
   results$n <- length(samples$train)
@@ -947,6 +980,13 @@ bag_fit_net_clogit <- function(f, data,
   results$metric <- metric
   results$samples <- samples
   results$standardize <- standardize
+
+  # standardized means and sd
+  if(standardize == "external") {
+    results$covariate_mean_sd <- covs_mean_sd
+  } else {
+    results$covariate_mean_sd <- NULL
+  }
 
   # If there is parallel implementation with forach
   if(parallel == "foreach") {
@@ -965,7 +1005,7 @@ bag_fit_net_clogit <- function(f, data,
                                                          metric = metric,
                                                          metrics_evaluate = metrics_evaluate,
                                                          method = method,
-                                                         standardize = standardize,
+                                                         standardize = if(standardize == "external") FALSE else standardize,
                                                          alpha = alpha,
                                                          penalty.factor = penalty.factor,
                                                          predictor_table = predictor_table,
@@ -991,7 +1031,7 @@ bag_fit_net_clogit <- function(f, data,
                          metric = metric,
                          metrics_evaluate = metrics_evaluate,
                          method = method,
-                         standardize = standardize,
+                         standardize = if(standardize == "external") FALSE else standardize,
                          alpha = alpha,
                          penalty.factor = penalty.factor,
                          predictor_table = predictor_table,
@@ -1014,7 +1054,7 @@ bag_fit_net_clogit <- function(f, data,
                                              metric = metric,
                                              metrics_evaluate = metrics_evaluate,
                                              method = method,
-                                             standardize = standardize,
+                                             standardize = if(standardize == "external") FALSE else standardize,
                                              alpha = alpha,
                                              penalty.factor = penalty.factor,
                                              predictor_table = predictor_table,
@@ -1027,6 +1067,9 @@ bag_fit_net_clogit <- function(f, data,
   if(length(fitted_list) == results$n)
     names(fitted_list) <- names(samples$train)
 
+  # Add info about the covariates - type
+  results$numeric_covs <- numeric_covs
+  # models
   results$models <- fitted_list
 
   results
