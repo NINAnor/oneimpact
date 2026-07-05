@@ -46,7 +46,7 @@
 #'   If matrix, rows are term names and columns are model/resample coefficients.
 #' @param weights `[numeric=1]` \cr Model weights used by `predict.formula()` when
 #'   combining predictions across models.
-#' @param ... \cr Additional arguments.
+#' @param ... `[any]` \cr Additional arguments passed to methods.
 #'
 #' @return A `data.frame` (or matrix-like object) with predicted values.
 #' Output columns depend on `wmean` and `wq_probs`:

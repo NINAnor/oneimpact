@@ -26,7 +26,6 @@
 #'   of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
 #' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
 #'   See description of the argument `metric`.
-#' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
 #' @param alpha `[numeric(1)=NULL]` \cr Elastic net mixing parameter. If `NULL`, glmnet chooses a default behavior
 #' (`alpha = 1` for Lasso, `alpha = 0` for Ridge, and `alpha = 0.5` for ElasticNet).
 #' @param penalty.factor `[numeric,vector]` \cr Penalty factors for each coefficient in the glmnet penalty term.
