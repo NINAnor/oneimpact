@@ -13,8 +13,6 @@
 #' for a series of points in 1 dimensional space in the range `range_plot` (with
 #' steps defined by `step`) and plotted.
 #'
-#' To add: options for normalization, prob etc.
-#'
 #' @param points `[numeric]` \cr Vector of values in the x axis where the infrastructure are located,
 #' in 1 dimension
 #' (more broadly, the location of sources of disturbance or spatial variables, or the point of
@@ -37,7 +35,7 @@
 #' @param na.rm `[logical(1)=TRUE]` \cr Should `NA` values be removed when computing
 #' either the sum (for the cumulative ZOI) or the maximum (for the ZOI of the nearest
 #' feature)?
-#' @param ... Additional parameters passed to the ZOI decay function `fun`.
+#' @param ... `[any]` \cr Additional parameters passed to the ZOI decay function `fun`.
 #'
 #' @return A `ggplot` object with the nearest or cumulative influence plot.
 #' If `return_df = TRUE`, it returns a list with the `ggplot` object and a `data.frame`  with
