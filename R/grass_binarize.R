@@ -29,7 +29,7 @@
 #' assume in the output map. It uses the module
 #' [r.null](https://grass.osgeo.org/grass78/manuals/r.null.html)).
 #'
-#' @param setnull `[]` \cr If `NULL` (default), no changes are made. Otherwise, a set of numeric
+#' @param setnull `[numeric,NULL]` \cr If `NULL` (default), no changes are made. Otherwise, a set of numeric
 #' values that should be transformed into NULL/NA data (using the module
 #' [r.null](https://grass.osgeo.org/grass78/manuals/r.null.html)).
 #' @param bin_values `[numeric(2)=c(0,1)]` \cr Values c(lower, upper) that the output map pixels should
@@ -43,6 +43,7 @@
 #' Default is `FALSE`.
 #' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
 #' be printed in the prompt along the computation?
+#' @param ... `[any]` \cr Additional arguments passed to GRASS GIS modules.
 #'
 #' @return A binarized map with only two values (or a set of binarized maps if `length(breaks)` > 1)
 #' within the GRASS GIS mapset. In R, the output is a string with the name of this

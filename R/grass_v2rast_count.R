@@ -6,9 +6,9 @@
 #' is set to `TRUE`, the extent of the vector map `x` is used reset as the region.
 #' The resolution, though, continues the same set up earlier through `g.region`.
 #'
-#' @param x Input vector map.
-#' @param output Output map name.
-#' @param column `[chracter(1)=NULL` \cr Default is `NULL`. If not `NULL`, the name of a column
+#' @param x `[character(1)]` \cr Name of the input vector map within the GRASS GIS mapset.
+#' @param output `[character(1)]` \cr Name of the output raster map. Default is `paste0(x, "_count")`.
+#' @param column `[character(1)=NULL]` \cr Default is `NULL`. If not `NULL`, the name of a column
 #' in the input vector `x` that corresponds to the column to be summed to count the number
 #' of features in each pixel of the output raster map. If `NULL`, this column is created in
 #' a temporary vector, with all values equal 1.
@@ -17,10 +17,14 @@
 #' If `FALSE`, the current computational region is used.
 #' @param align `[character(1)=NULL]` \cr Name of a raster map with which to align the
 #' computational region to produce the output map.
+#' @param remove_intermediate `[logical(1)=TRUE]` \cr Whether intermediate temporary maps
+#'   created during processing should be removed from the GRASS GIS mapset.
 #' @param verbose `[logical(1)=FALSE]` \cr Should messages of the computation steps
 #' be printed in the prompt along the computation?
 #' @param overwrite `[logical(1)]` \cr Whether the output maps should be overwriten
 #' (flag `overwrite = TRUE`).
+#' @param ... `[any]` \cr Additional arguments passed to GRASS GIS modules.
+#'
 #'
 #' @return A raster map with the count of features within each pixel. The map is written
 #' within the GRASS GIS mapset. In R, the output is a string with the name of this
