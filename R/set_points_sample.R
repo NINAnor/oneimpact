@@ -9,13 +9,13 @@
 #' It assumes the landscape is square or rectangularly shaped.
 #'
 #' @param n_features `[integer(1)=1000]` \cr Total number of points to spread in space.
-#' @param type `[character(1)="regular"]{"regular", "random"}` Pattern for the creation
+#' @param type `[character(1)="regular"]{"regular", "random"}` \cr Pattern for the creation
 #' of points is space. Other methods are also accepted, check the `type` argument
 #' for the [sf::st_sample()] function.
 #' @param base_polygon `[RasterLayer,sfc_POLYGON]` \cr Polygon (from class `sf` or `sfc`)
 #' inside which the points will be created. If a `RasterLayer`, the `bbox` of the
 #' raster is used as a polygon.
-#' @param extent_x,entent_y `[numeric vector(2)=c(0,1)]` \cr Vector representing the minimum and
+#' @param extent_x,extent_y `[numeric vector(2)=c(0,1)]` \cr Vector representing the minimum and
 #' maximum extent in x and y within which the points should be placed, in the format c(min,max).
 #'
 #' @return A `data.frame` with the (x,y) coordinates of the simulated points.

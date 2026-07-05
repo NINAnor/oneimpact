@@ -35,7 +35,7 @@
 #' generated or taken from a real landscape. In this case, no points are simulated and they are
 #' just rasterized (so that distances or other derived variables might be calculated).
 #' @param res `[numeric(1)=0.1]` \cr Resolution of the output raster.
-#' @param extent_x,entent_y `[numeric vector(2)=c(0,1)]` \cr Vector representing the minimum and
+#' @param extent_x,extent_y `[numeric vector(2)=c(0,1)]` \cr Vector representing the minimum and
 #' maximum extent in x and y within which the points should be placed, in the format c(min,max).
 #' @param buffer_around `[numeric(1)=0.1]` \cr Size of the buffer around the extent of the landscape,
 #' to avoid edge effects when calculating densities using neighborhood analysis.
@@ -48,7 +48,6 @@
 #' @param crs `[character(1)]` \cr Specification for the coordinate reference system
 #' of the `rast` object created from the points. Default is
 #' `"+proj=utm +zone=1 +datum=WGS84"`.
-#' argument.
 #'
 #' @returns A list with three elements: (1) `pts`, the coordinates (x,y) of the simulated points;
 #' (2) `rast`, a binary raster containing the landscape, with 1 where there points and NA elsewhere;

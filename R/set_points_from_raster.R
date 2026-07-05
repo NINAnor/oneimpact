@@ -11,8 +11,6 @@
 #' It was based on this StackExchange very useful answer from "Spacedman":
 #' https://gis.stackexchange.com/questions/224321/randomly-generate-points-using-weights-from-raster
 #'
-#' TO IMPROVE: implement with terra package
-#'
 #' @param n_features `[integer(1)=1000]` \cr Total number of features to spread in space.
 #' @param base_raster `[RasterLayer]` \cr Input raster used for defining the weights.
 #'
