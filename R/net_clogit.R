@@ -1,24 +1,38 @@
 #' Fits a conditional logistic regression/SSF/iSSF using glmnet
 #'
+#' Low-level wrapper that sets up the design matrix and stratified survival
+#' response for penalized conditional logistic regression, then calls
+#' [glmnet::glmnet()] or [glmnet::cv.glmnet()] with `family = "cox"`.
+#' This function is used internally by [oneimpact::fit_net_clogit()] and is
+#' typically not called directly by the user.
+#'
 #' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
 #' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
-#' @param alpha Default is L1-regularization (Lasso regression), with `alpha = 1`.
-#' L2-regularization (Ridge regression) is done with `alpha = 0`, and elastic-net regression
-#' is performed for any `alpha` value between `0` and `1`. For more details, see the
-#' [glmnet::glmnet()] documentation. For Adaptive and Decay Adaptive Lasso, keep `alpha = 1`.
+#' @param alpha `[numeric(1)=1]` \cr Mixing parameter for glmnet. Default is L1-regularization (Lasso), with `alpha = 1`.
+#'   L2-regularization (Ridge regression) is done with `alpha = 0`, and elastic-net regression
+#'   is performed for any `alpha` value between `0` and `1`. For more details, see the
+#'   [glmnet::glmnet()] documentation. For Adaptive and Decay Adaptive Lasso, keep `alpha = 1`.
 #' @param penalty.factor `[numeric,vector=NULL]` \cr Vector of penalty factors to be used for Adaptive Lasso
-#' fitting. The vector might have the same length as the the number of columns given by the model matrix,
-#' `model.matrix(f, data)`. Default is `NULL`, in case the same penalty is applied to all variables.
+#'   fitting. The vector might have the same length as the the number of columns given by the model matrix,
+#'   `model.matrix(f, data)`. Default is `NULL`, in case the same penalty is applied to all variables.
 #' @param type.measure `[character(1)="deviance"]` \cr Type of measure to evaluate the model internally
-#' in [glmnet::glmnet()]. For logistic and conditional logistic regression, it is by default `"deviance"`.
+#'   in [glmnet::glmnet()]. For logistic and conditional logistic regression, it is by default `"deviance"`.
 #' @param na.action `[character(1)="na.pass"]` \cr Default is `"na.pass"`, i.e. rows with NAs are not automatically
-#' removed from the `model.matrix` used for fitting.
+#'   removed from the `model.matrix` used for fitting.
+#' @param standardize `[logical(1)=TRUE]` \cr Whether glmnet should internally standardize
+#'   variables before fitting. Default is `TRUE`. Set to `FALSE` if variables are
+#'   already standardized.
 #' @param func `[character(1)="glmnet"]{"glmnet", "cv.glmnet"}` \cr The function to be used for
-#' fitting. Default is [glmnet::glmnet()]. The second option is [glmnet::cv.glmnet()] which
-#' already performs the cross-validation and might include the variable selection/callibration
-#' within.
+#'   fitting. Default is [glmnet::glmnet()]. The second option is [glmnet::cv.glmnet()] which
+#'   already performs the cross-validation and might include the variable selection/callibration
+#'   within.
 #'
-#' Check option parallel = TRUE from glmnet.
+#' @param ... `[any]` \cr Additional arguments passed to [glmnet::glmnet()] or [glmnet::cv.glmnet()].
+#'   Note the `parallel = TRUE` option from glmnet can be passed here.
+#'
+#' @return A fitted [glmnet::glmnet()] or [glmnet::cv.glmnet()] object.
+#'
+#' @seealso [oneimpact::fit_net_clogit()], [glmnet::glmnet()]
 #'
 #' @export
 net_clogit <- function(f, data,
