@@ -143,7 +143,7 @@ NULL
 #'         \item{publ_priv:} {Whether the road is public or private}
 #'         \item{traffic_bin:} {Binary classification of the traffic on the road - high or low}
 #'         \item{name_area:} {Name of the reindeer management area where the road is located}
-#'         \item{traffic_bin:} {Value 1, to be used for rasterization purposes}
+#'         \item{value:} {Value 1, to be used for rasterization purposes}
 #' }
 #'
 #' @source \url{https://kartkatalog.geonorge.no/metadata/elveg/ed1e6798-b3cf-48be-aee1-c0d3531da01a}
