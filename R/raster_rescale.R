@@ -18,7 +18,7 @@
 #' @export
 raster_rescale <- function(x, to = c(0, 1), from = NULL) {
 
-  # if original miximum and maximum are not given,
+  # if original minimum and maximum are not given,
   # get them from the layers
   if(is.null(from)) {
     mins <- terra::global(x, "min", na.rm = T)[,1] # cabins@ptr$range_min?

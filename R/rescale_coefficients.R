@@ -5,15 +5,20 @@
 #' scales the fitted models coefficients back to the original scale of the predictors,
 #' to allow ecological interpretation.
 #'
-#' @param model \cr Fitted model, i.e. the object created by a model fit funtion
-#' such as "lm", "glm", or "coxph".
-#' @param data \cr The original `data.frame` with the data used to fit the model.
-#' @param bag \cr A bag of models, as result of the [oneimpact::bag_models()] function.
-#' @param standardize `[logical(1)=TRUE]` If `TRUE` (Default), the coefficients are standardized.
-#' If `FALSE`, the coefficients are standardized. Only numeric coefficients are
-#' standardized.
+#' @param model `[lm,glm,coxph]` \cr Fitted model object created by a fitting function
+#'   such as `lm()`, `glm()`, or `coxph()`.
+#' @param data `[data.frame]` \cr The original data used to fit the model, in unstandardized form.
+#' @param bag `[bag,list]` \cr A bag of models, as returned by [oneimpact::bag_models()].
+#' @param tostd `[logical(1)=TRUE]` \cr Only relevant for the `bag` method. If `TRUE`
+#'   (default), raw model coefficients (fitted on standardized predictors) are
+#'   converted to standardized scale by multiplying by predictor SDs. If `FALSE`,
+#'   coefficients are converted back to the original (unstandardized) scale by
+#'   dividing by predictor SDs.
 #'
-#' @returns A vector of rescaled coefficients for the input model.
+#' @return A matrix or vector of rescaled coefficients. For `lm`, `glm`, and `coxph`
+#'   methods, coefficients are returned in the original (unstandardized) scale.
+#'   For the `bag` method, direction depends on `tostd`: standardized scale if
+#'   `TRUE`, original scale if `FALSE`.
 #'
 #' @name rescale_coefficients
 #'
