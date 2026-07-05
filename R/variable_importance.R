@@ -9,34 +9,43 @@
 #' metric is computed.
 #'
 #' @param x `[list]` \cr Bag of models, result of [oneimpact::bag_models()]. It contains
-#' multiple information from the models, such as formula, weights, coefficients,
-#' and metric used to evaluate the models.
+#'   multiple information from the models, such as formula, weights, coefficients,
+#'   and metric used to evaluate the models.
 #' @param data `[data.frame]` \cr Complete data set to which the models were applied.
 #' @param type `[character(1)="drop"]{"drop", "permutation"}` \cr Type of computation
-#' for variable importance. If `type = "drop"` (default), each variable is dropped from
-#' the model at a time and the variation in model evaluation metric is computed.
-#' If `type = "permutation"`, the observations of each variable are permutated and the
-#' variation in the model evaluation metric is computed.
+#'   for variable importance. If `type = "drop"` (default), each variable is dropped from
+#'   the model at a time and the variation in model evaluation metric is computed.
+#'   If `type = "permutation"`, the observations of each variable are permutated and the
+#'   variation in the model evaluation metric is computed.
 #' @param samples `[list]` \cr List of samples used to fit the models in the bag.
-#' The list contains at least three elements: train, test,
-#' and validate. Each elements might have several elements, each representing
-#' the lines of `data` to be sampled for each resample. Typically, this is computed by
-#' the function [oneimpact::create_resamples()].
+#'   The list contains at least three elements: train, test,
+#'   and validate. Each elements might have several elements, each representing
+#'   the lines of `data` to be sampled for each resample. Typically, this is computed by
+#'   the function [oneimpact::create_resamples()].
 #' @param colH0 `[string(1)=NULL]` \cr String with the name of the column in `data`
-#' representing the blockH0, in case we want the variable importance to be evaluated
-#' for each block. Default is `NULL`, in case variable importance is assessed for all
-#' the data.
+#'   representing the blockH0, in case we want the variable importance to be evaluated
+#'   for each block. Default is `NULL`, in case variable importance is assessed for all
+#'   the data.
+#' @param variable_block `[character,NULL]` \cr Optional grouping variable for computing
+#'   importance at the block level rather than per-variable. Default is `NULL`.
 #' @param n_permutations `[numeric(1)=100]` \cr Number of permutations, if
 #' `type = "permutation"`.
+#' @param metric `[function,character=NULL]` \cr Metric function used to evaluate model performance.
+#'   If `NULL` (default), the metric stored in the bag `x` is used.
+#' @param ss `[integer(1)=1]` \cr Index of the sample (resample) to use for validation when
+#'   `samples` is provided. Default is `1`.
 #' @param order `[character,logical(1)="desc"]{"desc", "asc", FALSE}` \cr Whether or
-#' not to order the output variables according to descending (`order = "desc"`) or
-#' ascending order of variable importance (`order = "asc"`). If `FALSE`, the variables
-#' are shown in the same order as present in the bag of models, `x`.
+#'   not to order the output variables according to descending (`order = "desc"`) or
+#'   ascending order of variable importance (`order = "asc"`). If `FALSE`, the variables
+#'   are shown in the same order as present in the bag of models, `x`.
 #' @param plot `[logical(1)=FALSE]` \cr Should variable importance be plotted? Default
-#' is `FALSE`.
+#'   is `FALSE`.
 #' @param remove_threshold `[numeric(1)]` \cr Threshold for excluding variable with
-#' little importance in the variable importance plot (i.e. only considered if `plot = TRUE`).
-#' See more in [oneimpact::plot_importance()].
+#'   little importance in the variable importance plot (i.e. only considered if `plot = TRUE`).
+#'   See more in [oneimpact::plot_importance()].
+#'
+#' @return A data frame with variable names and their importance scores, optionally
+#'   ordered by importance and/or plotted.
 #'
 #' @seealso For plotting variable importance, see [oneimpact::plot_importance()].
 #' @export
