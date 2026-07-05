@@ -14,8 +14,8 @@
 #' The function supports two types of input: a `data.frame` of individual model
 #' predictions or a `bag` object containing an ensemble of models.
 #'
-#' @param x Either a `data.frame` containing response curve predictions for a single variable,
-#'   or a `bag` object containing an ensemble of models.
+#' @param x `[data.frame,bag]` \cr Either a `data.frame` containing response curve predictions
+#'   for a single variable, or a `bag` object containing an ensemble of models.
 #' @param ... Additional arguments passed to the appropriate method.
 #'
 #' @return A `data.frame` or a `list` containing ZOI metrics:
@@ -32,7 +32,7 @@
 #' ZOI variable in the bag.
 #'
 #' @seealso [oneimpact::predict()], [oneimpact::plot_response()], [oneimpact::implausibility()]
-#' ##example examples/zoi_from_curve_example.R
+#' @example examples/zoi_from_curve_example.R
 #'
 #' @name zoi_from_curve
 #' @export
