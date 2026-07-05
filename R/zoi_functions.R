@@ -147,7 +147,7 @@
 #' but preferably it should be a distance measured in meters, to ease interpretation
 #' (e.g. geodesic distance).
 #'
-#' @param radius `[numeric(1)]` \cr Radius of the zone of influence (ZOI),
+#' @param radius `[numeric(1)=NULL]` \cr Radius of the zone of influence (ZOI),
 #' the distance at which the ZOI vanishes or goes below a given minimum limit value
 #' `zoi_limit`. See details.
 #'
@@ -194,6 +194,10 @@
 #' are considered symmetrically and their transformation is always positive.
 #' This parameter is only meaningful if `x` is a vector of values, not a
 #' raster object.
+#'
+#' @param ... `[any]` \cr Additional parameters passed to the specific ZOI shape function
+#'   (e.g. `intercept`, `lambda`, `sigma`, `half_life`, `zoi_hl_ratio`).
+#'
 #'
 #' @return The ZOI values for a given array of distance values if `x` is numeric,
 #' or a raster object delimiting the ZOI if `x` corresponds to the distance from
