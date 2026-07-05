@@ -21,19 +21,13 @@
 #' approach using the [oneimpact::create_samples()] function, in case spatial
 #' stratified samples are desired.
 #'
-#' @note
-#' To be implemented for input = data.frame
-#' #terra::vect(data[data$case==1,], geom = c("x", "y"))
-#' To be implemented for track objects - already have crs
-#' Put H0 here as well.
-#'
 #' @param x `[data.frame,sf,SpatVector]` \cr Vector of points to be spatially stratified, as a
 #' [sf] or a [terra::SpatVector] object. If a `data.frame`, the columns corresponding to the (x,y) coordinates must be given in
 #' `coords`.
 #' @param colH0 `[numeric,character=NULL]` \cr Column number or name to define the ids of the H0 level
 #' - the one with ecological meaning, e.g. individuals, populations, or study areas, used for block cross-validating
 #' the predictions of the fitted models. Default is `NULL`, in which case there is no block H0 defined.
-#' @param col_id `[numeric,character=NULL]` Column number or name with the ID of the rows of the
+#' @param col_id `[numeric,character=NULL]` \cr Column number or name with the ID of the rows of the
 #' data observations. In step-selection analysis, this should be the column showing the
 #' number of the strata of each step. For resource selection analysis and environmental niche modeling,
 #' this might be the row id, for instance.
@@ -42,14 +36,12 @@
 #' if `colH0` is provided.
 #' @param k `[numeric(1)=4]` \cr Number of H2 blocks within each block H1. Should be 4, 9, 16, or some
 #' number `k = x**2`, where x is an integer > 1. Default is `k = 4`.
-#' TO BE IMPLEMENTED: Number of parts for k-fold cross validation within H1 hierarchical level, for
-#' tuning (setting the penalty parameter). Could be used for nested cross-validation.
 #' @param block_size `[numeric(1)=10000]` \cr Size (side of a square) of the blocks for H2 level,
 #' map units (generally meters). The size of the H1 level blocks is defined as `sqrt(k)*block_size`.
 #' Default is `block_size = 10000`
 #' @param buffer `[numeric(1)=1000]` \cr Buffer added around the points before creating the blocks,
 #' to make sure all points are included in the samples. Default is `buffer = 1000`.
-#' @param coords [string,vector] \cr Vector with the names of the columns with the (x,y)
+#' @param coords `[character,vector]` \cr Vector with the names of the columns with the (x,y)
 #' coordinates of the locations from the data set. Default is `NULL`, in which case `x`
 #' should be a `sf` or a `terra::SpatVector` object. If `x` is a `data.frame`, `coords`
 #' must be provided.
@@ -60,7 +52,7 @@
 #' @param plot_grid `[logical=TRUE]` \cr if `TRUE` (default), the grid with spatial blocks and
 #' observations is plotted.
 #' @param save_grid `[character=NA]{NA, "raster", "vector"}` \cr Should the grid which defines
-#' the H1 and H2 blocks be saved? NOT IMPLEMENTED.
+#' the H1 and H2 blocks be saved? Not yet implemented.
 #'
 #' @return A `data.frame` with the blocks at hierarchical levels H0, H1, and H2 corresponding to
 #' each of the observations in the input data set `x`.
