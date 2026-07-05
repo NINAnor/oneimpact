@@ -9,21 +9,30 @@
 #'
 #' @param x `[bag]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()].
 #' @param data `[data.frame]` \cr The original, complete data used for model fitting.
-#' @param measure `[string(1)]{""coef_sign", "n_crosses", "response_area""}` \cr Measure used
+#' @param measure `[string(1)]{"coef_sign", "n_crosses", "response_area"}` \cr Measure used
 #'   to quantify ecological implausibility in the model or coefficients.
 #'   It can be one or multiple of these options:
 #' - `"coef_sign"`: counts coefficients whose sign is opposite to the ecologically expected sign.
 #' - `"n_crosses"`: counts sign crossings for the response curve.
 #' - `"response_area"`: computes area under the response curve in the unexpected direction.
-#' @param which_coef \cr Which measure to use for the coefficients, when `measure = "coef_sign"`.
-#'   If `count` (default), only the sign matterns and we count the number of
-#'   coefficients with unexpected sign.
-#'   If `sum`, we count the sum of the (standardized) coefficients,
-#'   to also account for their magnitude.
+##' @param which_coef_sign `[character(1)="count"]{"count","sum","raw","index"}` \cr Which measure to use
+#'   for the coefficients when `measure = "coef_sign"`. If `"count"` (default), only the sign matters
+#'   and the number of coefficients with unexpected sign is returned. If `"sum"`, the sum of the
+#'   (standardized) coefficients with unexpected sign is returned, accounting for magnitude.
 #' @param expected_sign `[numeric(1)=-1]` \cr Expected sign of the coefficient. Either -1,
 #'   +1, or 0 (no effect).
 #' @param zero_coefficient_limit `[numeric(1)=1e8]` \cr Value above which an estimated
 #'   coefficient is considered non-zero. Default is `1e-8`.
+#' @param ... `[any]` \cr Additional arguments passed to methods.
+#'
+#'
+#' @return The output depends on the input type and measure used.
+#' For a numeric vector of coefficients, it returns a single value indicating
+#' the degree of implausibility.
+#' For a data frame representing the response curves, it returns a list with
+#' measures of ecological implausibility.
+#' For a bag of models, it returns a list with measures of ecological implausibility
+#' for each of the ZOI variables in the bag
 #'
 #' @example examples/implausibility_example.R
 #'
@@ -31,7 +40,7 @@
 #' @aliases weirdness
 #' @export
 implausibility <- function(x, ...) {
-  UseMethod("weirdness")
+  UseMethod("implausibility")
 }
 
 #' @export
@@ -205,7 +214,7 @@ implausibility.bag <- function(x,
   # for now, subset the coefs for zoi variables
   coefs <- coefs[unlist(sapply(paste0(zoi_terms, "$"), function(i) grep(i, rownames(coefs)))),, drop = FALSE]
 
-  weirdness_measures <- list(n_coefs = nrow(coefs),
+  implausibility_measures <- list(n_coefs = nrow(coefs),
                              n_resamples = x$n_above_threshold,
                              coef_sign_index = NULL,
                              coef_sign_names = NULL,
@@ -229,62 +238,62 @@ implausibility.bag <- function(x,
   # compute measure for the sign of coefficients
   if("coef_sign" %in% measure) {
     # if(wmean) {
-    # weirdness_measures$coef_sign_index <- sapply(zoi_vars_unique, function(i) {
-    #   weirdness(coefs[grepl(i, rownames(coefs)),,drop = FALSE],
+    # implausibility_measures$coef_sign_index <- sapply(zoi_vars_unique, function(i) {
+    #   implausibility(coefs[grepl(i, rownames(coefs)),,drop = FALSE],
     #             which_coef = "index",
     #             expected_sign = expected_sign,
     #             zero_coefficient_limit = zero_coefficient_limit)
     # }, simplify = FALSE, USE.NAMES = TRUE)
     #
-    # weirdness_measures$coef_sign_names <- sapply(zoi_vars_unique, function(i) {
-    #   zoi_terms[grepl(i, zoi_terms)][weirdness_measures$coef_sign_index[[i]]]
+    # implausibility_measures$coef_sign_names <- sapply(zoi_vars_unique, function(i) {
+    #   zoi_terms[grepl(i, zoi_terms)][implausibility_measures$coef_sign_index[[i]]]
     # }, simplify = FALSE, USE.NAMES = TRUE)
     #
-    # weirdness_measures$coef_sign_radii <- sapply(zoi_vars_unique, function(i) {
-    #   zoi_radii[grepl(i, zoi_terms)][weirdness_measures$coef_sign_index[[i]]]
+    # implausibility_measures$coef_sign_radii <- sapply(zoi_vars_unique, function(i) {
+    #   zoi_radii[grepl(i, zoi_terms)][implausibility_measures$coef_sign_index[[i]]]
     # }, simplify = FALSE, USE.NAMES = TRUE)
     #
-    # weirdness_measures$coef_sign_value <- sapply(zoi_vars_unique, function(i) {
-    #   coefs[grepl(i, rownames(coefs)),,drop = FALSE][weirdness_measures$coef_sign_index[[i]]]
+    # implausibility_measures$coef_sign_value <- sapply(zoi_vars_unique, function(i) {
+    #   coefs[grepl(i, rownames(coefs)),,drop = FALSE][implausibility_measures$coef_sign_index[[i]]]
     # }, simplify = FALSE, USE.NAMES = TRUE)
     #
-    # weirdness_measures$coef_sign <- sapply(weirdness_measures$coef_sign_index, length)
+    # implausibility_measures$coef_sign <- sapply(implausibility_measures$coef_sign_index, length)
     #
-    # weirdness_measures$coef_sign_sum <- sum(weirdness_measures$coef_sign)
+    # implausibility_measures$coef_sign_sum <- sum(implausibility_measures$coef_sign)
     # }
 
     # this code now works for only the mean (1 single model) and for the
     # bag of models
-    weirdness_measures$coef_sign_index <- sapply(zoi_vars_unique, function(i) {
+    implausibility_measures$coef_sign_index <- sapply(zoi_vars_unique, function(i) {
       lapply(seq_len(ncol(coefs)), function(z) {
-        weirdness(coefs[grepl(i, rownames(coefs)), z, drop = FALSE],
+        implausibility(coefs[grepl(i, rownames(coefs)), z, drop = FALSE],
                   which_coef = "index",
                   expected_sign = expected_sign,
                   zero_coefficient_limit = zero_coefficient_limit)
       })
     }, simplify = FALSE, USE.NAMES = TRUE)
 
-    weirdness_measures$coef_sign_names <- sapply(zoi_vars_unique, function(i) {
+    implausibility_measures$coef_sign_names <- sapply(zoi_vars_unique, function(i) {
       lapply(seq_len(ncol(coefs)), function(z) {
-        zoi_terms[grepl(i, zoi_terms)][weirdness_measures$coef_sign_index[[i]][[z]]]
+        zoi_terms[grepl(i, zoi_terms)][implausibility_measures$coef_sign_index[[i]][[z]]]
       })
     }, simplify = FALSE, USE.NAMES = TRUE)
 
-    weirdness_measures$coef_sign_radii <- sapply(zoi_vars_unique, function(i) {
+    implausibility_measures$coef_sign_radii <- sapply(zoi_vars_unique, function(i) {
       lapply(seq_len(ncol(coefs)), function(z) {
-        zoi_radii[grepl(i, zoi_terms)][weirdness_measures$coef_sign_index[[i]][[z]]]
+        zoi_radii[grepl(i, zoi_terms)][implausibility_measures$coef_sign_index[[i]][[z]]]
       })
     }, simplify = FALSE, USE.NAMES = TRUE)
 
-    weirdness_measures$coef_sign_value <- sapply(zoi_vars_unique, function(i) {
+    implausibility_measures$coef_sign_value <- sapply(zoi_vars_unique, function(i) {
       lapply(seq_len(ncol(coefs)), function(z) {
-        coefs[grepl(i, rownames(coefs)),,drop = FALSE][weirdness_measures$coef_sign_index[[i]][[z]]]
+        coefs[grepl(i, rownames(coefs)),,drop = FALSE][implausibility_measures$coef_sign_index[[i]][[z]]]
       })
     }, simplify = FALSE, USE.NAMES = TRUE)
 
-    weirdness_measures$coef_sign <- sapply(weirdness_measures$coef_sign_index, function(i) sapply(i, length))
+    implausibility_measures$coef_sign <- sapply(implausibility_measures$coef_sign_index, function(i) sapply(i, length))
 
-    weirdness_measures$coef_sign_sum <- sum(weirdness_measures$coef_sign)
+    implausibility_measures$coef_sign_sum <- sum(implausibility_measures$coef_sign)
 
   }
   # possibility: sum of absolute values of standardized coefficients that are against the expected sign
@@ -346,24 +355,24 @@ implausibility.bag <- function(x,
   if("n_crosses" %in% measure) {
 
     # if(wmean) {
-    #   weirdness_measures$n_crosses <- sapply(dfs, function(i) {
-    #     weirdness(i,
+    #   implausibility_measures$n_crosses <- sapply(dfs, function(i) {
+    #     implausibility(i,
     #               expected_sign = expected_sign,
     #               response = response,
     #               measure = "where_crosses")
     #   })
     #
-    #   weirdness_measures$n_crosses <- sapply(dfs, function(i) {
-    #     weirdness(i,
+    #   implausibility_measures$n_crosses <- sapply(dfs, function(i) {
+    #     implausibility(i,
     #               expected_sign = expected_sign,
     #               response = response,
     #               measure = "n_crosses")
     #   })
-    #   weirdness_measures$n_crosses_total <- sum(weirdness_measures$n_crosses)
+    #   implausibility_measures$n_crosses_total <- sum(implausibility_measures$n_crosses)
     # } else {
-    weirdness_measures$cross_index <- sapply(dfs, function(i) {
+    implausibility_measures$cross_index <- sapply(dfs, function(i) {
       # lapply(seq_len(ncol(i))[-1], function(z) {
-      ss <- sapply(colnames(i)[-1], function(z) weirdness(i,
+      ss <- sapply(colnames(i)[-1], function(z) implausibility(i,
                                                           expected_sign = expected_sign,
                                                           response = z,
                                                           measure = "where_crosses_index"),
@@ -371,24 +380,24 @@ implausibility.bag <- function(x,
       if(wmean) ss[[response]] else ss
     }, simplify = FALSE, USE.NAMES = TRUE)
 
-    weirdness_measures$where_crosses <- sapply(zoi_vars_unique, function(i) {
-      sapply(seq_along(weirdness_measures$cross_index[[i]]), function(z) {
-        dfs[[i]][[1]][weirdness_measures$cross_index[[i]][[z]]]
+    implausibility_measures$where_crosses <- sapply(zoi_vars_unique, function(i) {
+      sapply(seq_along(implausibility_measures$cross_index[[i]]), function(z) {
+        dfs[[i]][[1]][implausibility_measures$cross_index[[i]][[z]]]
       })#, simplify = FALSE, USE.NAMES = TRUE)
     }, simplify = FALSE, USE.NAMES = TRUE)
 
-    weirdness_measures$n_crosses <- sapply(dfs, function(i) {
-      # sapply(seq_along(weirdness_measures$cross_index[[i]]), function(z) {
-      #   dfs[[i]][[1]][weirdness_measures$cross_index[[i]][[z]]]
+    implausibility_measures$n_crosses <- sapply(dfs, function(i) {
+      # sapply(seq_along(implausibility_measures$cross_index[[i]]), function(z) {
+      #   dfs[[i]][[1]][implausibility_measures$cross_index[[i]][[z]]]
       # })
-      ss <- sapply(colnames(i)[-1], function(z) weirdness(i,
+      ss <- sapply(colnames(i)[-1], function(z) implausibility(i,
                                                           expected_sign = expected_sign,
                                                           response = z,
                                                           measure = "n_crosses"))
       if(wmean) ss[names(ss) == response][[1]] else ss
     })
 
-    weirdness_measures$n_crosses_total <- sum(weirdness_measures$n_crosses)
+    implausibility_measures$n_crosses_total <- sum(implausibility_measures$n_crosses)
     # }
 
   }
@@ -397,75 +406,75 @@ implausibility.bag <- function(x,
   if(any(grepl("response_area_opposite|response_area_ratio", measure))) {
 
     if(wmean) {
-      weirdness_measures$response_area_opposite <- sapply(dfs, function(i) {
-        weirdness(i,
+      implausibility_measures$response_area_opposite <- sapply(dfs, function(i) {
+        implausibility(i,
                   expected_sign = expected_sign,
                   response = response,
                   measure = "response_area_opposite")
       })
-      weirdness_measures$response_area_opposite_total <- sum(weirdness_measures$response_area_opposite)
+      implausibility_measures$response_area_opposite_total <- sum(implausibility_measures$response_area_opposite)
 
-      weirdness_measures$response_area_ratio <- sapply(dfs, function(i) {
-        weirdness(i,
+      implausibility_measures$response_area_ratio <- sapply(dfs, function(i) {
+        implausibility(i,
                   expected_sign = expected_sign,
                   response = response,
                   measure = "response_area_ratio")
       })
-      weirdness_measures$response_area_ratio_total <- sum(weirdness_measures$response_area_ratio)
+      implausibility_measures$response_area_ratio_total <- sum(implausibility_measures$response_area_ratio)
     } else {
       # implement later
-      weirdness_measures$response_area_opposite <- paste0("This needs to be implemented for individual models. Please raise na issue on our Github repo.")
-      weirdness_measures$response_area_opposite_total <- weirdness_measures$response_area_ratio <- weirdness_measures$response_area_ratio_total <- weirdness_measures$response_area_opposite
+      implausibility_measures$response_area_opposite <- paste0("This needs to be implemented for individual models. Please raise na issue on our Github repo.")
+      implausibility_measures$response_area_opposite_total <- implausibility_measures$response_area_ratio <- implausibility_measures$response_area_ratio_total <- implausibility_measures$response_area_opposite
     }
 
   }
 
   if(any(grepl("n_inflection", measure))) {
     if(wmean) {
-      weirdness_measures$n_inflection <- sapply(dfs, function(i) {
-        weirdness(i,
+      implausibility_measures$n_inflection <- sapply(dfs, function(i) {
+        implausibility(i,
                   expected_sign = expected_sign,
                   response = response,
                   measure = "n_inflection")
       })
-      weirdness_measures$n_inflection_total <- sum(weirdness_measures$n_inflection)
+      implausibility_measures$n_inflection_total <- sum(implausibility_measures$n_inflection)
     } else {
-      weirdness_measures$n_inflection <- sapply(dfs, function(i) {
-        sapply(colnames(i)[-1], function(z) weirdness(i,
+      implausibility_measures$n_inflection <- sapply(dfs, function(i) {
+        sapply(colnames(i)[-1], function(z) implausibility(i,
                                                       expected_sign = expected_sign,
                                                       response = z,
                                                       measure = "n_crosses"))
       }) |>
         apply(MARGIN = 2, FUN = get(which_n_cross))
-      weirdness_measures$n_inflection_total <- sum(weirdness_measures$n_inflection)
+      implausibility_measures$n_inflection_total <- sum(implausibility_measures$n_inflection)
     }
 
     if(any(grepl("difference_inflection", measure))) {
       if(wmean) {
-        weirdness_measures$difference_inflection <- sapply(dfs, function(i) {
-          weirdness(i,
+        implausibility_measures$difference_inflection <- sapply(dfs, function(i) {
+          implausibility(i,
                     expected_sign = expected_sign,
                     response = response,
                     measure = "difference_inflection")
         })
-        weirdness_measures$difference_inflection_total <- sum(weirdness_measures$difference_inflection)
+        implausibility_measures$difference_inflection_total <- sum(implausibility_measures$difference_inflection)
       } else {
         # THIS NEEDS TO BE FURTHER IMPLEMENTED IF WE WANT TO IDENTIFY
         # THERE THE INFLECTION OCCURS
-        weirdness_measures$difference_inflection <- sapply(dfs, function(i) {
-          sapply(colnames(i)[-1], function(z) weirdness(i,
+        implausibility_measures$difference_inflection <- sapply(dfs, function(i) {
+          sapply(colnames(i)[-1], function(z) implausibility(i,
                                                         expected_sign = -1,
                                                         response = z,
                                                         measure = "difference_inflection"))
         }) |>
           apply(MARGIN = 2, FUN = get(which_n_cross))
-        weirdness_measures$difference_inflection_total <- sum(weirdness_measures$difference_inflection)
+        implausibility_measures$difference_inflection_total <- sum(implausibility_measures$difference_inflection)
       }
     }
   }
 
   # return
-  weirdness_measures
+  implausibility_measures
 }
 
 #' Find inflection points in a curve
