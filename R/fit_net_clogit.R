@@ -13,6 +13,7 @@
 #' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
 #' @param samples `[list]` \cr List of samples with at least three elements: train, test,
 #'   and validate. Typically computed by [oneimpact::create_resamples()].
+#' @param i `[numeric(1)=1]` \cr Index of the current resample iteration.
 #' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
 #'   each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"` or different
 #'   flavors of `"AdaptiveLasso"` (see details below).
@@ -84,7 +85,7 @@ fit_net_clogit <- function(f, data,
                                       "DistanceDecayLasso", "DDLasso",
                                       "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                                       "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
-                                      "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
+                                      #"HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
                                       "ElasticNet")[1],
                            alpha = NULL,
                            penalty.factor = NULL,
@@ -925,7 +926,7 @@ bag_fit_net_clogit <- function(f, data,
                                           "DistanceDecayLasso", "DDLasso",
                                           "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                                           "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
-                                          "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
+                                          #"HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
                                           "ElasticNet")[1],
                                standardize = c("internal", "external", FALSE)[1],
                                alpha = NULL,

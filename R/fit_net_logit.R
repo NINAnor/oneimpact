@@ -12,19 +12,21 @@
 #' @param f `[formula]` \cr Formula of the model to be fitted, with all possible candidate terms.
 #' @param data `[data.frame,tibble]` \cr Complete data set to be analyzed.
 #' @param samples `[list]` \cr List of samples with at least three elements: train, test,
-#' and validate. Each elements might have several elements, each representing
-#' the lines of `data` to be sampled for each resample. Typically, this is computed by
-#' the function [oneimpact::create_resamples()].
-#' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
-#' each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"`, `"AdaptiveLasso"`,
-#' `"ElasticNet"`, or one of the ecology-constrained penalized regression methods (see below).
-#' @param metric `[function,character]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
-#' representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
-#' conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
-#' it must be maximized to find the best fit model. It can also be a character, in case it should be one
-#' of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
-#' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
+#'   and validate. Each elements might have several elements, each representing
+#'   the lines of `data` to be sampled for each resample. Typically, this is computed by
+#'   the function [oneimpact::create_resamples()].
 #' @param i `[numeric(1)=1]` \cr Index of the current resample iteration.
+#' @param method `[character="Lasso"]` \cr The penalized regression method used for fitting
+#'   each model. Default is `method = "Lasso"`, but it could be `method = "Ridge"`, `"AdaptiveLasso"`,
+#'   `"ElasticNet"`, or one of the ecology-constrained penalized regression methods (see below).
+#' @param metric `[function,character]{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC}` \cr Function
+#'   representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
+#'   conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
+#'   it must be maximized to find the best fit model. It can also be a character, in case it should be one
+#'   of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
+#' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
+#'   See description of the argument `metric`.
+#' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
 #' @param alpha `[numeric(1)=NULL]` \cr Elastic net mixing parameter. If `NULL`, glmnet chooses a default behavior
 #' (`alpha = 1` for Lasso, `alpha = 0` for Ridge, and `alpha = 0.5` for ElasticNet).
 #' @param penalty.factor `[numeric,vector]` \cr Penalty factors for each coefficient in the glmnet penalty term.
@@ -87,7 +89,7 @@ fit_net_logit <- function(f, data,
                                      "TruncatedLasso",
                                      "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
                                      "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
-                                     "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
+                                     #"HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
                                      "ElasticNet")[1],
                           alpha = NULL,
                           penalty.factor = NULL,
@@ -807,6 +809,8 @@ fit_net_rsf <- fit_net_logit
 #'   conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
 #'   it must be maximized to find the best fit model. It can also be a character, in case it should be one
 #'   of the following: `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
+#' @param metrics_evaluate `[character]` \cr Vector of metric names to compute for model evaluation.
+#'   See description of the argument `metric`.
 #' @param method `[character(1)="Lasso"]` \cr Penalized regression method. Default is `method = "Lasso"`,
 #'   but it could be `method = "Ridge"`, `"AdaptiveLasso"`, `"ElasticNet"`, or different versions of
 #'   ecology-informed methods. See [oneimpact::fit_net_logit()] for valid options.
@@ -838,6 +842,7 @@ fit_net_rsf <- fit_net_logit
 #'   \item `samples`: resampling structure.
 #'   \item `standardize`: standardization mode used.
 #'   \item `models`: named list of fitted model objects, one per resample.
+#'   \item `covariate_mean_sd`: mean and SD used for external standardization (or `NULL`).
 #' }
 #'
 #' @seealso [oneimpact::fit_net_logit()], [oneimpact::net_logit()], [glmnet::glmnet()]
@@ -848,7 +853,14 @@ bag_fit_net_logit <- function(f, data,
                               samples,
                               subset_samples = 1:length(samples$train),
                               metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-                              method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "ElasticNet")[1],
+                              metrics_evaluate = c("AUC"),
+                              method = c("Lasso", "Ridge", "AdaptiveLasso",
+                                         "DistanceDecayLasso", "DDLasso",
+                                         "TruncatedLasso",
+                                         "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+                                         "Grouped-AdaptiveLasso", "G-AdaptiveLasso",
+                                         #"HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
+                                         "ElasticNet")[1],
                               standardize = c("internal", "external", FALSE)[1],
                               alpha = NULL,
                               penalty.factor = NULL,
@@ -922,6 +934,7 @@ bag_fit_net_logit <- function(f, data,
                                                     samples = samples,
                                                     i = i,
                                                     metric = metric,
+                                                    metrics_evaluate = metrics_evaluate,
                                                     method = method,
                                                     standardize = standardize,
                                                     alpha = alpha,
@@ -946,6 +959,7 @@ bag_fit_net_logit <- function(f, data,
                         samples = samples,
                         i = i,
                         metric = metric,
+                        metrics_evaluate = metrics_evaluate,
                         method = method,
                         standardize = standardize,
                         alpha = alpha,
@@ -967,6 +981,7 @@ bag_fit_net_logit <- function(f, data,
                                             samples = samples,
                                             i = i,
                                             metric = metric,
+                                            metrics_evaluate = metrics_evaluate,
                                             method = method,
                                             standardize = standardize,
                                             alpha = alpha,
