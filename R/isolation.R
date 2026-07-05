@@ -11,19 +11,19 @@
 #' null cells if necessary, in an approach similar to set_points_sample.
 #'
 #' @param x `[data.frame]` \cr `data.frame` with (x,y) coordinates in
-#' the columns.
+#'   the columns.
 #' @param n_rand `[numeric(1)=100]` \cr Number of random points to be
-#' created in space, to compute the distance to `x`.
-#' @param ext `[numeric(x)=c(0,1)]` Extent of the space within which the
-#' random positions should be created c(x or ymin, x or ymax).
+#'   created in space, to compute the distance to `x`.
+#' @param ext `[numeric(4)=c(0,1,0,1)]` \cr Extent of the space within which the
+#'   random positions should be created: `c(xmin, xmax, ymin, ymax)`.
 #' @param lonlat `[logical(1)=FALSE]` \cr Whether the distance between points
-#' should be calculated in an WGS ellipsoid (`lonlat = TRUE`) or on a
-#' plane (`lonlat = FALSE`). See [raster::pointDistance()] for more details.
+#'   should be calculated in an WGS ellipsoid (`lonlat = TRUE`) or on a
+#'   plane (`lonlat = FALSE`). See [raster::pointDistance()] for more details.
 #'
 #' @return `isolation()` returns the distance from each random point to
-#' the nearest neighbor point in `x`. `mean_isolation()` returns the average
-#' nearest neighbor distance from all random positions to the points in
-#' `x`.
+#'   the nearest neighbor point in `x`. `mean_isolation()` returns the average
+#'   nearest neighbor distance from all random positions to the points in
+#'   `x`.
 #'
 #' @name isolation
 #' @export
