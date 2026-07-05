@@ -1,7 +1,7 @@
-#' Truncate bag to avoid weirdness in the model
+#' Truncate bag to avoid ecological implausibility in the model
 #'
-#' This function identifies sources of ecological implausibility 
-#' in the models in a bag and uses them to remove variables the produce 
+#' This function identifies sources of ecological implausibility
+#' in the models in a bag and uses them to remove variables the produce
 #' such implausibility. Sources of
 #' implausibility might be coefficients with signs opposite to one's hypothesis,
 #' response curves crossing zero, or response curves with multiple inflection
@@ -15,33 +15,38 @@
 #' @param x `[bag]` \cr  A bag of models, resulting from a call to [oneimpact::bag_models()].
 #' @param data `[data.frame]` \cr The original, complete data used for model fitting.
 #' @param measure `[character(1)="cross"]{"coef_sign", "cross"}` \cr Measure used
-#' to quantify ecological implausibility in the model or coefficients, 
-#' based on the coefficients and the response plots for each type of 
-#' covariate with zone of influence in a model.
-#' It can be one of these:
-#' - `"coef_sign"`: The measure is based on the minimum ZOI radius for which the
-#' sign is opposite to the ecologically expected sign;
-#' - `"cross"`: default. The measure is based on the minimum distance at which a
-#' reponse curve crosses zero.
+#'   to quantify ecological implausibility in the model or coefficients,
+#'   based on the coefficients and the response plots for each type of
+#'   covariate with zone of influence in a model.
+#'   It can be one of these:
+#'   - `"coef_sign"`: The measure is based on the minimum ZOI radius for which the
+#'   sign is opposite to the ecologically expected sign;
+#'   - `"cross"`: default. The measure is based on the minimum distance at which a
+#'   reponse curve crosses zero.
 #' @param criterion `[character(1)="first_coef"]{"min", "first_coef"}` \cr Criterion
-#' used to truncate the curves/coefficients, for each type of ZOI variable.
-#' Only applicable for `measure = "cross"`.
-#' If `criterion = "first_coef"` (default), the coefficients are set to zero
-#' starting from the first coefficient whose sign is opposite to the expected sign,
-#' which is larger than the distance at which the response plot crosses zero
-#' for that ZOI variable.
-#' If `criterion = "min"`, the coefficients are set to zero for all terms whose
-#' radius is larger than the distance at which the response plot crosses zero
-#' for that ZOI variable (regardless of the coefficient signs).
+#'   used to truncate the curves/coefficients, for each type of ZOI variable.
+#'   Only applicable for `measure = "cross"`.
+#'   If `criterion = "first_coef"` (default), the coefficients are set to zero
+#'   starting from the first coefficient whose sign is opposite to the expected sign,
+#'   which is larger than the distance at which the response plot crosses zero
+#'   for that ZOI variable.
+#'   If `criterion = "min"`, the coefficients are set to zero for all terms whose
+#'   radius is larger than the distance at which the response plot crosses zero
+#'   for that ZOI variable (regardless of the coefficient signs).
 #' @param wmean `[logical(1)=TRUE]` \cr Whether the truncation should be based on the weighted mean
-#' coefficients and response plots (default, if `wmean = TRUE`) or on each individual
-#' model coefficient and response plots (if `wmean = FALSE`).
+#'   coefficients and response plots (default, if `wmean = TRUE`) or on each individual
+#'   model coefficient and response plots (if `wmean = FALSE`).
 #' @param expected_sign `[numeric(1)=-1]` \cr Expected sign of the coefficient. Either -1 (negative),
-#' +1 (positive), or 0 (no effect).
+#'   +1 (positive), or 0 (no effect).
 #' @param reassess `[logical(1)=TRUE]` \cr Should the model be reassessed after
-#' truncation, with fit, calibration, and validation scores re-computed?
-#' Default is `TRUE`.
-#' @param ... \cr Other parameters used in [oneimpact::weirdness()].
+#'   truncation, with fit, calibration, and validation scores re-computed?
+#'   Default is `TRUE`.
+#' @param verbose `[logical(1)=FALSE]` \cr Whether to print progress messages.
+#' @param ... `[any]` \cr Additional parameters passed to [oneimpact::implausibility()].
+#'
+#' @return A modified bag object of the same structure as the input `x`, with
+#'   ecologically implausible coefficients set to zero, and optionally re-evaluated
+#'   fit, calibration, and validation scores (if `reassess = TRUE`).
 #'
 #' @example examples/truncate_bag_example.R
 #'
@@ -94,7 +99,7 @@ truncate_bag <- function(x,
             if(criterion == "first_coef") {
               coefs_term <- new_bag$coef[rownames(new_bag$coef) %in% terms_to_zero,] %*% new_bag$weights
               coefs_term
-              first_coefs_term_againt_expected <- weirdness(coefs_term, expected_sign = expected_sign, which_coef_sign = "index")
+              first_coefs_term_againt_expected <- implausibility(coefs_term, expected_sign = expected_sign, which_coef_sign = "index")
               if(length(first_coefs_term_againt_expected) > 0) {
                 first_coefs_term_againt_expected <- min(first_coefs_term_againt_expected)
                 terms_to_zero <- terms_to_zero[first_coefs_term_againt_expected:length(terms_to_zero)]
@@ -119,7 +124,7 @@ truncate_bag <- function(x,
                 dplyr::pull(term_zoi)
               if(criterion == "first_coef") {
                 coefs_term <- new_bag$coef[rownames(new_bag$coef) %in% terms_to_zero,col_weight_positive[vv]]
-                first_coefs_term_againt_expected <- min(weirdness(coefs_term, expected_sign = expected_sign, which_coef_sign = "index"))
+                first_coefs_term_againt_expected <- min(implausibility(coefs_term, expected_sign = expected_sign, which_coef_sign = "index"))
                 if(length(first_coefs_term_againt_expected) > 0) {
                   terms_to_zero <- terms_to_zero[first_coefs_term_againt_expected:length(terms_to_zero)]
                 }
