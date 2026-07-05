@@ -121,7 +121,7 @@ fit_net_clogit <- function(f, data,
                 function_lasso_decay = function_lasso_decay,
                 value_lasso_decay = value_lasso_decay,
                 function_hypothesis = function_hypothesis,
-                expected_sign_hypothesis = -expected_sign_hypothesis,
+                expected_sign_hypothesis = expected_sign_hypothesis,
                 factor_grouped_lasso = factor_grouped_lasso,
                 replace_missing_NA = replace_missing_NA)
 
