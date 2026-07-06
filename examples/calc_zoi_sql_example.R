@@ -65,10 +65,9 @@ cumzoi_linear <- calc_zoi_cumulative(cabins_count, type = "bartlett", radius = 5
 plot(cumzoi_linear)
 
 # extract
-reindeer_cabins <- terra::extract(cumzoi_linear, terra::vect(rein_spat))
-
+reindeer_cabins <- terra::extract(cumzoi_linear, terra::vect(reindeer, geom = c("x", "y"), crs = "EPSG:25833"))
 plot(cumzoi_linear)
-plot(terra::vect(rein_spat), add = T)
+plot(terra::vect(reindeer, geom = c("x", "y"), crs = "EPSG:25833"), add = T)
 
 # approximately the same
 cbind(reindeer_cabins, dplyr::arrange(cum_zoi_cabins, gid))

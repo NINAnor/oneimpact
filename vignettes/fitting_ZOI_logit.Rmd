@@ -17,7 +17,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Intro
 
-**Add something introducing the idea of penalized regression in this context**
+Estimating the zone of influence (ZOI) of human infrastructure on wildlife requires 
+fitting models across a large number of candidate spatial scales (ZOI radii) simultaneously. 
+This creates a high-dimensional variable selection problem: with many correlated predictors 
+representing the same infrastructure at different radii, standard regression methods 
+are unstable and prone to overfitting. Penalized regression addresses this by adding 
+a regularization term to the likelihood that shrinks or removes coefficients, possibly 
+performing variable selection as part of model fitting. Combined with bootstrap aggregation 
+(bagging), which repeatedly fits models on resamples of the data, this approach yields 
+robust, uncertainty-aware estimates of both the ZOI radius and the magnitude of 
+infrastructure effects on habitat selection.
 
 Here we reanalyze the resource selection function fitted to reindeer movement data from the Hardangervidda 
 wild reindeer population, used in Niebuhr et al. 2023 to estimate the zone of influence (ZOI) and the 
@@ -27,8 +36,7 @@ The data comprises GPS positions from 115 female reindeer, recorded with a 3h fi
 The data was put into a use-availabililty design, with 1 used location for each 9 random 
 locations distributed over the limits of the wild reindeer area. The data was intersected 
 with environmental variables on land cover, four PCAs representing bio-geo-climatic variation, 
-and (**the ZOI of the nearest infrastructure and** **remove from this tutorial**) 
-the cumulative ZOI of infrastructure types. 
+the cumulative ZOI (density) of infrastructure types. 
 The infrastructures considered were private cottages and public tourist resorts. More information 
 about the cumulative ZOI approach, the data collection, and the data preparation for analysis might 
 be found in Niebuhr et al. 2023.
@@ -807,4 +815,18 @@ print(map2)
 
 # Concluding remarks
 
-**Add something here**
+This vignette demonstrated the full workflow for estimating zones of influence in 
+resource selection functions using bagging and penalized regression in `oneimpact`. 
+Starting from an annotated GPS dataset, we showed how to define candidate ZOI variables 
+across multiple radii and infrastructure types, fit a bag of Adaptive Lasso models, 
+evaluate and weight individual model fits, and extract ecologically interpretable 
+summaries — including ZOI radii, coefficient profiles, response curves, and spatial 
+predictions of infrastructure impact.
+
+The approach is flexible: the penalization method (Lasso, Ridge, Adaptive Lasso and its 
+ecology-informed variants), the number of resamples, the train/test/validation split 
+strategy, and the evaluation metric can all be adjusted to the specific study system. 
+We encourage users to explore these options and refer to Niebuhr et al. [-@niebuhr_estimating_2023] for 
+a detailed ecological application and discussion of the method's assumptions and limitations.
+
+# References

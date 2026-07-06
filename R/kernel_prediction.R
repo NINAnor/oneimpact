@@ -16,7 +16,6 @@
 #'
 #' @export
 kernel_prediction <- function(f, data,
-kernel_prediction <- function(f, data,
                               kernel_vars = c("step_length", "ta"),
                               coefs) {
 
