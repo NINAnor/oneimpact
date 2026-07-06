@@ -2,7 +2,7 @@
 title: "Computing zone of influence rasters for different types of variable"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Computing zones of influence for different types of variable}
+  %\VignetteIndexEntry{Computing zone of influence rasters for different types of variable}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

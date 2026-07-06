@@ -15,12 +15,12 @@ navbar:
     - text: Estimating zones of influence using penalized regression
       href: articles/fitting_ZOI_logit.html
 reference:
-- title: "Zone of influence (ZoI) functions"
+- title: "Zone of influence (ZOI) functions"
   desc: "Functions to represent the zone of influence"
   contents:
   - ends_with("decay")
   - plot_zoi1d
-- title: "Compute zones of influence (ZoI)"
+- title: "Compute zones of influence (ZOI)"
   desc: "Functions to compute the zone of influence for raster maps"
   contents:
   - starts_with("calc_zoi")
@@ -76,7 +76,7 @@ reference:
   - starts_with("set_points")
   - isolation
 - title: "Datasets"
-  desc: "Datasets for testing the ZoI approach"
+  desc: "Datasets for testing the ZOI approach"
   contents:
   - starts_with("reindeer")
   - ends_with("tif")
