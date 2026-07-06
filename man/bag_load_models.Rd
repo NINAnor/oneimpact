@@ -2,7 +2,7 @@
 % Please edit documentation in R/bag_load_models.R
 \name{bag_load_models}
 \alias{bag_load_models}
-\title{Load a series of files output of fit_net_clogit models and put them on a bag}
+\title{Load a series of files output of fit_net_(c)logit models and put them on a bag}
 \usage{
 bag_load_models(
   data,
@@ -25,25 +25,39 @@ to be used in \code{grep()} to find the files within the folder
 \code{out_dir_file} in \code{\link[=fit_net_clogit]{fit_net_clogit()}} or \code{\link[=bag_fit_net_clogit]{bag_fit_net_clogit()}}
 functions.}
 
-\item{names_from_file}{\verb{[logical(1)=TRUE]} \cr If \code{FALSE} (default), the names of
-the resamples are taken from the \code{samples} parameter. If \code{TRUE}, they are taken
+\item{names_from_file}{\verb{[logical(1)=FALSE]} \cr If \code{FALSE} (default), the names of
+the resamples are taken from the loaded model objects. If \code{TRUE}, they are taken
 from the files names, instead. In this case, the string defined by the parameter
 \code{name_from_file_pattern} is used to identify the number of each resample.}
 
 \item{name_from_file_pattern}{\verb{[string="Resample"]} \cr String used to separate the
 file name and identify the number of the resample of each model in the bag, when
-they are read from files.
+they are read from files.}
 
-The parameters metric, standardize, and method should be same ones used to
-fit the bag of models.}
-
-\item{f}{\verb{[formula]} \cr Formula of the models fitted, with all possible candidate terms.}
-
-\item{samples}{\verb{[list]} \cr List of samples with at least three elements: train, test,
-and validate. Each elements might have several elements, each representing
-the lines of \code{data} to be sampled for each resample. Typically, this is computed by
-the function \code{\link[=create_resamples]{create_resamples()}}.}
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Should messages of the computation steps
+be printed in the prompt along the computation?}
+}
+\value{
+A \code{list} with loaded model objects and metadata for bag construction,
+in the same format as if all the models
+were fitted by the \code{\link[=fit_net_clogit]{fit_net_clogit()}} or
+\code{\link[=bag_fit_net_clogit]{bag_fit_net_clogit()}} functions within a R session.
+Key fields include:
+\itemize{
+\item \code{n}: expected number of resamples/models.
+\item \code{formula}: model formula used in the loaded fits.
+\item \code{method}: fitting method used (e.g., \code{"Lasso"}, \code{"AdaptiveLasso"}).
+\item \code{metric}: validation metric used in the loaded fits.
+\item \code{samples}: resampling structure from the fitted objects.
+\item \code{standardize}: standardization mode used during fitting.
+\item \code{models}: named list of loaded model objects (from \code{.rds} files).
+}
+This object is intended as input to \code{\link[=bag_models]{bag_models()}}.
 }
 \description{
-Load a series of files output of fit_net_clogit models and put them on a bag
+This is a helper function aimed at loading a bag of models created through a call to
+the \code{\link[=fit_net_clogit]{fit_net_clogit()}} or \code{\link[=bag_fit_net_clogit]{bag_fit_net_clogit()}} functions,
+when the output is saved in external files. Files saved in \code{.rds} format are here
+loaded together so they can be provided to the \code{bag_models()} function to build
+a \code{bag} object with the fitted models.
 }

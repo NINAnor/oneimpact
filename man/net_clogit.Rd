@@ -47,7 +47,7 @@ net_issf(
 
 \item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.}
 
-\item{alpha}{Default is L1-regularization (Lasso regression), with \code{alpha = 1}.
+\item{alpha}{\verb{[numeric(1)=1]} \cr Mixing parameter for glmnet. Default is L1-regularization (Lasso), with \code{alpha = 1}.
 L2-regularization (Ridge regression) is done with \code{alpha = 0}, and elastic-net regression
 is performed for any \code{alpha} value between \code{0} and \code{1}. For more details, see the
 \code{\link[glmnet:glmnet]{glmnet::glmnet()}} documentation. For Adaptive and Decay Adaptive Lasso, keep \code{alpha = 1}.}
@@ -59,20 +59,31 @@ fitting. The vector might have the same length as the the number of columns give
 \item{type.measure}{\verb{[character(1)="deviance"]} \cr Type of measure to evaluate the model internally
 in \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. For logistic and conditional logistic regression, it is by default \code{"deviance"}.}
 
+\item{standardize}{\verb{[logical(1)=TRUE]} \cr Whether glmnet should internally standardize
+variables before fitting. Default is \code{TRUE}. Set to \code{FALSE} if variables are
+already standardized.}
+
 \item{na.action}{\verb{[character(1)="na.pass"]} \cr Default is \code{"na.pass"}, i.e. rows with NAs are not automatically
 removed from the \code{model.matrix} used for fitting.}
 
 \item{func}{\verb{[character(1)="glmnet"]\{"glmnet", "cv.glmnet"\}} \cr The function to be used for
 fitting. Default is \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. The second option is \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} which
 already performs the cross-validation and might include the variable selection/callibration
-within.
+within.}
 
-Check option parallel = TRUE from glmnet.}
+\item{...}{\verb{[any]} \cr Additional arguments passed to \code{\link[glmnet:glmnet]{glmnet::glmnet()}} or \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}}.
+Note the \code{parallel = TRUE} option from glmnet can be passed here.}
+}
+\value{
+A fitted \code{\link[glmnet:glmnet]{glmnet::glmnet()}} or \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} object.
 }
 \description{
-Fits a conditional logistic regression/SSF/iSSF using glmnet
-
-Function with similar name
-
-Function with similar name
+Low-level wrapper that sets up the design matrix and stratified survival
+response for penalized conditional logistic regression, then calls
+\code{\link[glmnet:glmnet]{glmnet::glmnet()}} or \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} with \code{family = "cox"}.
+This function is used internally by \code{\link[=fit_net_clogit]{fit_net_clogit()}} and is
+typically not called directly by the user.
+}
+\seealso{
+\code{\link[=fit_net_clogit]{fit_net_clogit()}}, \code{\link[glmnet:glmnet]{glmnet::glmnet()}}
 }

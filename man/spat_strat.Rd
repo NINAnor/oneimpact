@@ -35,9 +35,7 @@ as the block H0, in case no block H0 is provided (if \code{colH0 = NULL}). This 
 if \code{colH0} is provided.}
 
 \item{k}{\verb{[numeric(1)=4]} \cr Number of H2 blocks within each block H1. Should be 4, 9, 16, or some
-number \code{k = x**2}, where x is an integer > 1. Default is \code{k = 4}.
-TO BE IMPLEMENTED: Number of parts for k-fold cross validation within H1 hierarchical level, for
-tuning (setting the penalty parameter). Could be used for nested cross-validation.}
+number \code{k = x**2}, where x is an integer > 1. Default is \code{k = 4}.}
 
 \item{block_size}{\verb{[numeric(1)=10000]} \cr Size (side of a square) of the blocks for H2 level,
 map units (generally meters). The size of the H1 level blocks is defined as \code{sqrt(k)*block_size}.
@@ -46,7 +44,7 @@ Default is \code{block_size = 10000}}
 \item{buffer}{\verb{[numeric(1)=1000]} \cr Buffer added around the points before creating the blocks,
 to make sure all points are included in the samples. Default is \code{buffer = 1000}.}
 
-\item{coords}{\link{string,vector} \cr Vector with the names of the columns with the (x,y)
+\item{coords}{\verb{[character,vector]} \cr Vector with the names of the columns with the (x,y)
 coordinates of the locations from the data set. Default is \code{NULL}, in which case \code{x}
 should be a \code{sf} or a \code{terra::SpatVector} object. If \code{x} is a \code{data.frame}, \code{coords}
 must be provided.}
@@ -61,9 +59,9 @@ if \code{x} is a \code{data.frame}.}
 observations is plotted.}
 
 \item{save_grid}{\verb{[character=NA]\{NA, "raster", "vector"\}} \cr Should the grid which defines
-the H1 and H2 blocks be saved? NOT IMPLEMENTED.}
+the H1 and H2 blocks be saved? Not yet implemented.}
 
-\item{col_id}{\verb{[numeric,character=NULL]} Column number or name with the ID of the rows of the
+\item{col_id}{\verb{[numeric,character=NULL]} \cr Column number or name with the ID of the rows of the
 data observations. In step-selection analysis, this should be the column showing the
 number of the strata of each step. For resource selection analysis and environmental niche modeling,
 this might be the row id, for instance.}
@@ -94,12 +92,6 @@ levels H0, H1, and H2 for each observation in the input data set,
 to be used to create samples for the bootstrapped modeling
 approach using the \code{\link[=create_samples]{create_samples()}} function, in case spatial
 stratified samples are desired.
-}
-\note{
-To be implemented for input = data.frame
-#terra::vect(data\link{data$case==1,}, geom = c("x", "y"))
-To be implemented for track objects - already have crs
-Put H0 here as well.
 }
 \examples{
 data(reindeer)

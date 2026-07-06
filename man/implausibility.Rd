@@ -51,13 +51,20 @@ implausibility(x, ...)
 \arguments{
 \item{x}{\verb{[bag]} \cr  A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
 
+\item{...}{\verb{[any]} \cr Additional arguments passed to methods.}
+
+\item{which_coef_sign}{\verb{[character(1)="count"]\{"count","sum","raw","index"\}} \cr Which measure to use
+for the coefficients when \code{measure = "coef_sign"}. If \code{"count"} (default), only the sign matters
+and the number of coefficients with unexpected sign is returned. If \code{"sum"}, the sum of the
+(standardized) coefficients with unexpected sign is returned, accounting for magnitude.}
+
 \item{expected_sign}{\verb{[numeric(1)=-1]} \cr Expected sign of the coefficient. Either -1,
 +1, or 0 (no effect).}
 
 \item{zero_coefficient_limit}{\verb{[numeric(1)=1e8]} \cr Value above which an estimated
 coefficient is considered non-zero. Default is \code{1e-8}.}
 
-\item{measure}{\verb{[string(1)]\{""coef_sign", "n_crosses", "response_area""\}} \cr Measure used
+\item{measure}{\verb{[string(1)]\{"coef_sign", "n_crosses", "response_area"\}} \cr Measure used
 to quantify ecological implausibility in the model or coefficients.
 It can be one or multiple of these options:
 \itemize{
@@ -67,12 +74,15 @@ It can be one or multiple of these options:
 }}
 
 \item{data}{\verb{[data.frame]} \cr The original, complete data used for model fitting.}
-
-\item{which_coef}{\cr Which measure to use for the coefficients, when \code{measure = "coef_sign"}.
-If \code{count} (default), only the sign matterns and we count the number of
-coefficients with unexpected sign.
-If \code{sum}, we count the sum of the (standardized) coefficients,
-to also account for their magnitude.}
+}
+\value{
+The output depends on the input type and measure used.
+For a numeric vector of coefficients, it returns a single value indicating
+the degree of implausibility.
+For a data frame representing the response curves, it returns a list with
+measures of ecological implausibility.
+For a bag of models, it returns a list with measures of ecological implausibility
+for each of the ZOI variables in the bag
 }
 \description{
 This function evaluates ecological plausibility in model coefficients and response

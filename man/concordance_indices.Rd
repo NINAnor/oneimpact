@@ -8,7 +8,7 @@
 \alias{AUC}
 \alias{coxnet.deviance}
 \alias{Cindex}
-\title{Computes the conditional Boyce index for model evaluation}
+\title{Computes concordance indices for model evaluation}
 \usage{
 conditionalBoyce(
   x,
@@ -29,24 +29,41 @@ coxnet.deviance(x, errors = TRUE, warnings = TRUE)
 Cindex(x, errors = TRUE, warnings = TRUE)
 }
 \arguments{
-\item{x}{A data.frame with three columns: x, the predicted values; y, the case variable
-(use vs. available, 1/0); and strat, the stratum.}
+\item{x}{\verb{[data.frame]} \cr A data frame with three columns: \code{x} (predicted values),
+\code{y} (use/available response, 1/0), and \code{strat} (stratum identifier).}
+
+\item{method}{\verb{[character(1)="pearson"]\{"pearson","kendall","spearman"\}} \cr Correlation
+method used to compute the Boyce index. Only used in \code{conditionalBoyce()}.}
+
+\item{plotit}{\verb{[logical(1)=FALSE]} \cr Whether to plot the bin frequency distribution.
+Only used in \code{conditionalBoyce()}.}
+
+\item{errors}{\verb{[logical(1)=TRUE]} \cr Whether to raise an error if the number of
+non-empty bins is insufficient for a reliable estimate.}
+
+\item{warnings}{\verb{[logical(1)=TRUE]} \cr Whether to emit warnings for unequal strata
+lengths or low bin counts.}
+}
+\value{
+A single numeric value representing the concordance metric:
+\itemize{
+\item \code{conditionalBoyce()}: Pearson/Kendall/Spearman correlation of bin frequencies.
+\item \code{conditionalSomersD()}: Somers' D statistic (range -1 to 1).
+\item \code{conditionalAUC()}: AUC derived from Somers' D (range 0 to 1).
+\item \code{AUC()}: AUC from \code{\link[pROC:auc]{pROC::auc()}}, ignoring strata.
+\item \code{coxnet.deviance()}: Cox partial deviance via \code{\link[glmnet:coxnet.deviance]{glmnet::coxnet.deviance()}}.
+\item \code{Cindex()}: Concordance index via \code{\link[glmnet:Cindex]{glmnet::Cindex()}}.
+}
 }
 \description{
-These functions compute different concordance indices.
+These functions compute different concordance indices for use/availability data
+in a train-validate-test model evaluation context.
 }
 \details{
-The function \code{\link[=conditionalAUC]{conditionalAUC()}} is the implementation of the computation of the Area Under the Curve as related
-to the Sommers'D index, as described in https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf.
-It is implemented by accounting for strata, ideal for conditional logistic regression, but it is under testing.
-The function \code{\link[=AUC]{AUC()}} uses the \code{\link[pROC:auc]{pROC::auc()}} function and does not account for strata.
-Functions conditionalBoyce and conditionalSomersD both account for strata, but are under checking.
-The functions coxnet.deviance and Cindex are wrappers for the same functions from glmnet, which are
-suitable for cox models, but here they use the same arguments as all the other concordance variables.
-}
-\references{
-https://cran.r-project.org/web/packages/survival/vignettes/concordance.pdf
-}
-\seealso{
-\link{conditionalBoyce}
+The function \code{\link[=conditionalAUC]{conditionalAUC()}} is the implementation of the AUC
+as related to the Somers' D index. It accounts for strata, ideal for conditional
+logistic regression, but is under testing. \code{\link[=AUC]{AUC()}} uses \code{\link[pROC:auc]{pROC::auc()}} and
+does not account for strata. \code{coxnet.deviance} and \code{Cindex} are wrappers for
+\code{\link[glmnet:coxnet.deviance]{glmnet::coxnet.deviance()}} and \code{\link[glmnet:Cindex]{glmnet::Cindex()}} using the same argument structure
+as the other concordance functions.
 }

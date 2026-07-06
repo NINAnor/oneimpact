@@ -8,7 +8,7 @@
 \alias{fit_net_logit}
 \alias{fit_net_rsf}
 \alias{grouped_func}
-\title{Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a train-validate-test setup}
+\title{Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a cross-validation setup}
 \usage{
 fit_net_clogit(
   f,
@@ -20,8 +20,7 @@ fit_net_clogit(
   metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso", "Grouped-AdaptiveLasso",
-    "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
-    "ElasticNet")[1],
+    "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -49,8 +48,7 @@ fit_net_ssf(
   metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso", "Grouped-AdaptiveLasso",
-    "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
-    "ElasticNet")[1],
+    "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -78,8 +76,7 @@ fit_net_issf(
   metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso", "Grouped-AdaptiveLasso",
-    "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
-    "ElasticNet")[1],
+    "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -106,8 +103,7 @@ fit_net_logit(
   metrics_evaluate = c("AUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "TruncatedLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
-    "HD-AdaptiveLasso", "ElasticNet")[1],
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -134,8 +130,7 @@ fit_net_rsf(
   metrics_evaluate = c("AUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "TruncatedLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
-    "HD-AdaptiveLasso", "ElasticNet")[1],
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -165,6 +160,8 @@ and validate. Each elements might have several elements, each representing
 the lines of \code{data} to be sampled for each resample. Typically, this is computed by
 the function \code{\link[=create_resamples]{create_resamples()}}.}
 
+\item{i}{\verb{[numeric(1)=1]} \cr Index of the current resample iteration.}
+
 \item{kernel_vars}{\verb{[vector,character=c("step_length", "ta")]} \cr Vector of strings with the names of the variables related
 to the movement kernel, included in the model (for instance, \code{"step_length"} and \code{"turning_angle"})}
 
@@ -174,9 +171,17 @@ conditionalSomersD, and conditionalAUC. A user-defined function might be provide
 it must be maximized to find the best fit model. It can also be a character, in case it should be one
 of the following: \code{c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")}.}
 
+\item{metrics_evaluate}{\verb{[character]} \cr Vector of metric names to compute for model evaluation.
+See description of the argument \code{metric}.}
+
 \item{method}{\verb{[character="Lasso"]} \cr The penalized regression method used for fitting
-each model. Default is \code{method = "Lasso"}, but it could be \code{method = "Ridge"} or different
-flavors of \code{"AdaptiveLasso"} (see details below).}
+each model. Default is \code{method = "Lasso"}, but it could be \code{method = "Ridge"}, \code{"AdaptiveLasso"},
+\code{"ElasticNet"}, or one of the ecology-constrained penalized regression methods (see below).}
+
+\item{alpha}{\verb{[numeric(1)=NULL]} \cr Elastic net mixing parameter. If \code{NULL}, glmnet chooses a default behavior
+(\code{alpha = 1} for Lasso, \code{alpha = 0} for Ridge, and \code{alpha = 0.5} for ElasticNet).}
+
+\item{penalty.factor}{\verb{[numeric,vector]} \cr Penalty factors for each coefficient in the glmnet penalty term.}
 
 \item{gamma}{\verb{[numeric(1)=1]\{(0.5, 1, 2)\}} \cr Gamma is the exponent for defining the vector of
 penalty weights when \verb{method = "AdaptiveLasso}. This means that the penalties are defined as
@@ -184,38 +189,101 @@ penalty weights when \verb{method = "AdaptiveLasso}. This means that the penalti
 Default is \code{gamma = 1}, but values of 0.5 or 2 could also be tried, as suggested by the
 authors (Zou et al 2006).}
 
-\item{standardize}{\verb{[logical(1)=TRUE]} \cr Logical flag for predictor variable standardization,
-prior to fitting the model sequence. The coefficients are always returned on the original scale.
-Default is standardize=TRUE. If variables are in the same units already, you might not wish to
-standardize them.}
+\item{standardize}{\verb{[character(1)="internal"]\{"internal","external",FALSE\}} \cr Predictor
+standardization mode. \code{"internal"} delegates standardization to glmnet (also standardizes
+dummy variables, but returns coefficients on original scale). \code{"external"} standardizes
+predictors before calling glmnet. \code{FALSE} skips standardization.}
+
+\item{predictor_table}{\verb{[data.frame or NULL]} \cr Default is \code{NULL}. Else, this is the predictor table
+defined by running \code{add_zoi_formula(predictor_table = TRUE)}, which is a table
+with info of all ZOI radii, shape values, and formula terms, together with info from other non-ZOI predictors.
+This table is required for all the ecology-constrained penalized regression methods.}
+
+\item{function_lasso_decay}{\verb{[function=log]} \cr Function used to compute decay weights for adaptive lasso penalties.
+Default is \code{log}.}
+
+\item{value_lasso_decay}{\verb{[numeric(1)=1]} \cr Scaling factor applied to the adaptive lasso decay function.}
+
+\item{function_hypothesis}{\verb{[function]} \cr Hypothesis function used to compute additional penalty weights.}
+
+\item{expected_sign_hypothesis}{\verb{[numeric(1)=-1]} \cr Expected coefficient sign used for hypothesis-driven penalization.}
+
+\item{factor_grouped_lasso}{\verb{[numeric(1)=1]} \cr Scaling factor applied to grouped lasso penalties.}
 
 \item{replace_missing_NA}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE} (default), any variables missing from the data
 (i.e. with variance zero) are removed from the formula for the model fitting procedure, and a \code{NA} is set
 as its coefficient in the output. If \code{FALSE}, the function raises an error if there are variables with
 variance zero in the formula.}
 
+\item{na.action}{\verb{[character(1)="na.pass"]} \cr Action to take for missing values during model fitting.}
+
 \item{out_dir_file}{\verb{[character(1)=NULL]} \cr String with the prefix of the file name (and
 the folder) where the result of each model will be saved. E.g. if \code{out_dir_file = "output/test_"},
 the models will be saved as RDS files names "test_i1.rds", "test_i2.rds", etc, within the
 folder "output".}
 
-\item{...}{Options for \code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Whether to print progress messages during the fitting process.}
+
+\item{...}{\verb{[any]} \cr Options for \code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
 
 \item{phi_group}{Additional penalty constant for the group-based penalties.
 A value in the interval \link{0, Inf} where 0 is no additional penalty and
 higher values correspond to higher penalties.}
 }
+\value{
+A named list with the results for the selected metric, including:
+\itemize{
+\item \code{coef}: coefficient matrix at optimal lambda.
+\item \code{coef_std}: standardized coefficient matrix (or \code{NULL}).
+\item \code{lambda}: optimal lambda value.
+\item \code{alpha}: alpha value used.
+\item \code{train_score}, \code{test_score}, \code{validation_score}: performance scores.
+\item \code{validation_score_avg}: mean validation score across blocks.
+\item \code{coefs_all}, \code{lambdas}: coefficients and lambdas for all evaluated metrics.
+\item \code{metrics_evaluated}: full detail of all evaluated metrics.
+\item \code{glmnet_fit}: the raw fitted glmnet object.
+\item \code{parms}: recorded input parameters.
+}
+
+A named list with the results for the selected metric, including:
+\itemize{
+\item \code{coef}: coefficient matrix at optimal lambda.
+\item \code{coef_std}: standardized coefficient matrix (or \code{NULL}).
+\item \code{lambda}: optimal lambda value.
+\item \code{alpha}: alpha value used.
+\item \code{train_score}, \code{test_score}, \code{validation_score}: performance scores.
+\item \code{validation_score_avg}: mean validation score across blocks.
+\item \code{coefs_all}, \code{lambdas}: coefficients and lambdas for all evaluated metrics.
+\item \code{metrics_evaluated}: full detail of all evaluated metrics.
+\item \code{glmnet_fit}: the raw fitted glmnet object.
+\item \code{parms}: recorded input parameters.
+}
+}
 \description{
+This function runs one single realization of a model fit for a specific sample composed by
+a fit set, a test set, and a validation set. This function does the actual data set up and model
+fitting by calling \code{\link[=net_clogit]{net_clogit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. The function is also used within
+\code{\link[=bag_fit_net_clogit]{bag_fit_net_clogit()}}.
+
+This function runs one single realization of a model fit for a specific sample composed by
+a fit set, a test set, and a validation set. This function does the actual data set up and model
+fitting by calling \code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. The function is also used within
+\code{\link[=bag_fit_net_logit]{bag_fit_net_logit()}}.
+}
+\details{
 By default, \code{\link[=fit_net_clogit]{fit_net_clogit()}} does not standardize predictor variables. If you want numeric variables
-to be standardized, you can either use \verb{[bag_fit_net_clogit()]} with parameter \code{standardize = TRUE}
+to be standardized, you can either use \verb{[oneimpact::bag_fit_net_clogit()]} with parameter \code{standardize = TRUE}
 or provide an already standardized data set as input.
 
 By default, \code{\link[=fit_net_logit]{fit_net_logit()}} does not standardize predictor variables. If you want numeric variables
-to be standardized, you can either use \verb{[bag_fit_net_logit()]} with parameter \code{standardize = TRUE}
+to be standardized, you can either use \verb{[oneimpact::bag_fit_net_logit()]} with parameter \code{standardize = TRUE}
 or provide an already standardized data set as input.
 }
 \references{
 Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
 
 Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of the American Statistical Association 101, 1418–1429. https://doi.org/10.1198/016214506000000735
+}
+\seealso{
+\code{\link[=bag_fit_net_logit]{bag_fit_net_logit()}}, \code{\link[=net_logit]{net_logit()}}, \code{\link[glmnet:glmnet]{glmnet::glmnet()}}
 }

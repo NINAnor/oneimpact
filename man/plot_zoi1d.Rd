@@ -47,7 +47,7 @@ feature)?}
 \item{return_df}{\verb{[logical(1)=FALSE]} \cr If TRUE, a \code{data.frame} with \code{x} values and their
 corresponding ZOI values is returned, besides the plot.}
 
-\item{...}{Additional parameters passed to the ZOI decay function \code{fun}.}
+\item{...}{\verb{[any]} \cr Additional parameters passed to the ZOI decay function \code{fun}.}
 }
 \value{
 A \code{ggplot} object with the nearest or cumulative influence plot.
@@ -68,8 +68,6 @@ whose locations in 1 dimension are defined by \code{points} and calculates the m
 (ZOI of the nearest) or sum (cumulative ZOI) of all values. This is done
 for a series of points in 1 dimensional space in the range \code{range_plot} (with
 steps defined by \code{step}) and plotted.
-
-To add: options for normalization, prob etc.
 }
 \examples{
 # one point, exponential decay

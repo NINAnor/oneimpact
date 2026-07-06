@@ -15,7 +15,7 @@ set_points_sample(
 \arguments{
 \item{n_features}{\verb{[integer(1)=1000]} \cr Total number of points to spread in space.}
 
-\item{type}{\verb{[character(1)="regular"]\{"regular", "random"\}} Pattern for the creation
+\item{type}{\verb{[character(1)="regular"]\{"regular", "random"\}} \cr Pattern for the creation
 of points is space. Other methods are also accepted, check the \code{type} argument
 for the \code{\link[sf:st_sample]{sf::st_sample()}} function.}
 
@@ -23,7 +23,7 @@ for the \code{\link[sf:st_sample]{sf::st_sample()}} function.}
 inside which the points will be created. If a \code{RasterLayer}, the \code{bbox} of the
 raster is used as a polygon.}
 
-\item{extent_x, entent_y}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector representing the minimum and
+\item{extent_x, extent_y}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector representing the minimum and
 maximum extent in x and y within which the points should be placed, in the format c(min,max).}
 }
 \value{

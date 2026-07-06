@@ -86,7 +86,7 @@ of values, or a raster object. It must not necessarily be an Euclidean distance,
 but preferably it should be a distance measured in meters, to ease interpretation
 (e.g. geodesic distance).}
 
-\item{radius}{\verb{[numeric(1)]} \cr Radius of the zone of influence (ZOI),
+\item{radius}{\verb{[numeric(1)=NULL]} \cr Radius of the zone of influence (ZOI),
 the distance at which the ZOI vanishes or goes below a given minimum limit value
 \code{zoi_limit}. See details.}
 
@@ -123,6 +123,9 @@ this parameter should be ignored.}
 are considered symmetrically and their transformation is always positive.
 This parameter is only meaningful if \code{x} is a vector of values, not a
 raster object.}
+
+\item{...}{\verb{[any]} \cr Additional parameters passed to the specific ZOI shape function
+(e.g. \code{intercept}, \code{lambda}, \code{sigma}, \code{half_life}, \code{zoi_hl_ratio}).}
 
 \item{intercept}{\verb{[numeric(1)=1]} \cr Maximum value of the ZOI function at
 when the distance from disturbance sources is zero (\code{x = 0}).

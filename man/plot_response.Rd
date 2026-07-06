@@ -3,7 +3,7 @@
 \name{plot_response}
 \alias{plot_response}
 \alias{plot_response.bag}
-\title{Plot responses from a bag of models}
+\title{Plot response curves from a bag of models}
 \usage{
 plot_response(
   x,
@@ -17,13 +17,11 @@ plot_response(
   wq_probs = c(0.025, 0.5, 0.975),
   baseline = c("median", "mean", "zero")[1],
   zoi = FALSE,
-  zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
   type_feature = c("point", "line", "area")[1],
   type_feature_recompute = FALSE,
   zoi_limit = 0.05,
   resolution = 100,
   line_value = 1,
-  ggplot = T,
   plot_mean = TRUE,
   plot_median = TRUE,
   n_features = 1,
@@ -54,7 +52,6 @@ plot_response(
   wq_probs = c(0.025, 0.5, 0.975),
   baseline = c("median", "mean", "zero")[1],
   zoi = FALSE,
-  zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
   type_feature = c("point", "line", "area")[1],
   type_feature_recompute = FALSE,
   zoi_limit = 0.05,
@@ -80,35 +77,104 @@ plot_response(
 )
 }
 \arguments{
-\item{x}{\verb{[bag,list]} \cr A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
+\item{x}{\verb{[bag,list]} \cr A bag of models created with \code{\link[=bag_models]{bag_models()}}.}
 
-\item{dfvar}{\verb{[data.frame]} \cr A \code{data.frame} with the values of the variables one wants to vary
-and predict for.
-All other variables are set to their mean or median, or to zero (this is set by the parameter \code{baseline}).
-The column names of the \code{data.frame} might correspond exactly to the model covariates or to
+\item{dfvar}{\verb{[data.frame]} \cr Data frame with values of focal predictors to vary
+and predict over. The column names of the \code{data.frame} might correspond exactly to the model covariates or to
 parts of that (for instance, "roads_paved_" to refer to all ZOI variables related to paved roads).}
 
-\item{data}{\verb{[data.frame]} \cr The original, complete data used for model fitting. Used only for
+\item{data}{\verb{[data.frame]} \cr Original data used for model fitting. Used only for
 taking the categories of the categorical variables. Irrelevant if there is no categorical variables.}
 
-\item{type}{\verb{[character(1)="linear"]\{"linear", "exponential", "logit", "cloglog"\}} \cr Type of response.
-Might be \code{"linear"} (default), \code{"exponential"}, \code{"logit"}, and \code{"cloglog"}.}
+\item{type}{\verb{[character(1)="linear"]\{"linear", "exponential", "logit", "cloglog"\}} \cr
+Prediction scale.}
 
-\item{zoi_shape}{\verb{[character(1)="linear"]\{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"\}} \cr
-Shape of the ZOI. Necessary to be specified to represent correctly the estimated ZOI of the
-preditor variables.}
+\item{zoi_shape}{\verb{[character(1)="exp_decay"]\{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"\}} \cr
+ZOI decay shape used when \code{zoi = TRUE}.}
 
-\item{ci}{Should variation or confidence intervals be plotted?}
+\item{which_cumulative}{\verb{[character(1)="cumulative"]} \cr Pattern used to identify
+cumulative ZOI terms.}
 
-\item{wq_probs}{\verb{[vector,numeric(3)=c(0.025, 0.5, 0.975)]} \cr A three element vector with lower,
-mid, and higher weighted quantiles to be computed.}
+\item{ci}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE} (default), plot weighted confidence intervals
+using \code{wq_probs}.}
+
+\item{indiv_pred}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE}, include curves from individual
+models (only models with positive weight).}
+
+\item{wq_probs}{\verb{[numeric,vector=c(0.025, 0.5, 0.975)]} \cr Weighted quantile
+probabilities used for confidence intervals and median.}
+
+\item{baseline}{\verb{[character(1)="median"]\{"median", "mean", "zero"\}} \cr Baseline
+value strategy for non-focal predictors. Variable are either kept constant at the mean
+or median values, or left as zero. Categorical variables are set to their reference
+level, retrieved from \code{data}.}
+
+\item{zoi}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE}, variables values in \code{dfvar} are
+interpreted as distance from a disturbance source, to be transformed into ZOI predictors.}
+
+\item{type_feature}{\verb{[character(1)="point"]\{"point", "line", "area"\}} \cr Feature type
+for ZOI prediction.}
+
+\item{type_feature_recompute}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE}, recompute
+line- or area-feature raster representation for ZOI calculations.}
+
+\item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr Lower influence threshold used by non-vanishing
+ZOI functions. See \code{\link[=zoi_functions]{zoi_functions()}}.}
+
+\item{resolution}{\verb{[numeric(1)=100]} \cr Raster resolution used for line-feature ZOI
+approximation. Used when recomputing the ZOI variables for line and area features.}
+
+\item{line_value}{\verb{[numeric(1)=1]} \cr Value assigned to line raster cells when
+\code{type_feature = "line"}. Used when recomputing the ZOI variables for line and area features.}
+
+\item{plot_mean}{\verb{[logical(1)=TRUE]} \cr Plot weighted mean response line.}
+
+\item{plot_median}{\verb{[logical(1)=TRUE]} \cr Plot weighted median response line.}
+
+\item{n_features}{\verb{[numeric(1)=1]} \cr Number of features used in ZOI prediction.
+To represent the cumulative impact of multiple features, use \code{n_features > 1}.}
+
+\item{normalize}{\verb{[logical or character]} \cr Optional y-axis normalization:
+one of \code{FALSE}, \code{"mean"}, \code{"median"}, or \code{"ci"}. Default is \code{FALSE}, which assumes
+no normalization.}
+
+\item{logx}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE}, use log10 scaling on x-axis.}
+
+\item{ylim}{\verb{[NULL or ggplot2 scale/coord limits]} \cr Optional y-axis limits.}
+
+\item{y_lab}{\verb{[character(1)="Relative Selection Strength"]} \cr Y-axis label.}
+
+\item{col_ci}{\verb{[character(1)="grey"]} \cr Fill color for confidence ribbon.}
+
+\item{col_indiv}{\verb{[character(1)="grey"]} \cr Color for individual model lines.}
+
+\item{col_mean}{\verb{[character(1)="black"]} \cr Color for weighted mean line.}
+
+\item{col_median}{\verb{[character(1)="red"]} \cr Color for weighted median line.}
+
+\item{linewidth_indiv}{\verb{[numeric(1)=1.2]} \cr Line width for individual model lines.}
+
+\item{linewidth_mean}{\verb{[numeric(1)=1.2]} \cr Line width for weighted mean line.}
+
+\item{linewidth_median}{\verb{[numeric(1)=1.2]} \cr Line width for weighted median line.}
+
+\item{alpha_ci}{\verb{[numeric(1)=0.5]} \cr Alpha transparency for confidence ribbon.}
+
+\item{alpha_indiv}{\verb{[numeric(1)=0.3]} \cr Alpha transparency for individual model lines.}
+
+\item{ggplot}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE}, return a ggplot object; otherwise
+return a prediction data frame.}
+}
+\value{
+If \code{ggplot = TRUE}, a ggplot object with response curves.
+If \code{ggplot = FALSE}, a data frame with \code{dfvar}, summary predictions, and
+optionally individual-model predictions when \code{indiv_pred = TRUE}.
 }
 \description{
-This function takes a bag of models (\code{x}) and a set of new data (\code{dfvar}) with variation for one or more
-specific predictor variables to predict and plot the predictions from the bag. One can either plot only the
-mean or (weighted) median response for specific preditor variables, and possibly also the
-confidence interval, computed from the weighted quantiles of the prediction. All other variables
-are kept constant, as defined by the \code{baseline} parameter.
+This function predicts and plots response curves from a bag of models while
+varying one or more focal predictors in \code{dfvar}. Non-focal predictors are kept
+at baseline values. It supports confidence intervals from weighted quantiles
+and optional individual-model predictions.
 }
 \details{
 The function \code{plot_response} uses the \code{predict} to produce the predictions.

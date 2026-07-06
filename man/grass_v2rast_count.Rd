@@ -17,11 +17,11 @@ grass_v2rast_count(
 )
 }
 \arguments{
-\item{x}{Input vector map.}
+\item{x}{\verb{[character(1)]} \cr Name of the input vector map within the GRASS GIS mapset.}
 
-\item{output}{Output map name.}
+\item{output}{\verb{[character(1)]} \cr Name of the output raster map. Default is \code{paste0(x, "_count")}.}
 
-\item{column}{\verb{[chracter(1)=NULL} \cr Default is \code{NULL}. If not \code{NULL}, the name of a column
+\item{column}{\verb{[character(1)=NULL]} \cr Default is \code{NULL}. If not \code{NULL}, the name of a column
 in the input vector \code{x} that corresponds to the column to be summed to count the number
 of features in each pixel of the output raster map. If \code{NULL}, this column is created in
 a temporary vector, with all values equal 1.}
@@ -33,11 +33,16 @@ If \code{FALSE}, the current computational region is used.}
 \item{align}{\verb{[character(1)=NULL]} \cr Name of a raster map with which to align the
 computational region to produce the output map.}
 
+\item{remove_intermediate}{\verb{[logical(1)=TRUE]} \cr Whether intermediate temporary maps
+created during processing should be removed from the GRASS GIS mapset.}
+
 \item{verbose}{\verb{[logical(1)=FALSE]} \cr Should messages of the computation steps
 be printed in the prompt along the computation?}
 
 \item{overwrite}{\verb{[logical(1)]} \cr Whether the output maps should be overwriten
 (flag \code{overwrite = TRUE}).}
+
+\item{...}{\verb{[any]} \cr Additional arguments passed to GRASS GIS modules.}
 }
 \value{
 A raster map with the count of features within each pixel. The map is written

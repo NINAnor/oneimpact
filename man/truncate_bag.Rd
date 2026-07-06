@@ -2,7 +2,7 @@
 % Please edit documentation in R/truncate_bag.R
 \name{truncate_bag}
 \alias{truncate_bag}
-\title{Truncate bag to avoid weirdness in the model}
+\title{Truncate bag to avoid ecological implausibility in the model}
 \usage{
 truncate_bag(
   x,
@@ -55,7 +55,14 @@ model coefficient and response plots (if \code{wmean = FALSE}).}
 truncation, with fit, calibration, and validation scores re-computed?
 Default is \code{TRUE}.}
 
-\item{...}{\cr Other parameters used in \code{\link[=weirdness]{weirdness()}}.}
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Whether to print progress messages.}
+
+\item{...}{\verb{[any]} \cr Additional parameters passed to \code{\link[=implausibility]{implausibility()}}.}
+}
+\value{
+A modified bag object of the same structure as the input \code{x}, with
+ecologically implausible coefficients set to zero, and optionally re-evaluated
+fit, calibration, and validation scores (if \code{reassess = TRUE}).
 }
 \description{
 This function identifies sources of ecological implausibility

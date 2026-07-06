@@ -35,7 +35,7 @@ are kept as they are in the output map. Otherwise, a numeric value that all NULL
 assume in the output map. It uses the module
 \href{https://grass.osgeo.org/grass78/manuals/r.null.html}{r.null}).}
 
-\item{setnull}{\verb{[]} \cr If \code{NULL} (default), no changes are made. Otherwise, a set of numeric
+\item{setnull}{\verb{[numeric,NULL]} \cr If \code{NULL} (default), no changes are made. Otherwise, a set of numeric
 values that should be transformed into NULL/NA data (using the module
 \href{https://grass.osgeo.org/grass78/manuals/r.null.html}{r.null}).}
 
@@ -53,6 +53,8 @@ be printed in the prompt along the computation?}
 
 \item{overwrite}{\verb{[logical(1)]} \cr Whether the output maps should be overwriten
 (flag \code{overwrite = TRUE}).}
+
+\item{...}{\verb{[any]} \cr Additional arguments passed to GRASS GIS modules.}
 }
 \value{
 A binarized map with only two values (or a set of binarized maps if \code{length(breaks)} > 1)

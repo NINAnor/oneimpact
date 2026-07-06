@@ -6,6 +6,24 @@
 \usage{
 kernel_prediction(f, data, kernel_vars = c("step_length", "ta"), coefs)
 }
+\arguments{
+\item{f}{\verb{[formula]} \cr Model formula, used to identify kernel variable terms.}
+
+\item{data}{\verb{[data.frame]} \cr Data set on which predictions are made.}
+
+\item{kernel_vars}{\verb{[character=c("step_length","ta")]} \cr Names of the movement
+kernel variables in the model.}
+
+\item{coefs}{\verb{[numeric]} \cr Named numeric vector of fitted model coefficients.}
+}
+\value{
+A numeric matrix of predicted values based on kernel variables only.
+}
 \description{
-Prediction based only on step length terms
+Computes model predictions based exclusively on movement kernel variables
+(e.g. step length and turning angle), using the fitted coefficients from
+a conditional logistic regression model.
+}
+\seealso{
+\code{\link[=fit_net_clogit]{fit_net_clogit()}}, \code{\link[=bag_fit_net_clogit]{bag_fit_net_clogit()}}
 }

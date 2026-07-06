@@ -7,13 +7,34 @@
 \format{
 A data frame with 31,735 rows and 28 variables:
 \describe{
-\item{x}{GPS relocations expressed as UTM easting coordinates, in ETRS89/UTM 33N}
-\item{y}{GPS relocations expressed as UTM northing coordinates, in ETRS89/UTM 33N}
-\item{t}{Timestamp of GPS relocations, in UTC}
-\item{original_animal_id}{Animal name assigned at captures}
-\item{animal_year_id}{Unique individual identifier in the population, and sample unit- i.e. data from one animal in one year}
-\item{sex}{Sex of the individual animal}
-\item{to be completed}{to be completed}
+\item{animal_year_id}{Unique individual-year identifier, used as the sample unit (stratum) in the step-selection analysis.}
+\item{original_animal_id}{Animal name assigned at capture.}
+\item{sex}{Sex of the individual animal.}
+\item{burst_}{Identifier of a continuous tracking burst (uninterrupted sequence of GPS fixes for an individual).}
+\item{t1_}{Timestamp at the start of the step, in UTC.}
+\item{t2_}{Timestamp at the end of the step, in UTC.}
+\item{dt_}{Time difference between \code{t1_} and \code{t2_}.}
+\item{x1_}{UTM easting coordinate at the start of the step, in ETRS89/UTM 33N.}
+\item{y1_}{UTM northing coordinate at the start of the step, in ETRS89/UTM 33N.}
+\item{x2_}{UTM easting coordinate at the end of the step, in ETRS89/UTM 33N.}
+\item{y2_}{UTM northing coordinate at the end of the step, in ETRS89/UTM 33N.}
+\item{sl_}{Step length: Euclidean distance (m) between the start and end of the step.}
+\item{ta_}{Turning angle (radians) between the current and previous step direction.}
+\item{case_}{Case indicator in the use-availability design; 1 = used step, 0 = random step.}
+\item{step_id_}{Step identifier within each burst.}
+\item{step_id}{Global step identifier across all bursts and individuals.}
+\item{start_cabins1000}{Zone of influence of cabins (cumulative) at the start of the step, with exponential decay shape and radius 1000 m.}
+\item{start_cabins2000}{Zone of influence of cabins (cumulative) at the start of the step, with exponential decay shape and radius 2000 m.}
+\item{start_cabins3000}{Zone of influence of cabins (cumulative) at the start of the step, with exponential decay shape and radius 3000 m.}
+\item{start_roads1000}{Zone of influence of roads (cumulative) at the start of the step, with exponential decay shape and radius 1000 m.}
+\item{start_roads2000}{Zone of influence of roads (cumulative) at the start of the step, with exponential decay shape and radius 2000 m.}
+\item{start_roads3000}{Zone of influence of roads (cumulative) at the start of the step, with exponential decay shape and radius 3000 m.}
+\item{end_cabins1000}{Zone of influence of cabins (cumulative) at the end of the step, with exponential decay shape and radius 1000 m.}
+\item{end_cabins2000}{Zone of influence of cabins (cumulative) at the end of the step, with exponential decay shape and radius 2000 m.}
+\item{end_cabins3000}{Zone of influence of cabins (cumulative) at the end of the step, with exponential decay shape and radius 3000 m.}
+\item{end_roads1000}{Zone of influence of roads (cumulative) at the end of the step, with exponential decay shape and radius 1000 m.}
+\item{end_roads2000}{Zone of influence of roads (cumulative) at the end of the step, with exponential decay shape and radius 2000 m.}
+\item{end_roads3000}{Zone of influence of roads (cumulative) at the end of the step, with exponential decay shape and radius 3000 m.}
 }
 }
 \source{

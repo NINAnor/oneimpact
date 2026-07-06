@@ -20,7 +20,39 @@ plot_coef(
   show_legend = FALSE
 )
 }
+\arguments{
+\item{bag}{\verb{[bag,list]} \cr Bag of models as returned by \code{\link[=bag_models]{bag_models()}}.}
+
+\item{terms}{\verb{[character="all"]} \cr Which terms to include in the plot. Can be \code{"all"} or a pattern.}
+
+\item{models}{\verb{[integer]} \cr Model indices to include. Default is \code{1:bag$n_above_threshold}.}
+
+\item{weighted}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE}, coefficients are weighted by model weights.}
+
+\item{remove_weight_zero}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE}, models with zero weight are excluded when weighting.}
+
+\item{what}{\verb{[character="all_models"]\{"all_models", "average"\}} \cr Plot coefficients for all models or the weighted average.}
+
+\item{plot_type}{\verb{[character="bars"]\{"bars", "points", "histogram"\}} \cr Plot type to use.}
+
+\item{remove_low}{\verb{[numeric(1)=-1]} \cr Minimum coefficient value to include.}
+
+\item{remove_high}{\verb{[numeric(1)=Inf]} \cr Maximum coefficient value to include.}
+
+\item{std}{\verb{[logical,character="FALSE"]\{FALSE,"std","unstd"\}} \cr If \code{"std"}, use standardized coefficients;
+if \code{"unstd"}, unstandardized; if \code{FALSE} (default), keep raw coefficients.}
+
+\item{data}{\verb{[data.frame]} \cr Data used to standardize or unstandardize coefficients when \code{std} is not \code{FALSE}.}
+
+\item{order_zoi_radius}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE}, order ZOI terms by radius before plotting.}
+
+\item{show_legend}{\verb{[logical(1)=FALSE]} \cr Whether to show a legend in the plot.}
+}
+\value{
+A ggplot2 object representing the coefficient plot.
+}
 \description{
-Options - one term, multiple bars side by side
-Colors for negative and positive
+Visualizes the distribution of coefficients across all models in a bag,
+optionally weighted, filtered by term, and plotted as bars, points, or histograms.
+Supports standardized, unstandardized, or raw coefficients.
 }

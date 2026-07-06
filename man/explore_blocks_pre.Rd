@@ -18,6 +18,14 @@ animal ID. If \code{NULL} (default), summaries are not created for individuals.}
 \item{col_case}{\verb{[string(1)="case"]} \cr Name of the column in \code{data} representing
 the case or used/available points. Default is \code{"case"}.}
 }
+\value{
+A \code{data.frame} with one row per unique combination of \code{colH0} (and
+\code{animal_id} if provided), with columns:
+\itemize{
+\item \code{n}: total number of observations in the group.
+\item \code{n_presences}: number of used/presence points (\code{col_case == 1}) in the group.
+}
+}
 \description{
 Function to explore the number of cases and observations for the different
 sampling units possibly used as the base H0 hierarchical level, such as population ID,

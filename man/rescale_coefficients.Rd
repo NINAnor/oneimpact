@@ -19,19 +19,24 @@ rescale_coefficients(...)
 \method{rescale_coefficients}{bag}(bag, data, tostd = TRUE, ...)
 }
 \arguments{
-\item{model}{\cr Fitted model, i.e. the object created by a model fit funtion
-such as "lm", "glm", or "coxph".}
+\item{model}{\verb{[lm,glm,coxph]} \cr Fitted model object created by a fitting function
+such as \code{lm()}, \code{glm()}, or \code{coxph()}.}
 
-\item{data}{\cr The original \code{data.frame} with the data used to fit the model.}
+\item{data}{\verb{[data.frame]} \cr The original data used to fit the model, in unstandardized form.}
 
-\item{bag}{\cr A bag of models, as result of the \code{\link[=bag_models]{bag_models()}} function.}
+\item{bag}{\verb{[bag,list]} \cr A bag of models, as returned by \code{\link[=bag_models]{bag_models()}}.}
 
-\item{standardize}{\verb{[logical(1)=TRUE]} If \code{TRUE} (Default), the coefficients are standardized.
-If \code{FALSE}, the coefficients are standardized. Only numeric coefficients are
-standardized.}
+\item{tostd}{\verb{[logical(1)=TRUE]} \cr Only relevant for the \code{bag} method. If \code{TRUE}
+(default), raw model coefficients (fitted on standardized predictors) are
+converted to standardized scale by multiplying by predictor SDs. If \code{FALSE},
+coefficients are converted back to the original (unstandardized) scale by
+dividing by predictor SDs.}
 }
 \value{
-A vector of rescaled coefficients for the input model.
+A matrix or vector of rescaled coefficients. For \code{lm}, \code{glm}, and \code{coxph}
+methods, coefficients are returned in the original (unstandardized) scale.
+For the \code{bag} method, direction depends on \code{tostd}: standardized scale if
+\code{TRUE}, original scale if \code{FALSE}.
 }
 \description{
 Predictor variables are often standardized to be included in statistical models

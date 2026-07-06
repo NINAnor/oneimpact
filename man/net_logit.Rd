@@ -32,7 +32,9 @@ net_rsf(
 \arguments{
 \item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
 
-\item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.#' @param alpha Default is L1-regularization (Lasso regression), with \code{alpha = 1}.
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.}
+
+\item{alpha}{Default is L1-regularization (Lasso regression), with \code{alpha = 1}.
 L2-regularization (Ridge regression) is done with \code{alpha = 0}, and elastic-net regression
 is performed for any \code{alpha} value between \code{0} and \code{1}. For more details, see the
 \code{\link[glmnet:glmnet]{glmnet::glmnet()}} documentation. For Adaptive and Decay Adaptive Lasso, keep \code{alpha = 1}.}
@@ -53,13 +55,21 @@ removed from the \code{model.matrix} used for fitting.}
 
 \item{func}{\verb{[character(1)="glmnet"]\{"glmnet", "cv.glmnet"\}} \cr The function to be used for
 fitting. Default is \code{\link[glmnet:glmnet]{glmnet::glmnet()}}. The second option is \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} which
-already performs the cross-validation and might include the variable selection/callibration
-within.
+already performs the cross-validation and might include the variable selection/calibration.}
 
-Check option parallel = TRUE from glmnet.}
+\item{...}{\verb{[any]} \cr Additional arguments passed to \code{\link[glmnet:glmnet]{glmnet::glmnet()}} or \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}}.
+Note the \code{parallel = TRUE} option from glmnet can be passed here.}
+}
+\value{
+A fitted \code{\link[glmnet:glmnet]{glmnet::glmnet()}} or \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} object.
 }
 \description{
-Fits a logistic regression/RSF using glmnet
-
-Function with similar name
+Low-level wrapper that sets up the design matrix and binary response
+for penalized logistic regression, then calls \code{\link[glmnet:glmnet]{glmnet::glmnet()}} or
+\code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} with \code{family = "binomial"}.
+This function is used internally by \code{\link[=fit_net_logit]{fit_net_logit()}} and is
+typically not called directly by the user.
+}
+\seealso{
+\code{\link[=fit_net_logit]{fit_net_logit()}}, \code{\link[glmnet:glmnet]{glmnet::glmnet()}}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_zoi_sql.R
 \name{calc_zoi_sql}
 \alias{calc_zoi_sql}
-\title{Compute Zone of Influence for points and annotate them to points using SQL}
+\title{Compute point-level Zone of Influence (ZOI) values with SQL}
 \usage{
 calc_zoi_sql(
   con,
@@ -25,41 +25,65 @@ calc_zoi_sql(
 )
 }
 \arguments{
-\item{con}{connection to a database.}
+\item{con}{\verb{[DBIConnection]} \cr Open database connection used to run the SQL query.}
 
-\item{input_points}{\verb{[character]} \cr Name of the input table of points to be annotated (within the connection \code{con},
-a database), in the format \code{table_name} or \code{schema_name.table_name}.}
+\item{input_points}{\verb{[character(1)]} \cr Name of the input points table, in the format
+\code{table_name} or \code{schema_name.table_name}. The table needs to be within
+the connection \code{con}, a database.}
 
-\item{infrastructure_layer}{\verb{[character]} \cr Name of the infrastructure covariate table for which
-the zone of influence will be computed (within the connection \code{con}, a database),
-in the format \code{table_name} or \code{schema_name.table_name}.}
+\item{infrastructure_layer}{\verb{[character(1)]} \cr Name of the infrastructure table used to
+compute ZOI, in the format \code{table_name} or \code{schema_name.table_name}.}
 
-\item{radius}{\verb{[numeric=100]} \cr Radius or scale of zone of influence, used to calculate the
-cumulative ZOI and density. The radius represent the distance at which the ZOI vanishes or
-goes below a given minimum limit value \code{zoi_limit}. ### CHECK THAT, so far only bartlett}
+\item{radius}{\verb{[numeric]} \cr Radius used in the ZOI function. Can be a vector
+to compute multiple output columns.}
 
-\item{input_id}{\verb{[character]} \cr Name of a ID column from the \code{input_points} table.}
+\item{type}{\verb{[character(1)="circle"]\{"circle","Gauss","exp_decay","bartlett","threshold","linear","exponential"\}} \cr
+Distance-decay function used to compute ZOI values.}
 
-\item{input_geom}{\verb{[character]} \cr Name of the geometry column from the \code{input_points} table.}
+\item{zoi_metric}{\verb{[character(1)="cumulative"]\{"cumulative","nearest"\}} \cr Aggregation metric:
+\code{"cumulative"} uses \code{sum}, and \code{"nearest"} uses \code{max}.}
 
-\item{infra_geom}{\verb{[character]} \cr Name of the geometry column from the \code{infrastructure_layer} table.}
+\item{input_id}{\verb{[character(1)="id"]} \cr Identifier column in \code{input_points}.}
 
-\item{output_type}{\verb{[character]} \cr To be described.}
+\item{input_geom}{\verb{[character(1)="geom"]} \cr Geometry column in \code{input_points}.}
 
-\item{output_column_name}{\verb{[character]} \cr To be described.}
+\item{infra_geom}{\verb{[character(1)="geom"]} \cr Geometry column in \code{infrastructure_layer}.}
+
+\item{output_type}{\verb{[character(1)="cumulative_zoi"]\{"cumulative_zoi","density"\}} \cr Output
+interpretation used in naming and downstream use.}
+
+\item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr Limit value used in decay-based functions (for example
+exponential decay calibration). Not yet implemented, to be updated.}
+
+\item{output_column_name}{\verb{[character]} \cr Output column name(s) for computed ZOI values.
+Length should match \code{radius} when multiple radii are provided.}
+
+\item{output_table}{\verb{[character(1)=NULL]} \cr Optional output table name. If provided, the query
+is prefixed with \verb{CREATE TABLE IF NOT EXISTS ... AS}.}
+
+\item{condition}{\verb{[character(1)=""]} \cr Optional extra SQL condition appended to the spatial join
+clause (for example temporal filtering).}
+
+\item{limit}{\verb{[numeric(1)=1000000000000000]} \cr Row limit applied to the final query.
+Useful for limiting the number of rows for testing purposes.}
+
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Whether to print the generated SQL query.}
+}
+\value{
+A \code{data.frame} with one row per input point and computed ZOI column(s). The output
+includes the input point ID column and one or more derived ZOI columns named by
+\code{output_column_name}. If \code{output_table} is provided, table creation is attempted before query
+execution, and returned result content may depend on database backend behavior.
 }
 \description{
-This function computes the zone of influence (ZOI) for a set of points
-(typically a type of indrastructure, defined by the \code{infrastructure_layer} parameter)
-and extracts their values at given location (defined by the layer \code{input_points}),
-using a SQL query into a database (e.g. PostgreSQL or duckdb). Differently from
-the \code{calc_zoi} functions, it does not compute the ZOI for the whole study area,
-but only for the positions where the input points are located. For optimal use,
-both \code{input_points} and \code{infrastructure_layer} should be spatially indexed, so
-only closeby points are evaluated and the query is completed fast.
+Computes ZOI-based covariates from an infrastructure layer and annotates them
+to input points using SQL in a database connection (for example PostgreSQL).
+Unlike raster-based ZOI functions, this computes values only at input point locations.
+For optimal use, both \code{input_points} and \code{infrastructure_layer} should be spatially indexed,
+so only nearby points are evaluated and the query is completed fast.
 }
 \details{
-Need to check functions (gaussian, exp, linear) and check if this is correct
+So far, only linear decay/bartlett is implemented.
 }
 \examples{
 library(oneimpact)
@@ -129,10 +153,9 @@ cumzoi_linear <- calc_zoi_cumulative(cabins_count, type = "bartlett", radius = 5
 plot(cumzoi_linear)
 
 # extract
-reindeer_cabins <- terra::extract(cumzoi_linear, terra::vect(rein_spat))
-
+reindeer_cabins <- terra::extract(cumzoi_linear, terra::vect(reindeer, geom = c("x", "y"), crs = "EPSG:25833"))
 plot(cumzoi_linear)
-plot(terra::vect(rein_spat), add = T)
+plot(terra::vect(reindeer, geom = c("x", "y"), crs = "EPSG:25833"), add = T)
 
 # approximately the same
 cbind(reindeer_cabins, dplyr::arrange(cum_zoi_cabins, gid))

@@ -16,8 +16,7 @@ bag_fit_net_clogit(
   metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso", "Grouped-AdaptiveLasso",
-    "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
-    "ElasticNet")[1],
+    "G-AdaptiveLasso", "ElasticNet")[1],
   standardize = c("internal", "external", FALSE)[1],
   alpha = NULL,
   penalty.factor = NULL,
@@ -34,8 +33,12 @@ bag_fit_net_logit(
   f,
   data,
   samples,
+  subset_samples = 1:length(samples$train),
   metric = c(AUC, conditionalBoyce, conditionalSomersD, conditionalAUC)[[1]],
-  method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "ElasticNet")[1],
+  metrics_evaluate = c("AUC"),
+  method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
+    "TruncatedLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "ElasticNet")[1],
   standardize = c("internal", "external", FALSE)[1],
   alpha = NULL,
   penalty.factor = NULL,
@@ -49,26 +52,96 @@ bag_fit_net_logit(
 )
 }
 \arguments{
-\item{standardize}{internal = internal glmnet standaridization, i.e. using glmnet with argument standardize = TRUE.
-This also standardizes dummy variables, but returns the estimated coefficients back to the original scale.
-This however can cause baises in the estimates because of the bias-variance tradeoff that L1 and L1 regularization
-methods try to minimize.
-See more info in https://stackoverflow.com/questions/17887747/how-does-glmnets-standardize-argument-handle-dummy-variables
-external = glmnet is called with argument standardize = FALSE, but standization is done by the
-bag_fit_net_logit function. Return coefs in the original scale?? Implement.
-If FALSE, no standardization of predictors is done.}
+\item{f}{\verb{[formula]} \cr Formula of the model to be fitted, with all possible candidate terms.}
 
-\item{mc.cores}{Only relevant if \code{parallel == "mclapply"}. If \code{parallel == "foreach"}, cores must
-be assigned before running \code{fit_multi_net_logit()} using \code{\link[parallel:makeCluster]{parallel::makeCluster()}} and
-\code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}.}
+\item{data}{\verb{[data.frame,tibble]} \cr Complete data set to be analyzed.}
 
-\item{...}{Options for net_logit and glmnet}
+\item{samples}{\verb{[list]} \cr List of samples with at least three elements: train, test,
+and validate. Typically computed by \code{\link[=create_resamples]{create_resamples()}}.}
 
-\item{subset}{\verb{[vector]} \cr Vector of samples to be run (e.g. \code{c(1,2,4,5)} or \code{3:10}).
-By default, all the samples in \code{samples} are run.}
+\item{subset_samples}{\verb{[vector]} \cr Vector of sample indices to run (e.g. \code{c(1,2,4,5)} or \code{3:10}).
+By default, all samples in \code{samples} are run.}
+
+\item{kernel_vars}{\verb{[character]} \cr Names of movement kernel variables in the model
+(e.g. \code{"step_length"} and \code{"turning_angle"}).}
+
+\item{metric}{\verb{[function,character]\{AUC, conditionalBoyce, conditionalSomersD, conditionalAUC\}} \cr Function
+representing the metric to evaluate goodness-of-fit. One of AUC (Default), conditionalBoyce,
+conditionalSomersD, and conditionalAUC. A user-defined function might be provided, with a condition that
+it must be maximized to find the best fit model. It can also be a character, in case it should be one
+of the following: \code{c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")}.}
+
+\item{metrics_evaluate}{\verb{[character]} \cr Vector of metric names to compute for model evaluation.
+See description of the argument \code{metric}.}
+
+\item{method}{\verb{[character(1)="Lasso"]} \cr Penalized regression method. Default is \code{method = "Lasso"},
+but it could be \code{method = "Ridge"}, \code{"AdaptiveLasso"}, \code{"ElasticNet"}, or different versions of
+ecology-informed methods. See \code{\link[=fit_net_logit]{fit_net_logit()}} for valid options.}
+
+\item{standardize}{\verb{[character(1)="internal"]\{"internal","external",FALSE\}} \cr Predictor
+standardization mode. \code{"internal"} uses glmnet's internal standardization; \code{"external"}
+standardizes before calling glmnet; \code{FALSE} skips standardization, in case which the
+standardization should have been done before calling the function to fit the models.}
+
+\item{alpha}{\verb{[numeric(1)=NULL]} \cr Elastic net mixing parameter. If \code{NULL}, set automatically by method.}
+
+\item{penalty.factor}{\verb{[numeric]} \cr Penalty factors per coefficient. If \code{NULL}, set automatically by method.}
+
+\item{predictor_table}{\verb{[data.frame,NULL]} \cr Predictor table with ZOI metadata, required for
+distance-decay and ecology-constrained methods. Typically created through
+\verb{[oneimpact::add_zoi_formula()]}.}
+
+\item{na.action}{\verb{[character(1)="na.pass"]} \cr Action to take for missing values during fitting.}
+
+\item{out_dir_file}{\verb{[character(1)=NULL]} \cr Prefix path for saving individual model results as RDS files.}
+
+\item{parallel}{\verb{[character(1)=FALSE]\{"FALSE","foreach","mclapply"\}} \cr Parallelization backend.
+If FALSE (default), no parallelization is made.}
+
+\item{mc.cores}{\verb{[integer(1)=2]} \cr Number of cores for \code{mclapply}. If \code{parallel == "foreach"},
+cores must be registered beforehand using \code{\link[parallel:makeCluster]{parallel::makeCluster()}} and \code{\link[doParallel:registerDoParallel]{doParallel::registerDoParallel()}}.}
+
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Whether to print progress messages during fitting.}
+
+\item{...}{\verb{[any]} \cr Additional options passed to \code{\link[=fit_net_logit]{fit_net_logit()}},
+\code{\link[=net_logit]{net_logit()}} and \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
+}
+\value{
+A list with:
+\itemize{
+\item \code{n}: total number of models (resamples).
+\item \code{formula}: model formula.
+\item \code{method}: fitting method used.
+\item \code{metric}: metric used for lambda selection.
+\item \code{samples}: resampling structure.
+\item \code{standardize}: standardization mode used.
+\item \code{models}: named list of fitted model objects, one per resample.
+\item \code{covariate_mean_sd}: data frame of predictor means and SDs used for external standardization (or \code{NULL}).
+\item \code{numeric_covs}: logical vector identifying which covariates are numeric.
+}
+
+A list with:
+\itemize{
+\item \code{n}: total number of models (resamples).
+\item \code{formula}: model formula.
+\item \code{method}: fitting method used.
+\item \code{metric}: metric used for lambda selection.
+\item \code{samples}: resampling structure.
+\item \code{standardize}: standardization mode used.
+\item \code{models}: named list of fitted model objects, one per resample.
+\item \code{covariate_mean_sd}: data frame of predictor means and SDs used for external standardization (or \code{NULL}).
+\item \code{numeric_covs}: logical vector identifying which covariates are numeric.
+}
 }
 \description{
-Fit a bag of conditional logistic regression/SSF/iSSF models with penalized regression in a train-validate-test setup
+Fits a bag on conditional logistic regressions by calling \code{\link[=fit_net_clogit]{fit_net_clogit()}}
+multiple times to fit different resamples of the input data.
 
-Fit a bag of logistic regression/RSF models with penalized regression in a train-validate-test setup
+Fits a bag of logistic regressions by calling \code{\link[=fit_net_logit]{fit_net_logit()}}
+multiple times to fit different resamples of the input data.
+}
+\seealso{
+\code{\link[=fit_net_clogit]{fit_net_clogit()}}, \code{\link[=net_clogit]{net_clogit()}}, \code{\link[glmnet:glmnet]{glmnet::glmnet()}}
+
+\code{\link[=fit_net_logit]{fit_net_logit()}}, \code{\link[=net_logit]{net_logit()}}, \code{\link[glmnet:glmnet]{glmnet::glmnet()}}
 }

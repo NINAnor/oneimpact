@@ -4,7 +4,7 @@
 \alias{predict}
 \alias{predict.bag}
 \alias{predict.formula}
-\title{Prediction of a bag of models to new data}
+\title{Predict from a bag of models or from formula + coefficients}
 \usage{
 predict(x, newdata, ...)
 
@@ -42,78 +42,85 @@ predict(x, newdata, ...)
 )
 }
 \arguments{
-\item{x}{\verb{[bag,list or formula]} \cr  A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}},
-or a \code{formula} used to fit the models in the bag.}
+\item{x}{\verb{[bag,list or formula]} \cr A bag of models from \code{\link[=bag_models]{bag_models()}},
+or a \code{formula} used to build the model matrix for prediction.}
 
-\item{newdata}{\cr New data set to be used for prediction. It can include all the variables in the formula
-or only those for which the user is interested in making a prediction from.}
+\item{newdata}{\verb{[data.frame]} \cr New data for prediction. Can contain all model
+variables or only focal variables.}
 
-\item{...}{\cr Additional parameters. None implemented.}
+\item{...}{\verb{[any]} \cr Additional arguments passed to methods.}
 
-\item{type}{\verb{[character="linear"]\{"linear", "exponential", "exp", "logit", "cloglog"\}} \cr Type of prediction.
-One of \code{"linear"} (default), \code{"exp"} or \code{"exponential"}, \code{"logit"}, or \code{"cloglog"}.}
+\item{data}{\verb{[data.frame=NULL]} \cr Original data used for model fitting. Used in
+\code{predict.bag()} to recover baseline/categorical levels. Not used by \code{predict.formula()}.}
 
-\item{wmean}{\verb{[logical=TRUE]} \cr Should the weighted mean values be predicted? Default is \code{TRUE}.}
+\item{type}{\verb{[character="linear"]\{"linear", "exponential", "exp", "logit", "cloglog"\}} \cr
+Prediction scale.}
 
-\item{wq_probs}{\verb{[vector,numeric(3)=c(0.025, 0.5, 0.975)]} \cr A three element vector with lower,
-mid, and higher weighted quantiles to be computed.}
+\item{wmean}{\verb{[logical(1)=TRUE]} \cr Whether to compute and return weighted mean prediction.}
 
-\item{include}{\verb{[character="all"]} \cr String of vector of strings with the terms (or unique parts of terms)
-to be predicted for. This does not restrict which terms we are focusing on - this is done
-by the definition of the \code{newdata} dataset and by which columns are in there. What
-the \code{include} parameters does is to set which other variables will be used for prediction,
-at their mean or median values, for instance.}
+\item{wq_probs}{\verb{[numeric,vector=c(0.025, 0.5, 0.975)]} \cr Weighted quantile
+probabilities for prediction summaries. If \code{NULL}, quantiles are not returned.}
 
-\item{baseline}{\verb{[character="median"]\{"median", "mean", "zero")\}} \cr What values to
-choose for the baseline, i.e., for all other variables/terms not contained in
-\code{newdata}. It can be one of \code{median}, \code{"mean"}, or \code{"zero"}.}
+\item{include}{\verb{[character="all"]} \cr Terms to include in prediction.
+Use \code{"all"} or one/more string patterns matching term names.}
 
-\item{zoi}{\verb{[logical(1)=FALSE]} \cr Are the columns in \code{newdata} supposed to represent
-zones of influence (ZOI) variables?
-This parameter should be set to \code{TRUE} if you provided a set of distances from a source that need
-to be translated into ZOI variables (cumulative or nearest ZOI from sources).}
+\item{baseline}{\verb{[character="median"]\{"median", "mean", "zero"\}} \cr Baseline
+values for non-focal predictors.}
+
+\item{zoi}{\verb{[logical(1)=FALSE]} \cr If \code{TRUE}, columns in \code{newdata} are treated as
+distance inputs and transformed into ZOI predictors.}
 
 \item{zoi_shape}{\verb{[character="exp_decay"]\{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"\}} \cr
-Shape of the zone of influence (ZOI), if \code{zoi = TRUE}. Default is \verb{exp_decay"}. It can assume any of the
-possible values for the argument \code{type} in the function \code{\link[=dist_decay]{dist_decay()}}.}
+ZOI decay shape used when \code{zoi = TRUE}.}
 
-\item{which_cumulative}{\verb{[character="cumulative"]} \cr Which string or pattern to be searched on the column
-names of \code{newdata} and on the original data used to fit the models to represent the cumulative ZOI.
-It is used to break the names of the columns/terms in the formula and get the ZOI radii as numbers,
-to be able to create all the ZOI radii included in the model or bag of models.}
+\item{which_cumulative}{\verb{[character(1)="cumulative"]} \cr Pattern used to identify
+cumulative ZOI terms.}
 
-\item{type_feature}{\verb{[character="point"]\{"point", "line", "area"\}} \cr Type of feature we are predicting
-for, for zone of influence-type variables. Default is \code{"point"}. If \code{type_feature = "line"}, a line is simulated
-with the function \code{\link[=create_linear_feature_zoi]{create_linear_feature_zoi()}} to get the values and account for
-the number of pixels of each single linear feature in the neighborhhod and correclty estimate
-the effect of each linear feature ZOI. The option \code{"area"} is still not implemented and for now
-is treated as a point feature at the origin.}
+\item{type_feature}{\verb{[character="point"]\{"point", "line", "area"\}} \cr Feature type
+for ZOI prediction.}
 
-\item{n_features}{\verb{[numeric(1)=1]} \cr Number of features to be used for prediction, for ZOI variables.
-Default is 1.}
+\item{type_feature_recompute}{\verb{[logical(1)=FALSE]} \cr Whether to recompute line-
+and area-feature geometry approximation for ZOI calculations.}
 
-\item{resolution}{\verb{[numeric(1)=100]} \cr Resolution for the raster created in \code{\link[=create_line_feature_zoi]{create_line_feature_zoi()}},
-when \code{type_feature = "line"}.}
+\item{n_features}{\verb{[numeric(1)=1]} \cr Number of features used in ZOI prediction.}
 
-\item{line_value}{\verb{[numeric(1)=1]} \cr Value set to the raster line created by \code{\link[=create_line_feature_zoi]{create_line_feature_zoi()}},
-when \code{type_feature = "line"}. It could be changed to different values if we want to represent e.g. the value in the
-linear feature as the roads traffic or another value for spatio-temporally dynamic variables.}
+\item{zoi_limit}{\verb{[numeric(1)=0.05]} \cr Lower influence threshold used by non-vanishing
+ZOI decay functions (relevant for line-feature ZOI transformation).
+See \code{\link[=zoi_functions]{zoi_functions()}}.}
 
-\item{coefs}{\verb{[vector,numeric]} \cr Either a named vector of coefficients (in case there is only one
-model) or a matrix of coefficients, with rownames as the term names and columns as the different models/resamples.
-Only relevant if \code{x} is a formula.}
+\item{resolution}{\verb{[numeric(1)=100]} \cr Raster resolution used for line-feature ZOI
+approximation. Used when recomputing the ZOI variables for line and area features.}
 
-\item{weights}{\verb{[vector,numeric=1]} \cr Vector of weights for the different models/resamples, i.e.
-the column from the \code{coefs} object with coefficients. A single number (by default, 1) in case there is only
-one model (\code{coefs} is a vector). Only relevant if \code{x} is a formula.}
+\item{line_value}{\verb{[numeric(1)=1]} \cr Value assigned to rasterized line cells when
+\code{type_feature = "line"}.  Used when recomputing the ZOI variables for line and
+area features.}
+
+\item{coefs}{\verb{[numeric vector or matrix]} \cr Coefficients used by \code{predict.formula()}.
+If matrix, rows are term names and columns are model/resample coefficients.}
+
+\item{weights}{\verb{[numeric=1]} \cr Model weights used by \code{predict.formula()} when
+combining predictions across models.}
+}
+\value{
+A \code{data.frame} (or matrix-like object) with predicted values.
+Output columns depend on \code{wmean} and \code{wq_probs}:
+\itemize{
+\item weighted quantiles (if \code{wq_probs} is not \code{NULL})
+\item weighted mean (if \code{wmean = TRUE})
+\item individual model predictions (if \code{wmean = FALSE} and \code{wq_probs = NULL})
+}
 }
 \description{
-The function \code{predict} makes a prediction for new data based wither on a bag of models or
-on its formula, coefficients, and weights. The prediction can be made either for a complete new dataset
-with all the variables included in the formula or to predict the specific response on one single or a
-group of variables in the model. In this case, all the other variables are set to their median or mean
-value, to to zero (defined by the \code{baseline} parameter). What controls that is which columns are added in
-the \code{newdata} data.frame.
+This function predicts responses for new data using either:
+\itemize{
+\item a \code{bag} object (via \code{predict.bag}), or
+\item a model \code{formula} plus \code{coefs} and \code{weights} (via \code{predict.formula}).
+}
+}
+\details{
+Predictions can be computed for full covariate data or for focal predictors only,
+while non-focal predictors are set to a baseline values (\code{median}, \code{mean}, or \code{zero}).
+It also supports ZOI-distance inputs that are internally transformed into ZOI predictors.
 }
 \examples{
 #---
@@ -242,5 +249,5 @@ plot(dfvar[,1],
              baseline = "zero")[,1])
 }
 \seealso{
-\code{\link[=plot_response]{plot_response()}}, \code{\link[=create_line_feature_zoi]{create_line_feature_zoi()}}.
+\code{\link[=plot_response]{plot_response()}}, \code{\link[=create_linear_feature_zoi]{create_linear_feature_zoi()}}.
 }

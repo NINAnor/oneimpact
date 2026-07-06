@@ -16,8 +16,8 @@ the columns.}
 \item{n_rand}{\verb{[numeric(1)=100]} \cr Number of random points to be
 created in space, to compute the distance to \code{x}.}
 
-\item{ext}{\verb{[numeric(x)=c(0,1)]} Extent of the space within which the
-random positions should be created c(x or ymin, x or ymax).}
+\item{ext}{\verb{[numeric(4)=c(0,1,0,1)]} \cr Extent of the space within which the
+random positions should be created: \code{c(xmin, xmax, ymin, ymax)}.}
 
 \item{lonlat}{\verb{[logical(1)=FALSE]} \cr Whether the distance between points
 should be calculated in an WGS ellipsoid (\code{lonlat = TRUE}) or on a

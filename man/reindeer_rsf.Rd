@@ -5,7 +5,7 @@
 \alias{reindeer_rsf}
 \title{Annotated data of wild reindeer in Norway, prepared for point resource-selection analysis.}
 \format{
-A data frame with 31,735 rows and 28 variables:
+A data frame with 74,337 rows and 88 variables:
 \describe{
 \item{use}{Case in the use-availability setup; 1 represents a used location, 0 represents a random locations.}
 \item{norway_pca_klima_axis1-4}{Components 1 to 4 from a principal component analysis

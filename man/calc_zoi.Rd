@@ -69,7 +69,7 @@ features (if \code{zoi_metric = "cumulative"}), or both metrics
 If the computation is done in GRASS GIS, the output is the name of
 the output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-\code{\link[rgrass:readRAST]{rgrass::read_RAST()}} or export them outside GRASS using the
+\code{\link[rgrass:read_RAST]{rgrass::read_RAST()}} or export them outside GRASS using the
 \code{r.out.gdal} module, for instance.
 }
 \description{

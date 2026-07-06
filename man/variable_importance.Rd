@@ -43,6 +43,9 @@ representing the blockH0, in case we want the variable importance to be evaluate
 for each block. Default is \code{NULL}, in case variable importance is assessed for all
 the data.}
 
+\item{variable_block}{\verb{[character,NULL]} \cr Optional grouping variable for computing
+importance at the block level rather than per-variable. Default is \code{NULL}.}
+
 \item{n_permutations}{\verb{[numeric(1)=100]} \cr Number of permutations, if
 \code{type = "permutation"}.}
 
@@ -51,12 +54,22 @@ not to order the output variables according to descending (\code{order = "desc"}
 ascending order of variable importance (\code{order = "asc"}). If \code{FALSE}, the variables
 are shown in the same order as present in the bag of models, \code{x}.}
 
+\item{metric}{\verb{[function,character=NULL]} \cr Metric function used to evaluate model performance.
+If \code{NULL} (default), the metric stored in the bag \code{x} is used.}
+
 \item{plot}{\verb{[logical(1)=FALSE]} \cr Should variable importance be plotted? Default
 is \code{FALSE}.}
+
+\item{ss}{\verb{[integer(1)=1]} \cr Index of the sample (resample) to use for validation when
+\code{samples} is provided. Default is \code{1}.}
 
 \item{remove_threshold}{\verb{[numeric(1)]} \cr Threshold for excluding variable with
 little importance in the variable importance plot (i.e. only considered if \code{plot = TRUE}).
 See more in \code{\link[=plot_importance]{plot_importance()}}.}
+}
+\value{
+A data frame with variable names and their importance scores, optionally
+ordered by importance and/or plotted.
 }
 \description{
 Computation of variable importance from a bag of models. Variable importance can

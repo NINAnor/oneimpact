@@ -44,7 +44,7 @@ just rasterized (so that distances or other derived variables might be calculate
 
 \item{res}{\verb{[numeric(1)=0.1]} \cr Resolution of the output raster.}
 
-\item{extent_x, entent_y}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector representing the minimum and
+\item{extent_x, extent_y}{\verb{[numeric vector(2)=c(0,1)]} \cr Vector representing the minimum and
 maximum extent in x and y within which the points should be placed, in the format c(min,max).}
 
 \item{buffer_around}{\verb{[numeric(1)=0.1]} \cr Size of the buffer around the extent of the landscape,
@@ -60,8 +60,7 @@ is created.}
 
 \item{crs}{\verb{[character(1)]} \cr Specification for the coordinate reference system
 of the \code{rast} object created from the points. Default is
-\code{"+proj=utm +zone=1 +datum=WGS84"}.
-argument.}
+\code{"+proj=utm +zone=1 +datum=WGS84"}.}
 }
 \value{
 A list with three elements: (1) \code{pts}, the coordinates (x,y) of the simulated points;

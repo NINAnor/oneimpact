@@ -42,37 +42,79 @@ bag_predict_spat_vars(
 )
 }
 \arguments{
-\item{bag}{\verb{[bag,list]} \cr A bag of models, resulting from a call to \code{\link[=bag_models]{bag_models()}}.}
+\item{bag}{\verb{[bag,list]} \cr A bag of models from \code{\link[=bag_models]{bag_models()}}.}
 
-\item{data}{\verb{[data.frame,SpatRaster]} \cr The spatial grid or stack of rasters
-with the layers in space, to be used for the spatial prediction. All variables in the
-bag$formula must be present in \code{data}.}
+\item{data}{\verb{[data.frame,SpatRaster]} \cr Spatial grid of predictors used for prediction.
+All predictors in the model formula must be present.}
 
-\item{input_type}{\verb{[string(1)="df"]\{"df","rast"\}} \cr Type of input object. Either a
-\code{data.frame} with the predictor variables as columns (if \code{input_type = "df"}, default),
-or a \code{SpatRaster} with the predictor variables as layers (if \code{input_type = "rast"}).
-So far, only \code{input_type = "df"} is implemented.}
+\item{input_type}{\verb{[character(1)="df"]\{"df","rast"\}} \cr Input type:
+data frame with predictor values (\code{"df"}) or \code{SpatRaster}
+raster stack/layers (\code{"rast"}).}
 
-\item{output_type}{\verb{[string(1)="rast"]\{"df","rast"\}} \cr Type of output object.
-Typically, the same type of object as \code{input_type}, but rasters can also be saved
-if the input is a \code{data.frame} when \code{output_type = "rast"}, and data.frames can
-also be saved if the input is a \code{SpatRaster} when \code{output_type = "df"}.}
+\item{output_type}{\verb{[character(1)="rast"]\{"df","rast"\}} \cr Output type:
+data frame or raster outputs.}
 
-\item{prediction_type}{\verb{[string(1)="exp"]\{"exp", "exponential", "linear"\}} Type
-of transformation for the prediction. One of \code{"exp"} or \code{"expornential"} for
-exponential response or \code{"linear"} for linear response.}
+\item{prediction_type}{\verb{[character(1)="exp"]\{"exp","exponential","linear"\}} \cr
+Prediction scale.}
 
-\item{gid}{\verb{[string(1)="gid"]} \cr String with the name of the "gid" or point ID
-column in \code{data}. Only relevant if \code{input_type = "df"}.}
+\item{standardize}{\verb{[logical(1)=FALSE]} \cr Whether to standardize predictors
+before prediction using bag summary statistics.}
 
-\item{coords}{\verb{[vector,string(2)=c("x", "y")]} \cr Vector with two elements with
-the names of the coordinates representing (x,y) coordinates for the pixels.
-Only relevant if \code{input_type = "df"}.}
+\item{what}{\verb{[character]} \cr Prediction outputs to compute. Any combination of
+"mean", "median", and "ind" for the weighted mean, weighted median, and
+individual model predictions, respectively.}
 
-\item{crs}{\verb{[string(1)=NULL]} \cr Code for the coordinate reference system of the
-output raster. Only relevant if \code{input_type = "df"}. For more details, check
+\item{gid}{\verb{[character(1)="gid"]} \cr Name of unique pixel/grid identifier column
+(used for \code{df} input and output).}
+
+\item{coords}{\verb{[character(2)=c("x","y")]} \cr Names of x/y coordinate columns.
+Used if \code{input_type = "df"}.}
+
+\item{crs}{\verb{[character(1)=NULL]} \cr Coordinate reference system for
+raster output. Only relevant if \code{input_type = "df"}. For more details, check
 \code{\link[terra:crs]{terra::crs()}}.}
+
+\item{gridalign}{\verb{[logical(1)=FALSE]} \cr Whether to align output grid coordinates
+before rasterization.}
+
+\item{output_rescale}{\verb{[logical(1)=FALSE]} \cr Whether to rescale raster outputs
+to \link{0,1} using prediction_max_quantile clipping.}
+
+\item{prediction_max_quantile}{\verb{[numeric(1)=0.999]} \cr Quantile used as upper
+truncation threshold when \code{output_rescale = TRUE}.}
+
+\item{uncertainty_quantiles}{\verb{[numeric(2)=c(0.25, 0.75)]} \cr Quantiles used for
+weighted uncertainty summaries when what includes "median".}
+
+\item{verbose}{\verb{[logical(1)=FALSE]} \cr Print progress messages.}
+
+\item{predictor_table_zoi}{\verb{[data.frame]} \cr Predictor table with ZOI metadata
+(for example from \code{\link[=add_zoi_formula]{add_zoi_formula()}} predictor_table output), used to aggregate
+predictions by ZOI variable groups in \code{\link[=bag_predict_spat_vars]{bag_predict_spat_vars()}}.}
+}
+\value{
+For \code{bag_predict_spat()}, a list with prediction outputs:
+\itemize{
+\item grid: prediction table in tabular form (always returned).
+\item weights: model weights used for prediction (non-zero weight models).
+\item r_weighted_avg_pred: raster of weighted mean prediction (if requested and \code{output_type = "rast"}).
+\item r_ind_summ_pred: raster stack with weighted median and uncertainty summaries, including the
+interquartile range and the quantile coefficient of variation (if requested and \code{output_type = "rast"}).
+\item r_ind_pred: raster stack of individual model predictions (if requested and \code{output_type = "rast"}).
+}
+
+For \code{bag_predict_spat_vars()}, a list with partial prediction outputs:
+\itemize{
+\item vars: per-variable prediction summaries.
+\item grid: grid-level prediction table.
+\item weights: model weights used for prediction.
+\item r_weighted_avg_pred: raster output for weighted means (if requested).
+\item r_ind_summ_pred: raster output for weighted uncertainty summaries (if requested).
+\item r_ind_pred: raster output for individual-model predictions (if requested).
+}
 }
 \description{
-Predict bag of models in space
+Creates spatial predictions from a bag of models for a grid provided as a
+data frame or raster. It can return weighted mean predictions, weighted
+median/uncertainty summaries, and/or individual model predictions.
 }

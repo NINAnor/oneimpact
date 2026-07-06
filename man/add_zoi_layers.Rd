@@ -6,10 +6,35 @@
 \usage{
 add_zoi_layers(layers, zoi_radius, name = NULL, pattern = NULL)
 }
+\arguments{
+\item{layers}{\verb{[character]} \cr Vector of input layer strings to expand.}
+
+\item{zoi_radius}{\verb{[numeric]} \cr Numeric vector of ZOI radii used to expand
+each layer.}
+
+\item{name}{\verb{[character=NULL]} \cr Optional vector of names to expand with the
+same radii. If provided, output includes a \code{name} column.}
+
+\item{pattern}{\verb{[character=NULL]} \cr Pattern to be replaced by each value of
+\code{zoi_radius}. If \code{NULL}, radii are appended to the end of each string.}
+}
+\value{
+A \code{data.frame} with expanded layer definitions:
+\itemize{
+\item if \code{name} is \code{NULL}: columns \code{zoi_radius}, \code{layer}
+\item if \code{name} is provided: columns \code{name}, \code{zoi_radius}, \code{layer}
+}
+}
 \description{
-This function uses a vector of variable names and a vector of ZOI radii to create
-a \code{data.frame} with all combinations of variable names and zoi radii, to ease
-listing or accessing them from GRASS GIS or for setting up a model formula.
+This function combines strings with layer identifiers and ZOI radii to create
+names for ZOI layers at different distances. It can either append each radius to the end
+of each layer string, or replace a pattern (e.g. \code{"XXX"}) by each radius.
+Optionally, a corresponding \code{name} field is created with the same expansion.
+}
+\details{
+The function produces a \code{data.frame} with all combinations of variable names
+and zoi radii, to ease listing or accessing them from GRASS GIS or for
+setting up a model formula.
 }
 \examples{
 # attaching zoi_radius to the end
