@@ -1,7 +1,8 @@
 #' Get estimates of zone of influence (ZOI) metrics from response curves
 #'
 #' This generic function computes ZOI metrics (maximum effect size,
-#' ZOI radius, and impact) for ZOI predictor variables based on response curves.
+#' ZOI radius, and impact) for ZOI predictor variables based on response curves
+#' from statistical models.
 #' The ZOI radius is estimated as the distance/radius at which the
 #' relative selection strength decays to a given percentage of
 #' the maximum effect size (e.g. 95% ZOI radius for the distance at which the
@@ -16,30 +17,6 @@
 #'
 #' @param x `[data.frame,bag]` \cr Either a `data.frame` containing response curve predictions
 #'   for a single variable, or a `bag` object containing an ensemble of models.
-#' @param ... Additional arguments passed to the appropriate method.
-#'
-#' @return A `data.frame` or a `list` containing ZOI metrics:
-#' - `max_effect_size`: Maximum effect size on the relative selection strength.
-#' - `zoi_radius`: Distance/radius where the effect drops to a given threshold.
-#' - `effect_zoi_radius`: Relative selection strength value at the ZOI radius.
-#' - `impact`: Area under the curve up to the ZOI radius.
-#'
-#' For the `data.frame` method, the returned table has columns for each ZOI metric.
-#' When `ci = TRUE`, the rows are the weighted `mean`, `median`, and the lower
-#' and upper CI quantiles. When `ci = FALSE`, the rows are `mean`, `median`,
-#' and one column per individual model prediction.
-#' For the `bag` method, the output is a `data.frame` with ZOI metrics for each
-#' ZOI variable in the bag.
-#'
-#' @seealso [oneimpact::predict()], [oneimpact::plot_response()], [oneimpact::implausibility()]
-#' @example examples/zoi_from_curve_example.R
-#'
-#' @name zoi_from_curve
-#' @export
-zoi_from_curve <- function(x, ...) {
-  UseMethod("zoi_from_curve")
-}
-
 #' @param weights `[numeric]` \cr Numeric vector of model weights used to compute
 #'   the weighted mean, weighted median, and weighted quantiles from the
 #'   individual model prediction columns. This should match the number of
@@ -66,7 +43,65 @@ zoi_from_curve <- function(x, ...) {
 #'   containing the weighted median response curve.
 #' @param NAasZero `[logical(1)=TRUE]` \cr Logical. If `TRUE`, any `NA` values in
 #'   the final output are replaced by zero.
+#' @param data `[data.frame]` \cr The original dataset used for model fitting.
+#' @param include `[character="all"]` \cr Character. Either `"all"` or a
+#'   regex pattern to filter selected ZOI variables.
+#' @param return_predictions `[logical=FALSE]` \cr Logical. Whether to return
+#'   the prediction curves alongside ZOI metrics. If `TRUE`, the output is necessarily
+#'   a `list` with with all `predictions` and the `zoi` metrics.
+#' @param return_format `[character="df"]{"list", "df"}` \cr Format of the returned
+#'   ZOI metrics. Either a list of data.frames (if `return_format = "list"`),
+#'   one for each variable, or a single `data.frame` (default, if `return_format = "df"`).
+#' @param format_long `[logical(1)=TRUE]` \cr Logical. Whether to return the
+#'   ZOI metrics in long format (with a `zoi_metric` column) or wide format
+#'   (with separate columns for each metric)..
+#' @param n_features `[numeric=1]` \cr Number of features used in ZOI prediction.
+#'   It can a single number (considered the same for all ZOI variables) or a vector
+#'   with the same number of elements as ZOI variables in the model.
+#' @param radius_max `[numeric=NULL]` \cr Numeric. Maximum distance/radius to use for
+#'   prediction curves. If `NULL` (default), the maximum value present in the bag's
+#'   predictor table is used.
+#' @param baseline `[character="zero"]` \cr Character. Baseline used in `predict()` (e.g., `"zero"`).
+#' @param type_feature `[character="point"]` \cr Character or vector. Type of spatial feature used in
+#'   `predict()`.
+#' @param type_feature_recompute `[logical=FALSE]` \cr Logical. Whether to recompute spatial
+#'   features within `predict()`, for linear features.
+#' @param resolution `[numeric=200]` \cr Integer. Resolution used in the recomuptation
+#'   of ZOIs for linear features.
+#' @param radii `[vector]` \cr Numeric vector. Radii used for ZOI modeling.
+#' @param zoi_shape `[character]` \cr Character. Shape of the ZOI used in the model
+#'   (e.g., `"circle"`, `"Gauss"`, `"exp_decay"`).
+#' @param ... `[any]` \cr Additional arguments passed to the appropriate method.
 #'
+#' @return For the `data.frame` method, returns a `data.frame` with columns for each
+#'   ZOI metric (`max_effect_size`, `zoi_radius`, `effect_zoi_radius`, `impact`).
+#'   When `ci = TRUE`, the rows are the weighted `mean`, `median`, and the lower
+#'   and upper CI quantiles. When `ci = FALSE`, the rows are `mean`, `median`,
+#'   and one row per individual model prediction curve present in the input.
+#'   The table can be transformed into long format if `format_long = TRUE`.
+#'
+#'   For the `bag` method, returns either a list or a `data.frame` of ZOI metrics
+#'   for each ZOI variable in the bag. When `ci = TRUE`, the `stats` column contains
+#'   `mean`, `median`, and the CI quantile labels. When `ci = FALSE`, the
+#'   `stats` column contains one entry per individual model curve.
+#'   If `format_long = TRUE`, the output `data.frame` is in long format,
+#'   with a `zoi_metric` column indicating the type of ZOI metric
+#'   (e.g., `max_effect_size`, `zoi_radius`, `impact`) and a
+#'   `metric_value` column with the corresponding values.
+#'   If `return_predictions = TRUE`, the function returns a list with
+#'   two elements: `predictions`, which is a list of data.frames
+#'   containing the prediction curves for each ZOI variable, and `zoi`,
+#'   which contains the ZOI metrics as described above.
+#'
+#' @seealso [oneimpact::predict()], [oneimpact::plot_response()], [oneimpact::implausibility()]
+#' @example examples/zoi_from_curve_example.R
+#'
+#' @name zoi_from_curve
+#' @export
+zoi_from_curve <- function(x, ...) {
+  UseMethod("zoi_from_curve")
+}
+
 #' @rdname zoi_from_curve
 #' @export
 zoi_from_curve.data.frame <- function(x,
@@ -281,49 +316,6 @@ zoi_from_curve.data.frame <- function(x,
   out
 }
 
-#' @param data `[data.frame]` \cr The original dataset used for model fitting.
-#' @param include `[character="all"]` \cr Character. Either `"all"` or a
-#'   regex pattern to filter selected ZOI variables.
-#' @param return_predictions `[logical=FALSE]` \cr Logical. Whether to return
-#'   the prediction curves alongside ZOI metrics. If `TRUE`, the output is necessarily
-#'   a `list` with with all `predictions` and the `zoi` metrics.
-#' @param return_format `[character="df"]{"list", "df"}` \cr Format of the returned
-#'   ZOI metrics. Either a list of data.frames (if `return_format = "list"`),
-#'   one for each variable, or a single `data.frame` (default, if `return_format = "df"`).
-#' @param format_long `[logical(1)=TRUE]` \cr Logical. Whether to return the
-#'   ZOI metrics in long format (with a `zoi_metric` column) or wide format
-#'   (with separate columns for each metric)..
-#' @param n_features `[numeric=1]` \cr Number of features used in ZOI prediction.
-#'   It can a single number (considered the same for all ZOI variables) or a vector
-#' with the same number of elements as ZOI variables in the model.
-#' @param radius_max `[numeric=NULL]` \cr Numeric. Maximum distance/radius to use for
-#' prediction curves. If `NULL` (default), the maximum value present in the bag's
-#' predictor table is used.
-#' @param baseline `[character="zero"]` \cr Character. Baseline used in `predict()` (e.g., `"zero"`).
-#' @param type_feature `[character="point"]` \cr Character or vector. Type of spatial feature used in
-#' `predict()`.
-#' @param type_feature_recompute `[logical=FALSE]` \cr Logical. Whether to recompute spatial
-#' features within `predict()`, for linear features.
-#' @param resolution `[numeric=200]` \cr Integer. Resolution used in the recomuptation
-#' of ZOIs for linear features.
-#' @param radii `[vector]` \cr Numeric vector. Radii used for ZOI modeling.
-#' @param zoi_shape `[character]` \cr Character. Shape of the ZOI used in the model
-#' (e.g., `"circle"`, `"Gauss"`, `"exp_decay"`).
-#'
-#' @return If `x` is a bag object, the function returns either a list or
-#'   a data.frame of ZOI metrics for each ZOI variable in the bag.
-#'   When `ci = TRUE`, the `stats` column contains
-#'   `mean`, `median`, and the CI quantile labels. When `ci = FALSE`, the
-#'   `stats` column contains one entry per individual model curve.
-#'   If format_long is `TRUE`, the output data.frame is in long format,
-#'   with a `zoi_metric` column indicating the type of ZOI metric
-#'   (e.g., `max_effect_size`, `zoi_radius`, `impact`) and a
-#'   `metric_value` column with the corresponding values.
-#'   If `return_predictions = TRUE`, the function returns a list with
-#'   two elements: `predictions`, which is a list of data.frames
-#'   containing the prediction curves for each ZOI variable, and `zoi`,
-#'   which contains the ZOI metrics as described above.
-#'
 #' @rdname zoi_from_curve
 #' @export
 zoi_from_curve.bag <- function(x,

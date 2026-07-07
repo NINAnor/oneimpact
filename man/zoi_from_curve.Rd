@@ -52,7 +52,7 @@ zoi_from_curve(x, ...)
 \item{x}{\verb{[data.frame,bag]} \cr Either a \code{data.frame} containing response curve predictions
 for a single variable, or a \code{bag} object containing an ensemble of models.}
 
-\item{...}{Additional arguments passed to the appropriate method.}
+\item{...}{\verb{[any]} \cr Additional arguments passed to the appropriate method.}
 
 \item{weights}{\verb{[numeric]} \cr Numeric vector of model weights used to compute
 the weighted mean, weighted median, and weighted quantiles from the
@@ -131,27 +131,18 @@ of ZOIs for linear features.}
 (e.g., \code{"circle"}, \code{"Gauss"}, \code{"exp_decay"}).}
 }
 \value{
-A \code{data.frame} or a \code{list} containing ZOI metrics:
-\itemize{
-\item \code{max_effect_size}: Maximum effect size on the relative selection strength.
-\item \code{zoi_radius}: Distance/radius where the effect drops to a given threshold.
-\item \code{effect_zoi_radius}: Relative selection strength value at the ZOI radius.
-\item \code{impact}: Area under the curve up to the ZOI radius.
-}
-
-For the \code{data.frame} method, the returned table has columns for each ZOI metric.
+For the \code{data.frame} method, returns a \code{data.frame} with columns for each
+ZOI metric (\code{max_effect_size}, \code{zoi_radius}, \code{effect_zoi_radius}, \code{impact}).
 When \code{ci = TRUE}, the rows are the weighted \code{mean}, \code{median}, and the lower
 and upper CI quantiles. When \code{ci = FALSE}, the rows are \code{mean}, \code{median},
-and one column per individual model prediction.
-For the \code{bag} method, the output is a \code{data.frame} with ZOI metrics for each
-ZOI variable in the bag.
+and one row per individual model prediction curve present in the input.
+The table can be transformed into long format if \code{format_long = TRUE}.
 
-If \code{x} is a bag object, the function returns either a list or
-a data.frame of ZOI metrics for each ZOI variable in the bag.
-When \code{ci = TRUE}, the \code{stats} column contains
+For the \code{bag} method, returns either a list or a \code{data.frame} of ZOI metrics
+for each ZOI variable in the bag. When \code{ci = TRUE}, the \code{stats} column contains
 \code{mean}, \code{median}, and the CI quantile labels. When \code{ci = FALSE}, the
 \code{stats} column contains one entry per individual model curve.
-If format_long is \code{TRUE}, the output data.frame is in long format,
+If \code{format_long = TRUE}, the output \code{data.frame} is in long format,
 with a \code{zoi_metric} column indicating the type of ZOI metric
 (e.g., \code{max_effect_size}, \code{zoi_radius}, \code{impact}) and a
 \code{metric_value} column with the corresponding values.
@@ -162,7 +153,8 @@ which contains the ZOI metrics as described above.
 }
 \description{
 This generic function computes ZOI metrics (maximum effect size,
-ZOI radius, and impact) for ZOI predictor variables based on response curves.
+ZOI radius, and impact) for ZOI predictor variables based on response curves
+from statistical models.
 The ZOI radius is estimated as the distance/radius at which the
 relative selection strength decays to a given percentage of
 the maximum effect size (e.g. 95\% ZOI radius for the distance at which the
