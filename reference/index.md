@@ -1,6 +1,6 @@
 # Package index
 
-## Zone of influence (ZoI) functions
+## Zone of influence (ZOI) functions
 
 Functions to represent the zone of influence
 
@@ -18,7 +18,7 @@ Functions to represent the zone of influence
   : Plot the functions for the nearest and cumulative zone of influence
   in 1 dimension
 
-## Compute zones of influence (ZoI)
+## Compute zones of influence (ZOI)
 
 Functions to compute the zone of influence for raster maps
 
@@ -30,8 +30,7 @@ Functions to compute the zone of influence for raster maps
 - [`calc_zoi_nearest()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_nearest.md)
   : Calculate the zone of influence from the nearest feature
 - [`calc_zoi_sql()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_sql.md)
-  : Compute Zone of Influence for points and annotate them to points
-  using SQL
+  : Compute point-level Zone of Influence (ZOI) values with SQL
 
 ## Spatial filters
 
@@ -84,25 +83,25 @@ Functions to fit RSF and SSF and estimate ZOI using penalized regression
   [`fit_net_rsf()`](https://ninanor.github.io/oneimpact/reference/fit_net_functions.md)
   [`grouped_func()`](https://ninanor.github.io/oneimpact/reference/fit_net_functions.md)
   : Fits a conditional logistic regression/SSF/iSSF with penalized
-  regression using glmnet in a train-validate-test setup
+  regression using glmnet in a cross-validation setup
 - [`bag_fit_net_clogit()`](https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.md)
   [`bag_fit_net_logit()`](https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.md)
   : Fit a bag of conditional logistic regression/SSF/iSSF models with
   penalized regression in a train-validate-test setup
 - [`bag_load_models()`](https://ninanor.github.io/oneimpact/reference/bag_load_models.md)
-  : Load a series of files output of fit_net_clogit models and put them
-  on a bag
+  : Load a series of files output of fit_net\_(c)logit models and put
+  them on a bag
 - [`bag_models()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
   : Summary of a bag of models
 - [`truncate_bag()`](https://ninanor.github.io/oneimpact/reference/truncate_bag.md)
-  : Truncate bag to avoid weirdness in the model
+  : Truncate bag to avoid ecological implausibility in the model
 - [`conditionalBoyce()`](https://ninanor.github.io/oneimpact/reference/concordance_indices.md)
   [`conditionalSomersD()`](https://ninanor.github.io/oneimpact/reference/concordance_indices.md)
   [`conditionalAUC()`](https://ninanor.github.io/oneimpact/reference/concordance_indices.md)
   [`AUC()`](https://ninanor.github.io/oneimpact/reference/concordance_indices.md)
   [`coxnet.deviance()`](https://ninanor.github.io/oneimpact/reference/concordance_indices.md)
   [`Cindex()`](https://ninanor.github.io/oneimpact/reference/concordance_indices.md)
-  : Computes the conditional Boyce index for model evaluation
+  : Computes concordance indices for model evaluation
 - [`kernel_prediction()`](https://ninanor.github.io/oneimpact/reference/kernel_prediction.md)
   : Prediction based only on step length terms
 
@@ -112,7 +111,7 @@ Functions to help interpreting parameters and visualizing cumulative
 impacts
 
 - [`predict()`](https://ninanor.github.io/oneimpact/reference/predict.md)
-  : Prediction of a bag of models to new data
+  : Predict from a bag of models or from formula + coefficients
 - [`zoi_from_curve()`](https://ninanor.github.io/oneimpact/reference/zoi_from_curve.md)
   : Get estimates of zone of influence (ZOI) metrics from response
   curves
@@ -123,7 +122,7 @@ impacts
 - [`plot_coef()`](https://ninanor.github.io/oneimpact/reference/plot_coef.md)
   : Plot the coefficients of bags of models
 - [`plot_response()`](https://ninanor.github.io/oneimpact/reference/plot_response.md)
-  : Plot responses from a bag of models
+  : Plot response curves from a bag of models
 - [`bag_predict_spat()`](https://ninanor.github.io/oneimpact/reference/bag_predict_spat.md)
   [`bag_predict_spat_vars()`](https://ninanor.github.io/oneimpact/reference/bag_predict_spat.md)
   : Predict bag of models in space
@@ -162,7 +161,7 @@ computing zones of influence
 
 ## Datasets
 
-Datasets for testing the ZoI approach
+Datasets for testing the ZOI approach
 
 - [`reindeer`](https://ninanor.github.io/oneimpact/reference/reindeer.md)
   : GPS positions for wild reindeer in Norway.

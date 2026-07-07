@@ -290,8 +290,9 @@ maps.
 If the computation is done in GRASS GIS, the output is name of the
 output raster map(s) within the GRASS GIS location and mapset of the
 current session. The user can retrieve these maps to R using
-rgrass::read_RAST or export them outside GRASS using the `r.out.gdal`
-module, for instance.
+[rgrass::read_RAST](https://osgeo.github.io/rgrass/reference/read_RAST.html)
+or export them outside GRASS using the `r.out.gdal` module, for
+instance.
 
 ## Details
 
@@ -643,37 +644,37 @@ cabins_zoi_nearest <- rgrass::read_RAST(all_names, return_format = "terra")
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file22686983bc02.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d65229893a.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file22684157a0b8.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d6237efac4.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file22686336df6b.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d64ab31a9d.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file2268101ab83d.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d65472a7a8.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file2268621ef80a.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d61ea88e26.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file22681f1b0cc1.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d625e929ab.grd> created.
 
 title_plot <- c("Euclidean distance", "Log distance (base 10)",
                 "Exponential ZoI 1000m", "Bartlett ZoI 1000m",

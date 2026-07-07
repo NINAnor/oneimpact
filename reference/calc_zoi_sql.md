@@ -1,15 +1,11 @@
-# Compute Zone of Influence for points and annotate them to points using SQL
+# Compute point-level Zone of Influence (ZOI) values with SQL
 
-This function computes the zone of influence (ZOI) for a set of points
-(typically a type of indrastructure, defined by the
-`infrastructure_layer` parameter) and extracts their values at given
-location (defined by the layer `input_points`), using a SQL query into a
-database (e.g. PostgreSQL or duckdb). Differently from the `calc_zoi`
-functions, it does not compute the ZOI for the whole study area, but
-only for the positions where the input points are located. For optimal
-use, both `input_points` and `infrastructure_layer` should be spatially
-indexed, so only closeby points are evaluated and the query is completed
-fast.
+Computes ZOI-based covariates from an infrastructure layer and annotates
+them to input points using SQL in a database connection (for example
+PostgreSQL). Unlike raster-based ZOI functions, this computes values
+only at input point locations. For optimal use, both `input_points` and
+`infrastructure_layer` should be spatially indexed, so only nearby
+points are evaluated and the query is completed fast.
 
 ## Usage
 
@@ -39,59 +35,105 @@ calc_zoi_sql(
 
 - con:
 
-  connection to a database.
+  `[DBIConnection]`  
+  Open database connection used to run the SQL query.
 
 - input_points:
 
-  `[character]`  
-  Name of the input table of points to be annotated (within the
-  connection `con`, a database), in the format `table_name` or
-  `schema_name.table_name`.
+  `[character(1)]`  
+  Name of the input points table, in the format `table_name` or
+  `schema_name.table_name`. The table needs to be within the connection
+  `con`, a database.
 
 - infrastructure_layer:
 
-  `[character]`  
-  Name of the infrastructure covariate table for which the zone of
-  influence will be computed (within the connection `con`, a database),
-  in the format `table_name` or `schema_name.table_name`.
+  `[character(1)]`  
+  Name of the infrastructure table used to compute ZOI, in the format
+  `table_name` or `schema_name.table_name`.
 
 - radius:
 
-  `[numeric=100]`  
-  Radius or scale of zone of influence, used to calculate the cumulative
-  ZOI and density. The radius represent the distance at which the ZOI
-  vanishes or goes below a given minimum limit value `zoi_limit`. \###
-  CHECK THAT, so far only bartlett
+  `[numeric]`  
+  Radius used in the ZOI function. Can be a vector to compute multiple
+  output columns.
+
+- type:
+
+  `[character(1)="circle"]{"circle","Gauss","exp_decay","bartlett","threshold","linear","exponential"}`  
+  Distance-decay function used to compute ZOI values.
+
+- zoi_metric:
+
+  `[character(1)="cumulative"]{"cumulative","nearest"}`  
+  Aggregation metric: `"cumulative"` uses `sum`, and `"nearest"` uses
+  `max`.
 
 - input_id:
 
-  `[character]`  
-  Name of a ID column from the `input_points` table.
+  `[character(1)="id"]`  
+  Identifier column in `input_points`.
 
 - input_geom:
 
-  `[character]`  
-  Name of the geometry column from the `input_points` table.
+  `[character(1)="geom"]`  
+  Geometry column in `input_points`.
 
 - infra_geom:
 
-  `[character]`  
-  Name of the geometry column from the `infrastructure_layer` table.
+  `[character(1)="geom"]`  
+  Geometry column in `infrastructure_layer`.
 
 - output_type:
 
-  `[character]`  
-  To be described.
+  `[character(1)="cumulative_zoi"]{"cumulative_zoi","density"}`  
+  Output interpretation used in naming and downstream use.
+
+- zoi_limit:
+
+  `[numeric(1)=0.05]`  
+  Limit value used in decay-based functions (for example exponential
+  decay calibration). Not yet implemented, to be updated.
 
 - output_column_name:
 
   `[character]`  
-  To be described.
+  Output column name(s) for computed ZOI values. Length should match
+  `radius` when multiple radii are provided.
+
+- output_table:
+
+  `[character(1)=NULL]`  
+  Optional output table name. If provided, the query is prefixed with
+  `CREATE TABLE IF NOT EXISTS ... AS`.
+
+- condition:
+
+  `[character(1)=""]`  
+  Optional extra SQL condition appended to the spatial join clause (for
+  example temporal filtering).
+
+- limit:
+
+  `[numeric(1)=1000000000000000]`  
+  Row limit applied to the final query. Useful for limiting the number
+  of rows for testing purposes.
+
+- verbose:
+
+  `[logical(1)=FALSE]`  
+  Whether to print the generated SQL query.
+
+## Value
+
+A `data.frame` with one row per input point and computed ZOI column(s).
+The output includes the input point ID column and one or more derived
+ZOI columns named by `output_column_name`. If `output_table` is
+provided, table creation is attempted before query execution, and
+returned result content may depend on database backend behavior.
 
 ## Details
 
-Need to check functions (gaussian, exp, linear) and check if this is
-correct
+So far, only linear decay/bartlett is implemented.
 
 ## Examples
 
@@ -188,16 +230,13 @@ plot(cabins_count)
 cumzoi_linear <- calc_zoi_cumulative(cabins_count, type = "bartlett", radius = 5000)
 plot(cumzoi_linear)
 
-
 # extract
-reindeer_cabins <- terra::extract(cumzoi_linear, terra::vect(rein_spat))
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'y' in selecting a method for function 'extract': error in evaluating the argument 'x' in selecting a method for function 'vect': object 'rein_spat' not found
-
+reindeer_cabins <- terra::extract(cumzoi_linear, terra::vect(reindeer, geom = c("x", "y"), crs = "EPSG:25833"))
 plot(cumzoi_linear)
-plot(terra::vect(rein_spat), add = T)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': error in evaluating the argument 'x' in selecting a method for function 'vect': object 'rein_spat' not found
+plot(terra::vect(reindeer, geom = c("x", "y"), crs = "EPSG:25833"), add = T)
+
 
 # approximately the same
 cbind(reindeer_cabins, dplyr::arrange(cum_zoi_cabins, gid))
-#> Error: object 'reindeer_cabins' not found
+#> Error: object 'cum_zoi_cabins' not found
 ```

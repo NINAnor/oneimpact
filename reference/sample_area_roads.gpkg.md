@@ -21,7 +21,7 @@ presents the following columns:
 - name_area: Name of the reindeer management area where the road is
   located
 
-- traffic_bin: Value 1, to be used for rasterization purposes
+- value: Value 1, to be used for rasterization purposes
 
 ## Source
 

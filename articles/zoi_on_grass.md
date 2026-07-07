@@ -107,7 +107,7 @@ library(rgrass) # for connecting R and GRASS
 #> GRASS GIS interface loaded with GRASS version: sh: line 1: g.version: command not found
 #> and location: ETRS_33N/
 library(terra) # for geodata in R
-#> terra 1.9.11
+#> terra 1.9.34
 
 # load cabins raster data into R
 (f <- system.file("raster/sample_area_cabins_count.tif", package = "oneimpact"))
@@ -396,19 +396,19 @@ cabins_zoi_cumulative <- rgrass::read_RAST(zoi_metrics,
                                            return_format = "terra",
                                            flags = "quiet")
 cabins_zoi_cumulative
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 4  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
-#> sources     : file2bf71c53481f.grd  
-#>               file2bf73744b37c.grd  
-#>               file2bf752f69a35.grd  
-#>               file2bf74014ab98.grd  
-#> color table : 1, 2, 3, 4 
-#> names       : cabins_~lett500, cabins_~ett1000, cabins_~lett500, cabins_~ett1000 
-#> min values  :               0,               0,         0.00000,          0.0000 
-#> max values  :               1,               1,        86.69992,        192.6282
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
+#> sources     : file3143c08a1b4.grd
+#>               file314362f1ef7.grd
+#>               file3143228dd45f.grd
+#>               file31436a88a686.grd
+#> color table : 1, 2, 3, 4
+#> names       : cabins_~lett500, cabins_~ett1000, cabins_~lett500, cabins_~ett1000
+#> min values  :               0,               0,               0,               0
+#> max values  :               1,               1,       86.699921,      192.628174
 ```
 
 Now we can plot the ZOI metrics computed in GRASS:

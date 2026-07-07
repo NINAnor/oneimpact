@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Tools for the assessment of the cumulative impacts of anthropogenic features in ecological studies • oneimpact</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools for the assessment of the cumulative impacts of anthropogenic features in ecological studies">
 <meta name="description" content="The package presents a set of tools to assess cumulative impacts of anthropogenic features and activity on biodiversity. This includes tools to calculate the zone of influence (ZOI) of anthropogenic variables as well as tools for model fitting, estimation of the effect size and ZOI, and ancillary functions. The functions dealing with spatial data processing can be run in both R and GRASS GIS, using R as an interface.">
@@ -60,7 +60,100 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><code>oneimpact</code> provides tools for the assessment of cumulative impacts of multiple infrastructure and land use modifications in ecological studies. This includes tools to calculate the zone of influence (ZOI) of anthropogenic variables as well as tools for model fitting, estimation of the effect size and ZOI, and ancillary functions. The functions dealing with spatial data processing can be run in both R and GRASS GIS, using R as an interface. The tools available so far are:</p>
+<p><code>oneimpact</code> provides tools for the assessment of cumulative impacts of multiple infrastructure and land use modifications in ecological studies. This includes tools to calculate the zone of influence (ZOI, also called scale of effect in landscape ecology) of anthropogenic variables as well as tools for model fitting, estimation of the effect size and ZOI, making predictions and interpreting fitted relationships, computing model performance and plausibility, and ancillary functions. The functions dealing with spatial data processing can be run in both R and GRASS GIS, using R as an interface.</p>
+<div class="section level2">
+<h2 id="context-why-zone-of-influence-and-cumulative-impacts">Context: Why zone of influence and cumulative impacts?<a class="anchor" aria-label="anchor" href="#context-why-zone-of-influence-and-cumulative-impacts"></a>
+</h2>
+<p>Traditional ecological impact assessments typically focus on the effects of <strong>distance to the nearest feature only</strong>, which might underestimate impacts where multiple anthropogenic stressors are clustered in space. The <strong>cumulative ZOI approach</strong> implemented in <code>oneimpact</code> recognizes that:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>The impact is a product of both effect size and zone of influence</strong>: impacts extend beyond the features themselves — a road, cabin, or wind farm may affect species and processes across the landscapes, not just at its location.</li>
+<li>
+<strong>The impact of multiple features might accumulate</strong>: impacts of features clustered in space (e.g., “cabin villages” vs. single, isolated cabins) can exceed impacts of isolated features in magnitude and spatial extent.</li>
+<li>
+<strong>the ZOI is context-dependent</strong>: The spatial extent of an impact varies by species, process, and disturbance type.</li>
+</ol>
+<p>For detailed background and comprehensive workflow examples, see the package vignettes, particularly the <a href="https://ninanor.github.io/oneimpact/articles/comprehensive_workflow_guide.html">Comprehensive Workflow Guide</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="scientific-foundation">Scientific foundation<a class="anchor" aria-label="anchor" href="#scientific-foundation"></a>
+</h2>
+<p>This package implements frameworks from two peer-reviewed studies:</p>
+<ul>
+<li>
+<strong>Niebuhr et al. (2023)</strong>: <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13994" class="external-link">Estimating the cumulative impact and zone of influence of anthropogenic features on biodiversity</a>. <em>Methods in Ecology and Evolution</em>, 14(6), 1470–1487.
+<ul>
+<li>Introduces the cumulative ZOI approach with mathematical framework and empirical case study</li>
+</ul>
+</li>
+<li>
+<strong>Niebuhr et al. (2026)</strong>: Ecology-informed machine learning to estimate the zone of influence of multiple disturbances on ecological niche models. <em>Working manuscript</em>.
+<ul>
+<li>Extends framework with penalized regression, ecological constraints, and bootstrap aggregation for fitting complex datasets</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="typical-use-cases">Typical use cases<a class="anchor" aria-label="anchor" href="#typical-use-cases"></a>
+</h2>
+<ul>
+<li>Habitat suitability modeling: how human infrastructure affects species persistence</li>
+<li>Landscape permeability: assessing movement probability fragmented by anthropogenic disturbance</li>
+<li>Species distribution modeling: Estimating responses to cumulative anthropogenic pressures</li>
+<li>Environmental impact assessment: Predicting magnitude (effect size) and extent (ZOI) of proposed development impacts</li>
+<li>Conservation planning: Identifying priority areas based on cumulative impacts</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 1. Compute ZOI layers (nearest and cumulative)</span></span>
+<span><span class="va">zoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/calc_zoi.html">calc_zoi</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">infrastructure_raster</span>,</span>
+<span>  radius <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"gaussian"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2. Prepare data with ZOI terms</span></span>
+<span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/add_zoi_formula.html">add_zoi_formula</a></span><span class="op">(</span></span>
+<span>  f <span class="op">=</span> <span class="op">~</span><span class="va">slope</span> <span class="op">+</span> <span class="va">vegetation</span> <span class="op">+</span> <span class="va">infrastructureXXX</span>,        <span class="co"># base formula</span></span>
+<span>  zoi_radius <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2000</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"linear"</span>, <span class="st">"gaussian"</span><span class="op">)</span>,</span>
+<span>  pattern <span class="op">=</span> <span class="st">"XXX"</span>,                <span class="co"># placeholder in raster names</span></span>
+<span>  predictor_table <span class="op">=</span> <span class="cn">TRUE</span>          <span class="co"># returns both formula and variable table</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="va">formula</span></span>
+<span></span>
+<span><span class="co"># 3. Set up resampling scheme, random cross-validation</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_resamples.html">create_resamples</a></span><span class="op">(</span></span>
+<span>  y <span class="op">=</span> <span class="va">your_data</span><span class="op">$</span><span class="va">response</span>,</span>
+<span>  p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.2</span><span class="op">)</span>,          <span class="co"># train, validate, test fractions</span></span>
+<span>  times <span class="op">=</span> <span class="fl">100</span>                    <span class="co"># number of resamples</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 4. Fit ensemble model</span></span>
+<span><span class="va">fitted_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bag_fit_net_functions.html">bag_fit_net_logit</a></span><span class="op">(</span></span>
+<span>  f <span class="op">=</span> <span class="va">formula</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">your_data</span>,</span>
+<span>  samples <span class="op">=</span> <span class="va">samples</span>,</span>
+<span>  metric <span class="op">=</span> <span class="st">"AUC"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Lasso"</span>,</span>
+<span>  standardize <span class="op">=</span> <span class="st">"internal"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 5. Create bag object</span></span>
+<span><span class="va">bag</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bag_models.html">bag_models</a></span><span class="op">(</span><span class="va">fitted_models</span>, <span class="va">your_data</span>, score_threshold <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 6. Evaluate and visualize</span></span>
+<span><span class="fu"><a href="reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag</span>, predictor <span class="op">=</span> <span class="st">"zoi_500_linear"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/variable_importance.html">variable_importance</a></span><span class="op">(</span><span class="va">bag</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/implausibility.html">implausibility</a></span><span class="op">(</span><span class="va">bag</span>, response_variable <span class="op">=</span> <span class="va">your_data</span><span class="op">$</span><span class="va">response</span><span class="op">)</span></span>
+<span><span class="va">impact_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bag_predict_spat.html">bag_predict_spat</a></span><span class="op">(</span><span class="va">bag</span>, newdata <span class="op">=</span> <span class="va">raster_stack</span><span class="op">)</span></span></code></pre></div>
+<p>For complete workflow examples, see the vignettes.</p>
+</div>
 <div class="section level2">
 <h2 id="compute-spatial-layers-representing-zones-of-influence">Compute spatial layers representing zones of influence<a class="anchor" aria-label="anchor" href="#compute-spatial-layers-representing-zones-of-influence"></a>
 </h2>
@@ -164,9 +257,9 @@
 <div class="section level2">
 <h2 id="run-with-docker">Run with Docker<a class="anchor" aria-label="anchor" href="#run-with-docker"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-p</span> 8787:8787 <span class="at">-e</span> PASSWORD=rstudio <span class="at">-v</span> <span class="va">$PWD</span>/myproject:/home/rstudio/myproject ghcr.io/ninanor/oneimpact:main</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-p</span> 8787:8787 <span class="at">-e</span> PASSWORD=rstudio <span class="at">-v</span> <span class="va">$PWD</span>/myproject:/home/rstudio/myproject ghcr.io/ninanor/oneimpact:main</span></code></pre></div>
 <p>If you use Compose:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">docker</span> compose run rstudio</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">docker</span> compose run rstudio</span></code></pre></div>
 <p>You can customize <code>docker-compose.yml</code> based on your needs.</p>
 </div>
 <div class="section level2">

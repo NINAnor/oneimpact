@@ -35,8 +35,6 @@ define the final point locations. It was based on this StackExchange
 very useful answer from "Spacedman":
 https://gis.stackexchange.com/questions/224321/randomly-generate-points-using-weights-from-raster
 
-TO IMPROVE: implement with terra package
-
 ## Examples
 
 ``` r

@@ -29,8 +29,9 @@ mean_isolation(x, n_rand = 100, ext = c(0, 1, 0, 1), lonlat = FALSE)
 
 - ext:
 
-  `[numeric(x)=c(0,1)]` Extent of the space within which the random
-  positions should be created c(x or ymin, x or ymax).
+  `[numeric(4)=c(0,1,0,1)]`  
+  Extent of the space within which the random positions should be
+  created: `c(xmin, xmax, ymin, ymax)`.
 
 - lonlat:
 

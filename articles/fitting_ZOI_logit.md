@@ -2,8 +2,19 @@
 
 ## Intro
 
-**Add something introducing the idea of penalized regression in this
-context**
+Estimating the zone of influence (ZOI) of human infrastructure on
+wildlife requires fitting models across a large number of candidate
+spatial scales (ZOI radii) simultaneously. This creates a
+high-dimensional variable selection problem: with many correlated
+predictors representing the same infrastructure at different radii,
+standard regression methods are unstable and prone to overfitting.
+Penalized regression addresses this by adding a regularization term to
+the likelihood that shrinks or removes coefficients, possibly performing
+variable selection as part of model fitting. Combined with bootstrap
+aggregation (bagging), which repeatedly fits models on resamples of the
+data, this approach yields robust, uncertainty-aware estimates of both
+the ZOI radius and the magnitude of infrastructure effects on habitat
+selection.
 
 Here we reanalyze the resource selection function fitted to reindeer
 movement data from the Hardangervidda wild reindeer population, used in
@@ -16,8 +27,7 @@ a 3h fix rate. The data was put into a use-availabililty design, with 1
 used location for each 9 random locations distributed over the limits of
 the wild reindeer area. The data was intersected with environmental
 variables on land cover, four PCAs representing bio-geo-climatic
-variation, and (**the ZOI of the nearest infrastructure and** **remove
-from this tutorial**) the cumulative ZOI of infrastructure types. The
+variation, the cumulative ZOI (density) of infrastructure types. The
 infrastructures considered were private cottages and public tourist
 resorts. More information about the cumulative ZOI approach, the data
 collection, and the data preparation for analysis might be found in
@@ -81,7 +91,7 @@ library(tmap) # for plotting maps
 library(terra) # for spatial predictions
 ```
 
-    ## terra 1.9.11
+    ## terra 1.9.34
 
 ``` r
 
@@ -275,7 +285,7 @@ f
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x55c94859d7c8>
+    ## <environment: 0x55ffca3e96d0>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -451,7 +461,7 @@ str(mod, max.level = 1)
 ```
 
     ## List of 20
-    ##  $ parms               :List of 17
+    ##  $ parms               :List of 18
     ##  $ glmnet_fit          :List of 13
     ##   ..- attr(*, "class")= chr [1:2] "lognet" "glmnet"
     ##  $ metrics_evaluated   :List of 1
@@ -541,9 +551,9 @@ str(bag_object, max.level = 1)
     ## List of 32
     ##  $ n                                : int 50
     ##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c94859d7c8> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55ffca3e96d0> 
     ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c948a08c60> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55ffca707088> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"
@@ -555,7 +565,7 @@ str(bag_object, max.level = 1)
     ##  $ error_message                    : logi [1:50] NA NA NA NA NA NA ...
     ##  $ n_errors                         : int 0
     ##  $ n_no_errors                      : int 50
-    ##  $ parms                            :List of 12
+    ##  $ parms                            :List of 13
     ##  $ alpha                            : num 1
     ##  $ var_names                        : chr [1:36] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...
     ##  $ lambda                           : num [1, 1:50] 1.23e-03 8.70e-06 1.98e-04 8.52e-06 8.76e-06 ...
@@ -1252,7 +1262,7 @@ map1 <- tmap::tm_shape(pred[["r_weighted_avg_pred"]]) +
     ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
     ##   'tm_scale_continuous(<HERE>)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
@@ -1294,7 +1304,7 @@ map2 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[1]]) +
     ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
     ##   'tm_scale_continuous(<HERE>)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
@@ -1342,7 +1352,7 @@ map3 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[2]]) +
     ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
     ##   'tm_scale_continuous(<HERE>)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
@@ -1391,7 +1401,7 @@ map4 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[3]]) +
     ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
     ##   'tm_scale_continuous(<HERE>)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
@@ -1532,11 +1542,11 @@ plots <- lapply(c(3,4,6),
     ## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a
     ## list: 'col'.scale = list(<scale1>, <scale2>, ...)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
 
 ``` r
 
@@ -1545,8 +1555,8 @@ print(plots)
 
     ## [[1]]
 
-    ## The visual variable `col` of the layer "raster" contains a unique value.
-    ## Therefore a discrete scale is applied (tm_scale_discrete).
+    ## The map variable `col` of the layer "raster" contains a unique value. Therefore
+    ## a discrete scale is applied (tm_scale_discrete).
     ## [cols4all] color palettes: use palettes from the R package cols4all. Run
     ## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named
     ## "brewer.pi_yg"
@@ -1614,7 +1624,7 @@ map1 <- tmap::tm_shape(map_plot) +
     ## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a
     ## list: 'col'.scale = list(<scale1>, <scale2>, ...)'
     ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
     ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
@@ -1655,7 +1665,7 @@ map2 <- tmap::tm_shape(map_plot) +
     ##   (rename to 'values') to 'tm_scale_continuous(<HERE>)'
     ## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a
     ## list: 'col'.scale = list(<scale1>, <scale2>, ...)'[v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## visual variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'[v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
+    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'[v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
 
 ``` r
 
@@ -1673,4 +1683,21 @@ print(map2)
 
 ## Concluding remarks
 
-**Add something here**
+This vignette demonstrated the full workflow for estimating zones of
+influence in resource selection functions using bagging and penalized
+regression in `oneimpact`. Starting from an annotated GPS dataset, we
+showed how to define candidate ZOI variables across multiple radii and
+infrastructure types, fit a bag of Adaptive Lasso models, evaluate and
+weight individual model fits, and extract ecologically interpretable
+summaries — including ZOI radii, coefficient profiles, response curves,
+and spatial predictions of infrastructure impact.
+
+The approach is flexible: the penalization method (Lasso, Ridge,
+Adaptive Lasso and its ecology-informed variants), the number of
+resamples, the train/test/validation split strategy, and the evaluation
+metric can all be adjusted to the specific study system. We encourage
+users to explore these options and refer to Niebuhr et al.
+\[-@niebuhr_estimating_2023\] for a detailed ecological application and
+discussion of the method’s assumptions and limitations.
+
+## References

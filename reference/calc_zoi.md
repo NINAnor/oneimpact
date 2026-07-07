@@ -122,7 +122,7 @@ and
 
 ``` r
 library(terra)
-#> terra 1.9.11
+#> terra 1.9.34
 
 # Load raster data
 f <- system.file("raster/sample_area_cabins.tif", package = "oneimpact")
@@ -142,17 +142,17 @@ zoi_metrics <- calc_zoi(cabins,
                         zeroAsNA = FALSE)
 # check
 zoi_metrics
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 2  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
 #> source(s)   : memory
-#> varnames    : sample_area_cabins 
-#>               sample_area_cabins 
-#> names       : zoi_nearest_Gauss1000, _zoi_cumulative_Gauss1000 
-#> min values  :          9.979886e-16,                   0.00000 
-#> max values  :          1.000000e+00,                  81.11139 
+#> varnames    : sample_area_cabins
+#>               sample_area_cabins
+#> names       : zoi_nearest_Gauss1000, _zoi_cumulative_Gauss1000
+#> min values  :                     0,                         0
+#> max values  :                     1,                 81.111389
 # plot
 plot(zoi_metrics)
 
@@ -186,15 +186,19 @@ zoi_metrics2 <- calc_zoi(cabins_count,
 
 # check
 zoi_metrics2
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 6  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
 #> source(s)   : memory
-#> names       : zoi_n~t1000, zoi_n~t2000, zoi_n~t3000, _zoi_~t1000, _zoi_~t2000, _zoi_~t3000 
-#> min values  :           0,           0,           0,    0.000000,   0.0000000,    0.000000 
-#> max values  :           1,           1,           1,    1.840805,   0.8772904,    0.589878 
+#> varnames    : 
+#>               sample_area_cabins_count
+#>               sample_area_cabins_count
+#>               sample_area_cabins_count
+#> names       : zoi_n~t1000, zoi_n~t2000, zoi_n~t3000, _zoi_~t1000, _zoi_~t2000, _zoi_~t3000
+#> min values  :           0,           0,           0,           0,           0,           0
+#> max values  :           1,           1,           1,    1.840805,     0.87729,    0.589878
 # plot
 plot(zoi_metrics2)
 ```

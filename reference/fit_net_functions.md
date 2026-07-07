@@ -1,14 +1,22 @@
-# Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a train-validate-test setup
+# Fits a conditional logistic regression/SSF/iSSF with penalized regression using glmnet in a cross-validation setup
 
-By default, `fit_net_clogit()` does not standardize predictor variables.
-If you want numeric variables to be standardized, you can either use
-`[bag_fit_net_clogit()]` with parameter `standardize = TRUE` or provide
-an already standardized data set as input.
+This function runs one single realization of a model fit for a specific
+sample composed by a fit set, a test set, and a validation set. This
+function does the actual data set up and model fitting by calling
+[`net_clogit()`](https://ninanor.github.io/oneimpact/reference/net_clogit.md)
+and
+[`glmnet::glmnet()`](https://glmnet.stanford.edu/reference/glmnet.html).
+The function is also used within
+[`bag_fit_net_clogit()`](https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.md).
 
-By default, `fit_net_logit()` does not standardize predictor variables.
-If you want numeric variables to be standardized, you can either use
-`[bag_fit_net_logit()]` with parameter `standardize = TRUE` or provide
-an already standardized data set as input.
+This function runs one single realization of a model fit for a specific
+sample composed by a fit set, a test set, and a validation set. This
+function does the actual data set up and model fitting by calling
+[`net_logit()`](https://ninanor.github.io/oneimpact/reference/net_logit.md)
+and
+[`glmnet::glmnet()`](https://glmnet.stanford.edu/reference/glmnet.html).
+The function is also used within
+[`bag_fit_net_logit()`](https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.md).
 
 ## Usage
 
@@ -23,8 +31,7 @@ fit_net_clogit(
   metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso", "Grouped-AdaptiveLasso",
-    "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
-    "ElasticNet")[1],
+    "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -52,8 +59,7 @@ fit_net_ssf(
   metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso", "Grouped-AdaptiveLasso",
-    "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
-    "ElasticNet")[1],
+    "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -81,8 +87,7 @@ fit_net_issf(
   metrics_evaluate = c("coxnet.deviance", "Cindex", "conditionalAUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso", "Grouped-AdaptiveLasso",
-    "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso", "HD-AdaptiveLasso",
-    "ElasticNet")[1],
+    "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -109,8 +114,7 @@ fit_net_logit(
   metrics_evaluate = c("AUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "TruncatedLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
-    "HD-AdaptiveLasso", "ElasticNet")[1],
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -137,8 +141,7 @@ fit_net_rsf(
   metrics_evaluate = c("AUC"),
   method = c("Lasso", "Ridge", "AdaptiveLasso", "DistanceDecayLasso", "DDLasso",
     "TruncatedLasso", "OneZOI-AdaptiveLasso", "OZ-AdaptiveLasso",
-    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "HypothesisDriven-AdaptiveLasso",
-    "HD-AdaptiveLasso", "ElasticNet")[1],
+    "Grouped-AdaptiveLasso", "G-AdaptiveLasso", "ElasticNet")[1],
   alpha = NULL,
   penalty.factor = NULL,
   gamma = 1,
@@ -180,6 +183,11 @@ grouped_func(coefs, phi_group = 0)
   is computed by the function
   [`create_resamples()`](https://ninanor.github.io/oneimpact/reference/create_resamples.md).
 
+- i:
+
+  `[numeric(1)=1]`  
+  Index of the current resample iteration.
+
 - kernel_vars:
 
   `[vector,character=c("step_length", "ta")]`  
@@ -197,12 +205,31 @@ grouped_func(coefs, phi_group = 0)
   also be a character, in case it should be one of the following:
   `c("AUC", "conditionalAUC", "conditionalBoyce", "conditionalSomersD")`.
 
+- metrics_evaluate:
+
+  `[character]`  
+  Vector of metric names to compute for model evaluation. See
+  description of the argument `metric`.
+
 - method:
 
   `[character="Lasso"]`  
   The penalized regression method used for fitting each model. Default
-  is `method = "Lasso"`, but it could be `method = "Ridge"` or different
-  flavors of `"AdaptiveLasso"` (see details below).
+  is `method = "Lasso"`, but it could be `method = "Ridge"`,
+  `"AdaptiveLasso"`, `"ElasticNet"`, or one of the ecology-constrained
+  penalized regression methods (see below).
+
+- alpha:
+
+  `[numeric(1)=NULL]`  
+  Elastic net mixing parameter. If `NULL`, glmnet chooses a default
+  behavior (`alpha = 1` for Lasso, `alpha = 0` for Ridge, and
+  `alpha = 0.5` for ElasticNet).
+
+- penalty.factor:
+
+  `[numeric,vector]`  
+  Penalty factors for each coefficient in the glmnet penalty term.
 
 - gamma:
 
@@ -216,11 +243,46 @@ grouped_func(coefs, phi_group = 0)
 
 - standardize:
 
-  `[logical(1)=TRUE]`  
-  Logical flag for predictor variable standardization, prior to fitting
-  the model sequence. The coefficients are always returned on the
-  original scale. Default is standardize=TRUE. If variables are in the
-  same units already, you might not wish to standardize them.
+  `[character(1)="internal"]{"internal","external",FALSE}`  
+  Predictor standardization mode. `"internal"` delegates standardization
+  to glmnet (also standardizes dummy variables, but returns coefficients
+  on original scale). `"external"` standardizes predictors before
+  calling glmnet. `FALSE` skips standardization.
+
+- predictor_table:
+
+  `[data.frame or NULL]`  
+  Default is `NULL`. Else, this is the predictor table defined by
+  running `add_zoi_formula(predictor_table = TRUE)`, which is a table
+  with info of all ZOI radii, shape values, and formula terms, together
+  with info from other non-ZOI predictors. This table is required for
+  all the ecology-constrained penalized regression methods.
+
+- function_lasso_decay:
+
+  `[function=log]`  
+  Function used to compute decay weights for adaptive lasso penalties.
+  Default is `log`.
+
+- value_lasso_decay:
+
+  `[numeric(1)=1]`  
+  Scaling factor applied to the adaptive lasso decay function.
+
+- function_hypothesis:
+
+  `[function]`  
+  Hypothesis function used to compute additional penalty weights.
+
+- expected_sign_hypothesis:
+
+  `[numeric(1)=-1]`  
+  Expected coefficient sign used for hypothesis-driven penalization.
+
+- factor_grouped_lasso:
+
+  `[numeric(1)=1]`  
+  Scaling factor applied to grouped lasso penalties.
 
 - replace_missing_NA:
 
@@ -231,6 +293,11 @@ grouped_func(coefs, phi_group = 0)
   `FALSE`, the function raises an error if there are variables with
   variance zero in the formula.
 
+- na.action:
+
+  `[character(1)="na.pass"]`  
+  Action to take for missing values during model fitting.
+
 - out_dir_file:
 
   `[character(1)=NULL]`  
@@ -239,8 +306,14 @@ grouped_func(coefs, phi_group = 0)
   `out_dir_file = "output/test_"`, the models will be saved as RDS files
   names "test_i1.rds", "test_i2.rds", etc, within the folder "output".
 
+- verbose:
+
+  `[logical(1)=FALSE]`  
+  Whether to print progress messages during the fitting process.
+
 - ...:
 
+  `[any]`  
   Options for
   [`net_logit()`](https://ninanor.github.io/oneimpact/reference/net_logit.md)
   and
@@ -252,6 +325,66 @@ grouped_func(coefs, phi_group = 0)
   the interval 0, Inf where 0 is no additional penalty and higher values
   correspond to higher penalties.
 
+## Value
+
+A named list with the results for the selected metric, including:
+
+- `coef`: coefficient matrix at optimal lambda.
+
+- `coef_std`: standardized coefficient matrix (or `NULL`).
+
+- `lambda`: optimal lambda value.
+
+- `alpha`: alpha value used.
+
+- `train_score`, `test_score`, `validation_score`: performance scores.
+
+- `validation_score_avg`: mean validation score across blocks.
+
+- `coefs_all`, `lambdas`: coefficients and lambdas for all evaluated
+  metrics.
+
+- `metrics_evaluated`: full detail of all evaluated metrics.
+
+- `glmnet_fit`: the raw fitted glmnet object.
+
+- `parms`: recorded input parameters.
+
+A named list with the results for the selected metric, including:
+
+- `coef`: coefficient matrix at optimal lambda.
+
+- `coef_std`: standardized coefficient matrix (or `NULL`).
+
+- `lambda`: optimal lambda value.
+
+- `alpha`: alpha value used.
+
+- `train_score`, `test_score`, `validation_score`: performance scores.
+
+- `validation_score_avg`: mean validation score across blocks.
+
+- `coefs_all`, `lambdas`: coefficients and lambdas for all evaluated
+  metrics.
+
+- `metrics_evaluated`: full detail of all evaluated metrics.
+
+- `glmnet_fit`: the raw fitted glmnet object.
+
+- `parms`: recorded input parameters.
+
+## Details
+
+By default, `fit_net_clogit()` does not standardize predictor variables.
+If you want numeric variables to be standardized, you can either use
+`[oneimpact::bag_fit_net_clogit()]` with parameter `standardize = TRUE`
+or provide an already standardized data set as input.
+
+By default, `fit_net_logit()` does not standardize predictor variables.
+If you want numeric variables to be standardized, you can either use
+`[oneimpact::bag_fit_net_logit()]` with parameter `standardize = TRUE`
+or provide an already standardized data set as input.
+
 ## References
 
 Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of
@@ -261,3 +394,9 @@ https://doi.org/10.1198/016214506000000735
 Zou, H., 2006. The Adaptive Lasso and Its Oracle Properties. Journal of
 the American Statistical Association 101, 1418–1429.
 https://doi.org/10.1198/016214506000000735
+
+## See also
+
+[`bag_fit_net_logit()`](https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.md),
+[`net_logit()`](https://ninanor.github.io/oneimpact/reference/net_logit.md),
+[`glmnet::glmnet()`](https://glmnet.stanford.edu/reference/glmnet.html)

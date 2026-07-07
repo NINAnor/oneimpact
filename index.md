@@ -2,11 +2,116 @@
 
 `oneimpact` provides tools for the assessment of cumulative impacts of
 multiple infrastructure and land use modifications in ecological
-studies. This includes tools to calculate the zone of influence (ZOI) of
-anthropogenic variables as well as tools for model fitting, estimation
-of the effect size and ZOI, and ancillary functions. The functions
-dealing with spatial data processing can be run in both R and GRASS GIS,
-using R as an interface. The tools available so far are:
+studies. This includes tools to calculate the zone of influence (ZOI,
+also called scale of effect in landscape ecology) of anthropogenic
+variables as well as tools for model fitting, estimation of the effect
+size and ZOI, making predictions and interpreting fitted relationships,
+computing model performance and plausibility, and ancillary functions.
+The functions dealing with spatial data processing can be run in both R
+and GRASS GIS, using R as an interface.
+
+## Context: Why zone of influence and cumulative impacts?
+
+Traditional ecological impact assessments typically focus on the effects
+of **distance to the nearest feature only**, which might underestimate
+impacts where multiple anthropogenic stressors are clustered in space.
+The **cumulative ZOI approach** implemented in `oneimpact` recognizes
+that:
+
+1.  **The impact is a product of both effect size and zone of
+    influence**: impacts extend beyond the features themselves — a road,
+    cabin, or wind farm may affect species and processes across the
+    landscapes, not just at its location.
+2.  **The impact of multiple features might accumulate**: impacts of
+    features clustered in space (e.g., “cabin villages” vs. single,
+    isolated cabins) can exceed impacts of isolated features in
+    magnitude and spatial extent.
+3.  **the ZOI is context-dependent**: The spatial extent of an impact
+    varies by species, process, and disturbance type.
+
+For detailed background and comprehensive workflow examples, see the
+package vignettes, particularly the [Comprehensive Workflow
+Guide](https://ninanor.github.io/oneimpact/articles/comprehensive_workflow_guide.html).
+
+## Scientific foundation
+
+This package implements frameworks from two peer-reviewed studies:
+
+- **Niebuhr et al. (2023)**: [Estimating the cumulative impact and zone
+  of influence of anthropogenic features on
+  biodiversity](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13994).
+  *Methods in Ecology and Evolution*, 14(6), 1470–1487.
+  - Introduces the cumulative ZOI approach with mathematical framework
+    and empirical case study
+- **Niebuhr et al. (2026)**: Ecology-informed machine learning to
+  estimate the zone of influence of multiple disturbances on ecological
+  niche models. *Working manuscript*.
+  - Extends framework with penalized regression, ecological constraints,
+    and bootstrap aggregation for fitting complex datasets
+
+## Typical use cases
+
+- Habitat suitability modeling: how human infrastructure affects species
+  persistence
+- Landscape permeability: assessing movement probability fragmented by
+  anthropogenic disturbance
+- Species distribution modeling: Estimating responses to cumulative
+  anthropogenic pressures
+- Environmental impact assessment: Predicting magnitude (effect size)
+  and extent (ZOI) of proposed development impacts
+- Conservation planning: Identifying priority areas based on cumulative
+  impacts
+
+## Quick Start
+
+``` r
+
+library(oneimpact)
+
+# 1. Compute ZOI layers (nearest and cumulative)
+zoi <- calc_zoi(
+  x = infrastructure_raster,
+  radius = c(500, 1000, 2000),
+  type = c("linear", "gaussian")
+)
+
+# 2. Prepare data with ZOI terms
+formula <- add_zoi_formula(
+  f = ~slope + vegetation + infrastructureXXX,        # base formula
+  zoi_radius = c(500, 1000, 2000),
+  type = c("linear", "gaussian"),
+  pattern = "XXX",                # placeholder in raster names
+  predictor_table = TRUE          # returns both formula and variable table
+)$formula
+
+# 3. Set up resampling scheme, random cross-validation
+samples <- create_resamples(
+  y = your_data$response,
+  p = c(0.2, 0.2, 0.2),          # train, validate, test fractions
+  times = 100                    # number of resamples
+)
+
+# 4. Fit ensemble model
+fitted_models <- bag_fit_net_logit(
+  f = formula,
+  data = your_data,
+  samples = samples,
+  metric = "AUC",
+  method = "Lasso",
+  standardize = "internal"
+)
+
+# 5. Create bag object
+bag <- bag_models(fitted_models, your_data, score_threshold = 0.7)
+
+# 6. Evaluate and visualize
+plot_response(bag, predictor = "zoi_500_linear")
+variable_importance(bag)
+implausibility(bag, response_variable = your_data$response)
+impact_map <- bag_predict_spat(bag, newdata = raster_stack)
+```
+
+For complete workflow examples, see the vignettes.
 
 ## Compute spatial layers representing zones of influence
 

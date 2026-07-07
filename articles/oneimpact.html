@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Getting started with the oneimpact package in R • oneimpact</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting started with the oneimpact package in R">
 </head>
@@ -573,17 +573,18 @@ file using the package <code>terra</code> and plot it:</p>
 <span><span class="va">cabins_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
 <span><span class="co"># check</span></span>
 <span><span class="va">cabins_vect</span></span>
-<span><span class="co">#&gt;  class       : SpatVector </span></span>
-<span><span class="co">#&gt;  geometry    : points </span></span>
-<span><span class="co">#&gt;  dimensions  : 6875, 4  (geometries, attributes)</span></span>
-<span><span class="co">#&gt;  extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt;  source      : sample_area_cabins.gpkg</span></span>
-<span><span class="co">#&gt;  coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833) </span></span>
-<span><span class="co">#&gt;  names       :   cat buildtype  city value</span></span>
-<span><span class="co">#&gt;  type        : &lt;int&gt;     &lt;chr&gt; &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  values      :     1       161   604     1</span></span>
-<span><span class="co">#&gt;                    2       161   604     1</span></span>
-<span><span class="co">#&gt;                    3       161   604     1</span></span>
+<span><span class="co">#&gt; class       : SpatVector</span></span>
+<span><span class="co">#&gt; geometry    : points</span></span>
+<span><span class="co">#&gt; dimensions  : 6875, 4  (geometries, attributes)</span></span>
+<span><span class="co">#&gt; extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">#&gt; source      : sample_area_cabins.gpkg</span></span>
+<span><span class="co">#&gt; coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833)</span></span>
+<span><span class="co">#&gt; names       :   cat buildtype  city value</span></span>
+<span><span class="co">#&gt; type        : &lt;int&gt;     &lt;chr&gt; &lt;int&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; values      :     1       161   604     1</span></span>
+<span><span class="co">#&gt;                   2       161   604     1</span></span>
+<span><span class="co">#&gt;                   3       161   604     1</span></span>
+<span><span class="co">#&gt;               ...</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/read_vect-1.png" class="r-plt" alt="" width="700"></p>
@@ -610,15 +611,15 @@ for the area to use it as a grid for the rasterization process.</p>
 <span><span class="co"># rasterize</span></span>
 <span><span class="va">cabins_rast</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">cabins_vect</span>, <span class="va">grid</span>, fun <span class="op">=</span> <span class="va">length</span><span class="op">)</span></span>
 <span><span class="va">cabins_rast</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
 <span><span class="co">#&gt; size        : 361, 478, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs</span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; varname     : sample_area_cabins </span></span>
-<span><span class="co">#&gt; name        : V1 </span></span>
-<span><span class="co">#&gt; min value   :  1 </span></span>
+<span><span class="co">#&gt; varname     : sample_area_cabins</span></span>
+<span><span class="co">#&gt; name        : V1</span></span>
+<span><span class="co">#&gt; min value   :  1</span></span>
 <span><span class="co">#&gt; max value   :  8</span></span>
 <span><span class="co"># plot</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_rast</span><span class="op">)</span></span></code></pre></div>

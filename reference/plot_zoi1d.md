@@ -84,6 +84,7 @@ plot_zoi1d(
 
 - ...:
 
+  `[any]`  
   Additional parameters passed to the ZOI decay function `fun`.
 
 ## Value
@@ -100,8 +101,6 @@ whose locations in 1 dimension are defined by `points` and calculates
 the maximum (ZOI of the nearest) or sum (cumulative ZOI) of all values.
 This is done for a series of points in 1 dimensional space in the range
 `range_plot` (with steps defined by `step`) and plotted.
-
-To add: options for normalization, prob etc.
 
 ## Examples
 

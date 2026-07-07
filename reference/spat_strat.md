@@ -66,10 +66,7 @@ spat_strat(
 
   `[numeric(1)=4]`  
   Number of H2 blocks within each block H1. Should be 4, 9, 16, or some
-  number `k = x**2`, where x is an integer \> 1. Default is `k = 4`. TO
-  BE IMPLEMENTED: Number of parts for k-fold cross validation within H1
-  hierarchical level, for tuning (setting the penalty parameter). Could
-  be used for nested cross-validation.
+  number `k = x**2`, where x is an integer \> 1. Default is `k = 4`.
 
 - block_size:
 
@@ -87,7 +84,7 @@ spat_strat(
 
 - coords:
 
-  string,vector  
+  `[character,vector]`  
   Vector with the names of the columns with the (x,y) coordinates of the
   locations from the data set. Default is `NULL`, in which case `x`
   should be a `sf` or a
@@ -115,16 +112,17 @@ spat_strat(
 - save_grid:
 
   `[character=NA]{NA, "raster", "vector"}`  
-  Should the grid which defines the H1 and H2 blocks be saved? NOT
-  IMPLEMENTED.
+  Should the grid which defines the H1 and H2 blocks be saved? Not yet
+  implemented.
 
 - col_id:
 
-  `[numeric,character=NULL]` Column number or name with the ID of the
-  rows of the data observations. In step-selection analysis, this should
-  be the column showing the number of the strata of each step. For
-  resource selection analysis and environmental niche modeling, this
-  might be the row id, for instance.
+  `[numeric,character=NULL]`  
+  Column number or name with the ID of the rows of the data
+  observations. In step-selection analysis, this should be the column
+  showing the number of the strata of each step. For resource selection
+  analysis and environmental niche modeling, this might be the row id,
+  for instance.
 
 ## Value
 
@@ -138,12 +136,6 @@ levels H0, H1, and H2 for each observation in the input data set, to be
 used to create samples for the bootstrapped modeling approach using the
 `create_samples()` function, in case spatial stratified samples are
 desired.
-
-## Note
-
-To be implemented for input = data.frame
-\#terra::vect(datadata\$case==1,, geom = c("x", "y")) To be implemented
-for track objects - already have crs Put H0 here as well.
 
 ## Examples
 

@@ -27,15 +27,17 @@ grass_v2rast_count(
 
 - x:
 
-  Input vector map.
+  `[character(1)]`  
+  Name of the input vector map within the GRASS GIS mapset.
 
 - output:
 
-  Output map name.
+  `[character(1)]`  
+  Name of the output raster map. Default is `paste0(x, "_count")`.
 
 - column:
 
-  `[chracter(1)=NULL`  
+  `[character(1)=NULL]`  
   Default is `NULL`. If not `NULL`, the name of a column in the input
   vector `x` that corresponds to the column to be summed to count the
   number of features in each pixel of the output raster map. If `NULL`,
@@ -54,6 +56,12 @@ grass_v2rast_count(
   Name of a raster map with which to align the computational region to
   produce the output map.
 
+- remove_intermediate:
+
+  `[logical(1)=TRUE]`  
+  Whether intermediate temporary maps created during processing should
+  be removed from the GRASS GIS mapset.
+
 - verbose:
 
   `[logical(1)=FALSE]`  
@@ -65,6 +73,11 @@ grass_v2rast_count(
   `[logical(1)]`  
   Whether the output maps should be overwriten (flag
   `overwrite = TRUE`).
+
+- ...:
+
+  `[any]`  
+  Additional arguments passed to GRASS GIS modules.
 
 ## Value
 

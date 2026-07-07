@@ -75,7 +75,7 @@ set_points(
   `[numeric(1)=0.1]`  
   Resolution of the output raster.
 
-- extent_x, entent_y:
+- extent_x, extent_y:
 
   `[numeric vector(2)=c(0,1)]`  
   Vector representing the minimum and maximum extent in x and y within
@@ -105,7 +105,7 @@ set_points(
   `[character(1)]`  
   Specification for the coordinate reference system of the `rast` object
   created from the points. Default is
-  `"+proj=utm +zone=1 +datum=WGS84"`. argument.
+  `"+proj=utm +zone=1 +datum=WGS84"`.
 
 ## Value
 

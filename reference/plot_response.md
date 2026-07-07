@@ -1,12 +1,9 @@
-# Plot responses from a bag of models
+# Plot response curves from a bag of models
 
-This function takes a bag of models (`x`) and a set of new data
-(`dfvar`) with variation for one or more specific predictor variables to
-predict and plot the predictions from the bag. One can either plot only
-the mean or (weighted) median response for specific preditor variables,
-and possibly also the confidence interval, computed from the weighted
-quantiles of the prediction. All other variables are kept constant, as
-defined by the `baseline` parameter.
+This function predicts and plots response curves from a bag of models
+while varying one or more focal predictors in `dfvar`. Non-focal
+predictors are kept at baseline values. It supports confidence intervals
+from weighted quantiles and optional individual-model predictions.
 
 ## Usage
 
@@ -23,13 +20,11 @@ plot_response(
   wq_probs = c(0.025, 0.5, 0.975),
   baseline = c("median", "mean", "zero")[1],
   zoi = FALSE,
-  zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
   type_feature = c("point", "line", "area")[1],
   type_feature_recompute = FALSE,
   zoi_limit = 0.05,
   resolution = 100,
   line_value = 1,
-  ggplot = T,
   plot_mean = TRUE,
   plot_median = TRUE,
   n_features = 1,
@@ -61,7 +56,6 @@ plot_response(
   wq_probs = c(0.025, 0.5, 0.975),
   baseline = c("median", "mean", "zero")[1],
   zoi = FALSE,
-  zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
   type_feature = c("point", "line", "area")[1],
   type_feature_recompute = FALSE,
   zoi_limit = 0.05,
@@ -92,47 +86,193 @@ plot_response(
 - x:
 
   `[bag,list]`  
-  A bag of models, resulting from a call to
+  A bag of models created with
   [`bag_models()`](https://ninanor.github.io/oneimpact/reference/bag_models.md).
 
 - dfvar:
 
   `[data.frame]`  
-  A `data.frame` with the values of the variables one wants to vary and
-  predict for. All other variables are set to their mean or median, or
-  to zero (this is set by the parameter `baseline`). The column names of
-  the `data.frame` might correspond exactly to the model covariates or
-  to parts of that (for instance, "roads_paved\_" to refer to all ZOI
-  variables related to paved roads).
+  Data frame with values of focal predictors to vary and predict over.
+  The column names of the `data.frame` might correspond exactly to the
+  model covariates or to parts of that (for instance, "roads_paved\_" to
+  refer to all ZOI variables related to paved roads).
 
 - data:
 
   `[data.frame]`  
-  The original, complete data used for model fitting. Used only for
-  taking the categories of the categorical variables. Irrelevant if
-  there is no categorical variables.
+  Original data used for model fitting. Used only for taking the
+  categories of the categorical variables. Irrelevant if there is no
+  categorical variables.
 
 - type:
 
   `[character(1)="linear"]{"linear", "exponential", "logit", "cloglog"}`  
-  Type of response. Might be `"linear"` (default), `"exponential"`,
-  `"logit"`, and `"cloglog"`.
+  Prediction scale.
 
 - zoi_shape:
 
-  `[character(1)="linear"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}`  
-  Shape of the ZOI. Necessary to be specified to represent correctly the
-  estimated ZOI of the preditor variables.
+  `[character(1)="exp_decay"]{"exp_decay", "gaussian_decay", "linear_decay", "threshold_decay"}`  
+  ZOI decay shape used when `zoi = TRUE`.
+
+- which_cumulative:
+
+  `[character(1)="cumulative"]`  
+  Pattern used to identify cumulative ZOI terms.
 
 - ci:
 
-  Should variation or confidence intervals be plotted?
+  `[logical(1)=TRUE]`  
+  If `TRUE` (default), plot weighted confidence intervals using
+  `wq_probs`.
+
+- indiv_pred:
+
+  `[logical(1)=FALSE]`  
+  If `TRUE`, include curves from individual models (only models with
+  positive weight).
 
 - wq_probs:
 
-  `[vector,numeric(3)=c(0.025, 0.5, 0.975)]`  
-  A three element vector with lower, mid, and higher weighted quantiles
-  to be computed.
+  `[numeric,vector=c(0.025, 0.5, 0.975)]`  
+  Weighted quantile probabilities used for confidence intervals and
+  median.
+
+- baseline:
+
+  `[character(1)="median"]{"median", "mean", "zero"}`  
+  Baseline value strategy for non-focal predictors. Variable are either
+  kept constant at the mean or median values, or left as zero.
+  Categorical variables are set to their reference level, retrieved from
+  `data`.
+
+- zoi:
+
+  `[logical(1)=FALSE]`  
+  If `TRUE`, variables values in `dfvar` are interpreted as distance
+  from a disturbance source, to be transformed into ZOI predictors.
+
+- type_feature:
+
+  `[character(1)="point"]{"point", "line", "area"}`  
+  Feature type for ZOI prediction.
+
+- type_feature_recompute:
+
+  `[logical(1)=FALSE]`  
+  If `TRUE`, recompute line- or area-feature raster representation for
+  ZOI calculations.
+
+- zoi_limit:
+
+  `[numeric(1)=0.05]`  
+  Lower influence threshold used by non-vanishing ZOI functions. See
+  [`zoi_functions()`](https://ninanor.github.io/oneimpact/reference/zoi_functions.md).
+
+- resolution:
+
+  `[numeric(1)=100]`  
+  Raster resolution used for line-feature ZOI approximation. Used when
+  recomputing the ZOI variables for line and area features.
+
+- line_value:
+
+  `[numeric(1)=1]`  
+  Value assigned to line raster cells when `type_feature = "line"`. Used
+  when recomputing the ZOI variables for line and area features.
+
+- plot_mean:
+
+  `[logical(1)=TRUE]`  
+  Plot weighted mean response line.
+
+- plot_median:
+
+  `[logical(1)=TRUE]`  
+  Plot weighted median response line.
+
+- n_features:
+
+  `[numeric(1)=1]`  
+  Number of features used in ZOI prediction. To represent the cumulative
+  impact of multiple features, use `n_features > 1`.
+
+- normalize:
+
+  `[logical or character]`  
+  Optional y-axis normalization: one of `FALSE`, `"mean"`, `"median"`,
+  or `"ci"`. Default is `FALSE`, which assumes no normalization.
+
+- logx:
+
+  `[logical(1)=FALSE]`  
+  If `TRUE`, use log10 scaling on x-axis.
+
+- ylim:
+
+  `[NULL or ggplot2 scale/coord limits]`  
+  Optional y-axis limits.
+
+- y_lab:
+
+  `[character(1)="Relative Selection Strength"]`  
+  Y-axis label.
+
+- col_ci:
+
+  `[character(1)="grey"]`  
+  Fill color for confidence ribbon.
+
+- col_indiv:
+
+  `[character(1)="grey"]`  
+  Color for individual model lines.
+
+- col_mean:
+
+  `[character(1)="black"]`  
+  Color for weighted mean line.
+
+- col_median:
+
+  `[character(1)="red"]`  
+  Color for weighted median line.
+
+- linewidth_indiv:
+
+  `[numeric(1)=1.2]`  
+  Line width for individual model lines.
+
+- linewidth_mean:
+
+  `[numeric(1)=1.2]`  
+  Line width for weighted mean line.
+
+- linewidth_median:
+
+  `[numeric(1)=1.2]`  
+  Line width for weighted median line.
+
+- alpha_ci:
+
+  `[numeric(1)=0.5]`  
+  Alpha transparency for confidence ribbon.
+
+- alpha_indiv:
+
+  `[numeric(1)=0.3]`  
+  Alpha transparency for individual model lines.
+
+- ggplot:
+
+  `[logical(1)=TRUE]`  
+  If `TRUE`, return a ggplot object; otherwise return a prediction data
+  frame.
+
+## Value
+
+If `ggplot = TRUE`, a ggplot object with response curves. If
+`ggplot = FALSE`, a data frame with `dfvar`, summary predictions, and
+optionally individual-model predictions when `indiv_pred = TRUE`.
 
 ## Details
 

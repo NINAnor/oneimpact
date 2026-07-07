@@ -71,6 +71,12 @@ variable_importance(
   block. Default is `NULL`, in case variable importance is assessed for
   all the data.
 
+- variable_block:
+
+  `[character,NULL]`  
+  Optional grouping variable for computing importance at the block level
+  rather than per-variable. Default is `NULL`.
+
 - n_permutations:
 
   `[numeric(1)=100]`  
@@ -84,10 +90,22 @@ variable_importance(
   (`order = "asc"`). If `FALSE`, the variables are shown in the same
   order as present in the bag of models, `x`.
 
+- metric:
+
+  `[function,character=NULL]`  
+  Metric function used to evaluate model performance. If `NULL`
+  (default), the metric stored in the bag `x` is used.
+
 - plot:
 
   `[logical(1)=FALSE]`  
   Should variable importance be plotted? Default is `FALSE`.
+
+- ss:
+
+  `[integer(1)=1]`  
+  Index of the sample (resample) to use for validation when `samples` is
+  provided. Default is `1`.
 
 - remove_threshold:
 
@@ -96,6 +114,11 @@ variable_importance(
   variable importance plot (i.e. only considered if `plot = TRUE`). See
   more in
   [`plot_importance()`](https://ninanor.github.io/oneimpact/reference/plot_importance.md).
+
+## Value
+
+A data frame with variable names and their importance scores, optionally
+ordered by importance and/or plotted.
 
 ## See also
 

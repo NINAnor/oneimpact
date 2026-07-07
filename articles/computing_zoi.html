@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Computing zones of influence for different types of variable • oneimpact</title>
+<title>Computing zone of influence rasters for different types of variable • oneimpact</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing zones of influence for different types of variable">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing zone of influence rasters for different types of variable">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -59,7 +59,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Computing zones of influence for different types of variable</h1>
+      <h1>Computing zone of influence rasters for different types of variable</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/NINAnor/oneimpact/blob/main/vignettes/computing_zoi.Rmd" class="external-link"><code>vignettes/computing_zoi.Rmd</code></a></small>
@@ -119,17 +119,18 @@ accomplished e.g. with the package <code>terra</code>.</p>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_cabins.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
 <span><span class="va">cabins_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span><span class="va">cabins_vect</span></span>
-<span><span class="co">#&gt;  class       : SpatVector </span></span>
-<span><span class="co">#&gt;  geometry    : points </span></span>
-<span><span class="co">#&gt;  dimensions  : 6875, 4  (geometries, attributes)</span></span>
-<span><span class="co">#&gt;  extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt;  source      : sample_area_cabins.gpkg</span></span>
-<span><span class="co">#&gt;  coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833) </span></span>
-<span><span class="co">#&gt;  names       :   cat buildtype  city value</span></span>
-<span><span class="co">#&gt;  type        : &lt;int&gt;     &lt;chr&gt; &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  values      :     1       161   604     1</span></span>
-<span><span class="co">#&gt;                    2       161   604     1</span></span>
-<span><span class="co">#&gt;                    3       161   604     1</span></span></code></pre></div>
+<span><span class="co">#&gt; class       : SpatVector</span></span>
+<span><span class="co">#&gt; geometry    : points</span></span>
+<span><span class="co">#&gt; dimensions  : 6875, 4  (geometries, attributes)</span></span>
+<span><span class="co">#&gt; extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">#&gt; source      : sample_area_cabins.gpkg</span></span>
+<span><span class="co">#&gt; coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833)</span></span>
+<span><span class="co">#&gt; names       :   cat buildtype  city value</span></span>
+<span><span class="co">#&gt; type        : &lt;int&gt;     &lt;chr&gt; &lt;int&gt; &lt;int&gt;</span></span>
+<span><span class="co">#&gt; values      :     1       161   604     1</span></span>
+<span><span class="co">#&gt;                   2       161   604     1</span></span>
+<span><span class="co">#&gt;                   3       161   604     1</span></span>
+<span><span class="co">#&gt;               ...</span></span></code></pre></div>
 <p>We see the cabins data set present 6875 cabins spread in the sample
 landscape used here. The data set has information for the type of
 building and municipality where each feature is located. We can
@@ -143,17 +144,18 @@ visualize the cabins to have an idea of how they are distributed:</p>
 <span><span class="va">f2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_roads.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
 <span><span class="va">roads_vect</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">f2</span><span class="op">)</span></span>
 <span><span class="va">roads_vect</span></span>
-<span><span class="co">#&gt;  class       : SpatVector </span></span>
-<span><span class="co">#&gt;  geometry    : lines </span></span>
-<span><span class="co">#&gt;  dimensions  : 1880, 5  (geometries, attributes)</span></span>
-<span><span class="co">#&gt;  extent      : 146910, 194629.8, 6622803, 6658865  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt;  source      : sample_area_roads.gpkg</span></span>
-<span><span class="co">#&gt;  coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833) </span></span>
-<span><span class="co">#&gt;  names       :    id           name publ_priv traffic_bin value</span></span>
-<span><span class="co">#&gt;  type        : &lt;int&gt;          &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt; &lt;num&gt;</span></span>
-<span><span class="co">#&gt;  values      :     0 "Jondalsveien"      publ        high     1</span></span>
-<span><span class="co">#&gt;                    0 "Jondalsveien"      publ        high     1</span></span>
-<span><span class="co">#&gt;                    0 "Jondalsveien"      publ        high     1</span></span></code></pre></div>
+<span><span class="co">#&gt; class       : SpatVector</span></span>
+<span><span class="co">#&gt; geometry    : lines</span></span>
+<span><span class="co">#&gt; dimensions  : 1880, 5  (geometries, attributes)</span></span>
+<span><span class="co">#&gt; extent      : 146910, 194629.8, 6622803, 6658865  (xmin, xmax, ymin, ymax)</span></span>
+<span><span class="co">#&gt; source      : sample_area_roads.gpkg</span></span>
+<span><span class="co">#&gt; coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833)</span></span>
+<span><span class="co">#&gt; names       :    id           name publ_priv traffic_bin value</span></span>
+<span><span class="co">#&gt; type        : &lt;int&gt;          &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt; &lt;num&gt;</span></span>
+<span><span class="co">#&gt; values      :     0 "Jondalsveien"      publ        high     1</span></span>
+<span><span class="co">#&gt;                   0 "Jondalsveien"      publ        high     1</span></span>
+<span><span class="co">#&gt;                   0 "Jondalsveien"      publ        high     1</span></span>
+<span><span class="co">#&gt;               ...</span></span></code></pre></div>
 <p>We see the data set comprises 1880 road segments of different sizes,
 each of which is also classified according to the road name, whether the
 road is public or private, and if the road traffic is high or low.</p>
@@ -215,15 +217,15 @@ the <code><a href="https://rspatial.github.io/terra/reference/rasterize.html" cl
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">cabins</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span><span class="co"># output</span></span>
 <span><span class="va">cabins</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
 <span><span class="co">#&gt; size        : 361, 478, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs</span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; varname     : sample_area_cabins </span></span>
-<span><span class="co">#&gt; name        : V1 </span></span>
-<span><span class="co">#&gt; min value   :  0 </span></span>
+<span><span class="co">#&gt; varname     : sample_area_cabins</span></span>
+<span><span class="co">#&gt; name        : V1</span></span>
+<span><span class="co">#&gt; min value   :  0</span></span>
 <span><span class="co">#&gt; max value   :  8</span></span></code></pre></div>
 <p>Now we plot the map to visualize the result:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -244,15 +246,15 @@ binary input raster, where 1 represents the presence of roads and
 <span><span class="va">roads</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">rasterize</a></span><span class="op">(</span><span class="va">roads_vect</span>, <span class="va">r</span><span class="op">)</span></span>
 <span><span class="co"># output</span></span>
 <span><span class="va">roads</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
 <span><span class="co">#&gt; size        : 361, 478, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs</span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; varname     : sample_area_cabins </span></span>
-<span><span class="co">#&gt; name        : layer </span></span>
-<span><span class="co">#&gt; min value   :     1 </span></span>
+<span><span class="co">#&gt; varname     : sample_area_cabins</span></span>
+<span><span class="co">#&gt; name        : layer</span></span>
+<span><span class="co">#&gt; min value   :     1</span></span>
 <span><span class="co">#&gt; max value   :     1</span></span></code></pre></div>
 <p>Now we plot the map to visualize the result:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -306,15 +308,18 @@ radii of 500 and 1000 m. Since the background of the input map is
 <span>                       zeroAsNA <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># check</span></span>
 <span><span class="va">zoi_cabins</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
 <span><span class="co">#&gt; size        : 361, 478, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs</span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000 </span></span>
-<span><span class="co">#&gt; min values  :     1.46044e-09,     3.82157e-05,         0.00000,          0.0000 </span></span>
-<span><span class="co">#&gt; max values  :     1.00000e+00,     1.00000e+00,        51.57446,        112.6539</span></span></code></pre></div>
+<span><span class="co">#&gt; varnames    : </span></span>
+<span><span class="co">#&gt;               sample_area_cabins</span></span>
+<span><span class="co">#&gt;               sample_area_cabins</span></span>
+<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000</span></span>
+<span><span class="co">#&gt; min values  :               0,        0.000038,               0,               0</span></span>
+<span><span class="co">#&gt; max values  :               1,               1,       51.574456,      112.653936</span></span></code></pre></div>
 <p>Since we opted to compute both ZOI metrics
 (<code>zoi_metric = "all"</code> by default, if nothing else is
 specified) using two different radii, the resulting raster is composed
@@ -350,7 +355,7 @@ radii of 1000 and 2000 m. Since the background of the input map is
 <code>NA</code>, we now need to set the parameter
 <code>zeroAsNA = FALSE</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># compute both Zoi metrics with Gaussian decay, radius = 500 and 1000 m</span></span>
+<code class="sourceCode R"><span><span class="co"># compute both ZOI metrics with exponential decay, radius = 500 and 1000 m</span></span>
 <span><span class="co"># since the background is NA, we use zeroAsNA = FALSE</span></span>
 <span><span class="va">zoi_roads</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi.html">calc_zoi</a></span><span class="op">(</span><span class="va">roads</span>,</span>
 <span>                      radius <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span>,</span>
@@ -358,15 +363,18 @@ radii of 1000 and 2000 m. Since the background of the input map is
 <span>                      zeroAsNA <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co"># check</span></span>
 <span><span class="va">zoi_roads</span></span>
-<span><span class="co">#&gt; class       : SpatRaster </span></span>
+<span><span class="co">#&gt; class       : SpatRaster</span></span>
 <span><span class="co">#&gt; size        : 361, 478, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 100, 100  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs </span></span>
+<span><span class="co">#&gt; coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs</span></span>
 <span><span class="co">#&gt; source(s)   : memory</span></span>
-<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000 </span></span>
-<span><span class="co">#&gt; min values  :    2.151265e-24,    1.466719e-12,         0.00000,         0.00000 </span></span>
-<span><span class="co">#&gt; max values  :    1.000000e+00,    1.000000e+00,        11.56858,        28.16008</span></span></code></pre></div>
+<span><span class="co">#&gt; varnames    : </span></span>
+<span><span class="co">#&gt;               sample_area_cabins</span></span>
+<span><span class="co">#&gt;               sample_area_cabins</span></span>
+<span><span class="co">#&gt; names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000</span></span>
+<span><span class="co">#&gt; min values  :               0,               0,               0,               0</span></span>
+<span><span class="co">#&gt; max values  :               1,               1,        11.56858,       28.160085</span></span></code></pre></div>
 <p>We again have four layers representing the two ZOI metrics for roads
 for the different radii:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">

@@ -23,7 +23,7 @@ data(reindeer_rsf)
 
 ## Format
 
-A data frame with 31,735 rows and 28 variables:
+A data frame with 74,337 rows and 88 variables:
 
 - use:
 

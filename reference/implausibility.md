@@ -63,6 +63,20 @@ implausibility(
   A bag of models, resulting from a call to
   [`bag_models()`](https://ninanor.github.io/oneimpact/reference/bag_models.md).
 
+- ...:
+
+  `[any]`  
+  Additional arguments passed to methods.
+
+- which_coef_sign:
+
+  `[character(1)="count"]{"count","sum","raw","index"}`  
+  Which measure to use for the coefficients when
+  `measure = "coef_sign"`. If `"count"` (default), only the sign matters
+  and the number of coefficients with unexpected sign is returned. If
+  `"sum"`, the sum of the (standardized) coefficients with unexpected
+  sign is returned, accounting for magnitude.
+
 - expected_sign:
 
   `[numeric(1)=-1]`  
@@ -76,7 +90,7 @@ implausibility(
 
 - measure:
 
-  `[string(1)]{""coef_sign", "n_crosses", "response_area""}`  
+  `[string(1)]{"coef_sign", "n_crosses", "response_area"}`  
   Measure used to quantify ecological implausibility in the model or
   coefficients. It can be one or multiple of these options:
 
@@ -93,14 +107,14 @@ implausibility(
   `[data.frame]`  
   The original, complete data used for model fitting.
 
-- which_coef:
+## Value
 
-    
-  Which measure to use for the coefficients, when
-  `measure = "coef_sign"`. If `count` (default), only the sign matterns
-  and we count the number of coefficients with unexpected sign. If
-  `sum`, we count the sum of the (standardized) coefficients, to also
-  account for their magnitude.
+The output depends on the input type and measure used. For a numeric
+vector of coefficients, it returns a single value indicating the degree
+of implausibility. For a data frame representing the response curves, it
+returns a list with measures of ecological implausibility. For a bag of
+models, it returns a list with measures of ecological implausibility for
+each of the ZOI variables in the bag
 
 ## Examples
 
@@ -114,13 +128,13 @@ implausibility(
 coefs <- c(-1, -0.5, -0.1, 0.8, 0.3, -0.1)
 expected_sign <- -1
 implausibility(coefs, expected_sign = expected_sign)
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "c('double', 'numeric')"
+#> [1] 2
 implausibility(coefs, expected_sign = expected_sign, which_coef = "sum")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "c('double', 'numeric')"
+#> [1] 1.1
 implausibility(coefs, expected_sign = expected_sign, which_coef = "raw")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "c('double', 'numeric')"
+#> [1] 0.8 0.3
 implausibility(coefs, expected_sign = expected_sign, which_coef = "index")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "c('double', 'numeric')"
+#> [1] 4 5
 
 #-------
 # implausibility for data.frame with (x,y) for line
@@ -135,16 +149,16 @@ abline(h = 0, col = "red")
 
 # n crosses
 implausibility(df, response = "y", measure = "n_crosses")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "data.frame"
+#> [1] 2
 # where does the curve crosses zero
 implausibility(df, response = "y", measure = "where_crosses")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "data.frame"
+#> [1] 0.92 5.73
 # area on the opposite side of the expected sign
 implausibility(df, response = "y", measure = "response_area_opposite")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "data.frame"
+#> [1] 27.7758
 # ratio between area above and area on the expected sign
 implausibility(df, response = "y", measure = "response_area_ratio")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "data.frame"
+#> [1] 0.2571948
 
 # checking for inflection points
 x <- seq(0, 14, 0.01)
@@ -160,13 +174,13 @@ abline(v = x[inflection(y)], lty = 2)
 
 # n crosses
 implausibility(df, response = "y", measure = "n_crosses")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "data.frame"
+#> [1] 1
 # n inflection points
 implausibility(df, response = "y", measure = "n_inflection")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "data.frame"
+#> [1] 2
 # difference between inflection points
 implausibility(df, response = "y", measure = "difference_inflection")
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "data.frame"
+#> [1] 89.84515
 
 #-------
 # implausibility for bag
@@ -272,11 +286,11 @@ plot_response(bag_object,
 implausibility(bag_object,
           data = dat,
           type_feature = c("point", "line", "line"))
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "c('bag', 'list')"
+#> Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     ci = TRUE, indiv_pred = FALSE, ggplot = FALSE, ...): unused argument (ggplot = FALSE)
 
 # for each individual model
 implausibility(bag_object,
           data = dat,
           wmean = FALSE)
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "c('bag', 'list')"
+#> Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     wq_probs = NULL, ci = FALSE, indiv_pred = TRUE, ggplot = FALSE,     ...): unused argument (ggplot = FALSE)
 ```

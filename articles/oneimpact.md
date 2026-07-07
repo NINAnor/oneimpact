@@ -433,17 +433,18 @@ s <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact")
 cabins_vect <- terra::vect(s)
 # check
 cabins_vect
-#>  class       : SpatVector 
-#>  geometry    : points 
-#>  dimensions  : 6875, 4  (geometries, attributes)
-#>  extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)
-#>  source      : sample_area_cabins.gpkg
-#>  coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833) 
-#>  names       :   cat buildtype  city value
-#>  type        : <int>     <chr> <int> <int>
-#>  values      :     1       161   604     1
-#>                    2       161   604     1
-#>                    3       161   604     1
+#> class       : SpatVector
+#> geometry    : points
+#> dimensions  : 6875, 4  (geometries, attributes)
+#> extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)
+#> source      : sample_area_cabins.gpkg
+#> coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833)
+#> names       :   cat buildtype  city value
+#> type        : <int>     <chr> <int> <int>
+#> values      :     1       161   604     1
+#>                   2       161   604     1
+#>                   3       161   604     1
+#>               ...
 # plot
 plot(cabins_vect, cex = 0.5)
 ```
@@ -476,15 +477,15 @@ grid <- terra::rast(s2)
 # rasterize
 cabins_rast <- terra::rasterize(cabins_vect, grid, fun = length)
 cabins_rast
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 1  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
 #> source(s)   : memory
-#> varname     : sample_area_cabins 
-#> name        : V1 
-#> min value   :  1 
+#> varname     : sample_area_cabins
+#> name        : V1
+#> min value   :  1
 #> max value   :  8
 # plot
 plot(cabins_rast)

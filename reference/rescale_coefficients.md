@@ -28,31 +28,38 @@ rescale_coefficients(bag, data, tostd = TRUE, ...)
 
 - model:
 
-    
-  Fitted model, i.e. the object created by a model fit funtion such as
-  "lm", "glm", or "coxph".
+  `[lm,glm,coxph]`  
+  Fitted model object created by a fitting function such as
+  [`lm()`](https://rdrr.io/r/stats/lm.html),
+  [`glm()`](https://rdrr.io/r/stats/glm.html), or
+  [`coxph()`](https://rdrr.io/pkg/survival/man/coxph.html).
 
 - data:
 
-    
-  The original `data.frame` with the data used to fit the model.
+  `[data.frame]`  
+  The original data used to fit the model, in unstandardized form.
 
 - bag:
 
-    
-  A bag of models, as result of the
-  [`bag_models()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
-  function.
+  `[bag,list]`  
+  A bag of models, as returned by
+  [`bag_models()`](https://ninanor.github.io/oneimpact/reference/bag_models.md).
 
-- standardize:
+- tostd:
 
-  `[logical(1)=TRUE]` If `TRUE` (Default), the coefficients are
-  standardized. If `FALSE`, the coefficients are standardized. Only
-  numeric coefficients are standardized.
+  `[logical(1)=TRUE]`  
+  Only relevant for the `bag` method. If `TRUE` (default), raw model
+  coefficients (fitted on standardized predictors) are converted to
+  standardized scale by multiplying by predictor SDs. If `FALSE`,
+  coefficients are converted back to the original (unstandardized) scale
+  by dividing by predictor SDs.
 
 ## Value
 
-A vector of rescaled coefficients for the input model.
+A matrix or vector of rescaled coefficients. For `lm`, `glm`, and
+`coxph` methods, coefficients are returned in the original
+(unstandardized) scale. For the `bag` method, direction depends on
+`tostd`: standardized scale if `TRUE`, original scale if `FALSE`.
 
 ## Examples
 

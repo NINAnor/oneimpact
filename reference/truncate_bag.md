@@ -1,4 +1,4 @@
-# Truncate bag to avoid weirdness in the model
+# Truncate bag to avoid ecological implausibility in the model
 
 This function identifies sources of ecological implausibility in the
 models in a bag and uses them to remove variables the produce such
@@ -82,11 +82,23 @@ truncate_bag(
   Should the model be reassessed after truncation, with fit,
   calibration, and validation scores re-computed? Default is `TRUE`.
 
+- verbose:
+
+  `[logical(1)=FALSE]`  
+  Whether to print progress messages.
+
 - ...:
 
-    
-  Other parameters used in
-  [`weirdness()`](https://ninanor.github.io/oneimpact/reference/implausibility.md).
+  `[any]`  
+  Additional parameters passed to
+  [`implausibility()`](https://ninanor.github.io/oneimpact/reference/implausibility.md).
+
+## Value
+
+A modified bag object of the same structure as the input `x`, with
+ecologically implausible coefficients set to zero, and optionally
+re-evaluated fit, calibration, and validation scores (if
+`reassess = TRUE`).
 
 ## Details
 
@@ -164,7 +176,7 @@ bag_object_trunc <- truncate_bag(bag_object,
                              measure = "cross",
                              criterion = "first_coef",
                              wmean = FALSE)
-#> Error in UseMethod("weirdness"): no applicable method for 'weirdness' applied to an object of class "c('bag', 'list')"
+#> Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     wq_probs = NULL, ci = FALSE, indiv_pred = TRUE, ggplot = FALSE,     ...): unused argument (ggplot = FALSE)
 
 # compare validation scores
 bag_object$validation_score - bag_object_trunc$validation_score

@@ -1,4 +1,4 @@
-# Computing zones of influence for different types of variable
+# Computing zone of influence rasters for different types of variable
 
 Zones of influence (ZOI) represent how the influence of anthropogenic
 infrastructure or disturbance spreads in space. When there are multiple
@@ -58,17 +58,18 @@ the package `terra`.
 f <- system.file("vector/sample_area_cabins.gpkg", package = "oneimpact")
 cabins_vect <- terra::vect(f)
 cabins_vect
-#>  class       : SpatVector 
-#>  geometry    : points 
-#>  dimensions  : 6875, 4  (geometries, attributes)
-#>  extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)
-#>  source      : sample_area_cabins.gpkg
-#>  coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833) 
-#>  names       :   cat buildtype  city value
-#>  type        : <int>     <chr> <int> <int>
-#>  values      :     1       161   604     1
-#>                    2       161   604     1
-#>                    3       161   604     1
+#> class       : SpatVector
+#> geometry    : points
+#> dimensions  : 6875, 4  (geometries, attributes)
+#> extent      : 146900.1, 194694.6, 6622822, 6658891  (xmin, xmax, ymin, ymax)
+#> source      : sample_area_cabins.gpkg
+#> coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833)
+#> names       :   cat buildtype  city value
+#> type        : <int>     <chr> <int> <int>
+#> values      :     1       161   604     1
+#>                   2       161   604     1
+#>                   3       161   604     1
+#>               ...
 ```
 
 We see the cabins data set present 6875 cabins spread in the sample
@@ -91,17 +92,18 @@ We can now load the road data for the same area.
 f2 <- system.file("vector/sample_area_roads.gpkg", package = "oneimpact")
 roads_vect <- terra::vect(f2)
 roads_vect
-#>  class       : SpatVector 
-#>  geometry    : lines 
-#>  dimensions  : 1880, 5  (geometries, attributes)
-#>  extent      : 146910, 194629.8, 6622803, 6658865  (xmin, xmax, ymin, ymax)
-#>  source      : sample_area_roads.gpkg
-#>  coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833) 
-#>  names       :    id           name publ_priv traffic_bin value
-#>  type        : <int>          <chr>     <chr>       <chr> <num>
-#>  values      :     0 "Jondalsveien"      publ        high     1
-#>                    0 "Jondalsveien"      publ        high     1
-#>                    0 "Jondalsveien"      publ        high     1
+#> class       : SpatVector
+#> geometry    : lines
+#> dimensions  : 1880, 5  (geometries, attributes)
+#> extent      : 146910, 194629.8, 6622803, 6658865  (xmin, xmax, ymin, ymax)
+#> source      : sample_area_roads.gpkg
+#> coord. ref. : ETRS89 / UTM zone 33N (EPSG:25833)
+#> names       :    id           name publ_priv traffic_bin value
+#> type        : <int>          <chr>     <chr>       <chr> <num>
+#> values      :     0 "Jondalsveien"      publ        high     1
+#>                   0 "Jondalsveien"      publ        high     1
+#>                   0 "Jondalsveien"      publ        high     1
+#>               ...
 ```
 
 We see the data set comprises 1880 road segments of different sizes,
@@ -175,15 +177,15 @@ cabins <- terra::rasterize(cabins_vect, r, fun = length)
 values(cabins)[is.na(values(cabins))] <- 0
 # output
 cabins
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 1  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
 #> source(s)   : memory
-#> varname     : sample_area_cabins 
-#> name        : V1 
-#> min value   :  0 
+#> varname     : sample_area_cabins
+#> name        : V1
+#> min value   :  0
 #> max value   :  8
 ```
 
@@ -211,15 +213,15 @@ represent the absence of roads in the pixel.
 roads <- terra::rasterize(roads_vect, r)
 # output
 roads
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 1  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
 #> source(s)   : memory
-#> varname     : sample_area_cabins 
-#> name        : layer 
-#> min value   :     1 
+#> varname     : sample_area_cabins
+#> name        : layer
+#> min value   :     1
 #> max value   :     1
 ```
 
@@ -278,15 +280,18 @@ zoi_cabins <- calc_zoi(cabins,
                        zeroAsNA = TRUE)
 # check
 zoi_cabins
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 4  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
 #> source(s)   : memory
-#> names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000 
-#> min values  :     1.46044e-09,     3.82157e-05,         0.00000,          0.0000 
-#> max values  :     1.00000e+00,     1.00000e+00,        51.57446,        112.6539
+#> varnames    : 
+#>               sample_area_cabins
+#>               sample_area_cabins
+#> names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000
+#> min values  :               0,        0.000038,               0,               0
+#> max values  :               1,               1,       51.574456,      112.653936
 ```
 
 Since we opted to compute both ZOI metrics (`zoi_metric = "all"` by
@@ -326,7 +331,7 @@ we now need to set the parameter `zeroAsNA = FALSE`:
 
 ``` r
 
-# compute both Zoi metrics with Gaussian decay, radius = 500 and 1000 m
+# compute both ZOI metrics with exponential decay, radius = 500 and 1000 m
 # since the background is NA, we use zeroAsNA = FALSE
 zoi_roads <- calc_zoi(roads,
                       radius = c(500, 1000),
@@ -334,15 +339,18 @@ zoi_roads <- calc_zoi(roads,
                       zeroAsNA = FALSE)
 # check
 zoi_roads
-#> class       : SpatRaster 
+#> class       : SpatRaster
 #> size        : 361, 478, 4  (nrow, ncol, nlyr)
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
 #> source(s)   : memory
-#> names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000 
-#> min values  :    2.151265e-24,    1.466719e-12,         0.00000,         0.00000 
-#> max values  :    1.000000e+00,    1.000000e+00,        11.56858,        28.16008
+#> varnames    : 
+#>               sample_area_cabins
+#>               sample_area_cabins
+#> names       : zoi_nea~ecay500, zoi_nea~cay1000, _zoi_cu~ecay500, _zoi_cu~cay1000
+#> min values  :               0,               0,               0,               0
+#> max values  :               1,               1,        11.56858,       28.160085
 ```
 
 We again have four layers representing the two ZOI metrics for roads for

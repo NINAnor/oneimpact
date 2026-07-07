@@ -2,7 +2,7 @@
 
 ### All vignettes
 
-- [Computing zones of influence for different types of
+- [Computing zone of influence rasters for different types of
   variable](https://ninanor.github.io/oneimpact/articles/computing_zoi.md):
 - [Estimating zones of influence in resource selection functions using
   bagging and penalized

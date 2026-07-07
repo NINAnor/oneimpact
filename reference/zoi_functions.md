@@ -97,7 +97,7 @@ exp_decay(
 
 - radius:
 
-  `[numeric(1)]`  
+  `[numeric(1)=NULL]`  
   Radius of the zone of influence (ZOI), the distance at which the ZOI
   vanishes or goes below a given minimum limit value `zoi_limit`. See
   details.
@@ -149,6 +149,12 @@ exp_decay(
   If `FALSE`, negative distance values are considered symmetrically and
   their transformation is always positive. This parameter is only
   meaningful if `x` is a vector of values, not a raster object.
+
+- ...:
+
+  `[any]`  
+  Additional parameters passed to the specific ZOI shape function (e.g.
+  `intercept`, `lambda`, `sigma`, `half_life`, `zoi_hl_ratio`).
 
 - intercept:
 

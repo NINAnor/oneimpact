@@ -30,9 +30,9 @@ set_points_sample(
 
 - type:
 
-  `[character(1)="regular"]{"regular", "random"}` Pattern for the
-  creation of points is space. Other methods are also accepted, check
-  the `type` argument for the
+  `[character(1)="regular"]{"regular", "random"}`  
+  Pattern for the creation of points is space. Other methods are also
+  accepted, check the `type` argument for the
   [`sf::st_sample()`](https://r-spatial.github.io/sf/reference/st_sample.html)
   function.
 
@@ -43,7 +43,7 @@ set_points_sample(
   created. If a `RasterLayer`, the `bbox` of the raster is used as a
   polygon.
 
-- extent_x, entent_y:
+- extent_x, extent_y:
 
   `[numeric vector(2)=c(0,1)]`  
   Vector representing the minimum and maximum extent in x and y within

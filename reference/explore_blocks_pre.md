@@ -38,6 +38,16 @@ explore_blocks_pre(data, colH0, animal_id = NULL, col_case = "case")
   Name of the column in `data` representing the case or used/available
   points. Default is `"case"`.
 
+## Value
+
+A `data.frame` with one row per unique combination of `colH0` (and
+`animal_id` if provided), with columns:
+
+- `n`: total number of observations in the group.
+
+- `n_presences`: number of used/presence points (`col_case == 1`) in the
+  group.
+
 ## Examples
 
 ``` r

@@ -63,7 +63,7 @@ grass_binarize(
 
 - setnull:
 
-  `[]`  
+  `[numeric,NULL]`  
   If `NULL` (default), no changes are made. Otherwise, a set of numeric
   values that should be transformed into NULL/NA data (using the module
   [r.null](https://grass.osgeo.org/grass78/manuals/r.null.html)).
@@ -94,6 +94,11 @@ grass_binarize(
   `[logical(1)]`  
   Whether the output maps should be overwriten (flag
   `overwrite = TRUE`).
+
+- ...:
+
+  `[any]`  
+  Additional arguments passed to GRASS GIS modules.
 
 ## Value
 
@@ -217,13 +222,13 @@ cabins_bin1_2 <- rgrass::read_RAST(c(cabins_bin1_name, cabins_bin2_name),
 #> Using GDAL data type <Byte>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file2268350f80db.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d649991da9.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Byte>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file226839a803e4.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d6733485d6.grd> created.
 plot(cabins_bin1_2, main = c("Binarized map keeping null", "Binarized map setting null to 0"))
 
 
@@ -246,19 +251,19 @@ cabins_bin2vals <- rgrass::read_RAST(c(cont_map_name, cabins_bin2vals_name),
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file226862a0593e.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d65f71cccc.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Byte>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file226854211f85.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d64b4a97b8.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Byte>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpHZLNjD/file22682779366f.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d652be4b32.grd> created.
 plot(cabins_bin2vals,
      main = c("Original map",
               "Binarized map, break = 0.3",

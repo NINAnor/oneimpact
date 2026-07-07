@@ -1,18 +1,19 @@
 # Get estimates of zone of influence (ZOI) metrics from response curves
 
 This generic function computes ZOI metrics (maximum effect size, ZOI
-radius, and impact) for ZOI predictor variables based on response
-curves. The ZOI radius is estimated as the distance/radius at which the
-relative selection strength decays to a given percentage of the maximum
-effect size (e.g. 95% ZOI radius for the distance at which the effect
-drops to 5% of the maximum). The impact accounts for both the effect
-size and the ZOI radius and corresponds to the area under (or over, if
-negative) the ZOI response curve. The function computes ZOI metrics
-based on from weighted summary response curves (mean or median), and
-based on that computes the confidence interval bounds or individual
-model ZOI metrics to represent uncertainty in the ZOI metrics. The
-function supports two types of input: a `data.frame` of individual model
-predictions or a `bag` object containing an ensemble of models.
+radius, and impact) for ZOI predictor variables based on response curves
+from statistical models. The ZOI radius is estimated as the
+distance/radius at which the relative selection strength decays to a
+given percentage of the maximum effect size (e.g. 95% ZOI radius for the
+distance at which the effect drops to 5% of the maximum). The impact
+accounts for both the effect size and the ZOI radius and corresponds to
+the area under (or over, if negative) the ZOI response curve. The
+function computes ZOI metrics based on from weighted summary response
+curves (mean or median), and based on that computes the confidence
+interval bounds or individual model ZOI metrics to represent uncertainty
+in the ZOI metrics. The function supports two types of input: a
+`data.frame` of individual model predictions or a `bag` object
+containing an ensemble of models.
 
 ## Usage
 
@@ -66,11 +67,13 @@ zoi_from_curve(
 
 - x:
 
+  `[data.frame,bag]`  
   Either a `data.frame` containing response curve predictions for a
   single variable, or a `bag` object containing an ensemble of models.
 
 - ...:
 
+  `[any]`  
   Additional arguments passed to the appropriate method.
 
 - weights:
@@ -215,42 +218,24 @@ zoi_from_curve(
 
 ## Value
 
-A `data.frame` or a `list` containing ZOI metrics:
-
-- `max_effect_size`: Maximum effect size on the relative selection
-  strength.
-
-- `zoi_radius`: Distance/radius where the effect drops to a given
-  threshold.
-
-- `effect_zoi_radius`: Relative selection strength value at the ZOI
-  radius.
-
-- `impact`: Area under the curve up to the ZOI radius.
-
-For the `data.frame` method, the returned table has columns for each ZOI
-metric. When `ci = TRUE`, the rows are the weighted `mean`, `median`,
+For the `data.frame` method, returns a `data.frame` with columns for
+each ZOI metric (`max_effect_size`, `zoi_radius`, `effect_zoi_radius`,
+`impact`). When `ci = TRUE`, the rows are the weighted `mean`, `median`,
 and the lower and upper CI quantiles. When `ci = FALSE`, the rows are
-`mean`, `median`, and one column per individual model prediction. For
-the `bag` method, the output is a `data.frame` with ZOI metrics for each
-ZOI variable in the bag.
+`mean`, `median`, and one row per individual model prediction curve
+present in the input. The table can be transformed into long format if
+`format_long = TRUE`.
 
-If `x` is a bag object, the function returns either a list or a
-data.frame of ZOI metrics for each ZOI variable in the bag. When
-`ci = TRUE`, the `stats` column contains `mean`, `median`, and the CI
-quantile labels. When `ci = FALSE`, the `stats` column contains one
-entry per individual model curve. If format_long is `TRUE`, the output
-data.frame is in long format, with a `zoi_metric` column indicating the
-type of ZOI metric (e.g., `max_effect_size`, `zoi_radius`, `impact`) and
-a `metric_value` column with the corresponding values. If
-`return_predictions = TRUE`, the function returns a list with two
-elements: `predictions`, which is a list of data.frames containing the
-prediction curves for each ZOI variable, and `zoi`, which contains the
-ZOI metrics as described above.
+For the `bag` method, returns either a list or a `data.frame` of ZOI
+metrics for each ZOI variable in the bag. When `ci = TRUE`, the `stats`
+column contains `mean`, `median`, and the CI quantile labels. When
+`ci = FALSE`, the `stats` column contains one entry per individual model
+curve. If `format_long = TRUE`, the output `data.frame` is in long
+format, with a `zoi_metric` column indicating the type of ZOI metric
+(e.g., `max_effect_size`, `zoi_radius`, `impact`) and a `metric_value`
+column with the corresponding values. If `return_predictions = TRUE`,
+the function returns a list with two elements: `predictions`, which is a
+list of data.frames containing the prediction curves for each ZOI
+variable, and `zoi`, which contains the ZOI metrics as described above.
 
-## See also
-
-[`predict()`](https://ninanor.github.io/oneimpact/reference/predict.md),
-[`plot_response()`](https://ninanor.github.io/oneimpact/reference/plot_response.md),
-[`implausibility()`](https://ninanor.github.io/oneimpact/reference/implausibility.md)
-\##example examples/zoi_from_curve_example.R
+## Examples
