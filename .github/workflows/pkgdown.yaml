@@ -20,11 +20,21 @@ jobs:
     permissions:
       contents: write
     steps:
+      #- name: Install GRASS GIS and other dependencies
+      #  uses: awalsh128/cache-apt-pkgs-action@latest
+      #  with:
+      #    packages: grass grass-dev grass-doc wget
+      #    version: 1.0 # change that if we change the packages above
       - name: Install GRASS GIS and other dependencies
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: grass grass-dev grass-doc wget
-          version: 1.0 # change that if we change the packages above
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y grass grass-dev grass-doc wget
+          # ensure 'grass' is on PATH (Ubuntu may only provide versioned binary)
+          GRASS_BIN=$(ls /usr/bin/grass[0-9]* 2>/dev/null | head -1)
+          if [ -n "$GRASS_BIN" ] && [ ! -f /usr/local/bin/grass ]; then
+            sudo ln -s "$GRASS_BIN" /usr/local/bin/grass
+          fi
+          grass --version
 
       - uses: actions/checkout@v4
         with:
