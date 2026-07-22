@@ -197,7 +197,7 @@ background of the input map is `0`, we set the parameter `zeroAsNA = TRUE` (defa
 which means we do need to treat background zero values as `NA`:
 
 ```{r compute_zoi_cabins}
-# compute both Zoi metrics with exponential decay, radius = 500 and 1000 m
+# compute both ZOI metrics with exponential decay, radius = 500 and 1000 m
 # since the background is NA, we use zeroAsNA = FALSE
 zoi_cabins <- calc_zoi(cabins,
                        radius = c(500, 1000),
@@ -237,7 +237,7 @@ roads data set. We again use an exponential decay ZOI with radii of 1000 and 200
 background of the input map is `NA`, we now need to set the parameter `zeroAsNA = FALSE`:
 
 ```{r compute_zoi_roads}
-# compute both Zoi metrics with exponential decay, radius = 500 and 1000 m
+# compute both ZOI metrics with exponential decay, radius = 500 and 1000 m
 # since the background is NA, we use zeroAsNA = FALSE
 zoi_roads <- calc_zoi(roads,
                       radius = c(500, 1000),
