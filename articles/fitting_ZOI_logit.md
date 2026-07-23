@@ -16,14 +16,14 @@ data, this approach yields robust, uncertainty-aware estimates of both
 the ZOI radius and the magnitude of infrastructure effects on habitat
 selection.
 
-Here we reanalyze the resource selection function fitted to reindeer
+Here, we reanalyze the resource selection function fitted to reindeer
 movement data from the Hardangervidda wild reindeer population, used in
 Niebuhr et al. 2023 to estimate the zone of influence (ZOI) and the
 cumulative impacts of tourism infrastructure on reindeer habitat
 selection during summer.
 
 The data comprises GPS positions from 115 female reindeer, recorded with
-a 3h fix rate. The data was put into a use-availabililty design, with 1
+a 3h fix rate. The data was put into a use-availability design, with 1
 used location for each 9 random locations distributed over the limits of
 the wild reindeer area. The data was intersected with environmental
 variables on land cover, four PCAs representing bio-geo-climatic
@@ -40,20 +40,20 @@ al. 2023.](reindeer_gps_points_hardanger_summer.png)
 GPS data from wild reindeer in summer in the Hardangervidda wild
 reindeer population in southern Norway; figure from Niebuhr et al. 2023.
 
-Here we show the workflow for preparing the data, fitting a conditional
+Here, we show the workflow for preparing the data, fitting a conditional
 logistic regression model to it, and checking model fits combining
 bootstrap aggregation (bagging) and penalized regression. In a bootstrap
 aggregation setup, the model is repeatedly fitted to a subset of the
 full data set and model fits are aggregated into a bag (a group of
-models). Each model model is based on a different sub-set (a resample)
-of the full data set, allowing variation among them and the estimation
-of uncertainty on the model parameters. The penalized regression
-approach allows us to perform model fitting and variable selection
-within the same procedure. For each resample the data is split into a
-fitting/train set, used to fit the individual model with multiple
-possible penalty parameters, and a tuning/test set, used to calibrate
-the model, i.e. to select the most parsimonious penalty parameter, used
-then to determine the best fitted model.
+models). Each model is based on a different sub-set (a resample) of the
+full data set, allowing variation among them and the estimation of
+uncertainty on the model parameters. The penalized regression approach
+allows us to perform model fitting and variable selection within the
+same procedure. For each resample the data is split into a fitting/train
+set, used to fit the individual model with multiple possible penalty
+parameters, and a tuning/test set, used to calibrate the model, i.e. to
+select the most parsimonious penalty parameter, used then to determine
+the best fitted model.
 
 Penalized regression might be fitted using different approaches, such as
 Ridge, Lasso, and Adaptive Lasso. Ridge regression shrinks the
@@ -285,7 +285,7 @@ f
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x55ffca3e96d0>
+    ## <environment: 0x55c584a0e000>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -339,7 +339,8 @@ for this purpose, where we define the number of times we’ll resample
 (i.e., the size of the bag, parameter `times`) and the proportion of the
 data observations that goes into fitting, calibration, and validation
 (parameter `p`) in each resample. For simplicity, we perform random
-sampling here, but the sampling can also be spatially stratified.
+sampling here, but the sampling can also be spatially stratified using
+the `sp_strat` argument.
 
 ``` r
 
@@ -430,6 +431,9 @@ comprises a list with:
   unstandardizing covariates and coefficients;
 - `metric`: The name of the metric selected for model validation, here
   `"AUC"`;
+- `alpha`: The elastic net mixing parameter used in
+  [`glmnet::glmnet()`](https://glmnet.stanford.edu/reference/glmnet.html):
+  balances ridge (0) and lasso (1) penalties;
 - `lambda`: The final penalty parameter `lambda` selected for the best
   fitted model;
 - `coef`: The coefficients for the variables in the fitted model;
@@ -490,13 +494,13 @@ str(mod, max.level = 1)
     ##  $ validation_score_all: Named num 0.913
     ##   ..- attr(*, "names")= chr "AUC"
 
-Here the model was calibrated and evaluated using the Area Under the ROC
-curve, AUC.
+Here, the model was calibrated and evaluated using the Area Under the
+ROC curve, AUC.
 
 However, in this approach we are interested not only in one single
 model, but in bootstrapping from the whole data set and producing a bag
 of models. In this case, we can use the function
-[`oneimpact::bag_fit_net_logit()`](https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.md)
+[`oneimpact::bag_fit_net_logit()`](https://ninanor.github.io/oneimpact/reference/bag_fit_net_functions.md),
 which fits all the models and produces a list with all the outputs.
 After fitting, the function
 [`oneimpact::bag_models()`](https://ninanor.github.io/oneimpact/reference/bag_models.md)
@@ -525,8 +529,8 @@ bag_object <- bag_models(fittedl, dat, score_threshold = 0.7,
 ```
 
 The resulting bag of models is a list which includes the number of
-models fitted `n`, the original formula fitted (`formula`), the fitting
-method (`method`) and validation metric (`metric`), a matrix of
+models fitted (`n`), the original formula fitted (`formula`), the
+fitting method (`method`) and validation metric (`metric`), a matrix of
 coefficients (`coef`) and the fitting, calibration, and validation
 scores (`validation_score`) for all models.
 
@@ -536,8 +540,8 @@ also transforms the validation scores into weights, so that the
 coefficients of each model might be weighted according to how well they
 fit the data. Models with a validation score below a certain threshold
 (parameter `score_threshold`) are set to weight zero and ignored in the
-final bag; the other models’ weights are transformed and normalized (to
-sum 1) according to any standard or user-defined function (set by the
+final bag; the other models’ weights are transformed and normalized (sum
+to 1) according to any standard or user-defined function (set by the
 parameter `weights_function`). As a consequence, a number of objects
 related to the weights and the weighted validation scores is also
 present in the bag object, as well as summaries of the data that are
@@ -551,9 +555,9 @@ str(bag_object, max.level = 1)
     ## List of 32
     ##  $ n                                : int 50
     ##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55ffca3e96d0> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c584a0e000> 
     ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55ffca707088> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c584cf2408> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"
@@ -597,7 +601,7 @@ str(bag_object, max.level = 1)
     ##   ..- attr(*, "names")= chr [1:23] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...
     ##  - attr(*, "class")= chr [1:2] "bag" "list"
 
-Here we have two sets of functions important for defining the bag of
+Here, we have two sets of functions important for defining the bag of
 models. The first function (defined by the parameter `score2weight`)
 defines how validation scores are transformed into weights (e.g. mean of
 scores for `score2weight_mean` and `score2weight_min_mean`) and also
@@ -628,7 +632,7 @@ bag_object$validation_score[1:10]
     ##  [8] 0.9181758 0.9194765 0.9190469
 
 In this example, all the models of the bag have a quite good (and
-equivalent) performance, with an average weighted validation AUC of \`r
+comparable) performance, with an average weighted validation AUC of \`r
 round(bag_object\$weighted_validation_score\[1\], 3). Here we go beyond
 just averaging the scores, but we also account for the weights of each
 model, with more weight for models better ranked. We can also plot the
@@ -667,7 +671,7 @@ Variable importance is computed here by the function
 by dropping certain terms in the model (parameter `type = "drop"`),
 recomputing the validation score, and comparing it to the validation
 score of the full model. The greater the difference in scores, the
-largest is the importance set to a certain variable or set of variables.
+greater is the importance set to a certain variable or set of variables.
 This can also be done through permutation of the values of each variable
 or term (parameter `type = "permutation"`), even though the result in
 theoretically the same, up to a constant (see Supplementary Material).
@@ -681,7 +685,7 @@ Variable importance can be visualized using the function
 importance <- variable_importance(bag_object, 
                                   data = dat, 
                                   type = "drop", # method = drop variable
-                                  order = "asc") # ascendent order
+                                  order = "asc") # ascending order
 ```
 
     ## Warning in variable_importance(bag_object, data = dat, type = "drop", order =
@@ -1229,9 +1233,9 @@ pred <- bag_predict_spat(bag = bag_object, data = rast_predictors,
 
 The function produces a list with:
 
-- `grid`, the data used for prediction (as a `data.frame`);
-- `weights`, the weights of each model in the bag;
-- three `SpatRaster` objects, possibly with multiple layers, with the
+- `grid`: the data used for prediction (as a `data.frame`);
+- `weights`: the weights of each model in the bag;
+- three `SpatRaster` objects (possibly with multiple layers) with the
   weighted average prediction, the weighted median prediction (+
   measures of uncertainty), and the individual model predictions for the
   habitat suitability. Which elements are returned depend on the values
@@ -1431,13 +1435,13 @@ function, the
 [`bag_predict_spat_vars()`](https://ninanor.github.io/oneimpact/reference/bag_predict_spat.md)
 function produces a list with:
 
-- `vars`, the names of the variables whose impact was predicted
+- `vars`: the names of the variables whose impact was predicted
   (typically a pattern extracted from the predictor table, which is
   similar for the same ZOI variables which change only on radii or for
   variables with linear and quadratic terms, for instance);
-- `grid`, a list of data.frames with the variables used for the
+- `grid`: a list of data.frames with the variables used for the
   prediction of each variable response;
-- `weights`, the weighted of each model in the bag;
+- `weights`: the weighted of each model in the bag;
 - three elements with the weighted average, median, and individual
   predictions; each of them consists of a list of `SpatRaster` objects,
   one for each variable list in `vars`.

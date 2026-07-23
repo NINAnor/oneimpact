@@ -644,37 +644,37 @@ cabins_zoi_nearest <- rgrass::read_RAST(all_names, return_format = "terra")
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d65229893a.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpZgglc9/file27654249752c.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d6237efac4.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpZgglc9/file276548690f94.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d64ab31a9d.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpZgglc9/file27652efd877e.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d65472a7a8.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpZgglc9/file27652050af58.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d61ea88e26.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpZgglc9/file276558c19ad7.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpeYeIng/file27d625e929ab.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpZgglc9/file27652d1c88d1.grd> created.
 
 title_plot <- c("Euclidean distance", "Log distance (base 10)",
                 "Exponential ZoI 1000m", "Bartlett ZoI 1000m",
