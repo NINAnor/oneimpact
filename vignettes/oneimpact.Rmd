@@ -27,7 +27,7 @@ calculation of zone of influence (ZOI) metrics based both
 on the nearest influence only and the cumulative influence of multiple features
 of a given type of infrastructure.
 By calculating the ZOI of the nearest feature and the cumulative ZOI of multiple
-features using different ZOI shapes and radii, it is possible to use these different
+features using different ZOI decay shapes and radii, it is possible to use these different
 metrics as covariates in ecological models and evaluate how strongly different
 infrastructure types affect ecological processes, how their impact spreads in space,
 how far they reach, and if the impact of multiple features accumulate.
@@ -35,15 +35,13 @@ The approach is described in details in Niebuhr et al. (*submitted*) and
 exemplified in this document.
 
 The discussion around the impacts of anthropogenic disturbance and their zone of
-influence is closely linked to the studies on habitat amount and fragmentation 
-and the *scale of effect* of spatial variables on species-habitat relationships, 
-widely explored in the landscape ecology literature (e.g. Miguet et al., 2016; 
+influence is closely linked to the studies on quantity, quality, and fragmentation of suitable habitat and the *scale of effect* of spatial variables on species-habitat relationships (e.g. Miguet et al., 2016; 
 Huais, 2018). For all practical purposes, estimating the ZOI of anthropogenic 
 disturbances is similar to estimating their scale of effect while also taking
 into account the shape of their influence (i.e. how they are spatially weighted;
 Miguet et al., 2017).
 
-Here we give an overview of the functions in `oneimpact`, define and illustrate 
+Here, we give an overview of the functions in `oneimpact`, define and illustrate 
 the zone of influence functions, show how to use the main package functions, 
 and provide an example of how to use this approach to annotate data for 
 statistical analysis.
@@ -52,7 +50,6 @@ To install the `oneimpact` package, it is possible to use the
 `devtools::install_github()` function:
 
 ```{r install, eval=FALSE}
-library(devtools)
 devtools::install_github(repo = "NINAnor/oneimpact", ref = "HEAD")
 ```
 
@@ -129,7 +126,7 @@ or weight matrices for use in the computation of the cumulative ZOI ("Create fil
 
 | Type of function | Function | Description | Input | Output |
 |---|----|------------|---|---|
-| ZOI functions | `dist_decay()` \ `threshold_decay()` \ `step_decay()` \ `linear_decay()` \ `bartlett_decay()` \ `tent_decay()` \ `exp_decay()` \ `gaussian_decay()` \ `half_norm_decay()` | These functions compute Zone of Influence (ZOI) decay values. The shape of the zone of influence might be changed through the argument `type` in the generic function `dist_decay()`, or through calling the other specific functions. The functions with different shapes represent multiple ways the ZOI of an infrastructure or disturbance might affect a given process in space, and the ZOI radius (parameter `radius`) controls how far this effect reaches. The rate of decay of the different ZOI functions is parameterized based on the ZOI radius – e.g the slope of `linear_decay()` is defined so that the function decreases to zero at the ZOI radius. These functions can  be used to transform arrays of (Euclidean) distance values (in one dimension)  or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. | Vector of distance values or raster of (Euclidean) distance from sources of disturbance; ZOI shape and radius | Vector or raster of ZOI values |
+| ZOI functions | `dist_decay()` \ `threshold_decay()` \ `step_decay()` \ `linear_decay()` \ `bartlett_decay()` \ `tent_decay()` \ `exp_decay()` \ `gaussian_decay()` \ `half_norm_decay()` | These functions compute Zone of Influence (ZOI) decay values. The shape of the zone of influence might be changed through the argument `type` in the generic function `dist_decay()`, or through calling the other specific functions. The functions with different shapes represent multiple ways the ZOI of an infrastructure or disturbance might affect a given process in space, and the ZOI radius (parameter `radius`) controls how far this effect reaches. The rate of decay of the different ZOI functions is parameterized based on the ZOI radius – e.g. the slope of `linear_decay()` is defined so that the function decreases to zero at the ZOI radius. These functions can  be used to transform arrays of (Euclidean) distance values (in one dimension)  or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. | Vector of distance values or raster of (Euclidean) distance from sources of disturbance; ZOI shape and radius | Vector or raster of ZOI values |
 | ZOI functions | `plot_zoi1d()` | This function plots the zone of influence functions in 1 dimensional space, for illustration purposes. When there is more than one value for `points` (the location of infrastructure or sources of disturbance), either the ZOI of the nearest feature or the cumulative ZOI can be plotted. The ZOI of the nearest feature corresponds to the maximum ZOI value from all infrastructure at each position. The cumulative ZOI corresponds to the sum of the ZOI of all infrastructure at each position. | 
 | Compute ZOI | `calc_zoi_nearest()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the zone of influence from the neareast feature of that type of infrastructure. Zones of influence are defined by functions that decay with  the distance from each infrastructure and their rate of decay is controlled by the ZOI radius (parameter `radius`), which defines  how far the influence of an infrastructure feature goes. By default, the Gaussian decay ZOI is calculated, but other  decay functions might be used (parameter `type`). The `calc_zoi_nearest()` function might also return the Euclidean distance to the nearest feature or a transformation from it (e.g. log- and sqrt-distance from the nearest feature). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of ZOI of the nearest feature | 
 | Compute ZOI | `calc_zoi_cumulative()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the cumulative zone of influence or the density of features in space. The process is done through a moving window/neighborhood analysis. The ZOI or weight matrix is defined from zone of influence  functions, which might follow different shapes (parameter `type`) and cover an area according to the ZOI radius (parameter `radius`). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of the cumulative ZOI of multiple features |
@@ -487,7 +484,7 @@ knitr::include_graphics("figure_workflow.png")
 The figure above shows a workflow for calculating the ZOI metrics and 
 using them to annotate biological data for the estimation of cumulative impacts.
 Infrastructure raster data are input to the `calc_zoi_*()` functions, which 
-allow the computation of the ZOI of the nearest feaure and the cumulative ZOI 
+allow the computation of the ZOI of the nearest feaTure and the cumulative ZOI 
 based on arguments for the ZOI shape and radius.
 The output influence rasters 
 and other environmental data are then annotated to biological data, and for each 
