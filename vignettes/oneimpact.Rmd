@@ -77,7 +77,7 @@ expands in space (or how fast it decreases with distance).
 Both functions can be run in [R environment](https://www.r-project.org/) 
 (R Core Team, 2021) and in [GRASS GIS](https://grass.osgeo.org/) 
 environment (GRASS Development Team, 2017). 
-This is defined by the parameter `where`. On the one hand, computations
+This is defined by the argument `where`. On the one hand, computations
 in R are generally fast and easy-to-use, since they make use of the optimized 
 functions from the `terra` package (Hijmans, 2022). However, computations 
 might become slow for large maps. On the other hand, in GRASS GIS, 
@@ -115,7 +115,7 @@ These and other weight matrices might be created through the function
 The function `calc_zoi_cumulative()` computes the neighborhood analysis 
 through the `terra::focal()` function in R or through one 
 of the tools in GRASS GIS: [`r.mfilter`](https://grass.osgeo.org/grass82/manuals/r.mfilter.html), [`r.resamp.filter`](https://grass.osgeo.org/grass82/manuals/r.resamp.filter.html), or [`r.neighbors`](https://grass.osgeo.org/grass82/manuals/r.neighbors.html). 
-The tool to be used might be determined by the user (parameter `module`).
+The tool to be used might be determined by the user (argument `module`).
 
 Table 1: Main functions in `oneimpact` used to compute zones of influence. They are 
 divided in three types: zone of influence functions ("ZOI functions"), functions to 
@@ -126,10 +126,10 @@ or weight matrices for use in the computation of the cumulative ZOI ("Create fil
 
 | Type of function | Function | Description | Input | Output |
 |---|----|------------|---|---|
-| ZOI functions | `dist_decay()` \ `threshold_decay()` \ `step_decay()` \ `linear_decay()` \ `bartlett_decay()` \ `tent_decay()` \ `exp_decay()` \ `gaussian_decay()` \ `half_norm_decay()` | These functions compute Zone of Influence (ZOI) decay values. The shape of the zone of influence might be changed through the argument `type` in the generic function `dist_decay()`, or through calling the other specific functions. The functions with different shapes represent multiple ways the ZOI of an infrastructure or disturbance might affect a given process in space, and the ZOI radius (parameter `radius`) controls how far this effect reaches. The rate of decay of the different ZOI functions is parameterized based on the ZOI radius – e.g. the slope of `linear_decay()` is defined so that the function decreases to zero at the ZOI radius. These functions can  be used to transform arrays of (Euclidean) distance values (in one dimension)  or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. | Vector of distance values or raster of (Euclidean) distance from sources of disturbance; ZOI shape and radius | Vector or raster of ZOI values |
+| ZOI functions | `dist_decay()` \ `threshold_decay()` \ `step_decay()` \ `linear_decay()` \ `bartlett_decay()` \ `tent_decay()` \ `exp_decay()` \ `gaussian_decay()` \ `half_norm_decay()` | These functions compute Zone of Influence (ZOI) decay values. The shape of the zone of influence might be changed through the argument `type` in the generic function `dist_decay()`, or through calling the other specific functions. The functions with different shapes represent multiple ways the ZOI of an infrastructure or disturbance might affect a given process in space, and the ZOI radius (argument `radius`) controls how far this effect reaches. The rate of decay of the different ZOI functions is parameterized based on the ZOI radius – e.g. the slope of `linear_decay()` is defined so that the function decreases to zero at the ZOI radius. These functions can  be used to transform arrays of (Euclidean) distance values (in one dimension)  or rasters of (Euclidean) distance (in two dimensions) into values of a zone of influence. The distance might represent the distance to anthropogenic infrastructure, sources of disturbance, or more broadly any type of land use class or spatial variable. | Vector of distance values or raster of (Euclidean) distance from sources of disturbance; ZOI shape and radius | Vector or raster of ZOI values |
 | ZOI functions | `plot_zoi1d()` | This function plots the zone of influence functions in 1 dimensional space, for illustration purposes. When there is more than one value for `points` (the location of infrastructure or sources of disturbance), either the ZOI of the nearest feature or the cumulative ZOI can be plotted. The ZOI of the nearest feature corresponds to the maximum ZOI value from all infrastructure at each position. The cumulative ZOI corresponds to the sum of the ZOI of all infrastructure at each position. | 
-| Compute ZOI | `calc_zoi_nearest()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the zone of influence from the neareast feature of that type of infrastructure. Zones of influence are defined by functions that decay with  the distance from each infrastructure and their rate of decay is controlled by the ZOI radius (parameter `radius`), which defines  how far the influence of an infrastructure feature goes. By default, the Gaussian decay ZOI is calculated, but other  decay functions might be used (parameter `type`). The `calc_zoi_nearest()` function might also return the Euclidean distance to the nearest feature or a transformation from it (e.g. log- and sqrt-distance from the nearest feature). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of ZOI of the nearest feature | 
-| Compute ZOI | `calc_zoi_cumulative()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the cumulative zone of influence or the density of features in space. The process is done through a moving window/neighborhood analysis. The ZOI or weight matrix is defined from zone of influence  functions, which might follow different shapes (parameter `type`) and cover an area according to the ZOI radius (parameter `radius`). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of the cumulative ZOI of multiple features |
+| Compute ZOI | `calc_zoi_nearest()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the zone of influence from the neareast feature of that type of infrastructure. Zones of influence are defined by functions that decay with  the distance from each infrastructure and their rate of decay is controlled by the ZOI radius (argument `radius`), which defines  how far the influence of an infrastructure feature goes. By default, the Gaussian decay ZOI is calculated, but other  decay functions might be used (argument `type`). The `calc_zoi_nearest()` function might also return the Euclidean distance to the nearest feature or a transformation from it (e.g. log- and sqrt-distance from the nearest feature). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of ZOI of the nearest feature | 
+| Compute ZOI | `calc_zoi_cumulative()` | This function takes in a raster with locations or counts of infrastructure features and calculates a raster representing the cumulative zone of influence or the density of features in space. The process is done through a moving window/neighborhood analysis. The ZOI or weight matrix is defined from zone of influence  functions, which might follow different shapes (argument `type`) and cover an area according to the ZOI radius (argument `radius`). | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) of the cumulative ZOI of multiple features |
 | Compute ZOI | `calc_zoi()` | This function takes in a raster with locations or counts of infrastructure and calculates a raster with either or both zone of influence metrics: the ZOI of the nearest feature and the cumulative ZOI. I.e., `calc_zoi()` can compute both `calc_zoi_nearest` and `calc_zoi_cumulative` in a single run. | Raster(s) with location of disturbance sources; ZOI shape and radius | Raster(s) with either the ZOI of the nearest feature or the cumulative ZOI, or both |
 | Create filters | `filter_create()` | This function creates matrices of weights following different functions to be used in neighborhood analyses for rasters. In the context of cumulative impact analysis, they represent the Zone of Influence (ZOI) of each infrastructure point/pixel, to be used to calculate the cumulative ZOI or density of features. | Reference raster; ZOI shape and radius | Weight matrix (or matrices when there is more than one value for the ZOI shape or radius). It can also write the matrices to files using `filter_save` |
 | Create filters | `filter_save()` | This function saves a matrix with weights (filter or kernel matrix) in an external text file. It can save either the raw matrix or save a file using the standards for running the [`r.mfilter`](https://grass.osgeo.org/grass82/manuals/r.mfilter.html) algorithm within GRASS GIS. | Matrix of weights | Text file (no output within R) |
@@ -235,7 +235,7 @@ As it is possible to see, an exponential decay ZOI with `radius = 10` does
 not imply the function is null beyond the ZOI radius, but that it goes below
 the `zoi_limit`. By default, `zoi_limit = 0.05`, but this value might be changed by
 the user (e.g. to 0.01 or other small value). Changing `zoi_limit` changes the
-interpretation of the ZOI radius parameter, though:
+interpretation of the ZOI radius argument, though:
 
 ```{r exp_2}
 # changing zoi_limit changes the interpretation of radius
@@ -374,7 +374,7 @@ it might be more interesting to
 count the number of features per pixel, since there might be more than one feature 
 within each pixel. To create a raster with the number of
 cabins per pixel, we use the function
-`terra::rasterize()` with parameter `fun = length`. We load another raster with
+`terra::rasterize()` with argument `fun = length`. We load another raster with
 100 m resolution for the area to use it as a grid for the rasterization process.
 
 ```{r rasterize}
@@ -400,7 +400,7 @@ and get the output as a raster object.
 This map might be used as it is as input for `calc_zoi_nearest()`. For this function,
 is it important for the background values of the input raster map (pixels with no cabins)
 to be `NA` (no-data). We compute the ZOI of the nearest feature using a Gaussian
-shaped ZOI with radius = 1000 m. By default, the computation is done in R (parameter
+shaped ZOI with radius = 1000 m. By default, the computation is done in R (argument
 `where = "R"`).
 
 ```{r calc_zoi_near}
@@ -412,8 +412,8 @@ plot(cabins_nearest)
 
 <!-- fig.cap="Figure 9. Zone of influence of the nearest feature for private cabins, using a Gaussian ZOI with radius = 1000 m." -->
 
-The shape of the ZOI might be changed through the parameter `type`, using the
-functions presented above. This parameter might be also set to 
+The shape of the ZOI might be changed through the argument `type`, using the
+functions presented above. This argument might be also set to 
 `type = "euclidean"`
 for only the computation of the Euclidean distance to the nearest feature or to
 `"log"` or `"sqrt"` for the log- or sqrt-transformed distance from the nearest
@@ -423,7 +423,7 @@ feature.
 
 Differently from `calc_zoi_nearest()`, the input raster map for the `calc_zoi_cumulative()`
 should present zeros as the background (pixels with no cabins). In R, background `NA`
-values might be checked and reclassified to zero using the `zeroAsNA = TRUE` parameter,
+values might be checked and reclassified to zero using the `zeroAsNA = TRUE` argument,
 but in GRASS GIS this is not implemented. In this case, the easiest procedure 
 is to prepare the input
 raster map outside GRASS or make use of the module 
@@ -446,8 +446,8 @@ plot(cabins_cumul)
 
 Notice that the output map differs considerably from the ZOI of the nearest
 feature only. Here the shape of the ZOI might also be changed through the
-parameter `type`, using the functions presented above. Alternatively, a customized
-weight matrix might be defined by the user and used as the `radius` parameter,
+argument `type`, using the functions presented above. Alternatively, a customized
+weight matrix might be defined by the user and used as the `radius` argument,
 in case which the user must set `type = "mfilter"`. Other functions to define
 weight matrices might be set e.g. through `terra::focalMat()` (Hijmans, 2022) or
 `smoothie::kernel2dmeitsjer()` (Gilleland, 2013) functions. Notice, however, that these
@@ -526,7 +526,7 @@ plot(bio_data, col = "red", add = T)
 Now we use the same procedure presented above to calculate the ZOI of the nearest 
 feature and the cumulative ZOI for different radii. We use an exponential decay ZOI and 
 vary the ZOI radius from 500 m to 1500 m. However, we use the `calc_zoi()` function
-which can compute both ZOI metrics at once. To do so, we set the parameter `zeroAsNA`
+which can compute both ZOI metrics at once. To do so, we set the argument `zeroAsNA`
 to `FALSE`, since our input raster map has `NA` as background values. We plot the
 ZOI layers below.
 
