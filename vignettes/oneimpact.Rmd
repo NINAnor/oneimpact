@@ -482,7 +482,7 @@ are recasted as a model selection rather than a parameterization problem.
 knitr::include_graphics("figure_workflow.png")
 ```
 
-<!-- fig.cap="Figure 11. Workflow for calculating infrastructure ZOI and estimating the cumulative impact and ZOI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZOI of the nearest feaure and the cumulative ZOI based on arguments for the ZOI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZOI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I." -->
+<!-- fig.cap="Figure 11. Workflow for calculating infrastructure ZOI and estimating the cumulative impact and ZOI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZOI of the nearest feaure and the cumulative ZOI based on arguments for the ZOI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZOI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the ZOI radius for each infrastructure type and calculate the impact I." -->
 
 The figure above shows a workflow for calculating the ZOI metrics and 
 using them to annotate biological data for the estimation of cumulative impacts.
@@ -494,7 +494,7 @@ and other environmental data are then annotated to biological data, and for each
 infrastructure type each ZOI metric defined by a shape and radius is considered 
 as a different candidate for a predictor variable. The annotated data is then 
 analyzed through the statistical modeling procedures selected by the user 
-to estimate the effect size and the Zoi radius for each infrastructure 
+to estimate the effect size and the ZOI radius for each infrastructure 
 type and calculate the impact.
 
 Here we simulate a data set of sampling points and a theoretical random biological 
