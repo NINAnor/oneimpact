@@ -41,23 +41,23 @@ rgrass::execGRASS("g.region", raster = cabins_g,
 # Input map name within GRASS GIS
 cabins_g
 
-# Exponential decay ZoI=1000m
+# Exponential decay ZOI=1000m
 expdecay_name <- calc_zoi_nearest(cabins_g, type = "exp_decay",
                                   radius = 1000,
                                   where = "GRASS",
                                   g_verbose = FALSE, g_overwrite = TRUE)
 
-# Bartlett decay ZoI=1000m
+# Bartlett decay ZOI=1000m
 bartlett_name <- calc_zoi_nearest(cabins_g, type = "bartlett",
                                   radius = 1000,
                                   where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
 
-# Threshold influence ZoI = 1000m
+# Threshold influence ZOI = 1000m
 threshold_name <- calc_zoi_nearest(cabins_g, type = "threshold",
                                    radius = 1000,
                                    where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
 
-# Gaussian influence ZoI = 1000m
+# Gaussian influence ZOI = 1000m
 gaussian_name <- calc_zoi_nearest(cabins_g, type = "Gauss",
                                   radius = 1000,
                                   where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
@@ -79,8 +79,8 @@ euclidean_name <- calc_zoi_nearest(cabins_g, type = "euclidean",
 cabins_zoi_nearest <- rgrass::read_RAST(all_names, return_format = "terra")
 
 title_plot <- c("Euclidean distance", "Log distance (base 10)",
-                "Exponential ZoI 1000m", "Bartlett ZoI 1000m",
-                "Threshold ZoI 1000m", "Gaussian ZoI 1000m")
+                "Exponential ZOI 1000m", "Bartlett ZOI 1000m",
+                "Threshold ZOI 1000m", "Gaussian ZOI 1000m")
 terra::plot(cabins_zoi_nearest, main = title_plot)
 
 # remove rasters created

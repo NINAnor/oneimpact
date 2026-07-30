@@ -146,7 +146,7 @@ terra::plot(c(cabins_sqrtdist_r, cabins_sqrtdist_grass),
 
 # Exponental decay influence
 
-Example with ZoI = 1000m
+Example with ZOI = 1000m
 
 ```{r exp_decay}
 # R
@@ -171,7 +171,7 @@ terra::plot(c(cabins_exp_decay_r, cabins_exp_decay_grass),
 
 # Bartlett decay
 
-Example with ZoI = 1000m
+Example with ZOI = 1000m
 
 
 ```{r bartlett}
@@ -197,7 +197,7 @@ terra::plot(c(cabins_bartlett_r, cabins_bartlett_grass),
 
 # Half-normal (Gaussian) decay influence
 
-Example with ZoI = 1000m
+Example with ZOI = 1000m
 
 ```{r gaussian}
 # R

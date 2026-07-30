@@ -88,7 +88,7 @@ f4_2 <- ggplot(data.frame(x = c(-30, 30)), aes(x = x)) +
   theme_bw()
 f4_2
 
-# plot several ZoI with the same radius
+# plot several ZOI with the same radius
 f1 +
   stat_function(fun = threshold_decay, args = list(radius = 20), linetype = 2) +
   stat_function(fun = bartlett_decay, args = list(radius = 20), linetype = 3) +

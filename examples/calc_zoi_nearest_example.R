@@ -41,7 +41,7 @@ cabins_vect |>
   sf::st_buffer(dist = radius2) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("ZoI radius"), col = c("black"), lwd = 1.1)
+legend("bottomright", legend = c("ZOI radius"), col = c("black"), lwd = 1.1)
 
 # calculate exponential decay zone of influence using half life parameter
 # if half_life = 250 m and zoi_hl_ratio = 4, zoi is 1000 m
@@ -60,7 +60,7 @@ cabins_vect |>
   sf::st_buffer(dist = half_life3*zoi_hl_ratio3) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
+legend("bottomright", legend = c("Exponential half-life", "ZOI radius"),
        col = c("red", "black"), lwd = 1.1)
 
 # calculate exponential decay zone of influence using
@@ -81,7 +81,7 @@ cabins_vect |>
   sf::st_buffer(dist = radius4) |>
   sf::st_union() |>
   plot(add = T, border = "black", )
-legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
+legend("bottomright", legend = c("Exponential half-life", "ZOI radius"),
        col = c("red", "black"), lwd = 1.1)
 
 #---
@@ -94,14 +94,14 @@ cabins_vect |>
   sf::st_buffer(dist = 1000) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("Bartlett ZoI 1000m"),
+legend("bottomright", legend = c("Bartlett ZOI 1000m"),
        col = c("black"), lwd = 1.1)
 
-# calculate threshold influence, ZoI = 1000m
+# calculate threshold influence, ZOI = 1000m
 d <- calc_zoi_nearest(cabins, type = "threshold", radius = 1000)
 plot(d)
 
-# Gaussian decay influence, ZoI = 1000m
+# Gaussian decay influence, ZOI = 1000m
 g_d <- calc_zoi_nearest(cabins, type = "Gauss", radius = 1000)
 plot(g_d)
 
@@ -110,7 +110,7 @@ cabins_vect |>
   sf::st_buffer(dist = 1000) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("Gaussian ZoI 1000m"),
+legend("bottomright", legend = c("Gaussian ZOI 1000m"),
        col = c("black"), lwd = 1.1)
 
 #--------------------
