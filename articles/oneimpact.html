@@ -84,31 +84,30 @@ related to the calculation of zone of influence (ZOI) metrics based both
 on the nearest influence only and the cumulative influence of multiple
 features of a given type of infrastructure. By calculating the ZOI of
 the nearest feature and the cumulative ZOI of multiple features using
-different ZOI shapes and radii, it is possible to use these different
-metrics as covariates in ecological models and evaluate how strongly
-different infrastructure types affect ecological processes, how their
-impact spreads in space, how far they reach, and if the impact of
+different ZOI decay shapes and radii, it is possible to use these
+different metrics as covariates in ecological models and evaluate how
+strongly different infrastructure types affect ecological processes, how
+their impact spreads in space, how far they reach, and if the impact of
 multiple features accumulate. The approach is described in details in
 Niebuhr et al. (<em>submitted</em>) and exemplified in this
 document.</p>
 <p>The discussion around the impacts of anthropogenic disturbance and
-their zone of influence is closely linked to the studies on habitat
-amount and fragmentation and the <em>scale of effect</em> of spatial
-variables on species-habitat relationships, widely explored in the
-landscape ecology literature (e.g. Miguet et al., 2016; Huais, 2018).
-For all practical purposes, estimating the ZOI of anthropogenic
-disturbances is similar to estimating their scale of effect while also
-taking into account the shape of their influence (i.e. how they are
-spatially weighted; Miguet et al., 2017).</p>
-<p>Here we give an overview of the functions in <code>oneimpact</code>,
+their zone of influence is closely linked to the studies on quantity,
+quality, and fragmentation of suitable habitat and the <em>scale of
+effect</em> of spatial variables on species-habitat relationships
+(e.g. Miguet et al., 2016; Huais, 2018). For all practical purposes,
+estimating the ZOI of anthropogenic disturbances is similar to
+estimating their scale of effect while also taking into account the
+shape of their influence (i.e. how they are spatially weighted; Miguet
+et al., 2017).</p>
+<p>Here, we give an overview of the functions in <code>oneimpact</code>,
 define and illustrate the zone of influence functions, show how to use
 the main package functions, and provide an example of how to use this
 approach to annotate data for statistical analysis.</p>
 <p>To install the <code>oneimpact</code> package, it is possible to use
 the <code>devtools::install_github()</code> function:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"NINAnor/oneimpact"</span>, ref <span class="op">=</span> <span class="st">"HEAD"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span>repo <span class="op">=</span> <span class="st">"NINAnor/oneimpact"</span>, ref <span class="op">=</span> <span class="st">"HEAD"</span><span class="op">)</span></span></code></pre></div>
 <p>Once installed, we now load the <code>oneimpact</code> package and
 other packages used in this vignette.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -132,21 +131,21 @@ ZOI, and <code>radius</code>, which defines how far the influence
 expands in space (or how fast it decreases with distance).</p>
 <p>Both functions can be run in <a href="https://www.r-project.org/" class="external-link">R
 environment</a> (R Core Team, 2021) and in <a href="https://grass.osgeo.org/" class="external-link">GRASS GIS</a> environment (GRASS
-Development Team, 2017). This is defined by the parameter
-<code>where</code>. On the one hand, computations in R are generally
-fast and easy-to-use, since they make use of the optimized functions
-from the <code>terra</code> package (Hijmans, 2022). However,
-computations might become slow for large maps. On the other hand, in
-GRASS GIS, it is possible to compute the ZOI for very large maps using
-the software’s compiled tools, and given that GRASS GIS does not store
-maps in the computer’s memory. In GRASS GIS, the calculation of the ZOI
-requires an active connection between the R session and a GRASS GIS
-location and mapset (through the package <code>rgrass7</code>; Bivand,
-2022), and that the input maps are already loaded within this GRASS GIS
-mapset. Furthermore, in GRASS GIS the function returns only the name of
-the output map. This map is stored in the GRASS GIS location/mapset, and
-might be retrieved to R through the <code>rgrass7::read_RAST()</code>
-function or exported outside GRASS using the <a href="https://grass.osgeo.org/grass82/manuals/r.out.gdal.html" class="external-link"><code>r.out.gdal</code></a>
+Development Team, 2017). This is defined by the argument
+<code>where</code>. Computations in R are generally fast and
+easy-to-use, since they make use of the optimized functions from the
+<code>terra</code> package (Hijmans, 2022). However, computations might
+become slow for large maps. Alternatively, in GRASS GIS, it is possible
+to compute the ZOI for very large maps using the software’s compiled
+tools as GRASS GIS does not store maps in the computer’s memory. In
+GRASS GIS, the calculation of the ZOI requires an active connection
+between the R session and a GRASS GIS location and mapset (through the
+package <code>rgrass7</code>; Bivand, 2022) and that the input maps are
+already loaded within this GRASS GIS mapset. Furthermore, in GRASS GIS,
+the function returns only the name of the output map. This map is stored
+in the GRASS GIS location/mapset, and may be retrieved to R through the
+<code>rgrass7::read_RAST()</code> function or exported outside GRASS
+using the <a href="https://grass.osgeo.org/grass82/manuals/r.out.gdal.html" class="external-link"><code>r.out.gdal</code></a>
 module, for instance. See this <a href="https://ninanor.github.io/oneimpact/articles/zoi_on_grass.html">other
 vignette</a> for more details on how to compute ZOI metrics in
 GRASS.</p>
@@ -155,27 +154,27 @@ GRASS.</p>
 of distance to the nearest feature. First, this map is computed through
 the <code><a href="https://rspatial.github.io/terra/reference/distance.html" class="external-link">terra::distance()</a></code> function in R or the <a href="https://grass.osgeo.org/grass82/manuals/r.grow.distance.html" class="external-link"><code>r.grow.distance</code></a>
 module in GRASS. Then, ZOI functions are applied to transform these maps
-into zones of influence. The zone of influence functions implemented in
-<code>oneimpact</code> are shown in Table 1 and might be explored with
-the command <code><a href="../reference/zoi_functions.html">help(zoi_functions)</a></code>. They might also be plotted
-in 1 dimensional space with the <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code> function, for
-illustration of their behavior.</p>
+into zones of influence. The ZOI functions implemented in
+<code>oneimpact</code> are shown in Table 1 and can be explored with the
+command <code><a href="../reference/zoi_functions.html">help(zoi_functions)</a></code>. The ZOI functions can also be
+plotted in 1 dimensional space with the <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>
+function, for illustration of their behavior.</p>
 <p>The cumulative ZOI of multiple features (the output of
 <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>) is based on a neighborhood analysis
 using spatial filters that determine the ZOI functions. The same ZOI
-functions might be used in both <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code> and
+functions can be used in either <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code> or
 <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>, accounting for different ZOI shapes
 and radii, but in the latter they are used to create weight matrices as
 input for the neighborhood analysis. The function already has built-in
 choices for the ZOI functions that determine the weight matrix. These
-and other weight matrices might be created through the function
+and other weight matrices can be created using the function
 <code><a href="../reference/filter_create.html">filter_create()</a></code>. The function
 <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> computes the neighborhood analysis
 through the <code><a href="https://rspatial.github.io/terra/reference/focal.html" class="external-link">terra::focal()</a></code> function in R or through one of
 the tools in GRASS GIS: <a href="https://grass.osgeo.org/grass82/manuals/r.mfilter.html" class="external-link"><code>r.mfilter</code></a>,
 <a href="https://grass.osgeo.org/grass82/manuals/r.resamp.filter.html" class="external-link"><code>r.resamp.filter</code></a>,
 or <a href="https://grass.osgeo.org/grass82/manuals/r.neighbors.html" class="external-link"><code>r.neighbors</code></a>.
-The tool to be used might be determined by the user (parameter
+The tool to be used can be determined by the user (argument
 <code>module</code>).</p>
 <p>Table 1: Main functions in <code>oneimpact</code> used to compute
 zones of influence. They are divided in three types: zone of influence
@@ -209,14 +208,14 @@ for use in the computation of the cumulative ZOI (“Create filters”).</p>
  <code><a href="../reference/zoi_functions.html">half_norm_decay()</a></code>
 </td>
 <td>These functions compute Zone of Influence (ZOI) decay values. The
-shape of the zone of influence might be changed through the argument
+shape of the zone of influence can be changed through the argument
 <code>type</code> in the generic function <code><a href="../reference/zoi_functions.html">dist_decay()</a></code>, or
 through calling the other specific functions. The functions with
 different shapes represent multiple ways the ZOI of an infrastructure or
 disturbance might affect a given process in space, and the ZOI radius
-(parameter <code>radius</code>) controls how far this effect reaches.
-The rate of decay of the different ZOI functions is parameterized based
-on the ZOI radius – e.g the slope of <code><a href="../reference/zoi_functions.html">linear_decay()</a></code> is
+(argument <code>radius</code>) controls how far this effect extends. The
+rate of decay of the different ZOI functions is parameterized based on
+the ZOI radius – e.g. the slope of <code><a href="../reference/zoi_functions.html">linear_decay()</a></code> is
 defined so that the function decreases to zero at the ZOI radius. These
 functions can be used to transform arrays of (Euclidean) distance values
 (in one dimension) or rasters of (Euclidean) distance (in two
@@ -239,22 +238,22 @@ ZOI can be plotted. The ZOI of the nearest feature corresponds to the
 maximum ZOI value from all infrastructure at each position. The
 cumulative ZOI corresponds to the sum of the ZOI of all infrastructure
 at each position.</td>
-<td></td>
-<td></td>
+<td>Vector of x-axis location(s) of infrastructure</td>
+<td>Plot of computed nearest or cumulative ZOI</td>
 </tr>
 <tr class="odd">
 <td>Compute ZOI</td>
 <td><code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code></td>
 <td>This function takes in a raster with locations or counts of
 infrastructure features and calculates a raster representing the zone of
-influence from the neareast feature of that type of infrastructure.
-Zones of influence are defined by functions that decay with the distance
-from each infrastructure and their rate of decay is controlled by the
-ZOI radius (parameter <code>radius</code>), which defines how far the
+influence from the nearest feature of that type of infrastructure. Zones
+of influence are defined by functions that decay with the distance from
+each infrastructure and their rate of decay is controlled by the ZOI
+radius (argument <code>radius</code>), which defines how far the
 influence of an infrastructure feature goes. By default, the Gaussian
 decay ZOI is calculated, but other decay functions might be used
-(parameter <code>type</code>). The <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>
-function might also return the Euclidean distance to the nearest feature
+(argument <code>type</code>). The <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>
+function can also return the Euclidean distance to the nearest feature
 or a transformation from it (e.g. log- and sqrt-distance from the
 nearest feature).</td>
 <td>Raster(s) with location of disturbance sources; ZOI shape and
@@ -268,9 +267,9 @@ radius</td>
 infrastructure features and calculates a raster representing the
 cumulative zone of influence or the density of features in space. The
 process is done through a moving window/neighborhood analysis. The ZOI
-or weight matrix is defined from zone of influence functions, which
-might follow different shapes (parameter <code>type</code>) and cover an
-area according to the ZOI radius (parameter <code>radius</code>).</td>
+or weight matrix is defined from zone of influence functions, which may
+follow different shapes (argument <code>type</code>) and cover an area
+according to the ZOI radius (argument <code>radius</code>).</td>
 <td>Raster(s) with location of disturbance sources; ZOI shape and
 radius</td>
 <td>Raster(s) of the cumulative ZOI of multiple features</td>
@@ -428,7 +427,7 @@ to infrastructure, and the rate of decay is set so that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>=</mo><msub><mi>ϕ</mi><mrow><mi>l</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\phi = \phi_{limit}</annotation></semantics></math>
 at the ZOI radius
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">d = r</annotation></semantics></math>).
-The exponential decay might be calculated using the
+The exponential decay can be calculated using the
 <code><a href="../reference/zoi_functions.html">exp_decay()</a></code> function:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># exponential decay ZOI with radius = 10</span></span>
@@ -441,10 +440,10 @@ The exponential decay might be calculated using the
 <p>As it is possible to see, an exponential decay ZOI with
 <code>radius = 10</code> does not imply the function is null beyond the
 ZOI radius, but that it goes below the <code>zoi_limit</code>. By
-default, <code>zoi_limit = 0.05</code>, but this value might be changed
-by the user (e.g. to 0.01 or other small value). Changing
+default, <code>zoi_limit = 0.05</code>, but this value can be changed by
+the user (e.g. to 0.01 or another small value). Changing
 <code>zoi_limit</code> changes the interpretation of the ZOI radius
-parameter, though:</p>
+argument, though:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># changing zoi_limit changes the interpretation of radius</span></span>
 <span><span class="fu"><a href="../reference/zoi_functions.html">exp_decay</a></span><span class="op">(</span><span class="fl">5</span>, radius <span class="op">=</span> <span class="fl">10</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="co"># within the radius</span></span>
@@ -453,7 +452,7 @@ parameter, though:</p>
 <span><span class="co">#&gt; [1] 0.01</span></span>
 <span><span class="fu"><a href="../reference/zoi_functions.html">exp_decay</a></span><span class="op">(</span><span class="fl">15</span>, radius <span class="op">=</span> <span class="fl">10</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="co"># beyond the radius</span></span>
 <span><span class="co">#&gt; [1] 0.001</span></span></code></pre></div>
-<p>We visualize the function shape in 1 dimension space:</p>
+<p>We can visualize the function shape in 1 dimension space:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># threshold ZOI with radius = 10</span></span>
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="fl">0</span>, radius <span class="op">=</span> <span class="fl">10</span>, fun <span class="op">=</span> <span class="va">exp_decay</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -461,11 +460,11 @@ parameter, though:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/plot_exp-1.png" class="r-plt" alt="" width="700"></p>
 <!-- fig.cap="Figure 3. Illustration of an exponential decay ZOI with ZOI radius = 10 and ZOI limit = 0.05." -->
-<p>We add to the plot a horizontal dashed line at
+<p>The additional horizontal dashed line at
 <code>zoi_limit = 0.05</code> and vertical dashed lines at
 <code>x = 10</code> and <code>x = -10</code> (since
-<code>radius = 10</code>), to show that the ZOI radius represents the
-distance where the ZOI reaches <code>zoi_limit</code>.</p>
+<code>radius = 10</code>) illustrate how the ZOI radius corresponds to
+the distance where the ZOI reaches <code>zoi_limit</code>.</p>
 </div>
 <div class="section level5">
 <h5 id="gaussian-decay-function">Gaussian decay function<a class="anchor" aria-label="anchor" href="#gaussian-decay-function"></a>
@@ -475,7 +474,7 @@ normal shape, and the rate of decay is set so that
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>=</mo><msub><mi>ϕ</mi><mrow><mi>l</mi><mi>i</mi><mi>m</mi><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\phi = \phi_{limit}</annotation></semantics></math>
 at the ZOI radius
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">d = r</annotation></semantics></math>).
-The Gaussian decay might be calculated using the
+The Gaussian decay can be calculated using the
 <code><a href="../reference/zoi_functions.html">gaussian_decay()</a></code> and <code><a href="../reference/zoi_functions.html">half_norm_decay()</a></code>
 functions:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -496,12 +495,12 @@ functions:</p>
 <!-- fig.cap="Figure 4. Illustration of a Gaussian decay ZOI with ZOI radius = 10 and ZOI limit = 0.05." -->
 <p>Notice that, even though the ZOI radius
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
-is defined for all the functions, the change in their shape strongly
-modifies the interpretation of how the ZOI changes with distance. These
-functions set here might be used to calculate the ZOI of nearest feature
-or to define weight matrices and calculate the cumulative ZOI of
-multiple features. Alternatively, the generic function
-<code><a href="../reference/zoi_functions.html">dist_decay()</a></code> can accomodate all these shapes by using the
+is defined as 10 for all the decay functions, the change in their shape
+strongly modifies the interpretation of how the ZOI changes with
+distance. These functions set here can be used to calculate the ZOI of
+nearest feature or to define weight matrices and calculate the
+cumulative ZOI of multiple features. Alternatively, the generic function
+<code><a href="../reference/zoi_functions.html">dist_decay()</a></code> can accommodate all these shapes by using the
 argument <code>type</code>. For instance, to compute the ZOI of a
 disturbance source following a linear decay shape with radius of 6, one
 can use <code>linear_decay(x = 0, radius = 6)</code> or
@@ -514,16 +513,17 @@ can use <code>linear_decay(x = 0, radius = 6)</code> or
 </h3>
 <p>Given a ZOI function was set with a specific shape and ZOI radius and
 there is more than one infrastructure feature or source of disturbance
-in space, two metrics might be calculated for the zone of influence: the
+in space, two metrics can be calculated for the zone of influence: the
 ZOI of the nearest feature alone and the cumulative ZOI of multiple
 features.</p>
-<p>To exemplify their difference, we illustrate them using a Gaussian
-decay ZOI in 1 dimension space using the <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>
-function. We set four sources of disturbance (e.g. houses) located at
-<code>x = 0</code>, <code>x = 2</code>, <code>x = 8</code>, and
-<code>x = 12</code>, and set the ZOI radius of each feature as
-<code>radius = 3</code>. We start by plotting the ZOI of the nearest
-feature alone by setting <code>zoi_metric = "nearest"</code>:</p>
+<p>To illustrate the difference between ‘nearest’ and ‘cumulative’ ZOI,
+we will plot the Gaussian decay ZOI in 1 dimension space using the
+<code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code> function. We set four sources of disturbance
+(e.g. houses) located at <code>x = 0</code>, <code>x = 2</code>,
+<code>x = 8</code>, and <code>x = 12</code>, and set the ZOI radius of
+each feature as <code>radius = 3</code>. We start by plotting the ZOI of
+the nearest feature alone by setting
+<code>zoi_metric = "nearest"</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">disturbance_locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">8</span>, <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="va">disturbance_locations</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>,</span>
@@ -535,10 +535,10 @@ feature alone by setting <code>zoi_metric = "nearest"</code>:</p>
 <!-- fig.cap="Figure 5. Metric of ZOI of the neareast feature for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZOI with radius = 3." -->
 <p>The location of the disturbance sources is shown by the vertical
 dashed lines. Notice that the the maximum value for the ZOI of the
-nearest feature is 1.</p>
-<p>Now we do the same but considering that the ZOI of each feature
-accumulates. We do it by setting <code>zoi_metric = "cumulative"</code>
-in <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>:</p>
+nearest feature is always 1.</p>
+<p>Now, we do the same but considering that the ZOI of each feature is
+additive by setting <code>zoi_metric = "cumulative"</code> in
+<code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_zoi1d.html">plot_zoi1d</a></span><span class="op">(</span>points <span class="op">=</span> <span class="va">disturbance_locations</span>, radius <span class="op">=</span> <span class="fl">3</span>, fun <span class="op">=</span> <span class="va">gaussian_decay</span>,</span>
 <span>           zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span>, range_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -548,7 +548,7 @@ in <code><a href="../reference/plot_zoi1d.html">plot_zoi1d()</a></code>:</p>
 <p><img src="oneimpact_files/figure-html/zoi_metrics_cum-1.png" class="r-plt" alt="" width="700"></p>
 <!-- fig.cap="Figure 6. Metric of cumulative ZOI for multiple sources of disturbance illustrated in 1 dimension using a Gaussian decay ZOI with radius = 3."} -->
 <p>Notice that the the maximum value for the cumulative ZOI of multiple
-features might be higher than 1 where the ZOI of different features
+features may be greater than 1 where the ZOI of different features
 overlap.</p>
 </div>
 </div>
@@ -560,12 +560,12 @@ overlap.</p>
 </h3>
 <p>To calculate the ZOI metrics for 2 dimensional, raster objects, we
 use the functions <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code> and
-<code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>. To give an example, we present a
-data set with the location of private cabins in Norway, subset for a
-small sample region in Southern Norway. The data is mapped as points in
-vector format; more information about it might be found using the
-command <code><a href="../reference/sample_area_cabins.gpkg.html">help(sample_area_cabins.gpkg)</a></code>. We read the vector
-file using the package <code>terra</code> and plot it:</p>
+<code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>. As an example, we present a data set
+with the location of private cabins in Norway, subset for a small sample
+region in Southern Norway. The data is mapped as points in vector
+format; more information about it can be found using the command
+<code><a href="../reference/sample_area_cabins.gpkg.html">help(sample_area_cabins.gpkg)</a></code>. We read the vector file
+using the package <code>terra</code> and plot it:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># file path</span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vector/sample_area_cabins.gpkg"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
@@ -590,20 +590,22 @@ file using the package <code>terra</code> and plot it:</p>
 <p><img src="oneimpact_files/figure-html/read_vect-1.png" class="r-plt" alt="" width="700"></p>
 <!-- fig.cap="Figure 7. Location of private cabins in a study area in Souther Norway." -->
 <p>If the input map is already in raster format, it can be used directly
-in the <code>calc_zoi_*()</code> functions. In our case, since it is in
-vector format, it must be rasterized first. For many types of
-anthropogenic infrastructure or disturbance which are represented by
-lines or polygons (e.g. roads, power lines, areas of deforestation), it
-is enough to create a binary raster as a dummy variable with value 1
-where the disturbance is located and 0 (or <code>NA</code>) elsewhere
-(see an example at this other <code>oneimpact</code> <a href="https://ninanor.github.io/oneimpact/articles/computing_zoi.html">vignette</a>).
-For point representation of infrastructure and large enough pixels size,
-though, it might be more interesting to count the number of features per
-pixel, since there might be more than one feature within each pixel. To
-create a raster with the number of cabins per pixel, we use the function
-<code><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">terra::rasterize()</a></code> with parameter
-<code>fun = length</code>. We load another raster with 100 m resolution
-for the area to use it as a grid for the rasterization process.</p>
+in the <code>calc_zoi_*()</code> functions. However, in our case, the
+data must be rasterized first since it is in vector format. For many
+types of anthropogenic infrastructure or disturbance that are
+represented by lines or polygons (e.g. roads, power lines, areas of
+deforestation), it is sufficient to create a binary raster as a dummy
+variable with value 1 where the disturbance is located and 0 (or
+<code>NA</code>) elsewhere (see an example at this other
+<code>oneimpact</code> <a href="https://ninanor.github.io/oneimpact/articles/computing_zoi.html">vignette</a>).
+For point representation of infrastructure and when the raster
+resolution is coarse relative to vector data, it might be more
+interesting to count the number of features per pixel, as there may be
+more than one feature within each pixel. To create a raster with the
+number of cabins per pixel, we use the function
+<code><a href="https://rspatial.github.io/terra/reference/rasterize.html" class="external-link">terra::rasterize()</a></code> with argument <code>fun = length</code>.
+We load another raster with 100 m resolution for the area to use it as a
+grid for the rasterization process.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load grid</span></span>
 <span><span class="va">s2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/sample_area_cabins.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span></span>
@@ -635,12 +637,14 @@ object.</p>
 <div class="section level3">
 <h3 id="compute-the-zoi-of-the-nearest-feature-only">Compute the ZOI of the nearest feature only<a class="anchor" aria-label="anchor" href="#compute-the-zoi-of-the-nearest-feature-only"></a>
 </h3>
-<p>This map might be used as it is as input for
-<code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>. For this function, is it important for
-the background values of the input raster map (pixels with no cabins) to
-be <code>NA</code> (no-data). We compute the ZOI of the nearest feature
-using a Gaussian shaped ZOI with radius = 1000 m. By default, the
-computation is done in R (parameter <code>where = "R"</code>).</p>
+<p>A raster map of ZOI of the nearest feature can be computed using
+<code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code> using a raster of infrastructure
+locations as input. For this function, is it important for the
+background values of the input raster map (pixels with no cabins) to be
+<code>NA</code> (no-data). For illustration, we compute the ZOI of the
+nearest feature using a Gaussian shaped ZOI with radius = 1000 m. By
+default, the computation is done in R (argument
+<code>where = "R"</code>).</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate ZOI</span></span>
 <span><span class="va">cabins_nearest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest</a></span><span class="op">(</span><span class="va">cabins_rast</span>, radius <span class="op">=</span> <span class="fl">1000</span>, type <span class="op">=</span> <span class="st">"Gauss"</span><span class="op">)</span></span>
@@ -648,23 +652,24 @@ computation is done in R (parameter <code>where = "R"</code>).</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_nearest</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/calc_zoi_near-1.png" class="r-plt" alt="" width="700"></p>
 <!-- fig.cap="Figure 9. Zone of influence of the nearest feature for private cabins, using a Gaussian ZOI with radius = 1000 m." -->
-<p>The shape of the ZOI might be changed through the parameter
-<code>type</code>, using the functions presented above. This parameter
-might be also set to <code>type = "euclidean"</code> for only the
-computation of the Euclidean distance to the nearest feature or to
-<code>"log"</code> or <code>"sqrt"</code> for the log- or
-sqrt-transformed distance from the nearest feature.</p>
+<p>The shape of the ZOI can be changed through the argument
+<code>type</code>, using the functions presented above. The
+<code>type</code> argument can be set to <code>type = "euclidean"</code>
+for calculation of the Euclidean distance to the nearest feature,
+<code>"log"</code> for the log-transformed distance, or
+<code>"sqrt"</code> for the square root-transformed distance from the
+nearest feature.</p>
 </div>
 <div class="section level3">
 <h3 id="compute-the-cumulative-zoi-of-multiple-features">Compute the cumulative ZOI of multiple features<a class="anchor" aria-label="anchor" href="#compute-the-cumulative-zoi-of-multiple-features"></a>
 </h3>
-<p>Differently from <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>, the input raster
-map for the <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> should present zeros as
-the background (pixels with no cabins). In R, background <code>NA</code>
-values might be checked and reclassified to zero using the
-<code>zeroAsNA = TRUE</code> parameter, but in GRASS GIS this is not
-implemented. In this case, the easiest procedure is to prepare the input
-raster map outside GRASS or make use of the module
+<p>In contrast to <code><a href="../reference/calc_zoi_nearest.html">calc_zoi_nearest()</a></code>, the input raster map
+for the <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code> must use zeros as the
+background without infrastructure (e.g. pixels with no cabins). In R,
+background <code>NA</code> values can be checked and reclassified to
+zero using the <code>zeroAsNA = TRUE</code> argument, however, this is
+not implemented in GRASS GIS. In this case, the easiest procedure is to
+prepare the input raster map outside GRASS or make use of the module
 <code>[r.null](https://grass.osgeo.org/grass82/manuals/r.null.html)</code>
 for managing no-data values is rasters within GRASS. We calculate the
 cumulative ZOI of multiple features using the same setup – a Gaussian
@@ -680,27 +685,27 @@ shaped ZOI with radius = 1000 m.</p>
 <p><img src="oneimpact_files/figure-html/calc_zoi_cum-1.png" class="r-plt" alt="" width="700"></p>
 <!-- fig.cap="Figure 10. Cumulative zone of influence of multiple features for private cabins, using a Gaussian ZOI with radius = 1000 m." -->
 <p>Notice that the output map differs considerably from the ZOI of the
-nearest feature only. Here the shape of the ZOI might also be changed
-through the parameter <code>type</code>, using the functions presented
-above. Alternatively, a customized weight matrix might be defined by the
-user and used as the <code>radius</code> parameter, in case which the
+nearest feature only. Here, the shape of the ZOI can also be changed
+through the argument <code>type</code>, using the functions presented
+above. Alternatively, a customized weight matrix can be defined by the
+user and used as the <code>radius</code> argument, in case which the
 user must set <code>type = "mfilter"</code>. Other functions to define
-weight matrices might be set e.g. through <code><a href="https://rspatial.github.io/terra/reference/focalMat.html" class="external-link">terra::focalMat()</a></code>
+weight matrices can be set e.g. through <code><a href="https://rspatial.github.io/terra/reference/focalMat.html" class="external-link">terra::focalMat()</a></code>
 (Hijmans, 2022) or <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code> (Gilleland,
 2013) functions. Notice, however, that these functions are parameterized
 differently, with no reference to the ZOI radius as the ones defined in
 <code>oneimpact</code>.</p>
-<p>For <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>, the user might choose between
+<p>For <code><a href="../reference/calc_zoi_cumulative.html">calc_zoi_cumulative()</a></code>, the user can choose between
 computing the cumulative ZOI metric when
-<code>output_type = "cumulative_zoi"</code> (default), or the density of
+<code>output_type = "cumulative_zoi"</code> (default) or the density of
 features if <code>output_type = "density"</code>. The cumulative ZOI is
-the (distance weighted) number of features per unit of space, and might
-assumes values much higher than one when there are features located
+the (distance weighted) number of features per unit of space, and can
+produce values much greater than one when there are features located
 closer than the ZOI (see the illustrations above). The calculation of
 the density of features, on the other hand, occurs after a normalization
-of the weight matrix, so that its values sum 1. As a consequence, the
-density of features generally presents values lower than or close to 1.
-Both measures represent the same spatial variation, but the
+of the weight matrix, so that its values sum to 1. As a consequence, the
+density of features generally presents values smaller than or close to
+1. Both measures represent the same spatial variation, but the
 interpretation of their values is different.</p>
 </div>
 </div>
@@ -719,20 +724,20 @@ infrastructure features accumulate and the identification of the ZOI
 shape and radius are recasted as a model selection rather than a
 parameterization problem.</p>
 <p><img src="figure_workflow.png" class="r-plt" alt="" width="100%"></p>
-<!-- fig.cap="Figure 11. Workflow for calculating infrastructure ZOI and estimating the cumulative impact and ZOI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZOI of the nearest feaure and the cumulative ZOI based on arguments for the ZOI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZOI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the Zoi radius for each infrastructure type and calculate the impact I." -->
+<!-- fig.cap="Figure 11. Workflow for calculating infrastructure ZOI and estimating the cumulative impact and ZOI radius of multiple infrastructure. Infrastructure raster data are input to the calc\\_zoi\\_*() functions, which allow the calculation of the ZOI of the nearest feaure and the cumulative ZOI based on arguments for the ZOI shape and radius. The output influence rasters and other environmental data are then annotated to biological data, and for each infrastructure type each ZOI metric defined by a shape and radius is considered as a different covariate. The annotated data is then analyzed to estimate the effect size and the ZOI radius for each infrastructure type and calculate the impact I." -->
 <p>The figure above shows a workflow for calculating the ZOI metrics and
 using them to annotate biological data for the estimation of cumulative
 impacts. Infrastructure raster data are input to the
 <code>calc_zoi_*()</code> functions, which allow the computation of the
-ZOI of the nearest feaure and the cumulative ZOI based on arguments for
+ZOI of the nearest feature and the cumulative ZOI based on arguments for
 the ZOI shape and radius. The output influence rasters and other
 environmental data are then annotated to biological data, and for each
 infrastructure type each ZOI metric defined by a shape and radius is
 considered as a different candidate for a predictor variable. The
 annotated data is then analyzed through the statistical modeling
-procedures selected by the user to estimate the effect size and the Zoi
+procedures selected by the user to estimate the effect size and the ZOI
 radius for each infrastructure type and calculate the impact.</p>
-<p>Here we simulate a data set of sampling points and a theoretical
+<p>Next, we simulate a data set of sampling points and a theoretical
 random biological response variable to show the process of calculation
 of ZOI variables and the annotation of the biological data.</p>
 <p>First we create in the study area <code>n = 40</code> random
@@ -759,11 +764,11 @@ The simulated sampled data is plotted below.</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_vect</span>, cex <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bio_data</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/set_points-1.png" class="r-plt" alt="" width="700"><!-- fig.cap="Figure 12. Simulated sampling points (in red) in the study area. Black dots represent the location of private cabins." --></p>
-<p>Now we use the same procedure presented above to calculate the ZOI of
-the nearest feature and the cumulative ZOI for different radii. We use
-an exponential decay ZOI and vary the ZOI radius from 500 m to 1500 m.
-However, we use the <code><a href="../reference/calc_zoi.html">calc_zoi()</a></code> function which can compute
-both ZOI metrics at once. To do so, we set the parameter
+<p>Now, we use the same procedure presented above to calculate the ZOI
+of the nearest feature and the cumulative ZOI for different radii. We
+use an exponential decay ZOI and vary the ZOI radius from 500 m to 1500
+m. However, we use the <code><a href="../reference/calc_zoi.html">calc_zoi()</a></code> function which can
+compute both ZOI metrics at once. To do so, we set the argument
 <code>zeroAsNA</code> to <code>FALSE</code>, since our input raster map
 has <code>NA</code> as background values. We plot the ZOI layers
 below.</p>
@@ -780,7 +785,7 @@ below.</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">zoi_all</span><span class="op">)</span></span></code></pre></div>
 <p><img src="oneimpact_files/figure-html/calc_zoi_data-1.png" class="r-plt" alt="" width="700"></p>
 <p>Finally, the ZOI variables can be used to annotate the biological
-data for statistical analysis.</p>
+data for statistical analysis using <code><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">terra::extract()</a></code>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extract values</span></span>
 <span><span class="va">zoi_sampling_pts</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">extract</a></span><span class="op">(</span><span class="va">zoi_all</span>, <span class="va">bio_data</span>, <span class="op">)</span></span>
@@ -818,9 +823,9 @@ and evaluation of the cumulative effects for different types of
 infrastructure through statistical models. Statistical analyses can make
 use of model selection (Burnham &amp; Anderson, 2002; Jackson &amp;
 Fahrig, 2015; Huais, 2018), penalized regression (Lee et al., 2020), or
-machine learning approaches, for example (James et al., 2021). Such
-statistical modeling procedures are beyond the scope of
-<code>oneimpact</code>.</p>
+machine learning approaches, for example (James et al., 2021). These
+statistical modeling procedures are represented in the other vignettes
+of <code>oneimpact</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
