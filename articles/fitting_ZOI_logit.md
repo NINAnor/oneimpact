@@ -285,7 +285,7 @@ f
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x55e86e366030>
+    ## <environment: 0x55cf48493720>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -555,9 +555,9 @@ str(bag_object, max.level = 1)
     ## List of 32
     ##  $ n                                : int 50
     ##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55e86e366030> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55cf48493720> 
     ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55e86e64c288> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55cf4875a4a8> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"
@@ -1199,10 +1199,10 @@ in Norway and its surroundings.
 
 ``` r
 
-(f <- system.file("raster/rast_predictors_hardanger_500m.tif", package = "oneimpact"))
+(f <- system.file("raster/hardanger_rast_predictors_500m.tif", package = "oneimpact"))
 ```
 
-    ## [1] "/home/runner/work/_temp/Library/oneimpact/raster/rast_predictors_hardanger_500m.tif"
+    ## [1] "/home/runner/work/_temp/Library/oneimpact/raster/hardanger_rast_predictors_500m.tif"
 
 ``` r
 

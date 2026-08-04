@@ -1,6 +1,6 @@
 # Private roads vector data for the reindeer area
 
-Dataset containing the location of small, private roads is Southern
+Dataset containing the location of small, private roads in Southern
 Norway, within the reindeer management area of Setesdal Austhei.
 Retrieved from the Norwegian road dataset Elveg 1.0.
 

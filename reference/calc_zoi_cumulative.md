@@ -574,7 +574,7 @@ cabins_bin <- rgrass::read_RAST("cabins_example_bin", return_format = "terra", N
 #> Using GDAL data type <Byte>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a3e406657.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b4df34f20.grd> created.
 
 plot(cabins_bin, col = c("lightyellow", "black"),
      main = "Binarized map of cabins")
@@ -638,25 +638,25 @@ cabins_zoi_cumulative <- rgrass::read_RAST(all_names, return_format = "terra")
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a737dcc14.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b79886290.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a79f34043.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b8ddc8da.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a1ab6c28b.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b2e7019ba.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a6155b69b.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b77428657.grd> created.
 
 title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
                 "Gaussian decay 1000m", "Threshold decay 1000m")
@@ -681,7 +681,7 @@ cabins_density <- rgrass::read_RAST(exp_name_d, return_format = "terra")
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a48ac1de2.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b3c3aac93.grd> created.
 
 terra::plot(c(cabins_zoi_cumulative[[1]], cabins_density),
             main = c("Cumulative ZoI", "Density"))
@@ -708,7 +708,7 @@ rgrass::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a718aa54f.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b373c6484.grd> created.
 
 
 # bartlett
@@ -732,7 +732,7 @@ rgrass::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpKiIJCS/file235a50511824.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpA5DKk7/file248b468e362b.grd> created.
 
 
 # not run

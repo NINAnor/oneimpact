@@ -180,7 +180,7 @@ Datasets for testing the ZOI approach
 - [`reindeer_ssf`](https://ninanor.github.io/oneimpact/reference/reindeer_ssf.md)
   : Annotated data of wild reindeer in Norway, prepared for
   step-selection analysis.
-- [`rast_predictors_hardanger_500m.tif`](https://ninanor.github.io/oneimpact/reference/rast_predictors_hardanger_500m.tif.md)
+- [`hardanger_rast_predictors_500m.tif`](https://ninanor.github.io/oneimpact/reference/hardanger_rast_predictors_500m.tif.md)
   : Predictor environmental variables for the Hardangervidda wild
   reindeer area in Norway
 - [`sample_area_cabins.tif`](https://ninanor.github.io/oneimpact/reference/sample_area_cabins.tif.md)
@@ -189,6 +189,15 @@ Datasets for testing the ZOI approach
   : Cabin count raster data for the sample area
 - [`sample_area_roads.tif`](https://ninanor.github.io/oneimpact/reference/sample_area_roads.tif.md)
   : Road raster data for the sample area
+- [`hardanger_cabins_private.gpkg`](https://ninanor.github.io/oneimpact/reference/hardanger_cabins_private.gpkg.md)
+  : Private cabins vector data for the Hardangervidda wild reindeer area
+  in Norway
+- [`hardanger_cabins_public.gpkg`](https://ninanor.github.io/oneimpact/reference/hardanger_cabins_public.gpkg.md)
+  : Public cabins vector data for the Hardangervidda wild reindeer area
+  in Norway
+- [`hardanger_trails.gpkg`](https://ninanor.github.io/oneimpact/reference/hardanger_trails.gpkg.md)
+  : Tourist trails vector data for the Hardangervidda wild reindeer area
+  in Norway
 - [`sample_area.gpkg`](https://ninanor.github.io/oneimpact/reference/sample_area.gpkg.md)
   : Sample area: a polygon vector data
 - [`sample_area_cabins.gpkg`](https://ninanor.github.io/oneimpact/reference/sample_area_cabins.gpkg.md)

@@ -1,6 +1,6 @@
 # Cabins vector data for the reindeer area
 
-Dataset containing the location of tourist private cabins is Southern
+Dataset containing the location of tourist private cabins in Southern
 Norway, within the reindeer management area of Setesdal Austhei. It
 corresponds to some specific building types (object_type = "Bygning",
 byggtyp_nbr = c("161", "162", "163")) from the public N50 dataset.
