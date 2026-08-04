@@ -13,7 +13,7 @@
 #'
 #' @param filt `[matrix]` \cr Filter or weight matrix, such as one created by
 #' [oneimpact::filter_create()] or [terra::focalMat()].
-#' @param radius `[numeric(1)]` \cr Radius of the Zone of Influence (ZoI) of
+#' @param radius `[numeric(1)]` \cr Radius of the Zone of Influence (ZOI) of
 #' the matrix, in meters.
 #' @param type `[character(1)]` Function for the kernel or filter matrix
 #' (see `type` parameter for [oneimpact::filter_create()]).

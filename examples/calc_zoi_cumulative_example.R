@@ -39,6 +39,6 @@ density_exp <- calc_zoi_cumulative(cabins, type = "exp_decay", radius = 1000,
 # compare
 # note the difference in the color scales
 plot(c(cumzoi_exp[[3]], density_exp),
-     main = c("Cumulative ZoI 1000m", "Density 1000m"))
+     main = c("Cumulative ZOI 1000m", "Density 1000m"))
 
 #--------------------
