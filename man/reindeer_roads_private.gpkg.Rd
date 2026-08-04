@@ -19,7 +19,7 @@ file presents the following columns:
 \url{https://kartkatalog.geonorge.no/metadata/elveg-20/77944f7e-3d75-4f6d-ae04-c528cc72e8f6}
 }
 \description{
-Dataset containing the location of small, private roads is Southern
+Dataset containing the location of small, private roads in Southern
 Norway, within the reindeer management area of Setesdal Austhei.
 Retrieved from the Norwegian road dataset Elveg 1.0.
 }
