@@ -610,7 +610,7 @@ private and public cabins. The data is loaded for the whole study area -
 the Hardangervidda wild reindeer area in Norway and its surroundings.
 
 ```{r}
-(f <- system.file("raster/rast_predictors_hardanger_500m.tif", package = "oneimpact"))
+(f <- system.file("raster/hardanger_rast_predictors_500m.tif", package = "oneimpact"))
 rast_predictors <- terra::rast(f)
 ```
 

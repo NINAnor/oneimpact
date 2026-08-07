@@ -475,7 +475,7 @@ reindeer_rsf <- dat[,all.vars(f)]
 
 #-----------------------------------------------------
 
-# add linear infrastructure to Hander RSF example
+# add linear infrastructure to Hardanger RSF example
 library(terra)
 
 # prepared data
@@ -538,3 +538,187 @@ dat_ron |>
 rr <- terra::rast("data-raw/rast_predictors_hardanger_100.tif")
 rr[[1:5]] |>
   terra::writeRaster("/data/P-Prosjekter/41203800_oneimpact/02_sam/02_data/bio/processed/env_pcas_landcover.tif")
+
+##-----------------------
+# Adding vectors for Hardanger with a buffer of 20 km around the area
+
+library(sf)
+library(terra)
+library(DBI)
+library(NinaR)
+library(rgrass)
+
+# connect to NINA PostGIS database
+
+source("~/.pgpass")
+
+NinaR::postgreSQLConnect(
+  host = "gisdata-db.nina.no",
+  dbname = "gisdata",
+  username = pg_username,
+  password = pg_password
+)
+rm(pg_username, pg_password)
+
+ms <- "u_bb_cuminf"
+NinaR::grassConnect(mapset = ms)
+
+#--------------
+# Set region
+
+# region
+rgrass::execGRASS("v.info", map = "reindeer_areas_no_2023@p_sam_tools")
+
+rgrass::execGRASS("v.extract",
+                  input = "reindeer_areas_no_2023@p_sam_tools",
+                  output = "hardanger_temp_vector",
+                  where = "name_area=\"'Hardangervidda'\"",
+                  flags = "overwrite")
+
+rgrass::execGRASS("g.region", vector = "hardanger_temp_vector", flags = c("a", "p"))
+rgrass::execGRASS("g.region", n = "n+20000", e = "e+20000", s = "s-20000", w = "w-20000", flags = c("a", "p"))
+
+# get dimensions
+
+# connect to NINA PostGIS database
+
+source("~/.pgpass")
+
+NinaR::postgreSQLConnect(
+  host = "gisdata-db.nina.no",
+  dbname = "gisdata",
+  username = pg_username,
+  password = pg_password
+)
+rm(pg_username, pg_password)
+
+#--------------
+# Get the management area for Austhei - Norway - to match with GPS data
+reindeer_area_original <- sf::st_read(con, DBI::Id(schema = "sam_wrein_ancillary", table = "reindeer_areas"),
+                             geometry_column = "geom_e33") |>
+  dplyr::select(reindeer_areas_id, name_area, species, geom = geom_e33) |>
+  dplyr::filter(name_area == "Hardangervidda")
+
+reindeer_area <- reindeer_area_original |>
+  sf::st_buffer(dist = 25000)
+
+reindeer_area
+plot(reindeer_area[1])
+plot(reindeer_area_original, add = T)
+
+#---------------------
+# Get maps of environmental covariates
+
+#--------
+# get private cabins
+cabins_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "cabins_private_n50_no"))
+# cut
+which_within <- which(sf::st_within(cabins_all, reindeer_area, sparse = FALSE))
+cabins <- cabins_all |>
+  dplyr::slice(which_within) |>
+  dplyr::mutate(value = 1) |>
+  dplyr::select(gid, buildtype = byggtyp_nbr, city = kommune, value)
+
+cabins
+plot(cabins[1])
+
+# save
+sf::st_write(cabins, dsn = "inst/vector/hardanger_cabins_private.gpkg", delete_dsn = TRUE)
+# cabins <- sf::st_read(dsn = "inst/vector/hardanger_cabins_private.gpkg")
+# now we document by hand
+
+# try to read
+# cabins count
+(s <- system.file("vector/hardanger_cabins_private.gpkg", package = "oneimpact"))
+v <- terra::vect(s)
+terra::plot(v)
+
+#--------
+# get public cabins
+cabins_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "cabins_public_large_no"))
+# cut
+which_within <- which(sf::st_within(cabins_all, reindeer_area_original, sparse = FALSE))
+cabins <- cabins_all |>
+  dplyr::slice(which_within) |>
+  dplyr::mutate(value = 1) |>
+  dplyr::select(gid, buildtype = byggtyp_nbr, city = kommune, value)
+
+cabins
+plot(cabins[2])
+
+# save
+sf::st_write(cabins, dsn = "inst/vector/hardanger_cabins_public.gpkg", delete_dsn = TRUE)
+# cabins <- sf::st_read(dsn = "inst/vector/hardanger_cabins_public.gpkg")
+# now we document by hand
+
+# try to read
+# cabins count
+(s <- system.file("vector/hardanger_cabins_public.gpkg", package = "oneimpact"))
+v <- terra::vect(s)
+terra::plot(v)
+
+#--------
+# get trails
+trails_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "trails_summer_renrein_no"))
+# cut
+trails <- sf::st_intersection(trails_all, reindeer_area) |>
+  dplyr::mutate(value = 1) |>
+  dplyr::select(gid, area, traffic_bin, pseudotui = high_season_pseudotui, value)
+
+trails
+plot(trails[4])
+
+# save
+sf::st_write(trails, dsn = "inst/vector/hardanger_trails.gpkg", delete_dsn = TRUE)
+# trails <- sf::st_read(dsn = "inst/vector/hardanger_trails.gpkg")
+# now we document by hand
+
+# try to read
+# cabins count
+(s <- system.file("vector/hardanger_trails.gpkg", package = "oneimpact"))
+v <- sf::st_read(s)
+plot(v[4])
+
+#--------
+# get public roads - skip
+# roads_public_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "roads_public_renrein_no"))
+# # cut
+# roads_public <- sf::st_intersection(roads_public_all, reindeer_area) |>
+#   dplyr::mutate(value = 1) |>
+#   dplyr::select(id, name = gatenavn, publ_priv, traffic_bin, name_area, value)
+#
+# roads_public
+# plot(roads_public[4])
+#
+# # save
+# sf::st_write(roads_public, dsn = "inst/vector/hardanger_roads_public.gpkg", delete_dsn = TRUE)
+# # roads_public <- sf::st_read(dsn = "inst/vector/hardanger_roads_public.gpkg")
+# # now we document by hand
+#
+# # try to read
+# # cabins count
+# (s <- system.file("vector/hardanger_roads_public.gpkg", package = "oneimpact"))
+# v <- sf::st_read(s)
+# plot(v[4])
+
+#--------
+# get private roads - too big file, we skip it
+# roads_private_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "roads_private_renrein_no"))
+# # cut
+# roads_private <- sf::st_intersection(roads_private_all, reindeer_area) |>
+#   dplyr::mutate(value = 1) |>
+#   dplyr::select(id, name = gatenavn, publ_priv, traffic_bin, name_area, value)
+#
+# roads_private
+# plot(roads_private[4])
+#
+# # save
+# sf::st_write(roads_private, dsn = "inst/vector/hardanger_roads_private.gpkg", delete_dsn = TRUE)
+# roads_private <- sf::st_write(dsn = "inst/vector/hardanger_roads_private.gpkg")
+# # now we document by hand
+#
+# # try to read
+# # cabins count
+# (s <- system.file("vector/hardanger_roads_private.gpkg", package = "oneimpact"))
+# v <- sf::st_read(s)
+# plot(v[4])

@@ -178,6 +178,9 @@ NULL
 #' @source \url{https://kartkatalog.geonorge.no/metadata/elveg/ed1e6798-b3cf-48be-aee1-c0d3531da01a}
 NULL
 
+#----------------------------------------------------------------------------------------
+# Hardangervidda dataset
+
 #' Predictor environmental variables for the Hardangervidda wild reindeer area in Norway
 #'
 #' Raster data with multiple layers representing predictor environmental variables
@@ -211,7 +214,7 @@ NULL
 #' r <- terra::rast(f)
 #' plot(r)
 #'
-#' @name rast_predictors_hardanger_500m.tif
+#' @name hardanger_rast_predictors_500m.tif
 #' @seealso
 #' Data for RSF analysis, incorporating these predictors: [oneimpact::reindeer_rsf]
 #'
@@ -223,6 +226,85 @@ NULL
 #' Bakkestuen, V., Erikstad, L., & Halvorsen, R. (2008). Step-less models for regional
 #' environmental variation in Norway. Journal of Biogeography, 35(10), 1906–1922.
 #' https://doi.org/10.1111/j.1365-2699.2008.01941.x
+NULL
+
+#' Private cabins vector data for the Hardangervidda wild reindeer area in Norway
+#'
+#' Dataset containing the location of tourist private cabins in the
+#' surroundings of the Hardangervidda wild reindeer area.
+#' It corresponds to some specific building types (object_type = "Bygning",
+#' byggtyp_nbr = c("161", "162", "163")) from the public N50 dataset.
+#'
+#' @name hardanger_cabins_private.gpkg
+#'
+#' @examples
+#' (f <- system.file("vector/hardanger_cabins_private.gpkg", package = "oneimpact"))
+#' sf::st_read(f)
+#' # or
+#' v <- terra::vect(f)
+#' plot(v)
+#'
+#' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
+#' file presents the following columns:
+#' \itemize{
+#'         \item{gid:} {Line number, corresponding to the original dataset}
+#'         \item{buildtype:} {Type of building (code) in the original dataset}
+#'         \item{city:} {Code of the municipality where the cabin is located}
+#'         \item{value:} {Value 1, to be used for rasterization purposes}
+#' }
+#'
+#' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
+NULL
+
+#' Public cabins vector data for the Hardangervidda wild reindeer area in Norway
+#'
+#' Dataset containing the location of large, public DNT cabins in the
+#' surroundings of the Hardangervidda wild reindeer area.
+#' Retrieved from the public N50 dataset.
+#'
+#' @name hardanger_cabins_public.gpkg
+#'
+#' @examples
+#' (f <- system.file("vector/hardanger_cabins_public.gpkg", package = "oneimpact"))
+#' v <- terra::vect(f)
+#' plot(v)
+#'
+#' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
+#' file presents the following columns:
+#' \itemize{
+#'         \item{gid:} {Line number, corresponding to the original dataset}
+#'         \item{buildtype:} {Type of building (code) in the original dataset}
+#'         \item{city:} {Code of the municipality where the cabin is located}
+#'         \item{value:} {Value 1, to be used for rasterization purposes}
+#' }
+#'
+#' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
+NULL
+
+#' Tourist trails vector data for the Hardangervidda wild reindeer area in Norway
+#'
+#' Dataset containing the location of tourist trails in the
+#' surroundings of the Hardangervidda wild reindeer area.
+#' Retrieved from the public N50 dataset.
+#'
+#' @name hardanger_trails.gpkg
+#'
+#' @examples
+#' (f <- system.file("vector/hardanger_trails.gpkg", package = "oneimpact"))
+#' v <- terra::vect(f)
+#' plot(v)
+#'
+#' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
+#' file presents the following columns:
+#' \itemize{
+#'         \item{gid:} {Line number/identifier}
+#'         \item{area:} {Name of the wild reindeer area, if within one}
+#'         \item{traffic_bin:} {Binary classification of the tourist traffic on the trail - high or low}
+#'         \item{pseudotui:} {Continuous variable representing relative number of tourists per trail.}
+#'         \item{value:} {Value 1, to be used for rasterization purposes}
+#' }
+#'
+#' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 NULL
 
 #----------------------------------------------------------------------------------------
@@ -252,7 +334,7 @@ NULL
 
 #' Cabins vector data for the reindeer area
 #'
-#' Dataset containing the location of tourist private cabins is Southern
+#' Dataset containing the location of tourist private cabins in Southern
 #' Norway, within the reindeer management area of Setesdal Austhei.
 #' It corresponds to some specific building types (object_type = "Bygning",
 #' byggtyp_nbr = c("161", "162", "163")) from the public N50 dataset.
@@ -280,7 +362,7 @@ NULL
 
 #' Public roads vector data for the reindeer area
 #'
-#' Dataset containing the location of large, public roads is Southern
+#' Dataset containing the location of large, public roads in Southern
 #' Norway, within the reindeer management area of Setesdal Austhei.
 #' Retrieved from the Norwegian road dataset Elveg 1.0.
 #'
@@ -307,7 +389,7 @@ NULL
 
 #' Private roads vector data for the reindeer area
 #'
-#' Dataset containing the location of small, private roads is Southern
+#' Dataset containing the location of small, private roads in Southern
 #' Norway, within the reindeer management area of Setesdal Austhei.
 #' Retrieved from the Norwegian road dataset Elveg 1.0.
 #'
