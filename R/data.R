@@ -210,7 +210,7 @@ NULL
 #' }
 #'
 #' @examples
-#' (f <- system.file("raster/rast_predictors_hardanger_500.tif", package = "oneimpact"))
+#' (f <- system.file("raster/rast_predictors_hardanger_500m.tif", package = "oneimpact"))
 #' r <- terra::rast(f)
 #' plot(r)
 #'
