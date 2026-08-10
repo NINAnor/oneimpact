@@ -327,13 +327,1379 @@ for each of the ZOI variables in the bag</p>
 <span class="r-in"><span><span class="fu">implausibility</span><span class="op">(</span><span class="va">bag_object</span>,</span></span>
 <span class="r-in"><span>          data <span class="op">=</span> <span class="va">dat</span>,</span></span>
 <span class="r-in"><span>          type_feature <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point"</span>, <span class="st">"line"</span>, <span class="st">"line"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     ci = TRUE, indiv_pred = FALSE, ggplot = FALSE, ...):</span> unused argument (ggplot = FALSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_coefs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_resamples</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay500"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay250"  "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  250 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.077101490 0.005901955</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2458388 3.2986788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.007444606 0.060576073</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              2                              2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_sum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      0.0000000                      0.0000000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      0.1090383 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1090383</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># for each individual model</span></span></span>
 <span class="r-in"><span><span class="fu">implausibility</span><span class="op">(</span><span class="va">bag_object</span>,</span></span>
 <span class="r-in"><span>          data <span class="op">=</span> <span class="va">dat</span>,</span></span>
 <span class="r-in"><span>          wmean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     wq_probs = NULL, ci = FALSE, indiv_pred = TRUE, ggplot = FALSE,     ...):</span> unused argument (ggplot = FALSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_coefs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_resamples</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2 3 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 6 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 5 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay500"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay1000" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay2500" "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay250"  "trails_cumulative_exp_decay500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay500"   "trails_cumulative_exp_decay5000" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "trails_cumulative_exp_decay20000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay2500"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay250"  "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay500"  "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "trails_cumulative_exp_decay500"  "trails_cumulative_exp_decay5000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  1000 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2500 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  100 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  250  500 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  100 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   500  5000 20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  100 2500 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  100 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  250 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  500 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  500 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.01493428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.000000 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.000000 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.000000 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.000000 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.584815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02547249 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.00000000 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.00000000 -0.24583477  0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.00000000 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.245834772  0.014383067 -0.005513045</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.00000000 0.02547249 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.00000000 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.00000000 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.24583477  0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.24583477  0.01438307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       private_cabins_cumulative_ public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]                          0                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]                          1                              2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]                          0                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]                          2                              2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]                          2                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]                          1                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]                          0                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]                          2                              2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]                          2                              2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]                          1                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]                          2                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]                          0                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]                          2                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]                          1                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]                          1                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]                          2                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,]                          2                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,]                          2                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]                          1                              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,]                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,]                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,]                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,]                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11,]                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14,]                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15,]                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17,]                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18,]                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19,]                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_sum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 79</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_$Resample20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  46 182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  53 248</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_$Resample20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  203 1389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  294 1777</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   59 1496</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   67  172 1605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  106  401 2011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  266 1658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]    7  238 1634</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  397 1603</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  327 1899</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  356 1822</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  261 1560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  236 1932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  268 1709</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   11  283 1914</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   33  267 1679</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  454 1906</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  387 1794</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  335 1566</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_$Resample20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  379 1877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  90 362</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 104 494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  404 2776</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  586 3552</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[3]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  116 2990</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[4]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  132  342 3208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  210  800 4020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[6]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  530 3314</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[7]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   12  474 3266</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[8]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  792 3204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[9]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  652 3796</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[10]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  710 3642</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[11]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  520 3118</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[12]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  470 3862</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[13]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  534 3416</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[14]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   20  564 3826</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[15]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   64  532 3356</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[16]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  906 3810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[17]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  772 3586</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[18]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  668 3130</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_[[19]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  756 3752</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            private_cabins_cumulative_ public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample01                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample02                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample03                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample04                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample05                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample06                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample08                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample09                          0                              2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample10                          0                              2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample11                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample12                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample13                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample14                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample15                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample16                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample17                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample18                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample19                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample20                          0                              0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample01                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample02                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample03                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample04                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample05                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample06                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample08                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample09                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample10                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample11                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample12                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample13                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample14                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample15                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample16                  3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample17                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample18                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample19                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resample20                  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      0.0000000                      0.2105263 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      2.2631579 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.473684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    0.001461001                    0.462528046 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    0.034489552 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4984786</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

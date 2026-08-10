@@ -176,17 +176,24 @@ bag_object_trunc <- truncate_bag(bag_object,
                              measure = "cross",
                              criterion = "first_coef",
                              wmean = FALSE)
-#> Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     wq_probs = NULL, ci = FALSE, indiv_pred = TRUE, ggplot = FALSE,     ...): unused argument (ggplot = FALSE)
 
 # compare validation scores
 bag_object$validation_score - bag_object_trunc$validation_score
-#> Error: object 'bag_object_trunc' not found
+#>       Resample01 Resample02  Resample03  Resample04  Resample05 Resample06
+#> [1,] 0.007829143 0.00769509 0.007095713 0.007645018 0.002315486 0.00809448
+#>      Resample07  Resample08 Resample09 Resample10 Resample11  Resample12
+#> [1,]          0 0.008433258 0.06171586 0.06536645 0.01087375 0.005039923
+#>      Resample13  Resample14  Resample15  Resample16 Resample17  Resample18
+#> [1,] 0.01162653 0.008363931 0.007077678 0.005159021 0.01709546 0.009585591
+#>      Resample19  Resample20
+#> [1,] 0.01237743 0.008092633
 
 bag_object$weighted_validation_score
 #>      weighted_validation_score
 #> [1,]                  0.922617
 bag_object_trunc$weighted_validation_score
-#> Error: object 'bag_object_trunc' not found
+#>      weighted_validation_score
+#> [1,]                 0.9102619
 
 # plot curves to check implausibility
 
@@ -218,9 +225,159 @@ plot_response(bag_object_trunc,
               # type_feature_recompute = TRUE,
               # resolution = 300,
               ci = FALSE, indiv_pred = TRUE)
-#> Error: object 'bag_object_trunc' not found
+
 
 # check implausibility
 implausibility(bag_object_trunc, dat)
-#> Error: object 'bag_object_trunc' not found
+#> $n_coefs
+#> [1] 24
+#> 
+#> $n_resamples
+#> [1] 19
+#> 
+#> $coef_sign_index
+#> $coef_sign_index$private_cabins_cumulative_
+#> $coef_sign_index$private_cabins_cumulative_[[1]]
+#> [1] 5 7
+#> 
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_
+#> $coef_sign_index$public_cabins_high_cumulative_[[1]]
+#> [1] 7
+#> 
+#> 
+#> $coef_sign_index$trails_cumulative_
+#> $coef_sign_index$trails_cumulative_[[1]]
+#> integer(0)
+#> 
+#> 
+#> 
+#> $coef_sign_names
+#> $coef_sign_names$private_cabins_cumulative_
+#> $coef_sign_names$private_cabins_cumulative_[[1]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_
+#> $coef_sign_names$public_cabins_high_cumulative_[[1]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> 
+#> $coef_sign_names$trails_cumulative_
+#> $coef_sign_names$trails_cumulative_[[1]]
+#> character(0)
+#> 
+#> 
+#> 
+#> $coef_sign_radii
+#> $coef_sign_radii$private_cabins_cumulative_
+#> $coef_sign_radii$private_cabins_cumulative_[[1]]
+#> [1]  2500 10000
+#> 
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_
+#> $coef_sign_radii$public_cabins_high_cumulative_[[1]]
+#> [1] 10000
+#> 
+#> 
+#> $coef_sign_radii$trails_cumulative_
+#> $coef_sign_radii$trails_cumulative_[[1]]
+#> numeric(0)
+#> 
+#> 
+#> 
+#> $coef_sign_value
+#> $coef_sign_value$private_cabins_cumulative_
+#> $coef_sign_value$private_cabins_cumulative_[[1]]
+#> [1] 0.077101490 0.005901955
+#> 
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_
+#> $coef_sign_value$public_cabins_high_cumulative_[[1]]
+#> [1] 3.081518
+#> 
+#> 
+#> $coef_sign_value$trails_cumulative_
+#> $coef_sign_value$trails_cumulative_[[1]]
+#> numeric(0)
+#> 
+#> 
+#> 
+#> $coef_sign
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              2                              1 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $coef_sign_sum
+#> [1] 3
+#> 
+#> $cross_index
+#> $cross_index$private_cabins_cumulative_
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_
+#> integer(0)
+#> 
+#> $cross_index$trails_cumulative_
+#> integer(0)
+#> 
+#> 
+#> $where_crosses
+#> $where_crosses$private_cabins_cumulative_
+#> list()
+#> 
+#> $where_crosses$public_cabins_high_cumulative_
+#> list()
+#> 
+#> $where_crosses$trails_cumulative_
+#> list()
+#> 
+#> 
+#> $n_crosses
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $n_crosses_total
+#> [1] 0
+#> 
+#> $response_area_opposite
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $response_area_opposite_total
+#> [1] 0
+#> 
+#> $response_area_ratio
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $response_area_ratio_total
+#> [1] 0
+#> 
+#> $n_inflection
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $n_inflection_total
+#> [1] 0
+#> 
+#> $difference_inflection
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $difference_inflection_total
+#> [1] 0
+#> 
 ```

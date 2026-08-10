@@ -286,11 +286,1377 @@ plot_response(bag_object,
 implausibility(bag_object,
           data = dat,
           type_feature = c("point", "line", "line"))
-#> Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     ci = TRUE, indiv_pred = FALSE, ggplot = FALSE, ...): unused argument (ggplot = FALSE)
+#> $n_coefs
+#> [1] 24
+#> 
+#> $n_resamples
+#> [1] 19
+#> 
+#> $coef_sign_index
+#> $coef_sign_index$private_cabins_cumulative_
+#> $coef_sign_index$private_cabins_cumulative_[[1]]
+#> [1] 5 7
+#> 
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_
+#> $coef_sign_index$public_cabins_high_cumulative_[[1]]
+#> [1] 3 7
+#> 
+#> 
+#> $coef_sign_index$trails_cumulative_
+#> $coef_sign_index$trails_cumulative_[[1]]
+#> [1] 2 6
+#> 
+#> 
+#> 
+#> $coef_sign_names
+#> $coef_sign_names$private_cabins_cumulative_
+#> $coef_sign_names$private_cabins_cumulative_[[1]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_
+#> $coef_sign_names$public_cabins_high_cumulative_[[1]]
+#> [1] "public_cabins_high_cumulative_exp_decay500"  
+#> [2] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> 
+#> $coef_sign_names$trails_cumulative_
+#> $coef_sign_names$trails_cumulative_[[1]]
+#> [1] "trails_cumulative_exp_decay250"  "trails_cumulative_exp_decay5000"
+#> 
+#> 
+#> 
+#> $coef_sign_radii
+#> $coef_sign_radii$private_cabins_cumulative_
+#> $coef_sign_radii$private_cabins_cumulative_[[1]]
+#> [1]  2500 10000
+#> 
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_
+#> $coef_sign_radii$public_cabins_high_cumulative_[[1]]
+#> [1]   500 10000
+#> 
+#> 
+#> $coef_sign_radii$trails_cumulative_
+#> $coef_sign_radii$trails_cumulative_[[1]]
+#> [1]  250 5000
+#> 
+#> 
+#> 
+#> $coef_sign_value
+#> $coef_sign_value$private_cabins_cumulative_
+#> $coef_sign_value$private_cabins_cumulative_[[1]]
+#> [1] 0.077101490 0.005901955
+#> 
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_
+#> $coef_sign_value$public_cabins_high_cumulative_[[1]]
+#> [1] 0.2458388 3.2986788
+#> 
+#> 
+#> $coef_sign_value$trails_cumulative_
+#> $coef_sign_value$trails_cumulative_[[1]]
+#> [1] 0.007444606 0.060576073
+#> 
+#> 
+#> 
+#> $coef_sign
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              2                              2 
+#>             trails_cumulative_ 
+#>                              2 
+#> 
+#> $coef_sign_sum
+#> [1] 6
+#> 
+#> $cross_index
+#> $cross_index$private_cabins_cumulative_
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_
+#> integer(0)
+#> 
+#> $cross_index$trails_cumulative_
+#> integer(0)
+#> 
+#> 
+#> $where_crosses
+#> $where_crosses$private_cabins_cumulative_
+#> list()
+#> 
+#> $where_crosses$public_cabins_high_cumulative_
+#> list()
+#> 
+#> $where_crosses$trails_cumulative_
+#> list()
+#> 
+#> 
+#> $n_crosses
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $n_crosses_total
+#> [1] 0
+#> 
+#> $response_area_opposite
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $response_area_opposite_total
+#> [1] 0
+#> 
+#> $response_area_ratio
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              0 
+#> 
+#> $response_area_ratio_total
+#> [1] 0
+#> 
+#> $n_inflection
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                              0                              0 
+#>             trails_cumulative_ 
+#>                              2 
+#> 
+#> $n_inflection_total
+#> [1] 2
+#> 
+#> $difference_inflection
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                      0.0000000                      0.0000000 
+#>             trails_cumulative_ 
+#>                      0.1090383 
+#> 
+#> $difference_inflection_total
+#> [1] 0.1090383
+#> 
 
 # for each individual model
 implausibility(bag_object,
           data = dat,
           wmean = FALSE)
-#> Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     wq_probs = NULL, ci = FALSE, indiv_pred = TRUE, ggplot = FALSE,     ...): unused argument (ggplot = FALSE)
+#> $n_coefs
+#> [1] 24
+#> 
+#> $n_resamples
+#> [1] 19
+#> 
+#> $coef_sign_index
+#> $coef_sign_index$private_cabins_cumulative_
+#> $coef_sign_index$private_cabins_cumulative_[[1]]
+#> integer(0)
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[2]]
+#> [1] 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[3]]
+#> integer(0)
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[4]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[5]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[6]]
+#> [1] 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[7]]
+#> integer(0)
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[8]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[9]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[10]]
+#> [1] 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[11]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[12]]
+#> integer(0)
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[13]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[14]]
+#> [1] 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[15]]
+#> [1] 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[16]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[17]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[18]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$private_cabins_cumulative_[[19]]
+#> [1] 5
+#> 
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_
+#> $coef_sign_index$public_cabins_high_cumulative_[[1]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[2]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[3]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[4]]
+#> [1] 5 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[5]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[6]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[7]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[8]]
+#> [1] 3 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[9]]
+#> [1] 4 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[10]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[11]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[12]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[13]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[14]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[15]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[16]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[17]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[18]]
+#> [1] 7
+#> 
+#> $coef_sign_index$public_cabins_high_cumulative_[[19]]
+#> [1] 7
+#> 
+#> 
+#> $coef_sign_index$trails_cumulative_
+#> $coef_sign_index$trails_cumulative_[[1]]
+#> [1] 5 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[2]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[3]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[4]]
+#> [1] 1 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[5]]
+#> [1] 2 3 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[6]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[7]]
+#> [1] 1 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[8]]
+#> [1] 3 6 8
+#> 
+#> $coef_sign_index$trails_cumulative_[[9]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[10]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[11]]
+#> [1] 1 5 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[12]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[13]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[14]]
+#> [1] 1 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[15]]
+#> [1] 2 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[16]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[17]]
+#> [1] 3 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[18]]
+#> [1] 6
+#> 
+#> $coef_sign_index$trails_cumulative_[[19]]
+#> [1] 3 6
+#> 
+#> 
+#> 
+#> $coef_sign_names
+#> $coef_sign_names$private_cabins_cumulative_
+#> $coef_sign_names$private_cabins_cumulative_[[1]]
+#> character(0)
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[2]]
+#> [1] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[3]]
+#> character(0)
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[4]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[5]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[6]]
+#> [1] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[7]]
+#> character(0)
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[8]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[9]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[10]]
+#> [1] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[11]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[12]]
+#> character(0)
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[13]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[14]]
+#> [1] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[15]]
+#> [1] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[16]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[17]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[18]]
+#> [1] "private_cabins_cumulative_exp_decay2500" 
+#> [2] "private_cabins_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$private_cabins_cumulative_[[19]]
+#> [1] "private_cabins_cumulative_exp_decay2500"
+#> 
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_
+#> $coef_sign_names$public_cabins_high_cumulative_[[1]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[2]]
+#> [1] "public_cabins_high_cumulative_exp_decay2500" 
+#> [2] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[3]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[4]]
+#> [1] "public_cabins_high_cumulative_exp_decay2500" 
+#> [2] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[5]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[6]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[7]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[8]]
+#> [1] "public_cabins_high_cumulative_exp_decay500"  
+#> [2] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[9]]
+#> [1] "public_cabins_high_cumulative_exp_decay1000" 
+#> [2] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[10]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[11]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[12]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[13]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[14]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[15]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[16]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[17]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[18]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> $coef_sign_names$public_cabins_high_cumulative_[[19]]
+#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> 
+#> 
+#> $coef_sign_names$trails_cumulative_
+#> $coef_sign_names$trails_cumulative_[[1]]
+#> [1] "trails_cumulative_exp_decay2500" "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[2]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[3]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[4]]
+#> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[5]]
+#> [1] "trails_cumulative_exp_decay250"  "trails_cumulative_exp_decay500" 
+#> [3] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[6]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[7]]
+#> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[8]]
+#> [1] "trails_cumulative_exp_decay500"   "trails_cumulative_exp_decay5000" 
+#> [3] "trails_cumulative_exp_decay20000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[9]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[10]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[11]]
+#> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay2500"
+#> [3] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[12]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[13]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[14]]
+#> [1] "trails_cumulative_exp_decay100"  "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[15]]
+#> [1] "trails_cumulative_exp_decay250"  "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[16]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[17]]
+#> [1] "trails_cumulative_exp_decay500"  "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[18]]
+#> [1] "trails_cumulative_exp_decay5000"
+#> 
+#> $coef_sign_names$trails_cumulative_[[19]]
+#> [1] "trails_cumulative_exp_decay500"  "trails_cumulative_exp_decay5000"
+#> 
+#> 
+#> 
+#> $coef_sign_radii
+#> $coef_sign_radii$private_cabins_cumulative_
+#> $coef_sign_radii$private_cabins_cumulative_[[1]]
+#> numeric(0)
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[2]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[3]]
+#> numeric(0)
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[4]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[5]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[6]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[7]]
+#> numeric(0)
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[8]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[9]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[10]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[11]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[12]]
+#> numeric(0)
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[13]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[14]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[15]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[16]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[17]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[18]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$private_cabins_cumulative_[[19]]
+#> [1] 2500
+#> 
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_
+#> $coef_sign_radii$public_cabins_high_cumulative_[[1]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[2]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[3]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[4]]
+#> [1]  2500 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[5]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[6]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[7]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[8]]
+#> [1]   500 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[9]]
+#> [1]  1000 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[10]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[11]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[12]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[13]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[14]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[15]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[16]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[17]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[18]]
+#> [1] 10000
+#> 
+#> $coef_sign_radii$public_cabins_high_cumulative_[[19]]
+#> [1] 10000
+#> 
+#> 
+#> $coef_sign_radii$trails_cumulative_
+#> $coef_sign_radii$trails_cumulative_[[1]]
+#> [1] 2500 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[2]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[3]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[4]]
+#> [1]  100 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[5]]
+#> [1]  250  500 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[6]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[7]]
+#> [1]  100 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[8]]
+#> [1]   500  5000 20000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[9]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[10]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[11]]
+#> [1]  100 2500 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[12]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[13]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[14]]
+#> [1]  100 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[15]]
+#> [1]  250 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[16]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[17]]
+#> [1]  500 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[18]]
+#> [1] 5000
+#> 
+#> $coef_sign_radii$trails_cumulative_[[19]]
+#> [1]  500 5000
+#> 
+#> 
+#> 
+#> $coef_sign_value
+#> $coef_sign_value$private_cabins_cumulative_
+#> $coef_sign_value$private_cabins_cumulative_[[1]]
+#> numeric(0)
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[2]]
+#> [1] -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[3]]
+#> numeric(0)
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[4]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[5]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[6]]
+#> [1] -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[7]]
+#> numeric(0)
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[8]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[9]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[10]]
+#> [1] -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[11]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[12]]
+#> numeric(0)
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[13]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[14]]
+#> [1] -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[15]]
+#> [1] -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[16]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[17]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[18]]
+#> [1]  0.00000000 -0.01493428
+#> 
+#> $coef_sign_value$private_cabins_cumulative_[[19]]
+#> [1] 0
+#> 
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_
+#> $coef_sign_value$public_cabins_high_cumulative_[[1]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[2]]
+#> [1] 0.000000 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[3]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[4]]
+#> [1] 0.000000 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[5]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[6]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[7]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[8]]
+#> [1] 0.000000 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[9]]
+#> [1] 0.000000 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[10]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[11]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[12]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[13]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[14]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[15]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[16]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[17]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[18]]
+#> [1] 1.584815
+#> 
+#> $coef_sign_value$public_cabins_high_cumulative_[[19]]
+#> [1] 1.584815
+#> 
+#> 
+#> $coef_sign_value$trails_cumulative_
+#> $coef_sign_value$trails_cumulative_[[1]]
+#> [1] 0.02547249 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[2]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[3]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[4]]
+#> [1] 0.00000000 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[5]]
+#> [1]  0.00000000 -0.24583477  0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[6]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[7]]
+#> [1] 0.00000000 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[8]]
+#> [1] -0.245834772  0.014383067 -0.005513045
+#> 
+#> $coef_sign_value$trails_cumulative_[[9]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[10]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[11]]
+#> [1] 0.00000000 0.02547249 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[12]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[13]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[14]]
+#> [1] 0.00000000 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[15]]
+#> [1] 0.00000000 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[16]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[17]]
+#> [1] -0.24583477  0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[18]]
+#> [1] 0.01438307
+#> 
+#> $coef_sign_value$trails_cumulative_[[19]]
+#> [1] -0.24583477  0.01438307
+#> 
+#> 
+#> 
+#> $coef_sign
+#>       private_cabins_cumulative_ public_cabins_high_cumulative_
+#>  [1,]                          0                              1
+#>  [2,]                          1                              2
+#>  [3,]                          0                              1
+#>  [4,]                          2                              2
+#>  [5,]                          2                              1
+#>  [6,]                          1                              1
+#>  [7,]                          0                              1
+#>  [8,]                          2                              2
+#>  [9,]                          2                              2
+#> [10,]                          1                              1
+#> [11,]                          2                              1
+#> [12,]                          0                              1
+#> [13,]                          2                              1
+#> [14,]                          1                              1
+#> [15,]                          1                              1
+#> [16,]                          2                              1
+#> [17,]                          2                              1
+#> [18,]                          2                              1
+#> [19,]                          1                              1
+#>       trails_cumulative_
+#>  [1,]                  2
+#>  [2,]                  1
+#>  [3,]                  1
+#>  [4,]                  2
+#>  [5,]                  3
+#>  [6,]                  1
+#>  [7,]                  2
+#>  [8,]                  3
+#>  [9,]                  1
+#> [10,]                  1
+#> [11,]                  3
+#> [12,]                  1
+#> [13,]                  1
+#> [14,]                  2
+#> [15,]                  2
+#> [16,]                  1
+#> [17,]                  2
+#> [18,]                  1
+#> [19,]                  2
+#> 
+#> $coef_sign_sum
+#> [1] 79
+#> 
+#> $cross_index
+#> $cross_index$private_cabins_cumulative_
+#> $cross_index$private_cabins_cumulative_$Resample01
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample02
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample03
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample04
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample05
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample06
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample08
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample09
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample10
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample11
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample12
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample13
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample14
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample15
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample16
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample17
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample18
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample19
+#> integer(0)
+#> 
+#> $cross_index$private_cabins_cumulative_$Resample20
+#> integer(0)
+#> 
+#> 
+#> $cross_index$public_cabins_high_cumulative_
+#> $cross_index$public_cabins_high_cumulative_$Resample01
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample02
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample03
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample04
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample05
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample06
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample08
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample09
+#> [1]  46 182
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample10
+#> [1]  53 248
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample11
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample12
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample13
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample14
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample15
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample16
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample17
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample18
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample19
+#> integer(0)
+#> 
+#> $cross_index$public_cabins_high_cumulative_$Resample20
+#> integer(0)
+#> 
+#> 
+#> $cross_index$trails_cumulative_
+#> $cross_index$trails_cumulative_$Resample01
+#> [1]  203 1389
+#> 
+#> $cross_index$trails_cumulative_$Resample02
+#> [1]  294 1777
+#> 
+#> $cross_index$trails_cumulative_$Resample03
+#> [1]   59 1496
+#> 
+#> $cross_index$trails_cumulative_$Resample04
+#> [1]   67  172 1605
+#> 
+#> $cross_index$trails_cumulative_$Resample05
+#> [1]  106  401 2011
+#> 
+#> $cross_index$trails_cumulative_$Resample06
+#> [1]  266 1658
+#> 
+#> $cross_index$trails_cumulative_$Resample08
+#> [1]    7  238 1634
+#> 
+#> $cross_index$trails_cumulative_$Resample09
+#> [1]  397 1603
+#> 
+#> $cross_index$trails_cumulative_$Resample10
+#> [1]  327 1899
+#> 
+#> $cross_index$trails_cumulative_$Resample11
+#> [1]  356 1822
+#> 
+#> $cross_index$trails_cumulative_$Resample12
+#> [1]  261 1560
+#> 
+#> $cross_index$trails_cumulative_$Resample13
+#> [1]  236 1932
+#> 
+#> $cross_index$trails_cumulative_$Resample14
+#> [1]  268 1709
+#> 
+#> $cross_index$trails_cumulative_$Resample15
+#> [1]   11  283 1914
+#> 
+#> $cross_index$trails_cumulative_$Resample16
+#> [1]   33  267 1679
+#> 
+#> $cross_index$trails_cumulative_$Resample17
+#> [1]  454 1906
+#> 
+#> $cross_index$trails_cumulative_$Resample18
+#> [1]  387 1794
+#> 
+#> $cross_index$trails_cumulative_$Resample19
+#> [1]  335 1566
+#> 
+#> $cross_index$trails_cumulative_$Resample20
+#> [1]  379 1877
+#> 
+#> 
+#> 
+#> $where_crosses
+#> $where_crosses$private_cabins_cumulative_
+#> $where_crosses$private_cabins_cumulative_[[1]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[2]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[3]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[4]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[5]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[6]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[7]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[8]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[9]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[10]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[11]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[12]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[13]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[14]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[15]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[16]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[17]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[18]]
+#> numeric(0)
+#> 
+#> $where_crosses$private_cabins_cumulative_[[19]]
+#> numeric(0)
+#> 
+#> 
+#> $where_crosses$public_cabins_high_cumulative_
+#> $where_crosses$public_cabins_high_cumulative_[[1]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[2]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[3]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[4]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[5]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[6]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[7]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[8]]
+#> [1]  90 362
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[9]]
+#> [1] 104 494
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[10]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[11]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[12]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[13]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[14]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[15]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[16]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[17]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[18]]
+#> numeric(0)
+#> 
+#> $where_crosses$public_cabins_high_cumulative_[[19]]
+#> numeric(0)
+#> 
+#> 
+#> $where_crosses$trails_cumulative_
+#> $where_crosses$trails_cumulative_[[1]]
+#> [1]  404 2776
+#> 
+#> $where_crosses$trails_cumulative_[[2]]
+#> [1]  586 3552
+#> 
+#> $where_crosses$trails_cumulative_[[3]]
+#> [1]  116 2990
+#> 
+#> $where_crosses$trails_cumulative_[[4]]
+#> [1]  132  342 3208
+#> 
+#> $where_crosses$trails_cumulative_[[5]]
+#> [1]  210  800 4020
+#> 
+#> $where_crosses$trails_cumulative_[[6]]
+#> [1]  530 3314
+#> 
+#> $where_crosses$trails_cumulative_[[7]]
+#> [1]   12  474 3266
+#> 
+#> $where_crosses$trails_cumulative_[[8]]
+#> [1]  792 3204
+#> 
+#> $where_crosses$trails_cumulative_[[9]]
+#> [1]  652 3796
+#> 
+#> $where_crosses$trails_cumulative_[[10]]
+#> [1]  710 3642
+#> 
+#> $where_crosses$trails_cumulative_[[11]]
+#> [1]  520 3118
+#> 
+#> $where_crosses$trails_cumulative_[[12]]
+#> [1]  470 3862
+#> 
+#> $where_crosses$trails_cumulative_[[13]]
+#> [1]  534 3416
+#> 
+#> $where_crosses$trails_cumulative_[[14]]
+#> [1]   20  564 3826
+#> 
+#> $where_crosses$trails_cumulative_[[15]]
+#> [1]   64  532 3356
+#> 
+#> $where_crosses$trails_cumulative_[[16]]
+#> [1]  906 3810
+#> 
+#> $where_crosses$trails_cumulative_[[17]]
+#> [1]  772 3586
+#> 
+#> $where_crosses$trails_cumulative_[[18]]
+#> [1]  668 3130
+#> 
+#> $where_crosses$trails_cumulative_[[19]]
+#> [1]  756 3752
+#> 
+#> 
+#> 
+#> $n_crosses
+#>            private_cabins_cumulative_ public_cabins_high_cumulative_
+#> Resample01                          0                              0
+#> Resample02                          0                              0
+#> Resample03                          0                              0
+#> Resample04                          0                              0
+#> Resample05                          0                              0
+#> Resample06                          0                              0
+#> Resample08                          0                              0
+#> Resample09                          0                              2
+#> Resample10                          0                              2
+#> Resample11                          0                              0
+#> Resample12                          0                              0
+#> Resample13                          0                              0
+#> Resample14                          0                              0
+#> Resample15                          0                              0
+#> Resample16                          0                              0
+#> Resample17                          0                              0
+#> Resample18                          0                              0
+#> Resample19                          0                              0
+#> Resample20                          0                              0
+#>            trails_cumulative_
+#> Resample01                  2
+#> Resample02                  2
+#> Resample03                  2
+#> Resample04                  3
+#> Resample05                  3
+#> Resample06                  2
+#> Resample08                  3
+#> Resample09                  2
+#> Resample10                  2
+#> Resample11                  2
+#> Resample12                  2
+#> Resample13                  2
+#> Resample14                  2
+#> Resample15                  3
+#> Resample16                  3
+#> Resample17                  2
+#> Resample18                  2
+#> Resample19                  2
+#> Resample20                  2
+#> 
+#> $n_crosses_total
+#> [1] 47
+#> 
+#> $response_area_opposite
+#> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."
+#> 
+#> $response_area_opposite_total
+#> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."
+#> 
+#> $response_area_ratio
+#> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."
+#> 
+#> $response_area_ratio_total
+#> [1] "This needs to be implemented for individual models. Please raise na issue on our Github repo."
+#> 
+#> $n_inflection
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                      0.0000000                      0.2105263 
+#>             trails_cumulative_ 
+#>                      2.2631579 
+#> 
+#> $n_inflection_total
+#> [1] 2.473684
+#> 
+#> $difference_inflection
+#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
+#>                    0.001461001                    0.462528046 
+#>             trails_cumulative_ 
+#>                    0.034489552 
+#> 
+#> $difference_inflection_total
+#> [1] 0.4984786
+#> 
 ```

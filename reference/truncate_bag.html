@@ -218,17 +218,24 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-in"><span>                             measure <span class="op">=</span> <span class="st">"cross"</span>,</span></span>
 <span class="r-in"><span>                             criterion <span class="op">=</span> <span class="st">"first_coef"</span>,</span></span>
 <span class="r-in"><span>                             wmean <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot_response(x, dfvar = dfvar, data = data, type = "linear",     zoi = TRUE, type_feature_recompute = type_feature_recompute,     resolution = resolution, type_feature = type_feat, baseline = baseline,     wq_probs = NULL, ci = FALSE, indiv_pred = TRUE, ggplot = FALSE,     ...):</span> unused argument (ggplot = FALSE)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compare validation scores</span></span></span>
 <span class="r-in"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span> <span class="op">-</span> <span class="va">bag_object_trunc</span><span class="op">$</span><span class="va">validation_score</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'bag_object_trunc' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Resample01 Resample02  Resample03  Resample04  Resample05 Resample06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.007829143 0.00769509 0.007095713 0.007645018 0.002315486 0.00809448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample07  Resample08 Resample09 Resample10 Resample11  Resample12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]          0 0.008433258 0.06171586 0.06536645 0.01087375 0.005039923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample13  Resample14  Resample15  Resample16 Resample17  Resample18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.01162653 0.008363931 0.007077678 0.005159021 0.01709546 0.009585591</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample19  Resample20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.01237743 0.008092633</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">weighted_validation_score</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      weighted_validation_score</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                  0.922617</span>
 <span class="r-in"><span><span class="va">bag_object_trunc</span><span class="op">$</span><span class="va">weighted_validation_score</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'bag_object_trunc' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      weighted_validation_score</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                 0.9102619</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot curves to check implausibility</span></span></span>
 <span class="r-in"><span></span></span>
@@ -260,11 +267,161 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-in"><span>              <span class="co"># type_feature_recompute = TRUE,</span></span></span>
 <span class="r-in"><span>              <span class="co"># resolution = 300,</span></span></span>
 <span class="r-in"><span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'bag_object_trunc' not found</span>
+<span class="r-plt img"><img src="truncate_bag-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check implausibility</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="implausibility.html">implausibility</a></span><span class="op">(</span><span class="va">bag_object_trunc</span>, <span class="va">dat</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'bag_object_trunc' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_coefs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_resamples</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.077101490 0.005901955</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.081518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              2                              1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_sum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -401,10 +401,10 @@ cabins_zoi_cumulative
 #> resolution  : 100, 100  (x, y)
 #> extent      : 146900, 194700, 6622800, 6658900  (xmin, xmax, ymin, ymax)
 #> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs
-#> sources     : file2e45bb16f43.grd
-#>               file2e4532d220b8.grd
-#>               file2e451d1f0225.grd
-#>               file2e452c953bed.grd
+#> sources     : file2eed38ec003c.grd
+#>               file2eed356f8be9.grd
+#>               file2eed53026591.grd
+#>               file2eed7939affb.grd
 #> color table : 1, 2, 3, 4
 #> names       : cabins_~lett500, cabins_~ett1000, cabins_~lett500, cabins_~ett1000
 #> min values  :               0,               0,               0,               0
