@@ -89,7 +89,8 @@ plot_response <- function(x,
                           type_feature_recompute = FALSE,
                           zoi_limit = 0.05,
                           resolution = 100, # resolution for the raster created in create_line_feature_zoi
-                          line_value = 1, # value set to the linear infrastructure raster created in create_line_feature_zoi                          ggplot = T,
+                          line_value = 1, # value set to the linear infrastructure raster created in create_line_feature_zoi
+                          ggplot = T,
                           plot_mean = TRUE,
                           plot_median = TRUE,
                           n_features = 1,
