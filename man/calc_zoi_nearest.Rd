@@ -288,7 +288,7 @@ cabins_vect |>
   sf::st_buffer(dist = radius2) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("ZoI radius"), col = c("black"), lwd = 1.1)
+legend("bottomright", legend = c("ZOI radius"), col = c("black"), lwd = 1.1)
 
 # calculate exponential decay zone of influence using half life parameter
 # if half_life = 250 m and zoi_hl_ratio = 4, zoi is 1000 m
@@ -307,7 +307,7 @@ cabins_vect |>
   sf::st_buffer(dist = half_life3*zoi_hl_ratio3) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
+legend("bottomright", legend = c("Exponential half-life", "ZOI radius"),
        col = c("red", "black"), lwd = 1.1)
 
 # calculate exponential decay zone of influence using
@@ -328,7 +328,7 @@ cabins_vect |>
   sf::st_buffer(dist = radius4) |>
   sf::st_union() |>
   plot(add = T, border = "black", )
-legend("bottomright", legend = c("Exponential half-life", "ZoI radius"),
+legend("bottomright", legend = c("Exponential half-life", "ZOI radius"),
        col = c("red", "black"), lwd = 1.1)
 
 #---
@@ -341,14 +341,14 @@ cabins_vect |>
   sf::st_buffer(dist = 1000) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("Bartlett ZoI 1000m"),
+legend("bottomright", legend = c("Bartlett ZOI 1000m"),
        col = c("black"), lwd = 1.1)
 
-# calculate threshold influence, ZoI = 1000m
+# calculate threshold influence, ZOI = 1000m
 d <- calc_zoi_nearest(cabins, type = "threshold", radius = 1000)
 plot(d)
 
-# Gaussian decay influence, ZoI = 1000m
+# Gaussian decay influence, ZOI = 1000m
 g_d <- calc_zoi_nearest(cabins, type = "Gauss", radius = 1000)
 plot(g_d)
 
@@ -357,7 +357,7 @@ cabins_vect |>
   sf::st_buffer(dist = 1000) |>
   sf::st_union() |>
   plot(add = T, border = "black")
-legend("bottomright", legend = c("Gaussian ZoI 1000m"),
+legend("bottomright", legend = c("Gaussian ZOI 1000m"),
        col = c("black"), lwd = 1.1)
 
 #--------------------
@@ -404,23 +404,23 @@ rgrass::execGRASS("g.region", raster = cabins_g,
 # Input map name within GRASS GIS
 cabins_g
 
-# Exponential decay ZoI=1000m
+# Exponential decay ZOI=1000m
 expdecay_name <- calc_zoi_nearest(cabins_g, type = "exp_decay",
                                   radius = 1000,
                                   where = "GRASS",
                                   g_verbose = FALSE, g_overwrite = TRUE)
 
-# Bartlett decay ZoI=1000m
+# Bartlett decay ZOI=1000m
 bartlett_name <- calc_zoi_nearest(cabins_g, type = "bartlett",
                                   radius = 1000,
                                   where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
 
-# Threshold influence ZoI = 1000m
+# Threshold influence ZOI = 1000m
 threshold_name <- calc_zoi_nearest(cabins_g, type = "threshold",
                                    radius = 1000,
                                    where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
 
-# Gaussian influence ZoI = 1000m
+# Gaussian influence ZOI = 1000m
 gaussian_name <- calc_zoi_nearest(cabins_g, type = "Gauss",
                                   radius = 1000,
                                   where = "GRASS", g_verbose = FALSE, g_overwrite = TRUE)
@@ -442,8 +442,8 @@ euclidean_name <- calc_zoi_nearest(cabins_g, type = "euclidean",
 cabins_zoi_nearest <- rgrass::read_RAST(all_names, return_format = "terra")
 
 title_plot <- c("Euclidean distance", "Log distance (base 10)",
-                "Exponential ZoI 1000m", "Bartlett ZoI 1000m",
-                "Threshold ZoI 1000m", "Gaussian ZoI 1000m")
+                "Exponential ZOI 1000m", "Bartlett ZOI 1000m",
+                "Threshold ZOI 1000m", "Gaussian ZOI 1000m")
 terra::plot(cabins_zoi_nearest, main = title_plot)
 
 # remove rasters created

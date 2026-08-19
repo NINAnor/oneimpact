@@ -11,14 +11,18 @@ representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
 PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
 More information in Niebuhr et al. 2023. PCAs 1 and 2 also present quadratic layers.}
 \item{NORUTreclass} {Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.}
-\item{private_cabins_cumulative_exp_decay_XXX} {Cumulative zone of influence of private cabins at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-\item{private_cabins_nearest_exp_decay_XXX} {Zone of influence of the nearest private cabin at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-\item{public_cabins_high_cumulative_exp_decay_XXX} {Cumulative zone of influence of public resorts at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-\item{public_cabins_high_nearest_exp_decay_XXX} {Zone of influence of the nearest public resort at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+\item{cabins_private_nearest_exp_decayXXX} {Zone of influence of the nearest private cabin at each location,
+with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+\item{cabins_private_cumulative_exp_decayXXX} {Cumulative zone of influence of private cabins at each location,
+with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+\item{cabins_public_nearest_exp_decayXXX} {Zone of influence of the nearest public resort and mountain hotels
+at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+\item{cabins_public_cumulative_exp_decayXXX} {Cumulative zone of influence of public resorts and mountain hotels
+at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+\item{trails_nearest_exp_decayXXX} {Zone of influence of the nearest tourist trail at each location,
+with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+\item{trails_cumulative_exp_decayXXX} {Cumulative zone of influence of tourist trails
+at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
 }
 }
 \source{
@@ -42,7 +46,7 @@ private cottages and public tourist resources, with radii from 100 m to 20 km.
 The raster has 500 m resolution.
 }
 \examples{
-(f <- system.file("raster/rast_predictors_hardanger_500.tif", package = "oneimpact"))
+(f <- system.file("raster/hardanger_rast_predictors_500m.tif", package = "oneimpact"))
 r <- terra::rast(f)
 plot(r)
 

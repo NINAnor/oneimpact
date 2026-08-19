@@ -334,7 +334,7 @@ density_exp <- calc_zoi_cumulative(cabins, type = "exp_decay", radius = 1000,
 # compare
 # note the difference in the color scales
 plot(c(cumzoi_exp[[3]], density_exp),
-     main = c("Cumulative ZoI 1000m", "Density 1000m"))
+     main = c("Cumulative ZOI 1000m", "Density 1000m"))
 
 #--------------------
 # Running calc_zoi_cumulative through GRASS GIS
@@ -433,7 +433,7 @@ title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
 terra::plot(cabins_zoi_cumulative, main = title_plot)
 
 #---
-# calculate density vs cumulative ZoI
+# calculate density vs cumulative ZOI
 exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
                                   radius = 1000, zoi_limit = 0.01,
                                   type = "exp_decay", output_type = "density",
@@ -444,7 +444,7 @@ exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
 cabins_density <- rgrass::read_RAST(exp_name_d, return_format = "terra")
 
 terra::plot(c(cabins_zoi_cumulative[[1]], cabins_density),
-            main = c("Cumulative ZoI", "Density"))
+            main = c("Cumulative ZOI", "Density"))
 
 #---
 # Using 'r.resamp.filter' algorithm
@@ -459,7 +459,7 @@ rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                              g_overwrite = TRUE,
                                              verbose = TRUE)
 rgrass::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
-  plot(main = "Rectangle ZoI 1000m")
+  plot(main = "Rectangle ZOI 1000m")
 
 # bartlett
 bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
@@ -471,7 +471,7 @@ bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
                                             g_overwrite = TRUE,
                                             verbose = TRUE)
 rgrass::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
-  plot(main = "Bartlett ZoI 1000m")
+  plot(main = "Bartlett ZOI 1000m")
 
 # not run
 # Gaussian - to be implemented!

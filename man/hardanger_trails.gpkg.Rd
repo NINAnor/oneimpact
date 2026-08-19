@@ -10,7 +10,6 @@ file presents the following columns:
 \item{gid:} {Line number/identifier}
 \item{area:} {Name of the wild reindeer area, if within one}
 \item{traffic_bin:} {Binary classification of the tourist traffic on the trail - high or low}
-\item{pseudotui:} {Continuous variable representing relative number of tourists per trail.}
 \item{value:} {Value 1, to be used for rasterization purposes}
 }
 }
@@ -24,7 +23,7 @@ Retrieved from the public N50 dataset.
 }
 \examples{
 (f <- system.file("vector/hardanger_trails.gpkg", package = "oneimpact"))
-v <- sf::st_read(f)
-plot(v[1])
+v <- terra::vect(f)
+plot(v)
 
 }

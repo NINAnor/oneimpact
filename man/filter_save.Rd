@@ -21,7 +21,7 @@ filter_save(
 \item{filt}{\verb{[matrix]} \cr Filter or weight matrix, such as one created by
 \code{\link[=filter_create]{filter_create()}} or \code{\link[terra:focalMat]{terra::focalMat()}}.}
 
-\item{radius}{\verb{[numeric(1)]} \cr Radius of the Zone of Influence (ZoI) of
+\item{radius}{\verb{[numeric(1)]} \cr Radius of the Zone of Influence (ZOI) of
 the matrix, in meters.}
 
 \item{type}{\verb{[character(1)]} Function for the kernel or filter matrix

@@ -22,6 +22,7 @@ plot_response(
   zoi_limit = 0.05,
   resolution = 100,
   line_value = 1,
+  ggplot = T,
   plot_mean = TRUE,
   plot_median = TRUE,
   n_features = 1,
@@ -127,6 +128,9 @@ approximation. Used when recomputing the ZOI variables for line and area feature
 \item{line_value}{\verb{[numeric(1)=1]} \cr Value assigned to line raster cells when
 \code{type_feature = "line"}. Used when recomputing the ZOI variables for line and area features.}
 
+\item{ggplot}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE}, return a ggplot object; otherwise
+return a prediction data frame.}
+
 \item{plot_mean}{\verb{[logical(1)=TRUE]} \cr Plot weighted mean response line.}
 
 \item{plot_median}{\verb{[logical(1)=TRUE]} \cr Plot weighted median response line.}
@@ -161,9 +165,6 @@ no normalization.}
 \item{alpha_ci}{\verb{[numeric(1)=0.5]} \cr Alpha transparency for confidence ribbon.}
 
 \item{alpha_indiv}{\verb{[numeric(1)=0.3]} \cr Alpha transparency for individual model lines.}
-
-\item{ggplot}{\verb{[logical(1)=TRUE]} \cr If \code{TRUE}, return a ggplot object; otherwise
-return a prediction data frame.}
 }
 \value{
 If \code{ggplot = TRUE}, a ggplot object with response curves.

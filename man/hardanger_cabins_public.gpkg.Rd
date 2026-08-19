@@ -17,13 +17,13 @@ file presents the following columns:
 \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
 }
 \description{
-Dataset containing the location of large, public DNT cabins in the
-surroundings of the Hardangervidda wild reindeer area.
+Dataset containing the location of large, public DNT cabins and mountain hotels
+in the surroundings of the Hardangervidda wild reindeer area.
 Retrieved from the public N50 dataset.
 }
 \examples{
 (f <- system.file("vector/hardanger_cabins_public.gpkg", package = "oneimpact"))
-v <- sf::st_read(f)
-plot(v[1])
+v <- terra::vect(f)
+plot(v)
 
 }
