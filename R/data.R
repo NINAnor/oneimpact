@@ -194,23 +194,27 @@ NULL
 #'
 #' @format A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 #' \itemize{
-#'         \item{norway_pca_klima_axis1-4}{Components 1 to 4 from a principal component analysis
+#'   \item{norway_pca_klima_axis1-4}{Components 1 to 4 from a principal component analysis
 #'         representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
 #'         PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
 #'         More information in Niebuhr et al. 2023. PCAs 1 and 2 also present quadratic layers.}
-#'         \item{NORUTreclass} {Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.}
-#'         \item{private_cabins_cumulative_exp_decay_XXX} {Cumulative zone of influence of private cabins at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'         \item{private_cabins_nearest_exp_decay_XXX} {Zone of influence of the nearest private cabin at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'         \item{public_cabins_high_cumulative_exp_decay_XXX} {Cumulative zone of influence of public resorts at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'         \item{public_cabins_high_nearest_exp_decay_XXX} {Zone of influence of the nearest public resort at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+#'   \item{NORUTreclass} {Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.}
+#'   \item{cabins_private_nearest_exp_decayXXX} {Zone of influence of the nearest private cabin at each location,
+#'         with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{cabins_private_cumulative_exp_decayXXX} {Cumulative zone of influence of private cabins at each location,
+#'         with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{cabins_public_nearest_exp_decayXXX} {Zone of influence of the nearest public resort and mountain hotels
+#'         at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{cabins_public_cumulative_exp_decayXXX} {Cumulative zone of influence of public resorts and mountain hotels
+#'         at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{trails_nearest_exp_decayXXX} {Zone of influence of the nearest tourist trail at each location,
+#'         with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{trails_cumulative_exp_decayXXX} {Cumulative zone of influence of tourist trails
+#'         at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
 #' }
 #'
 #' @examples
-#' (f <- system.file("raster/rast_predictors_hardanger_500m.tif", package = "oneimpact"))
+#' (f <- system.file("raster/hardanger_rast_predictors_500m.tif", package = "oneimpact"))
 #' r <- terra::rast(f)
 #' plot(r)
 #'
@@ -258,8 +262,8 @@ NULL
 
 #' Public cabins vector data for the Hardangervidda wild reindeer area in Norway
 #'
-#' Dataset containing the location of large, public DNT cabins in the
-#' surroundings of the Hardangervidda wild reindeer area.
+#' Dataset containing the location of large, public DNT cabins and mountain hotels
+#' in the surroundings of the Hardangervidda wild reindeer area.
 #' Retrieved from the public N50 dataset.
 #'
 #' @name hardanger_cabins_public.gpkg
@@ -300,11 +304,36 @@ NULL
 #'         \item{gid:} {Line number/identifier}
 #'         \item{area:} {Name of the wild reindeer area, if within one}
 #'         \item{traffic_bin:} {Binary classification of the tourist traffic on the trail - high or low}
-#'         \item{pseudotui:} {Continuous variable representing relative number of tourists per trail.}
 #'         \item{value:} {Value 1, to be used for rasterization purposes}
 #' }
 #'
 #' @source \url{https://register.geonorge.no/det-offentlige-kartgrunnlaget/n50-kartdata/ea192681-d039-42ec-b1bc-f3ce04c189ac}
+NULL
+
+#' Polygon delimiting the study area around the Hardangervidda wild reindeer area
+#'
+#' Dataset containing the polygon of the Hardangervidda area. It is different from
+#' the official wild reindeer area and is delimited by the main roads and barriers in the surroundings
+#' of the Hardangervidda plateau in Southern Norway,
+#'
+#' @name hardanger_polygon.gpkg
+#'
+#' @examples
+#' (f <- system.file("vector/hardanger_polygon.gpkg", package = "oneimpact"))
+#' v <- terra::vect(f)
+#' plot(v)
+#'
+#' @format A geopackage file. Projected CRS: ETRS89 / UTM zone 33N. The vector
+#' file presents the following columns:
+#' \itemize{
+#'         \item{reindeer_areas_id:} {ID of the area}
+#'         \item{name_area:} {Name of the wild reindeer area}
+#' }
+#'
+#' @source Niebuhr, B. B., Van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,
+#' Sandström, P., Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating the cumulative impact
+#' and zone of influence of anthropogenic features on biodiversity.
+#' Methods in Ecology and Evolution. https://doi.org/10.1111/2041-210X.14133
 NULL
 
 #----------------------------------------------------------------------------------------

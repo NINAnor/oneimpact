@@ -111,14 +111,14 @@
 #' Annotated data of wild reindeer in Norway, prepared for point resource-selection analysis.
 #'
 #' @description
-#' An data set where GPS positions of wild reindeer (*Rangifer tarandus tarandus*)
+#' A data set where GPS positions of wild reindeer (*Rangifer tarandus tarandus*)
 #' Hardangervidda management area, southern Norway, were organized in a use-availability design
 #' for point resource-selection analysis (RSA) and annotated with environmental data.
 #' It includes data from 115 female individuals collected between 2001 and 2019.
-#' The data set was regularized with 3h data and 9 random locations were created for
+#' The data set was regularized with a 3h fix rate and 9 random locations were created for
 #' each used location. It was then annotated with rasters on the zone of influence
-#' of private cabins and public resorts with exponential decay shape and radii
-#' varying from 100m to 10km, as well as land cover
+#' of private cabins, public resorts, and tourist trails, with exponential decay shape and radii
+#' varying from 100m to 10 km, as well as land cover
 #' and bio-geo-climatic variables. Geographical coordinates of the used and random positions
 #' were omitted after data annotation.
 #'
@@ -135,26 +135,18 @@
 #'   \item{norway_pca_klima_axis1-2_sq}{Squared value for components 1 and 2 to from a principal component analysis
 #'         representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.}
 #'   \item{NORUTreclass}{Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.}
-#'   \item{private_cabins_cumulative_exp_decay_XXX}{Cumulative zone of influence of private cabins at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{private_cabins_nearest_exp_decay_XXX}{Zone of influence of the nearest private cabin at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{public_cabins_cumulative_exp_decay_XXX}{Cumulative zone of influence of public resorts at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{public_cabins_nearest_exp_decay_XXX}{Zone of influence of the nearest public resort at each location,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{roads_low_cumulative_exp_decay_XXX}{Cumulative zone of influence of private, low traffic roads,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{roads_low_nearest_exp_decay_XXX}{Zone of influence of the nearest private, low traffic road
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{roads_high_cumulative_exp_decay_XXX}{Cumulative zone of influence of public, high traffic roads,
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{roads_high_nearest_exp_decay_XXX}{Zone of influence of the nearest public, high traffic road
-#'   with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{trails_cumulative_exp_decay_XXX}{Cumulative zone of influence of trails, weighted by the number
-#'   of tourists in each trail, with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
-#'   \item{trails_nearest_exp_decay_XXX}{Zone of influence of the nearest trail, weighted by the number
-#'   of tourists in the trail, with exponential decay shape, and radii defined by XXX (from 100 to 20000m).}
+#'   \item{cabins_private_nearest_exp_decayXXX}{Zone of influence of the nearest private cabin at each location,
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{cabins_private_cumulative_exp_decayXXX}{Cumulative zone of influence of private cabins at each location,
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{cabins_public_nearest_exp_decayXXX}{Zone of influence of the nearest public resort at each location,
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{cabins_public_cumulative_exp_decayXXX}{Cumulative zone of influence of public resorts at each location,
+#'   with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{trails_nearest_exp_decayXXX}{Zone of influence of the nearest trail, weighted by the number
+#'   of tourists in the trail, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
+#'   \item{trails_cumulative_exp_decayXXX}{Cumulative zone of influence of trails, weighted by the number
+#'   of tourists in each trail, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).}
 #' }
 #'
 #' @source Niebuhr, B. B., Van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,

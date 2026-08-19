@@ -566,6 +566,8 @@ NinaR::grassConnect(mapset = ms)
 #--------------
 # Set region
 
+rgrass::execGRASS("r.mask", flags = "r")
+
 # region
 rgrass::execGRASS("v.info", map = "reindeer_areas_no_2023@p_sam_tools")
 
@@ -575,22 +577,14 @@ rgrass::execGRASS("v.extract",
                   where = "name_area=\"'Hardangervidda'\"",
                   flags = "overwrite")
 
-rgrass::execGRASS("g.region", vector = "hardanger_temp_vector", flags = c("a", "p"))
-rgrass::execGRASS("g.region", n = "n+20000", e = "e+20000", s = "s-20000", w = "w-20000", flags = c("a", "p"))
+(f <- system.file("raster/hardanger_rast_predictors_500m.tif", package = "oneimpact"))
+r <- terra::rast(f)
+rgrass::write_RAST(r[[1]], "hardanger_raster_ref", flags = c("o", "overwrite"))
+
+rgrass::execGRASS("g.region", raster = "raster_ref.1", flags = c("a", "p"), res = "100")
+rgrass::execGRASS("g.region", n = "n+12000", e = "e+12000", s = "s-12000", w = "w-12000", flags = c("a", "p"))
 
 # get dimensions
-
-# connect to NINA PostGIS database
-
-source("~/.pgpass")
-
-NinaR::postgreSQLConnect(
-  host = "gisdata-db.nina.no",
-  dbname = "gisdata",
-  username = pg_username,
-  password = pg_password
-)
-rm(pg_username, pg_password)
 
 #--------------
 # Get the management area for Austhei - Norway - to match with GPS data
@@ -600,11 +594,14 @@ reindeer_area_original <- sf::st_read(con, DBI::Id(schema = "sam_wrein_ancillary
   dplyr::filter(name_area == "Hardangervidda")
 
 reindeer_area <- reindeer_area_original |>
-  sf::st_buffer(dist = 25000)
+  sf::st_buffer(dist = 12000)
 
 reindeer_area
 plot(reindeer_area[1])
 plot(reindeer_area_original, add = T)
+
+sf::st_write(reindeer_area_original[,-3], dsn = "inst/vector/hardanger_polygon.gpkg", delete_dsn = TRUE)
+# cabins <- sf::st_read(dsn = "inst/vector/hardanger_cabins_private.gpkg")
 
 #---------------------
 # Get maps of environmental covariates
@@ -620,7 +617,7 @@ cabins <- cabins_all |>
   dplyr::select(gid, buildtype = byggtyp_nbr, city = kommune, value)
 
 cabins
-plot(cabins[1])
+plot(terra::vect(cabins[1]))
 
 # save
 sf::st_write(cabins, dsn = "inst/vector/hardanger_cabins_private.gpkg", delete_dsn = TRUE)
@@ -633,18 +630,54 @@ sf::st_write(cabins, dsn = "inst/vector/hardanger_cabins_private.gpkg", delete_d
 v <- terra::vect(s)
 terra::plot(v)
 
+# compute ZOI
+cabins_grass <- "hardanger_buff_12km_cabins_private"
+rgrass::write_VECT(terra::vect(cabins), cabins_grass)
+oneimpact::grass_v2rast_count(x = cabins_grass, overwrite = TRUE)
+
+xx <- paste0(cabins_grass, "_count")
+rad <- c(100, 250, 500, 1000, 2500, 5000, 10000)
+cum_layers <- calc_zoi_cumulative(x = xx,
+                    radius = rad,
+                    type = "exp_decay",
+                    where = "GRASS",
+                    g_overwrite = TRUE,
+                    verbose = TRUE)
+cum_layers <- paste0("hardanger_buff_12km_cabins_private_count_zoi_cumulative_exp_decay", rad)
+
+xx2 <- sub(pattern = "_count", replacement = "_1null", xx)
+rgrass::execGRASS("r.mapcalc", expression = paste0(xx2, " = if(", xx, " == 0, null(), 1)"), flags = "overwrite")
+near_layers <- calc_zoi_nearest(x = xx2,
+                               radius = rad,
+                               type = "exp_decay",
+                               where = "GRASS",
+                               g_overwrite = TRUE,
+                               verbose = TRUE)
+near_layers <- paste0("hardanger_buff_12km_cabins_private_1null_zoi_nearest_exp_decay", rad)
+
+rasters_temp <- rgrass::read_RAST(c(cum_layers, near_layers), return_format = "terra")
+plot(rasters_temp[[c(2,6,9,13)]])
+
 #--------
 # get public cabins
 cabins_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "cabins_public_large_no"))
+hotels_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "hotels_no"))
 # cut
-which_within <- which(sf::st_within(cabins_all, reindeer_area_original, sparse = FALSE))
+which_within <- which(sf::st_within(cabins_all, reindeer_area, sparse = FALSE))
+which_within_hotels <- which(sf::st_within(hotels_all, reindeer_area, sparse = FALSE))
 cabins <- cabins_all |>
   dplyr::slice(which_within) |>
   dplyr::mutate(value = 1) |>
-  dplyr::select(gid, buildtype = byggtyp_nbr, city = kommune, value)
+  dplyr::select(gid, buildtype = byggtyp_nbr, city = kommune, value) |>
+  dplyr::bind_rows(
+    hotels_all |>
+      dplyr::slice(which_within_hotels) |>
+      dplyr::mutate(value = 1) |>
+      dplyr::select(gid, buildtype = byggtyp_nbr, city = kommune, value)
+  )
 
 cabins
-plot(cabins[2])
+plot(terra::vect(cabins))
 
 # save
 sf::st_write(cabins, dsn = "inst/vector/hardanger_cabins_public.gpkg", delete_dsn = TRUE)
@@ -657,13 +690,41 @@ sf::st_write(cabins, dsn = "inst/vector/hardanger_cabins_public.gpkg", delete_ds
 v <- terra::vect(s)
 terra::plot(v)
 
+# compute ZOI
+cabins_public_grass <- "hardanger_buff_12km_cabins_public_hotels"
+rgrass::write_VECT(terra::vect(cabins), cabins_public_grass)
+oneimpact::grass_v2rast_count(x = cabins_public_grass, overwrite = TRUE)
+
+xx <- paste0(cabins_public_grass, "_count")
+rad <- c(100, 250, 500, 1000, 2500, 5000, 10000)
+cum_layers <- calc_zoi_cumulative(x = xx,
+                                  radius = rad,
+                                  type = "exp_decay",
+                                  where = "GRASS",
+                                  g_overwrite = TRUE,
+                                  verbose = TRUE)
+cum_layers <- paste0("hardanger_buff_12km_cabins_public_hotels_count_zoi_cumulative_exp_decay", rad)
+
+xx2 <- sub(pattern = "_count", replacement = "_1null", xx)
+rgrass::execGRASS("r.mapcalc", expression = paste0(xx2, " = if(", xx, " == 0, null(), 1)"), flags = "overwrite")
+near_layers <- calc_zoi_nearest(x = xx2,
+                                radius = rad,
+                                type = "exp_decay",
+                                where = "GRASS",
+                                g_overwrite = TRUE,
+                                verbose = TRUE)
+near_layers <- paste0("hardanger_buff_12km_cabins_public_hotels_1null_zoi_cumulative_exp_decay", rad)
+
+rasters_temp <- rgrass::read_RAST(c(cum_layers, near_layers), return_format = "terra")
+plot(rasters_temp[[c(2,6,9,13)]])
+
 #--------
 # get trails
 trails_all <- sf::st_read(con, DBI::Id(schema = "sam_env", table = "trails_summer_renrein_no"))
 # cut
 trails <- sf::st_intersection(trails_all, reindeer_area) |>
   dplyr::mutate(value = 1) |>
-  dplyr::select(gid, area, traffic_bin, pseudotui = high_season_pseudotui, value)
+  dplyr::select(gid, area, traffic_bin, value)
 
 trails
 plot(trails[4])
@@ -678,6 +739,44 @@ sf::st_write(trails, dsn = "inst/vector/hardanger_trails.gpkg", delete_dsn = TRU
 (s <- system.file("vector/hardanger_trails.gpkg", package = "oneimpact"))
 v <- sf::st_read(s)
 plot(v[4])
+
+# compute ZOI
+trails_grass <- "hardanger_buff_12km_trails"
+rgrass::write_VECT(terra::vect(trails), trails_grass)
+rgrass::execGRASS("v.to.rast", input = trails_grass,
+                  output = paste0(trails_grass, "_rast_1null"),
+                  use = "value", value = 1,
+                  flags = c("d", "overwrite"))
+rgrass::execGRASS("r.mapcalc",
+                  expression = paste0(
+                    trails_grass, "_rast_bin = if(isnull(",
+                    trails_grass, "_rast_1null), 0, ", trails_grass, "_rast_1null)"),
+                  flags = "overwrite")
+
+# rgrass::read_RAST(paste0(trails_grass, "_rast_bin")) |> plot()
+# rgrass::read_RAST(paste0(trails_grass, "_rast_1null")) |> plot()
+
+xx <- paste0(trails_grass, "_rast_bin")
+rad <- c(100, 250, 500, 1000, 2500, 5000, 10000)
+cum_layers <- calc_zoi_cumulative(x = xx,
+                                  radius = rad,
+                                  type = "exp_decay",
+                                  where = "GRASS",
+                                  g_overwrite = TRUE,
+                                  verbose = TRUE)
+cum_layers <- paste0("hardanger_buff_12km_trails_rast_bin_zoi_cumulative_exp_decay", rad)
+
+xx2 <- sub(pattern = "_bin", replacement = "_1null", xx)
+near_layers <- calc_zoi_nearest(x = xx2,
+                                radius = rad,
+                                type = "exp_decay",
+                                where = "GRASS",
+                                g_overwrite = TRUE,
+                                verbose = TRUE)
+near_layers <- paste0("hardanger_buff_12km_trails_rast_1null_zoi_nearest_exp_decay", rad)
+
+rasters_temp <- rgrass::read_RAST(c(cum_layers, near_layers), return_format = "terra")
+plot(rasters_temp[[c(2,6,9,13)]])
 
 #--------
 # get public roads - skip
@@ -722,3 +821,121 @@ plot(v[4])
 # (s <- system.file("vector/hardanger_roads_private.gpkg", package = "oneimpact"))
 # v <- sf::st_read(s)
 # plot(v[4])
+
+#----------------------------
+# re-export rasters for cabins private, cabins public, and trails
+
+# region - only hardanger now
+rgrass::execGRASS("r.mask", flags = "r")
+
+rgrass::execGRASS("g.region", vector = "hardanger_temp_vector", flags = c("a", "p"))
+rgrass::execGRASS("r.mask", vector = "hardanger_temp_vector")
+
+# variables names in GRASS GIS
+layers <- rgrass::execGRASS("g.list", type = "raster", pattern = "hardanger_buff_12km*", mapset = ms) |>
+  attr("resOut")
+
+# find the layers of interest
+priv_cab_g <- layers |>
+  grep(pattern = "cabins_private_1null_zoi_nearest|cabins_private_count_zoi_cumulative", value = TRUE) |>
+  grep(pattern = "_bin$|count$|1null$", value = TRUE, invert = TRUE)
+priv_cab_g <- priv_cab_g[c(1,4,6,2,5,7,3, 7+c(1,4,6,2,5,7,3))]
+pub_cab_high_g <- layers |>
+  grep(pattern = "cabins_public_hotels_1null_zoi_nearest|cabins_public_hotels_count_zoi_cumulative", value = TRUE) |>
+  grep(pattern = "_bin$|count$|1null$", value = TRUE, invert = TRUE)
+pub_cab_high_g <- pub_cab_high_g[c(1,4,6,2,5,7,3, 7+c(1,4,6,2,5,7,3))]
+trails_g <- layers |>
+  grep(pattern = "trails_rast_1null_zoi_nearest|trails_rast_bin_zoi_cumulative", value = TRUE) |>
+  grep(pattern = "_bin$|count$|1null$", value = TRUE, invert = TRUE)
+trails_g <- trails_g[c(1,4,6,2,5,7,3, 7+c(1,4,6,2,5,7,3))]
+
+all_g <- c(priv_cab_g, pub_cab_high_g, trails_g)
+rasters <- rgrass::read_RAST(all_g, return_format = "terra")
+names(rasters) <- all_g |>
+  sub(pattern = "hardanger_buff_12km_", replacement = "") |>
+  sub(pattern = "_rast_bin", replacement = "") |>
+  sub(pattern = "_zoi", replacement = "") |>
+  sub(pattern = "_hotels", replacement = "") |>
+  sub(pattern = "_count", replacement = "")
+
+plot(rasters[[c(t(outer(c(0,14,28), c(2,6), "+")))]])
+
+rgrass::execGRASS("r.mask", flags = "r")
+
+# export
+terra::writeRaster(rasters, "data-raw/rast_zois_recomputed_hardanger.tif", gdal = c("COMPRESS=DEFLATE"), overwrite = TRUE)
+
+rasters_500 <- terra::aggregate(rasters, fact = 5, fun = "mean")
+
+# read
+rasters_500_orig <- terra::rast("inst/raster/hardanger_rast_predictors_500m.tif")
+names(rasters_500_orig)
+rasters_500_orig_keep <- rasters_500_orig[[c(1:4,37:39)]]
+# plot(rasters_500_orig_keep)
+
+# append with the new ZOIs
+rasters_500_updated <- c(rasters_500_orig_keep, rasters_500)
+names(rasters_500_updated)
+
+names(rasters_500_updated) <- names(rasters_500_updated) |>
+  sub(pattern = "1_null_", replacement = "") |>
+  sub(pattern = "1null_", replacement = "") |>
+  sub(pattern = "rast_", replacement = "")
+
+# re-write
+terra::writeRaster(rasters_500_updated, "data-raw/hardanger_rast_predictors_500m.tif", gdal = c("COMPRESS=DEFLATE"),
+                   overwrite = TRUE)
+file.copy("data-raw/hardanger_rast_predictors_500m.tif", "inst/raster/", overwrite = TRUE)
+file.copy("data-raw/hardanger_rast_predictors_500m.tif.aux.xml", "inst/raster/", overwrite = TRUE)
+
+# rast_predictors$NORUTreclass <- as.numeric(rast_predictors$NORUTreclass)
+# rast_df <- terra::as.data.frame(rast_predictors, xy = TRUE, cells = TRUE, na.rm = FALSE)
+# saveRDS(rast_df, file = "data-raw/rast_predictors_Hardanger.rds")
+# arrow::write_parquet(rast_df, "data-raw/rast_predictors_Hardanger.parquet", compression = "zstd")
+# arrow::write_feather(rast_df, "data-raw/rast_predictors_Hardanger.arrow", compression = "zstd")
+
+# test
+# put these rasters together with those
+(f <- system.file("raster/hardanger_rast_predictors_500m.tif", package = "oneimpact"))
+r <- terra::rast(f)
+names(r)
+plot(r[[20]])
+
+# re-annotate the data for the RSF analysis with these layers
+
+# add linear infrastructure to Hardanger RSF example
+library(terra)
+
+# prepared data
+reindeer_rsf
+# saveRDS(reindeer_rsf, "data-raw/reindeer_rsf_old_only_cabins_pca_landuse_hardanger.rda")
+
+# base data
+load("/data/P-Prosjekter/41203800_oneimpact/04_tools/support_oneimpact/cuminf_zoi_GPS_dataset_annotated.rda")
+dat
+str(dat)
+
+# check
+nrow(reindeer_rsf)
+nrow(dat)
+
+# subset
+dat <- dat |>
+  dplyr::select(points_id, x33, y33, herd, use)
+
+# annotate
+r1 <- terra::rast("inst/raster/hardanger_rast_predictors_500m.tif")
+ext1 <- terra::extract(r1, dat[, c("x33", "y33")])
+
+colnames(reindeer_rsf) %in% colnames(ext1)
+colnames(ext1) %in% colnames(reindeer_rsf)
+
+# combine
+names(ext1)
+ext1[,-1] |> names()
+
+reindeer_rsf <- cbind(dat[, 5, drop = FALSE], ext1[,-1])
+names(reindeer_rsf)
+
+# export for the package
+usethis::use_data(reindeer_rsf, overwrite = TRUE)

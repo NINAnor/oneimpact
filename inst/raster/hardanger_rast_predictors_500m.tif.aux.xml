@@ -12,108 +12,12 @@
     <Description>norway_pca_klima_axis4</Description>
   </PAMRasterBand>
   <PAMRasterBand band="5">
-    <Description>private_cabins_cumulative_exp_decay100</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="6">
-    <Description>private_cabins_cumulative_exp_decay1000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="7">
-    <Description>private_cabins_cumulative_exp_decay10000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="8">
-    <Description>private_cabins_cumulative_exp_decay20000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="9">
-    <Description>private_cabins_cumulative_exp_decay250</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="10">
-    <Description>private_cabins_cumulative_exp_decay2500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="11">
-    <Description>private_cabins_cumulative_exp_decay500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="12">
-    <Description>private_cabins_cumulative_exp_decay5000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="13">
-    <Description>private_cabins_nearest_exp_decay100</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="14">
-    <Description>private_cabins_nearest_exp_decay1000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="15">
-    <Description>private_cabins_nearest_exp_decay10000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="16">
-    <Description>private_cabins_nearest_exp_decay20000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="17">
-    <Description>private_cabins_nearest_exp_decay250</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="18">
-    <Description>private_cabins_nearest_exp_decay2500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="19">
-    <Description>private_cabins_nearest_exp_decay500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="20">
-    <Description>private_cabins_nearest_exp_decay5000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="21">
-    <Description>public_cabins_high_cumulative_exp_decay100</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="22">
-    <Description>public_cabins_high_cumulative_exp_decay1000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="23">
-    <Description>public_cabins_high_cumulative_exp_decay10000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="24">
-    <Description>public_cabins_high_cumulative_exp_decay20000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="25">
-    <Description>public_cabins_high_cumulative_exp_decay250</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="26">
-    <Description>public_cabins_high_cumulative_exp_decay2500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="27">
-    <Description>public_cabins_high_cumulative_exp_decay500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="28">
-    <Description>public_cabins_high_cumulative_exp_decay5000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="29">
-    <Description>public_cabins_high_nearest_exp_decay100</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="30">
-    <Description>public_cabins_high_nearest_exp_decay1000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="31">
-    <Description>public_cabins_high_nearest_exp_decay10000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="32">
-    <Description>public_cabins_high_nearest_exp_decay20000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="33">
-    <Description>public_cabins_high_nearest_exp_decay250</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="34">
-    <Description>public_cabins_high_nearest_exp_decay2500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="35">
-    <Description>public_cabins_high_nearest_exp_decay500</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="36">
-    <Description>public_cabins_high_nearest_exp_decay5000</Description>
-  </PAMRasterBand>
-  <PAMRasterBand band="37">
     <Description>norway_pca_klima_axis1_sq</Description>
   </PAMRasterBand>
-  <PAMRasterBand band="38">
+  <PAMRasterBand band="6">
     <Description>norway_pca_klima_axis2_sq</Description>
   </PAMRasterBand>
-  <PAMRasterBand band="39">
+  <PAMRasterBand band="7">
     <Description>NORUTreclass</Description>
     <CategoryNames>
       <Category>11forest</Category>
@@ -373,5 +277,131 @@
       <Category></Category>
       <Category></Category>
     </CategoryNames>
+  </PAMRasterBand>
+  <PAMRasterBand band="8">
+    <Description>cabins_private_nearest_exp_decay100</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="9">
+    <Description>cabins_private_nearest_exp_decay250</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="10">
+    <Description>cabins_private_nearest_exp_decay500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="11">
+    <Description>cabins_private_nearest_exp_decay1000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="12">
+    <Description>cabins_private_nearest_exp_decay2500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="13">
+    <Description>cabins_private_nearest_exp_decay5000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="14">
+    <Description>cabins_private_nearest_exp_decay10000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="15">
+    <Description>cabins_private_cumulative_exp_decay100</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="16">
+    <Description>cabins_private_cumulative_exp_decay250</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="17">
+    <Description>cabins_private_cumulative_exp_decay500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="18">
+    <Description>cabins_private_cumulative_exp_decay1000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="19">
+    <Description>cabins_private_cumulative_exp_decay2500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="20">
+    <Description>cabins_private_cumulative_exp_decay5000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="21">
+    <Description>cabins_private_cumulative_exp_decay10000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="22">
+    <Description>cabins_public_nearest_exp_decay100</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="23">
+    <Description>cabins_public_nearest_exp_decay250</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="24">
+    <Description>cabins_public_nearest_exp_decay500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="25">
+    <Description>cabins_public_nearest_exp_decay1000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="26">
+    <Description>cabins_public_nearest_exp_decay2500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="27">
+    <Description>cabins_public_nearest_exp_decay5000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="28">
+    <Description>cabins_public_nearest_exp_decay10000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="29">
+    <Description>cabins_public_cumulative_exp_decay100</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="30">
+    <Description>cabins_public_cumulative_exp_decay250</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="31">
+    <Description>cabins_public_cumulative_exp_decay500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="32">
+    <Description>cabins_public_cumulative_exp_decay1000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="33">
+    <Description>cabins_public_cumulative_exp_decay2500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="34">
+    <Description>cabins_public_cumulative_exp_decay5000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="35">
+    <Description>cabins_public_cumulative_exp_decay10000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="36">
+    <Description>trails_nearest_exp_decay100</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="37">
+    <Description>trails_nearest_exp_decay250</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="38">
+    <Description>trails_nearest_exp_decay500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="39">
+    <Description>trails_nearest_exp_decay1000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="40">
+    <Description>trails_nearest_exp_decay2500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="41">
+    <Description>trails_nearest_exp_decay5000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="42">
+    <Description>trails_nearest_exp_decay10000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="43">
+    <Description>trails_cumulative_exp_decay100</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="44">
+    <Description>trails_cumulative_exp_decay250</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="45">
+    <Description>trails_cumulative_exp_decay500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="46">
+    <Description>trails_cumulative_exp_decay1000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="47">
+    <Description>trails_cumulative_exp_decay2500</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="48">
+    <Description>trails_cumulative_exp_decay5000</Description>
+  </PAMRasterBand>
+  <PAMRasterBand band="49">
+    <Description>trails_cumulative_exp_decay10000</Description>
   </PAMRasterBand>
 </PAMDataset>
