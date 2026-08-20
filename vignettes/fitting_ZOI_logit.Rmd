@@ -12,7 +12,12 @@ format:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  error = FALSE
+)
 ```
 
 # Intro
@@ -29,7 +34,7 @@ robust, uncertainty-aware estimates of both the ZOI radius and the magnitude of
 infrastructure effects on habitat selection.
 
 Here, we reanalyze the resource selection function fitted to reindeer movement data from the Hardangervidda 
-wild reindeer population, used in Niebuhr et al. 2023 to estimate the zone of influence (ZOI) and the 
+wild reindeer population, used in Niebuhr et al. (2023) to estimate the zone of influence (ZOI) and the 
 cumulative impacts of tourism infrastructure on reindeer habitat selection during summer.
 
 The data comprises GPS positions from 115 female reindeer, recorded with a 3h fix rate. 
@@ -39,9 +44,9 @@ with environmental variables on land cover, four PCAs representing bio-geo-clima
 the cumulative ZOI (density) of infrastructure types. 
 The infrastructures considered were private cottages and public tourist resorts. More information 
 about the cumulative ZOI approach, the data collection, and the data preparation for analysis might 
-be found in Niebuhr et al. 2023.
+be found in Niebuhr et al. (2023).
 
-![GPS data from wild reindeer in summer in the Hardangervidda wild reindeer population in southern Norway; figure from Niebuhr et al. 2023.](reindeer_gps_points_hardanger_summer.png)
+![GPS data from wild reindeer in summer in the Hardangervidda wild reindeer population in southern Norway; figure from Niebuhr et al. (2023).](reindeer_gps_points_hardanger_summer.png)
 
 Here, we show the workflow for preparing the data, fitting a conditional logistic regression model to it, 
 and checking model fits combining bootstrap aggregation (bagging) and penalized regression. In a bootstrap
@@ -70,7 +75,7 @@ For the purpose of this vignette, we exemplify the approach through Adaptive Las
 
 We start by loading the packages and the annotated data, already prepared for analysis. 
 For details on the preparation of biological and environmental/zone of influence data and 
-data annotation workflow, please check Niebuhr et al. 2023.
+data annotation workflow, please check Niebuhr et al. (2023).
 
 ```{r load_data}
 # load packages
@@ -91,7 +96,7 @@ colnames(dat)
 ```
 
 The data set "reindeer_rsf" in the `oneimpact` package contains the wild reindeer data used to fit the 
-resource selection functions using the cumulative ZOI approach in Niebuhr et al. 2023. The response variable 
+resource selection functions using the cumulative ZOI approach in Niebuhr et al. (2023). The response variable 
 `use` is a binary variable showing whether a given location was used (1) or not (0, a random location within the 
 population area). The used and available positions were annotated with information on land cover 
 (column `NORUTreclass`), bio-geo-climatic PCAs (columns `norway_pca_klima_axis` 1 to 4) and the zone of 
@@ -113,8 +118,6 @@ the ZOI metrics with multiple radii in the formula.
 # formula initial structure
 f <- use ~ cabins_private_XXX + cabins_public_XXX +
   NORUTreclass +
-  # poly(norway_pca_klima_axis1, 2, raw = TRUE) + 
-  # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
   norway_pca_klima_axis1 + norway_pca_klima_axis1_sq +
   norway_pca_klima_axis2 + norway_pca_klima_axis2_sq +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
@@ -619,7 +622,7 @@ and weighted percentiles of the suitability (if `what = "median"`), to represent
 and it is also possible to create individual predictions for each model in the bag
 (if `what = "ind"`). Below we compute the first two options and start by plotting 
 the weighted average habitat suitability, which shows a similar pattern to the habitat suitability
-map presented in Niebuhr et al. 2023 (Fig. 5f).
+map presented in Niebuhr et al. (2023) (Fig. 5f).
 
 ```{r}
 pred <- bag_predict_spat(bag = bag_object, data = rast_predictors,
@@ -825,7 +828,15 @@ predictions of infrastructure impact.
 The approach is flexible: the penalization method (Lasso, Ridge, Adaptive Lasso and its 
 ecology-informed variants), the number of resamples, the train/test/validation split 
 strategy, and the evaluation metric can all be adjusted to the specific study system. 
-We encourage users to explore these options and refer to Niebuhr et al. [-@niebuhr_estimating_2023] for 
+We encourage users to explore these options and refer to Niebuhr et al. (2023) for 
 a detailed ecological application and discussion of the method's assumptions and limitations.
 
 # References
+
+Niebuhr, B. B., van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,
+Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating the cumulative impact and zone of
+influence of anthropogenic infrastructure on biodiversity. Methods in Ecology and Evolution,
+14, 2362–2375. https://doi.org/10.1111/2041-210X.14133
+
+Niebuhr et al. (2026). Ecology-informed machine learning to estimate the zone of 
+influence of multiple disturbances on ecological niche models. *Working manuscript*.

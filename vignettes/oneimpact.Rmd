@@ -619,7 +619,7 @@ landscape effect on a biological response. Methods in Ecology and Evolution, 8(1
 1717–1724. https://doi.org/10.1111/2041-210X.12830
 
 Niebuhr, B. B., van Moorter, B., Stien, A., Tveraa, T., Strand, O., Langeland, K.,
-Alam, M., Skarin, A., & Panzacchi, M. Estimating the cumulative impact and zone of
+Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating the cumulative impact and zone of
 influence of anthropogenic infrastructure on biodiversity. Methods in Ecology and Evolution,
 14, 2362–2375. https://doi.org/10.1111/2041-210X.14133
 

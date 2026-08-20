@@ -16,7 +16,7 @@ The **cumulative ZOI approach** implemented in `oneimpact` recognizes that:
 2. **The impact of multiple features might accumulate**: impacts of features clustered in space (e.g., "cabin villages" vs. single, isolated cabins) can exceed impacts of isolated features in magnitude and spatial extent.
 3. **the ZOI is context-dependent**: The spatial extent of an impact varies by species, process, and disturbance type.
 
-For detailed background and comprehensive workflow examples, see the package vignettes, particularly the [Comprehensive Workflow Guide](https://ninanor.github.io/oneimpact/articles/comprehensive_workflow_guide.html).
+For detailed background and comprehensive workflow examples, see the package vignettes.
 
 ## Scientific foundation
 
