@@ -759,10 +759,10 @@ Ecology and Evolution, 8(12), 1717–1724.
 <https://doi.org/10.1111/2041-210X.12830>
 
 Niebuhr, B. B., van Moorter, B., Stien, A., Tveraa, T., Strand, O.,
-Langeland, K., Alam, M., Skarin, A., & Panzacchi, M. Estimating the
-cumulative impact and zone of influence of anthropogenic infrastructure
-on biodiversity. Methods in Ecology and Evolution, 14, 2362–2375.
-<https://doi.org/10.1111/2041-210X.14133>
+Langeland, K., Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating
+the cumulative impact and zone of influence of anthropogenic
+infrastructure on biodiversity. Methods in Ecology and Evolution, 14,
+2362–2375. <https://doi.org/10.1111/2041-210X.14133>
 
 R Core Team (2021). R: A language and environment for statistical
 computing. R Foundation for Statistical Computing, Vienna, Austria.

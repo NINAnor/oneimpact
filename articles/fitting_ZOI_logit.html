@@ -88,7 +88,7 @@ the ZOI radius and the magnitude of infrastructure effects on habitat
 selection.</p>
 <p>Here, we reanalyze the resource selection function fitted to reindeer
 movement data from the Hardangervidda wild reindeer population, used in
-Niebuhr et al. 2023 to estimate the zone of influence (ZOI) and the
+Niebuhr et al. (2023) to estimate the zone of influence (ZOI) and the
 cumulative impacts of tourism infrastructure on reindeer habitat
 selection during summer.</p>
 <p>The data comprises GPS positions from 115 female reindeer, recorded
@@ -100,11 +100,11 @@ bio-geo-climatic variation, the cumulative ZOI (density) of
 infrastructure types. The infrastructures considered were private
 cottages and public tourist resorts. More information about the
 cumulative ZOI approach, the data collection, and the data preparation
-for analysis might be found in Niebuhr et al. 2023.</p>
+for analysis might be found in Niebuhr et al. (2023).</p>
 <div class="float">
-<img src="reindeer_gps_points_hardanger_summer.png" alt="GPS data from wild reindeer in summer in the Hardangervidda wild reindeer population in southern Norway; figure from Niebuhr et al. 2023."><div class="figcaption">GPS data from wild reindeer in summer in the
+<img src="reindeer_gps_points_hardanger_summer.png" alt="GPS data from wild reindeer in summer in the Hardangervidda wild reindeer population in southern Norway; figure from Niebuhr et al. (2023)."><div class="figcaption">GPS data from wild reindeer in summer in the
 Hardangervidda wild reindeer population in southern Norway; figure from
-Niebuhr et al. 2023.</div>
+Niebuhr et al. (2023).</div>
 </div>
 <p>Here, we show the workflow for preparing the data, fitting a
 conditional logistic regression model to it, and checking model fits
@@ -138,32 +138,17 @@ we exemplify the approach through Adaptive Lasso regression.</p>
 <p>We start by loading the packages and the annotated data, already
 prepared for analysis. For details on the preparation of biological and
 environmental/zone of influence data and data annotation workflow,
-please check Niebuhr et al. 2023.</p>
+please check Niebuhr et al. (2023).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load packages</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu" class="external-link">glmnet</a></span><span class="op">)</span> <span class="co"># for fitting</span></span></code></pre></div>
-<pre><code><span><span class="co">## Loading required package: Matrix</span></span></code></pre>
-<pre><code><span><span class="co">## Loaded glmnet 5.0</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># for plotting</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://glmnet.stanford.edu" class="external-link">glmnet</a></span><span class="op">)</span> <span class="co"># for fitting</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># for plotting</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span> <span class="co"># for plotting maps</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># for spatial predictions</span></span></code></pre></div>
-<pre><code><span><span class="co">## terra 1.9.34</span></span></code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'oneimpact'</span></span></code></pre>
-<pre><code><span><span class="co">## The following object is masked from 'package:terra':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     predict</span></span></code></pre>
-<pre><code><span><span class="co">## The following objects are masked from 'package:glmnet':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     Cindex, coxnet.deviance</span></span></code></pre>
-<pre><code><span><span class="co">## The following object is masked from 'package:stats':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     predict</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load data</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span> <span class="co"># for spatial predictions</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NINAnor/oneimpact" class="external-link">oneimpact</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># load data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"reindeer_rsf"</span><span class="op">)</span></span>
 <span><span class="co"># rename it just for convenience</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">reindeer_rsf</span></span>
@@ -222,18 +207,19 @@ please check Niebuhr et al. 2023.</p>
 <span><span class="co">## [50] "trails_cumulative_exp_decay10000"</span></span></code></pre>
 <p>The data set “reindeer_rsf” in the <code>oneimpact</code> package
 contains the wild reindeer data used to fit the resource selection
-functions using the cumulative ZOI approach in Niebuhr et al. 2023. The
-response variable <code>use</code> is a binary variable showing whether
-a given location was used (1) or not (0, a random location within the
-population area). The used and available positions were annotated with
-information on land cover (column <code>NORUTreclass</code>),
-bio-geo-climatic PCAs (columns <code>norway_pca_klima_axis</code> 1 to
-4) and the zone of influence of private cottages and public resorts
-(columns starting with <code>cabins_private</code> and
-<code>cabins_public</code>, respectively). Zone of influence variables
-include both the ZOI of the nearest feature and the cumulative ZOI, with
-radii from 100 m to 20 km. For illustration, we only kept ZOI variables
-with exponential decay shape and cumulative type (not nearest).</p>
+functions using the cumulative ZOI approach in Niebuhr et al. (2023).
+The response variable <code>use</code> is a binary variable showing
+whether a given location was used (1) or not (0, a random location
+within the population area). The used and available positions were
+annotated with information on land cover (column
+<code>NORUTreclass</code>), bio-geo-climatic PCAs (columns
+<code>norway_pca_klima_axis</code> 1 to 4) and the zone of influence of
+private cottages and public resorts (columns starting with
+<code>cabins_private</code> and <code>cabins_public</code>,
+respectively). Zone of influence variables include both the ZOI of the
+nearest feature and the cumulative ZOI, with radii from 100 m to 20 km.
+For illustration, we only kept ZOI variables with exponential decay
+shape and cumulative type (not nearest).</p>
 <p>The predictor variables are not standardized, but it is essential to
 standardize them for penalized regression. The standardization can be
 done in advance or directly within the model fitting procedure (as we do
@@ -245,12 +231,10 @@ it here).</p>
 <code>formula</code>, in R terminology. To do that, we make use of the
 function <code><a href="../reference/add_zoi_formula.html">oneimpact::add_zoi_formula()</a></code> to make it easier to
 add the ZOI metrics with multiple radii in the formula.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># formula initial structure</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">cabins_private_XXX</span> <span class="op">+</span> <span class="va">cabins_public_XXX</span> <span class="op">+</span></span>
 <span>  <span class="va">NORUTreclass</span> <span class="op">+</span></span>
-<span>  <span class="co"># poly(norway_pca_klima_axis1, 2, raw = TRUE) + </span></span>
-<span>  <span class="co"># poly(norway_pca_klima_axis2, 2, raw = TRUE) +</span></span>
 <span>  <span class="va">norway_pca_klima_axis1</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis1_sq</span> <span class="op">+</span></span>
 <span>  <span class="va">norway_pca_klima_axis2</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis2_sq</span> <span class="op">+</span></span>
 <span>  <span class="va">norway_pca_klima_axis3</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis4</span></span>
@@ -270,7 +254,7 @@ only one ZOI predictor with a specific radius is kept in the model at a
 time and multiple models are fitted and compared, here we keep all the
 terms in the formula and use a penalized regression approach to both fit
 the model and select the variables.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">f</span></span></code></pre></div>
 <pre><code><span><span class="co">## use ~ cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 + </span></span>
 <span><span class="co">##     cabins_private_cumulative_exp_decay500 + cabins_private_cumulative_exp_decay1000 + </span></span>
@@ -282,7 +266,7 @@ the model and select the variables.</p>
 <span><span class="co">##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + </span></span>
 <span><span class="co">##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + </span></span>
 <span><span class="co">##     norway_pca_klima_axis4</span></span>
-<span><span class="co">## &lt;environment: 0x55c3fe0fdf58&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x55f9139ebc18&gt;</span></span></code></pre>
 <p>The <code><a href="../reference/add_zoi_formula.html">add_zoi_formula()</a></code> function can also produce a
 <code>predictor_table</code> <code>data.frame</code>, which specifies
 characteristics of the covariates in the model - e.g. whether they are
@@ -292,7 +276,7 @@ interpretation, to aggregate ZOI terms related to the same type of
 infrastructure, and also to define the term penalties in the different
 flavors of “Adaptive Lasso” approaches.</p>
 <p>Here we take a glance on the structure of this table:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">predictor_table_zoi</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    is_zoi cumulative     shape zoi_radius        variable</span></span>
 <span><span class="co">## 1       1 cumulative exp_decay        100 cabins_private_</span></span>
@@ -331,7 +315,7 @@ data observations that goes into fitting, calibration, and validation
 (parameter <code>p</code>) in each resample. For simplicity, we perform
 random sampling here, but the sampling can also be spatially stratified
 using the <code>sp_strat</code> argument.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># sampling - random sampling</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_resamples.html">create_resamples</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">use</span>,</span>
@@ -345,7 +329,7 @@ using the <code>sp_strat</code> argument.</p>
 for (i) model fitting (<code>samples$train</code>), for (ii) variable
 selection/calibration (<code>samples$test</code>), and for (iii) model
 validation (<code>samples$validate</code>).</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">samples</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 3</span></span>
 <span><span class="co">##  $ train   :List of 50</span></span>
@@ -368,7 +352,7 @@ number of observations used for fitting, calibration, and validation
 might be actually smaller than it was set. A warning message is printed
 in these cases; but we recommend that missing data is checked in
 advance.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dat2 &lt;- dat</span></span>
 <span><span class="co"># dat$public_cabins_high_cumulative_exp_decay_1000 &lt;- 0</span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_net_functions.html">fit_net_logit</a></span><span class="op">(</span><span class="va">f</span>, </span>
@@ -377,15 +361,6 @@ advance.</p>
 <span>                     i <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>                     metric <span class="op">=</span> <span class="st">"AUC"</span>,</span>
 <span>                     method <span class="op">=</span> <span class="st">"Lasso"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =</span></span>
-<span><span class="co">## "AUC", : 214 missing observations were removed from the train set. 14653</span></span>
-<span><span class="co">## observations were kept.</span></span></code></pre>
-<pre><code><span><span class="co">## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =</span></span>
-<span><span class="co">## "AUC", : 211 missing observations were removed from the test set. 14656</span></span>
-<span><span class="co">## observations were kept.</span></span></code></pre>
-<pre><code><span><span class="co">## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =</span></span>
-<span><span class="co">## "AUC", : 192 missing observations were removed from the validate set. 14675</span></span>
-<span><span class="co">## observations were kept.</span></span></code></pre>
 <p>We will just examine the structure of the output object now. It
 comprises a list with:</p>
 <ul>
@@ -454,7 +429,7 @@ as <code>coef</code>, <code>train_score</code>, <code>test_score</code>,
 and <code>validation_score</code>, but for all the
 <code>metrics_evaluated</code>, when there is more than one metric.</li>
 </ul>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 20</span></span>
 <span><span class="co">##  $ parms               :List of 18</span></span>
@@ -499,7 +474,7 @@ of each model in a single “bag” object, of the class
 running time can be high for larger data sets and more complex models.
 The model fitting can be done in parallel, and also saved in external
 files if needed.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fit multiple models</span></span>
 <span><span class="va">fittedl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bag_fit_net_functions.html">bag_fit_net_logit</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">dat</span>,</span>
 <span>                             samples <span class="op">=</span> <span class="va">samples</span>,</span>
@@ -529,14 +504,14 @@ parameter <code>weights_function</code>). As a consequence, a number of
 objects related to the weights and the weighted validation scores is
 also present in the bag object, as well as summaries of the data that
 are useful for model prediction.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">bag_object</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 32</span></span>
 <span><span class="co">##  $ n                                : int 50</span></span>
 <span><span class="co">##  $ formula                          :Class 'formula'  language use ~ cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_cumul| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55c3fe0fdf58&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55f9139ebc18&gt; </span></span>
 <span><span class="co">##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_| __truncated__ ...</span></span>
-<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55c3fe456370&gt; </span></span>
+<span><span class="co">##   .. ..- attr(*, ".Environment")=&lt;environment: 0x55f9144b3750&gt; </span></span>
 <span><span class="co">##  $ method                           : chr "Lasso"</span></span>
 <span><span class="co">##  $ metric                           : chr "AUC"</span></span>
 <span><span class="co">##  $ metrics_evaluated                : Named chr "AUC"</span></span>
@@ -602,7 +577,7 @@ to understand the model fit.</p>
 </h3>
 <p>First, it is possible to check and plot the validation scores to know
 how well the model performs under new conditions.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] 0.9052306 0.9103527 0.9113945 0.9119698 0.9094843 0.9070702 0.9083264</span></span>
 <span><span class="co">##  [8] 0.9056278 0.9099305 0.9094397</span></span></code></pre>
@@ -612,7 +587,7 @@ round(bag_object$weighted_validation_score[1], 3). Here we go beyond
 just averaging the scores, but we also account for the weights of each
 model, with more weight for models better ranked. We can also plot the
 scores for each model in the bag:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Validation score"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0.7</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="co"># threshold</span></span></code></pre></div>
@@ -648,24 +623,21 @@ theoretically the same, up to a constant (see Supplementary
 Material).</p>
 <p>Variable importance can be visualized using the function
 <code><a href="../reference/plot_importance.html">oneimpact::plot_importance()</a></code>.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># variable importance</span></span>
 <span><span class="va">importance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/variable_importance.html">variable_importance</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>                                  data <span class="op">=</span> <span class="va">dat</span>, </span>
 <span>                                  type <span class="op">=</span> <span class="st">"drop"</span>, <span class="co"># method = drop variable</span></span>
-<span>                                  order <span class="op">=</span> <span class="st">"asc"</span><span class="op">)</span> <span class="co"># ascending order</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in variable_importance(bag_object, data = dat, type = "drop", order =</span></span>
-<span><span class="co">## "asc"): 1041 missing observations were removed from the validate set. 73296</span></span>
-<span><span class="co">## observations were kept.</span></span></code></pre>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#plot_importance(importance)</span></span>
+<span>                                  order <span class="op">=</span> <span class="st">"asc"</span><span class="op">)</span> <span class="co"># ascending order</span></span>
+<span></span>
+<span><span class="co">#plot_importance(importance)</span></span>
 <span><span class="fu"><a href="../reference/plot_importance.html">plot_importance</a></span><span class="op">(</span><span class="va">importance</span>, remove_threshold <span class="op">=</span> <span class="fl">5e-3</span><span class="op">)</span> <span class="co"># remove vars with too low score from plot</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/variable_importance1-1.png" class="r-plt" alt="" width="700"></p>
 <p>Variable importance might also be computed for groups of variables.
 For instance, below we group all variables with similar ZOI metric
 (private cottages or public resorts) and all terms related to the same
 variable (e.g. quadratic terms).</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using variable block/type of variable</span></span>
 <span><span class="va">variable_blocks</span> <span class="op">&lt;-</span> <span class="va">bag_object</span><span class="op">$</span><span class="va">var_names</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span>split <span class="op">=</span> <span class="st">"_cumulative_exp_decay|reclass|, 2)|, 2, raw = TRUE)|_sq"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -684,17 +656,13 @@ variable (e.g. quadratic terms).</p>
 <span><span class="co">## [28] "NORUT"                  "norway_pca_klima_axis1" "norway_pca_klima_axis1"</span></span>
 <span><span class="co">## [31] "norway_pca_klima_axis2" "norway_pca_klima_axis2" "norway_pca_klima_axis3"</span></span>
 <span><span class="co">## [34] "norway_pca_klima_axis4"</span></span></code></pre>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">importance_block</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/variable_importance.html">variable_importance</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>                                        data <span class="op">=</span> <span class="va">dat</span>, </span>
 <span>                                        type <span class="op">=</span> <span class="st">"drop"</span>,</span>
 <span>                                        order <span class="op">=</span> <span class="st">"asc"</span>,</span>
-<span>                                        variable_block <span class="op">=</span> <span class="va">variable_blocks</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning in variable_importance(bag_object, data = dat, type = "drop", order =</span></span>
-<span><span class="co">## "asc", : 1041 missing observations were removed from the validate set. 73296</span></span>
-<span><span class="co">## observations were kept.</span></span></code></pre>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">importance_block</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">importance_block</span><span class="op">)</span> <span class="op">==</span> <span class="st">"NORUT"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"land_cover"</span> </span>
+<span>                                        variable_block <span class="op">=</span> <span class="va">variable_blocks</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">importance_block</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">importance_block</span><span class="op">)</span> <span class="op">==</span> <span class="st">"NORUT"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"land_cover"</span> </span>
 <span><span class="fu"><a href="../reference/plot_importance.html">plot_importance</a></span><span class="op">(</span><span class="va">importance_block</span>, normalize <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/variable_importance3-1.png" class="r-plt" alt="" width="700"></p>
 <p><strong>Add interpretation here</strong></p>
@@ -705,7 +673,7 @@ variable (e.g. quadratic terms).</p>
 <p>The estimated coefficients from the models in the bag can be seen in
 the <code>coef</code> element of the bag. It contains the coefficient of
 each model/resample of the bag, for each term of the formula:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># coefficients - already unstandardized by the fit_net_logit function</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">coef</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
@@ -738,12 +706,12 @@ scores, and they balance the contribution of the coefficients of each
 model. Below we see the validation scores and weights. We see that all
 models perform relatively well, which means all of them are given a
 relative similar weight:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weights and weighted coefficients</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] 0.9052306 0.9103527 0.9113945 0.9119698 0.9094843 0.9070702 0.9083264</span></span>
 <span><span class="co">##  [8] 0.9056278 0.9099305 0.9094397</span></span></code></pre>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">weights</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## Resample01 Resample02 Resample03 Resample04 Resample05 Resample06 Resample07 </span></span>
 <span><span class="co">## 0.01977675 0.02000119 0.02004699 0.02007231 0.01996305 0.01985721 0.01991225 </span></span>
@@ -751,7 +719,7 @@ relative similar weight:</p>
 <span><span class="co">## 0.01979411 0.01998264 0.01996109</span></span></code></pre>
 <p>Now we can get the weighted coefficients for each model, and averaged
 over models.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weighted coefficients for each model</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">wcoef</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                             Resample01    Resample02</span></span>
@@ -789,7 +757,7 @@ over models.</p>
 <span><span class="co">## norway_pca_klima_axis2_sq                -0.0110504005 -8.208403e-03</span></span>
 <span><span class="co">## norway_pca_klima_axis3                    2.5178388386 -6.915733e-01</span></span>
 <span><span class="co">## norway_pca_klima_axis4                   -1.2418828684  9.417656e-01</span></span></code></pre>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weighted average coefficients</span></span>
 <span><span class="va">bag_object</span><span class="op">$</span><span class="va">coef</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">bag_object</span><span class="op">$</span><span class="va">weights</span> <span class="co"># weighted average</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                                   [,1]</span></span>
@@ -830,7 +798,7 @@ over models.</p>
 <p>Finally, we can plot the coefficients in each model in different ways
 using the <code><a href="../reference/plot_coef.html">oneimpact::plot_coef()</a></code> function.</p>
 <p><strong>explain one by one</strong></p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted coefficients in each model, for all terms</span></span>
 <span><span class="co"># plot_coef(bag_object)</span></span>
 <span></span>
@@ -842,16 +810,15 @@ using the <code><a href="../reference/plot_coef.html">oneimpact::plot_coef()</a>
 <span><span class="co"># for one the 3 first models</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"cabins_private_cumulative"</span>, models <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef5-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only for private cabins, by resample, as points</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"cabins_private_cumulative"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, models <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef5-2.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only for private cabins, as histograms</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, terms <span class="op">=</span> <span class="st">"cabins_private_cumulative"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef5-3.png" class="r-plt" alt="" width="700"></p>
 <p>It is possible to see that several of the terms/covariates were
 removed from the models in some of the resamples, i.e., their estimated
@@ -861,11 +828,11 @@ regression, that performs variable selection with model fitting.</p>
 be done for all terms, or for terms of one specific type of variable. In
 this case, for ZOI variables, it is advisable to order them according to
 the ZOI radius with the option <code>order_zoi_radius = TRUE</code>.</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted average coefs - all terms</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/coef6-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot weighted average coefs - public cabins</span></span>
 <span><span class="fu"><a href="../reference/plot_coef.html">plot_coef</a></span><span class="op">(</span><span class="va">bag_object</span>, what <span class="op">=</span> <span class="st">"average"</span>, terms <span class="op">=</span> <span class="st">"cabins_public"</span>, </span>
 <span>          plot_type <span class="op">=</span> <span class="st">"points"</span>, order_zoi_radius <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -895,7 +862,7 @@ predicting. In this scale, we should interpret values higher than 0.5 as
 selection, and values lower than 0.5 as avoidance. However, the variable
 responses are more easily interpreted as the gradient of change in
 relative selection as the variable increases or decreases.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot responses</span></span>
 <span></span>
 <span><span class="co"># PCA1</span></span>
@@ -917,7 +884,7 @@ predictions in the bag is also to plot the individual model predictions
 as lines, instead of the weighted confidence interval. This is done
 setting the parameters <code>individ_pred = TRUE</code> and
 <code>ci = FALSE</code>.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># reference median</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
@@ -931,7 +898,7 @@ setting the parameters <code>individ_pred = TRUE</code> and
 </h4>
 <p>Now we plot the effect of PCA3, which is related to terrain
 ruggedness.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot responses</span></span>
 <span></span>
 <span><span class="co"># PCA3</span></span>
@@ -954,7 +921,7 @@ contain “private_cabins” in the name. We plot the distance in
 logarithmic scale to ease the visualization. We start by plotting the
 relative selection strength considering the impact of one single private
 cabin.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ZOI private cabins</span></span>
 <span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cabins_private <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
@@ -972,7 +939,7 @@ effects are negative.</p>
 increase as the density of cabins increase, and the negative effects
 gets less uncertain. See below the response plot for a set of 10 and 100
 cabins.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 10 features</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
@@ -981,7 +948,7 @@ cabins.</p>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 100 features</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
@@ -989,8 +956,6 @@ cabins.</p>
 <span>              n_features <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">## (`geom_line()`).</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response4-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level4">
@@ -999,7 +964,7 @@ cabins.</p>
 <p>Now we plot the response curves for public resorts. We start by
 plotting the relative selection strength considering the impact of one
 single resort.</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ZOI public resorts cumulative</span></span>
 <span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cabins_public <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1010,8 +975,6 @@ single resort.</p>
 <span>              n_features <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: Removed 5 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">## (`geom_line()`).</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response7-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see a negative impact of a public resort, non-linearly, up to 20
 km, with high variation in the range 100-2500 m, but with overall
@@ -1019,7 +982,7 @@ average and median negative effects. We can also increase and evaluate
 the impact of three public resorts in a neighborhood, the maximum
 observed in the study area, which shows a more consistently negative
 effect which only starts to decrease after 10 km.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3 features</span></span>
 <span><span class="fu"><a href="../reference/plot_response.html">plot_response</a></span><span class="op">(</span><span class="va">bag_object</span>, </span>
 <span>              dfvar <span class="op">=</span> <span class="va">dfvar</span>, data <span class="op">=</span> <span class="va">dat</span>, </span>
@@ -1027,8 +990,6 @@ effect which only starts to decrease after 10 km.</p>
 <span>              n_features <span class="op">=</span> <span class="fl">3</span>, </span>
 <span>              ci <span class="op">=</span> <span class="cn">FALSE</span>, indiv_pred <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>              logx <span class="op">=</span> <span class="cn">TRUE</span>, ylim <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: Removed 6 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">## (`geom_line()`).</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/plot_response8-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
@@ -1044,10 +1005,10 @@ included in the model above - land cover, the four bio-geo-climatic
 PCAs, and the different ZOI variables for private and public cabins. The
 data is loaded for the whole study area - the Hardangervidda wild
 reindeer area in Norway and its surroundings.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/hardanger_rast_predictors_500m.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "/home/runner/work/_temp/Library/oneimpact/raster/hardanger_rast_predictors_500m.tif"</span></span></code></pre>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rast_predictors</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></code></pre></div>
 <p>We can use the function <code><a href="../reference/bag_predict_spat.html">oneimpact::bag_predict_spat()</a></code> to
 make spatial predictions based on the bag of fitted models. It is
@@ -1059,8 +1020,8 @@ also possible to create individual predictions for each model in the bag
 (if <code>what = "ind"</code>). Below we compute the first two options
 and start by plotting the weighted average habitat suitability, which
 shows a similar pattern to the habitat suitability map presented in
-Niebuhr et al. 2023 (Fig. 5f).</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+Niebuhr et al. (2023) (Fig. 5f).</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bag_predict_spat.html">bag_predict_spat</a></span><span class="op">(</span>bag <span class="op">=</span> <span class="va">bag_object</span>, data <span class="op">=</span> <span class="va">rast_predictors</span>,</span>
 <span>                         input_type <span class="op">=</span> <span class="st">"rast"</span>, what <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># if rast_df was a data.frame</span></span>
@@ -1081,7 +1042,7 @@ predictions for the habitat suitability. Which elements are returned
 depend on the values included in the <code>what</code> argument.</li>
 </ul>
 <p>Below we plot the first map, the weighted average prediction.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># weighted average</span></span>
 <span><span class="va">map1</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_weighted_avg_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Greens"</span>, style <span class="op">=</span> <span class="st">"cont"</span>, title <span class="op">=</span> <span class="st">"Suitability"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1091,26 +1052,13 @@ depend on the values included in the <code>what</code> argument.</li>
 <span>                  main.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># tmap::tm_shape(study_area_v) +</span></span>
 <span>  <span class="co"># tmap::tm_borders() +</span></span>
-<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">tmap v3 code detected</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: instead of `style = "cont"`, use col.scale =</span></span>
-<span><span class="co">## `tm_scale_continuous()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Migrate the argument(s) 'palette' (rename to 'values') to</span></span>
-<span><span class="co">##   'tm_scale_continuous(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.greens"</span></span></span></code></pre>
+<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="700"></p>
 <p>The weighted median suitability also produces a quite similar
 prediction. It is by default stored in as the first layer of the raster
 <code>pred$r_ind_summ_pred</code>.</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># average/SD of individual pred</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Median"</span>, <span class="st">"IQR"</span>, <span class="st">"QCV"</span><span class="op">)</span></span>
 <span><span class="va">map2</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1121,21 +1069,8 @@ prediction. It is by default stored in as the first layer of the raster
 <span>                  main.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># tmap::tm_shape(study_area_v) +</span></span>
 <span>  <span class="co"># tmap::tm_borders() +</span></span>
-<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">tmap v3 code detected</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: instead of `style = "cont"`, use col.scale =</span></span>
-<span><span class="co">## `tm_scale_continuous()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Migrate the argument(s) 'palette' (rename to 'values') to</span></span>
-<span><span class="co">##   'tm_scale_continuous(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.greens"</span></span></span></code></pre>
+<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"></p>
 <p>When the argument <code>what = "median"</code> is used in the
 <code><a href="../reference/bag_predict_spat.html">bag_predict_spat()</a></code> function, it also allows us to compute
@@ -1147,7 +1082,7 @@ different between the 25 and 75 weighted predicted percentiles), but
 other values might be selected through the argument
 <code>uncertainty_quantiles</code> in the
 <code><a href="../reference/bag_predict_spat.html">bag_predict_spat()</a></code> function.</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map3</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Reds"</span>, style <span class="op">=</span> <span class="st">"cont"</span>, title <span class="op">=</span> <span class="st">"Uncertainty"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LEFT"</span>, <span class="st">"BOTTOM"</span><span class="op">)</span>,</span>
@@ -1156,21 +1091,8 @@ other values might be selected through the argument
 <span>                  main.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># tmap::tm_shape(study_area_v) +</span></span>
 <span>  <span class="co"># tmap::tm_borders() +</span></span>
-<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">tmap v3 code detected</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: instead of `style = "cont"`, use col.scale =</span></span>
-<span><span class="co">## `tm_scale_continuous()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Migrate the argument(s) 'palette' (rename to 'values') to</span></span>
-<span><span class="co">##   'tm_scale_continuous(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map3</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.reds"</span></span></span></code></pre>
+<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see that the largest absolute variation between individual model
 predictions is in the areas with high predicted average/median
@@ -1185,7 +1107,7 @@ is the <code>x%</code> percentile. We see now that this measures
 highlights the relative (not the absolute) variation in the prediction,
 which occurs close to the two types of cabins and in the areas of high
 variation in the other predictors as well.</p>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map4</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred</span><span class="op">[[</span><span class="st">"r_ind_summ_pred"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Reds"</span>, style <span class="op">=</span> <span class="st">"cont"</span>, title <span class="op">=</span> <span class="st">"Uncertainty"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LEFT"</span>, <span class="st">"BOTTOM"</span><span class="op">)</span>,</span>
@@ -1194,21 +1116,8 @@ variation in the other predictors as well.</p>
 <span>                  main.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># tmap::tm_shape(study_area_v) +</span></span>
 <span>  <span class="co"># tmap::tm_borders() +</span></span>
-<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">tmap v3 code detected</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: instead of `style = "cont"`, use col.scale =</span></span>
-<span><span class="co">## `tm_scale_continuous()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Migrate the argument(s) 'palette' (rename to 'values') to</span></span>
-<span><span class="co">##   'tm_scale_continuous(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map4</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.reds"</span></span></span></code></pre>
+<span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
@@ -1239,7 +1148,7 @@ objects, one for each variable list in <code>vars</code>.</li>
 </ul>
 <p>To make it fast, we produce only the mean weighted prediction for the
 partial effect of each of the covariates.</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># variables to be considered</span></span>
 <span><span class="va">predictor_table_zoi</span><span class="op">$</span><span class="va">variable</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "cabins_private_"           "cabins_private_"          </span></span>
@@ -1253,7 +1162,7 @@ partial effect of each of the covariates.</p>
 <span><span class="co">## [17] "norway_pca_klima_axis1_sq" "norway_pca_klima_axis2"   </span></span>
 <span><span class="co">## [19] "norway_pca_klima_axis2_sq" "norway_pca_klima_axis3"   </span></span>
 <span><span class="co">## [21] "norway_pca_klima_axis4"</span></span></code></pre>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># correct quadratic terms</span></span>
 <span><span class="va">predictor_table_zoi</span><span class="op">$</span><span class="va">variable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"poly("</span>, <span class="st">""</span>, <span class="va">predictor_table_zoi</span><span class="op">$</span><span class="va">variable</span>, fixed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">", 2, raw = TRUE)|_sq"</span>, replacement <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
@@ -1299,7 +1208,7 @@ bio-geo-climatic PCAs (PCA3) and the land cover layer, as an example.
 Here, we have plotted the responses in the exponential scale, for
 simplicity. This means that values above 1 represent selection, and
 values below 1 represent avoidance.</p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span>, </span>
 <span>                <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co">#plot(x, main = names(x), col = map.pal("viridis")))</span></span>
 <span>                  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">pred_vars</span><span class="op">$</span><span class="va">r_weighted_avg_pred</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1311,47 +1220,15 @@ values below 1 represent avoidance.</p>
 <span>                main.title <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pred_vars</span><span class="op">$</span><span class="va">vars</span><span class="op">[</span><span class="va">x</span><span class="op">]</span><span class="op">)</span>,<span class="co">#"Weighted average effect of predictors",</span></span>
 <span>                main.title.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"center"</span><span class="op">)</span>,</span>
 <span>                main.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>              <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">tmap v3 code detected</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: instead of `style = "cont"`, use col.scale =</span></span>
-<span><span class="co">## `tm_scale_continuous()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Migrate the argument(s) 'breaks' (rename to 'ticks'), 'midpoint', 'palette'</span></span>
-<span><span class="co">##   (rename to 'values') to 'tm_scale_continuous(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a</span></span>
-<span><span class="co">## list: 'col'.scale = list(&lt;scale1&gt;, &lt;scale2&gt;, ...)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span></code></pre>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span></span></code></pre></div>
+<span>              <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [[1]]</span></span></code></pre>
-<pre><code><span><span class="co">## The map variable `col` of the layer "raster" contains a unique value. Therefore</span></span>
-<span><span class="co">## a discrete scale is applied (tm_scale_discrete).</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.pi_yg"</span></span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="700"></p>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## [[2]]</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.pi_yg"</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
-<span><span class="co">## fit well, and are therefore rescaled.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-2.png" class="r-plt" alt="" width="700"></p>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## [[3]]</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.pi_yg"</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
-<span><span class="co">## fit well, and are therefore rescaled.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-3.png" class="r-plt" alt="" width="700"></p>
 <p>We see in these images that the effect of PC1 (continentality) is the
 largest between those variables, followed by that of land cover and
@@ -1361,7 +1238,7 @@ avoid the lower lands with forests and climates which are too oceanic
 <p>We can now plot the spatial impact of private cabins and public
 cabins. As shown above, the effect of both types of infrastructure is
 very strong.</p>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># private cabins</span></span>
 <span><span class="va">map_plot</span> <span class="op">&lt;-</span> <span class="va">pred_vars</span><span class="op">$</span><span class="va">r_weighted_avg_pred</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">map1</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">map_plot</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1373,28 +1250,10 @@ very strong.</p>
 <span>                main.title <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">map_plot</span><span class="op">)</span>,<span class="co">#"Weighted average effect of predictors",</span></span>
 <span>                main.title.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"center"</span><span class="op">)</span>,</span>
 <span>                main.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>              <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">tmap v3 code detected</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: instead of `style = "cont"`, use col.scale =</span></span>
-<span><span class="co">## `tm_scale_continuous()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Migrate the argument(s) 'breaks' (rename to 'ticks'), 'midpoint', 'palette'</span></span>
-<span><span class="co">##   (rename to 'values') to 'tm_scale_continuous(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a</span></span>
-<span><span class="co">## list: 'col'.scale = list(&lt;scale1&gt;, &lt;scale2&gt;, ...)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.pi_yg"</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
-<span><span class="co">## fit well, and are therefore rescaled.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
+<span>              <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># public cabins</span></span>
 <span><span class="va">map_plot</span> <span class="op">&lt;-</span> <span class="va">pred_vars</span><span class="op">$</span><span class="va">r_weighted_avg_pred</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">map2</span> <span class="op">&lt;-</span> <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">map_plot</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1406,24 +1265,8 @@ very strong.</p>
 <span>                main.title <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">map_plot</span><span class="op">)</span>,<span class="co">#"Weighted average effect of predictors",</span></span>
 <span>                main.title.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"center"</span><span class="op">)</span>,</span>
 <span>                main.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>              <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">tmap v3 code detected</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: instead of `style = "cont"`, use col.scale =</span></span>
-<span><span class="co">## `tm_scale_continuous()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Migrate the argument(s) 'breaks' (rename to 'ticks'), 'midpoint', 'palette'</span></span>
-<span><span class="co">##   (rename to 'values') to 'tm_scale_continuous(&lt;HERE&gt;)'</span></span>
-<span><span class="co">## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a</span></span>
-<span><span class="co">## list: 'col'.scale = list(&lt;scale1&gt;, &lt;scale2&gt;, ...)'<span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_raster()`: migrate the argument(s) related to the legend of the</span></span>
-<span><span class="co">## map variable `col` namely 'title' to 'col.legend = tm_legend(&lt;HERE&gt;)'<span style="color: #00BB00;">[v3-&gt;v4]</span> `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`</span></span></code></pre>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">[cols4all]</span> color palettes: use palettes from the R package cols4all. Run</span></span>
-<span><span class="co">## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named</span></span>
-<span><span class="co">## <span style="color: #0000BB;">"brewer.pi_yg"</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">[plot mode]</span> fit legend/component: Some legend items or map compoments do not</span></span>
-<span><span class="co">## fit well, and are therefore rescaled.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre>
+<span>              <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
@@ -1442,13 +1285,21 @@ response curves, and spatial predictions of infrastructure impact.</p>
 Adaptive Lasso and its ecology-informed variants), the number of
 resamples, the train/test/validation split strategy, and the evaluation
 metric can all be adjusted to the specific study system. We encourage
-users to explore these options and refer to Niebuhr et al. <span class="citation">[-@niebuhr_estimating_2023]</span> for a detailed
-ecological application and discussion of the method’s assumptions and
-limitations.</p>
+users to explore these options and refer to Niebuhr et al. (2023) for a
+detailed ecological application and discussion of the method’s
+assumptions and limitations.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<p>Niebuhr, B. B., van Moorter, B., Stien, A., Tveraa, T., Strand, O.,
+Langeland, K., Alam, M., Skarin, A., &amp; Panzacchi, M. (2023).
+Estimating the cumulative impact and zone of influence of anthropogenic
+infrastructure on biodiversity. Methods in Ecology and Evolution, 14,
+2362–2375. <a href="https://doi.org/10.1111/2041-210X.14133" class="external-link uri">https://doi.org/10.1111/2041-210X.14133</a></p>
+<p>Niebuhr et al. (2026). Ecology-informed machine learning to estimate
+the zone of influence of multiple disturbances on ecological niche
+models. <em>Working manuscript</em>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

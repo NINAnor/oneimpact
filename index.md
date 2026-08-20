@@ -30,8 +30,7 @@ that:
     varies by species, process, and disturbance type.
 
 For detailed background and comprehensive workflow examples, see the
-package vignettes, particularly the [Comprehensive Workflow
-Guide](https://ninanor.github.io/oneimpact/articles/comprehensive_workflow_guide.html).
+package vignettes.
 
 ## Scientific foundation
 

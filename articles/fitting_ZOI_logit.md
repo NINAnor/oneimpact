@@ -18,7 +18,7 @@ selection.
 
 Here, we reanalyze the resource selection function fitted to reindeer
 movement data from the Hardangervidda wild reindeer population, used in
-Niebuhr et al. 2023 to estimate the zone of influence (ZOI) and the
+Niebuhr et al. (2023) to estimate the zone of influence (ZOI) and the
 cumulative impacts of tourism infrastructure on reindeer habitat
 selection during summer.
 
@@ -31,14 +31,15 @@ variation, the cumulative ZOI (density) of infrastructure types. The
 infrastructures considered were private cottages and public tourist
 resorts. More information about the cumulative ZOI approach, the data
 collection, and the data preparation for analysis might be found in
-Niebuhr et al. 2023.
+Niebuhr et al. (2023).
 
 ![GPS data from wild reindeer in summer in the Hardangervidda wild
 reindeer population in southern Norway; figure from Niebuhr et
-al. 2023.](reindeer_gps_points_hardanger_summer.png)
+al. (2023).](reindeer_gps_points_hardanger_summer.png)
 
 GPS data from wild reindeer in summer in the Hardangervidda wild
-reindeer population in southern Norway; figure from Niebuhr et al. 2023.
+reindeer population in southern Norway; figure from Niebuhr et
+al. (2023).
 
 Here, we show the workflow for preparing the data, fitting a conditional
 logistic regression model to it, and checking model fits combining
@@ -72,48 +73,17 @@ the approach through Adaptive Lasso regression.
 We start by loading the packages and the annotated data, already
 prepared for analysis. For details on the preparation of biological and
 environmental/zone of influence data and data annotation workflow,
-please check Niebuhr et al. 2023.
+please check Niebuhr et al. (2023).
 
 ``` r
 
 # load packages
 library(glmnet) # for fitting
-```
-
-    ## Loading required package: Matrix
-
-    ## Loaded glmnet 5.0
-
-``` r
-
 library(ggplot2) # for plotting
 library(tmap) # for plotting maps
 library(terra) # for spatial predictions
-```
-
-    ## terra 1.9.34
-
-``` r
 
 library(oneimpact)
-```
-
-    ## 
-    ## Attaching package: 'oneimpact'
-
-    ## The following object is masked from 'package:terra':
-    ## 
-    ##     predict
-
-    ## The following objects are masked from 'package:glmnet':
-    ## 
-    ##     Cindex, coxnet.deviance
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     predict
-
-``` r
 
 # load data
 data("reindeer_rsf")
@@ -177,7 +147,7 @@ colnames(dat)
 
 The data set “reindeer_rsf” in the `oneimpact` package contains the wild
 reindeer data used to fit the resource selection functions using the
-cumulative ZOI approach in Niebuhr et al. 2023. The response variable
+cumulative ZOI approach in Niebuhr et al. (2023). The response variable
 `use` is a binary variable showing whether a given location was used (1)
 or not (0, a random location within the population area). The used and
 available positions were annotated with information on land cover
@@ -207,8 +177,6 @@ formula.
 # formula initial structure
 f <- use ~ cabins_private_XXX + cabins_public_XXX +
   NORUTreclass +
-  # poly(norway_pca_klima_axis1, 2, raw = TRUE) + 
-  # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
   norway_pca_klima_axis1 + norway_pca_klima_axis1_sq +
   norway_pca_klima_axis2 + norway_pca_klima_axis2_sq +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
@@ -246,7 +214,7 @@ f
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x55c3fe0fdf58>
+    ## <environment: 0x55f9139ebc18>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -359,18 +327,6 @@ mod <- fit_net_logit(f,
                      metric = "AUC",
                      method = "Lasso")
 ```
-
-    ## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =
-    ## "AUC", : 214 missing observations were removed from the train set. 14653
-    ## observations were kept.
-
-    ## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =
-    ## "AUC", : 211 missing observations were removed from the test set. 14656
-    ## observations were kept.
-
-    ## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =
-    ## "AUC", : 192 missing observations were removed from the validate set. 14675
-    ## observations were kept.
 
 We will just examine the structure of the output object now. It
 comprises a list with:
@@ -516,9 +472,9 @@ str(bag_object, max.level = 1)
     ## List of 32
     ##  $ n                                : int 50
     ##  $ formula                          :Class 'formula'  language use ~ cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c3fe0fdf58> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55f9139ebc18> 
     ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c3fe456370> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55f9144b3750> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"
@@ -647,13 +603,6 @@ importance <- variable_importance(bag_object,
                                   data = dat, 
                                   type = "drop", # method = drop variable
                                   order = "asc") # ascending order
-```
-
-    ## Warning in variable_importance(bag_object, data = dat, type = "drop", order =
-    ## "asc"): 1041 missing observations were removed from the validate set. 73296
-    ## observations were kept.
-
-``` r
 
 #plot_importance(importance)
 plot_importance(importance, remove_threshold = 5e-3) # remove vars with too low score from plot
@@ -696,14 +645,6 @@ importance_block <- variable_importance(bag_object,
                                         type = "drop",
                                         order = "asc",
                                         variable_block = variable_blocks)
-```
-
-    ## Warning in variable_importance(bag_object, data = dat, type = "drop", order =
-    ## "asc", : 1041 missing observations were removed from the validate set. 73296
-    ## observations were kept.
-
-``` r
-
 names(importance_block)[names(importance_block) == "NORUT"] <- "land_cover" 
 plot_importance(importance_block, normalize = T)
 ```
@@ -901,8 +842,6 @@ plot_coef(bag_object, terms = "cabins_private_cumulative",
           plot_type = "histogram")
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
-
 ![](fitting_ZOI_logit_files/figure-html/coef5-3.png)
 
 It is possible to see that several of the terms/covariates were removed
@@ -1072,9 +1011,6 @@ plot_response(bag_object,
               logx = TRUE, ylim = ggplot2::ylim(0, 2))
 ```
 
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
-    ## (`geom_line()`).
-
 ![](fitting_ZOI_logit_files/figure-html/plot_response4-2.png)
 
 #### Public resorts
@@ -1097,9 +1033,6 @@ plot_response(bag_object,
               logx = TRUE, ylim = ggplot2::ylim(0, 2))
 ```
 
-    ## Warning: Removed 5 rows containing missing values or values outside the scale range
-    ## (`geom_line()`).
-
 ![](fitting_ZOI_logit_files/figure-html/plot_response7-1.png)
 
 We see a negative impact of a public resort, non-linearly, up to 20 km,
@@ -1119,9 +1052,6 @@ plot_response(bag_object,
               ci = FALSE, indiv_pred = TRUE, 
               logx = TRUE, ylim = ggplot2::ylim(0, 1))
 ```
-
-    ## Warning: Removed 6 rows containing missing values or values outside the scale range
-    ## (`geom_line()`).
 
 ![](fitting_ZOI_logit_files/figure-html/plot_response8-1.png)
 
@@ -1157,7 +1087,7 @@ uncertainty, and it is also possible to create individual predictions
 for each model in the bag (if `what = "ind"`). Below we compute the
 first two options and start by plotting the weighted average habitat
 suitability, which shows a similar pattern to the habitat suitability
-map presented in Niebuhr et al. 2023 (Fig. 5f).
+map presented in Niebuhr et al. (2023) (Fig. 5f).
 
 ``` r
 
@@ -1193,28 +1123,8 @@ map1 <- tmap::tm_shape(pred[["r_weighted_avg_pred"]]) +
   # tmap::tm_shape(study_area_v) +
   # tmap::tm_borders() +
   tmap::tm_compass()
-```
-
-    ## 
-
-    ## ── tmap v3 code detected ───────────────────────────────────────────────────────
-
-    ## [v3->v4] `tm_raster()`: instead of `style = "cont"`, use col.scale =
-    ## `tm_scale_continuous()`.
-    ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
-    ##   'tm_scale_continuous(<HERE>)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-    ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
-
-``` r
-
 print(map1)
 ```
-
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named
-    ## "brewer.greens"
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-4-1.png)
 
@@ -1235,28 +1145,8 @@ map2 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[1]]) +
   # tmap::tm_shape(study_area_v) +
   # tmap::tm_borders() +
   tmap::tm_compass()
-```
-
-    ## 
-
-    ## ── tmap v3 code detected ───────────────────────────────────────────────────────
-
-    ## [v3->v4] `tm_raster()`: instead of `style = "cont"`, use col.scale =
-    ## `tm_scale_continuous()`.
-    ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
-    ##   'tm_scale_continuous(<HERE>)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-    ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
-
-``` r
-
 print(map2)
 ```
-
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "Greens" is named
-    ## "brewer.greens"
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-5-1.png)
 
@@ -1283,28 +1173,8 @@ map3 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[2]]) +
   # tmap::tm_shape(study_area_v) +
   # tmap::tm_borders() +
   tmap::tm_compass()
-```
-
-    ## 
-
-    ## ── tmap v3 code detected ───────────────────────────────────────────────────────
-
-    ## [v3->v4] `tm_raster()`: instead of `style = "cont"`, use col.scale =
-    ## `tm_scale_continuous()`.
-    ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
-    ##   'tm_scale_continuous(<HERE>)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-    ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
-
-``` r
-
 print(map3)
 ```
-
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named
-    ## "brewer.reds"
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-6-1.png)
 
@@ -1332,28 +1202,8 @@ map4 <- tmap::tm_shape(pred[["r_ind_summ_pred"]][[3]]) +
   # tmap::tm_shape(study_area_v) +
   # tmap::tm_borders() +
   tmap::tm_compass()
-```
-
-    ## 
-
-    ## ── tmap v3 code detected ───────────────────────────────────────────────────────
-
-    ## [v3->v4] `tm_raster()`: instead of `style = "cont"`, use col.scale =
-    ## `tm_scale_continuous()`.
-    ## ℹ Migrate the argument(s) 'palette' (rename to 'values') to
-    ##   'tm_scale_continuous(<HERE>)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-    ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
-
-``` r
-
 print(map4)
 ```
-
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "Reds" is named
-    ## "brewer.reds"
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-7-1.png)
 
@@ -1470,61 +1320,20 @@ plots <- lapply(c(3,4,6),
                 main.title.position = c("center"),
                 main.title.size = 1) +
               tmap::tm_compass())
-```
-
-    ## 
-
-    ## ── tmap v3 code detected ───────────────────────────────────────────────────────
-
-    ## [v3->v4] `tm_raster()`: instead of `style = "cont"`, use col.scale =
-    ## `tm_scale_continuous()`.
-    ## ℹ Migrate the argument(s) 'breaks' (rename to 'ticks'), 'midpoint', 'palette'
-    ##   (rename to 'values') to 'tm_scale_continuous(<HERE>)'
-    ## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a
-    ## list: 'col'.scale = list(<scale1>, <scale2>, ...)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-
-``` r
-
 print(plots)
 ```
 
     ## [[1]]
-
-    ## The map variable `col` of the layer "raster" contains a unique value. Therefore
-    ## a discrete scale is applied (tm_scale_discrete).
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named
-    ## "brewer.pi_yg"
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-1.png)
 
     ## 
     ## [[2]]
 
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named
-    ## "brewer.pi_yg"
-    ## [plot mode] fit legend/component: Some legend items or map compoments do not
-    ## fit well, and are therefore rescaled.
-    ## ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
-
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-2.png)
 
     ## 
     ## [[3]]
-
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named
-    ## "brewer.pi_yg"
-    ## [plot mode] fit legend/component: Some legend items or map compoments do not
-    ## fit well, and are therefore rescaled.
-    ## ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-9-3.png)
 
@@ -1552,33 +1361,8 @@ map1 <- tmap::tm_shape(map_plot) +
                 main.title.position = c("center"),
                 main.title.size = 1) +
               tmap::tm_compass()
-```
-
-    ## 
-
-    ## ── tmap v3 code detected ───────────────────────────────────────────────────────
-
-    ## [v3->v4] `tm_raster()`: instead of `style = "cont"`, use col.scale =
-    ## `tm_scale_continuous()`.
-    ## ℹ Migrate the argument(s) 'breaks' (rename to 'ticks'), 'midpoint', 'palette'
-    ##   (rename to 'values') to 'tm_scale_continuous(<HERE>)'
-    ## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a
-    ## list: 'col'.scale = list(<scale1>, <scale2>, ...)'
-    ## [v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'
-    ## [v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
-
-``` r
-
 print(map1)
 ```
-
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named
-    ## "brewer.pi_yg"
-    ## [plot mode] fit legend/component: Some legend items or map compoments do not
-    ## fit well, and are therefore rescaled.
-    ## ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-1.png)
 
@@ -1596,29 +1380,8 @@ map2 <- tmap::tm_shape(map_plot) +
                 main.title.position = c("center"),
                 main.title.size = 1) +
               tmap::tm_compass()
-```
-
-    ## 
-    ## ── tmap v3 code detected ───────────────────────────────────────────────────────
-    ## [v3->v4] `tm_raster()`: instead of `style = "cont"`, use col.scale =
-    ## `tm_scale_continuous()`.
-    ## ℹ Migrate the argument(s) 'breaks' (rename to 'ticks'), 'midpoint', 'palette'
-    ##   (rename to 'values') to 'tm_scale_continuous(<HERE>)'
-    ## For small multiples, specify a 'tm_scale_' for each multiple, and put them in a
-    ## list: 'col'.scale = list(<scale1>, <scale2>, ...)'[v3->v4] `tm_raster()`: migrate the argument(s) related to the legend of the
-    ## map variable `col` namely 'title' to 'col.legend = tm_legend(<HERE>)'[v3->v4] `tm_layout()`: use `tm_title()` instead of `tm_layout(main.title = )`
-
-``` r
-
 print(map2)
 ```
-
-    ## [cols4all] color palettes: use palettes from the R package cols4all. Run
-    ## `cols4all::c4a_gui()` to explore them. The old palette name "PiYG" is named
-    ## "brewer.pi_yg"
-    ## [plot mode] fit legend/component: Some legend items or map compoments do not
-    ## fit well, and are therefore rescaled.
-    ## ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
 
 ![](fitting_ZOI_logit_files/figure-html/unnamed-chunk-10-2.png)
 
@@ -1637,8 +1400,18 @@ The approach is flexible: the penalization method (Lasso, Ridge,
 Adaptive Lasso and its ecology-informed variants), the number of
 resamples, the train/test/validation split strategy, and the evaluation
 metric can all be adjusted to the specific study system. We encourage
-users to explore these options and refer to Niebuhr et al.
-\[-@niebuhr_estimating_2023\] for a detailed ecological application and
-discussion of the method’s assumptions and limitations.
+users to explore these options and refer to Niebuhr et al. (2023) for a
+detailed ecological application and discussion of the method’s
+assumptions and limitations.
 
 ## References
+
+Niebuhr, B. B., van Moorter, B., Stien, A., Tveraa, T., Strand, O.,
+Langeland, K., Alam, M., Skarin, A., & Panzacchi, M. (2023). Estimating
+the cumulative impact and zone of influence of anthropogenic
+infrastructure on biodiversity. Methods in Ecology and Evolution, 14,
+2362–2375. <https://doi.org/10.1111/2041-210X.14133>
+
+Niebuhr et al. (2026). Ecology-informed machine learning to estimate the
+zone of influence of multiple disturbances on ecological niche models.
+*Working manuscript*.
