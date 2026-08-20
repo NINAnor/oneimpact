@@ -280,8 +280,8 @@ The only inconvenient of \code{r.mfilter} is that it
 creates an edge effect with no information in the outer cells of a raster
 (the number of cells correspond to \code{radius} or half the size of the weight
 matrix), so if it is used the users should add a buffer area
-}= radius around the input raster map, to avoid such edge effects.See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
-\itemize{
+at least as large as the \code{radius} around the input raster map, to avoid such edge effects.
+See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 \item \code{r.neighbors} is considerably slower than the other algorithms (from 10 to
 100 times), but allows a flexible choice of the ZOI shape. Contrary to
 \code{r.resamp.filter} and \code{r.mfilter}, which can only perform a sum of pixel

@@ -33,6 +33,7 @@
 #' @details
 #'
 #' # Details
+#'
 #' The input raster is supposed to
 #' represent the location of point, line, or polygon infrastructure
 #' (e.g. houses, roads, mining areas), but any landscape variable whose
@@ -102,7 +103,7 @@
 #' creates an edge effect with no information in the outer cells of a raster
 #' (the number of cells correspond to `radius` or half the size of the weight
 #' matrix), so if it is used the users should add a buffer area
-#' >= `radius` around the input raster map, to avoid such edge effects.
+#' at least as large as the `radius` around the input raster map, to avoid such edge effects.
 #' See \url{https://github.com/OSGeo/grass/issues/2184} for more details.
 #' - `r.neighbors` is considerably slower than the other algorithms (from 10 to
 #' 100 times), but allows a flexible choice of the ZOI shape. Contrary to
