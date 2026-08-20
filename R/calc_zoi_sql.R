@@ -134,28 +134,3 @@ limit ?lim;
 
   DBI::dbGetQuery(con, qq)
 }
-
-# using the function
-# source("~/.pgpass")
-#
-# NinaR::postgreSQLConnect(
-#   host = "gisdata-db.nina.no",
-#   dbname = "gisdata",
-#   username = pg_username,
-#   password = pg_password
-# )
-# #
-# calc_zoi_sql(input_points = "sam_trein_ancillary.use_ava_data_trein_nose_traj26h_oneimpact_env_f",
-#              infrastructure_layer = "sam_env.wind_turbines_no",
-#              radius = c(1000, 5000),
-#              type = "exp_decay",
-#              input_geom = "pt_geom_end_e33",
-#              infra_geom = "geom",
-#              input_id = "use_ava_data_animals_id",
-#              output_type = "cumulative_zoi",
-#              zoi_metric = "cumulative",
-#              limit = 100,
-#              verbose = TRUE)
-#
-#
-#

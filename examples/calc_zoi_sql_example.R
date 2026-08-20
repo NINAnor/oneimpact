@@ -11,43 +11,45 @@ library(duckdb)
 # set up connection and files
 
 # connection - in memory
-con <- DBI::dbConnect(duckdb())
-DBI::dbExecute(con, "INSTALL spatial from core_nightly; LOAD spatial;")
+if (requireNamespace("duckdb", quietly = TRUE)) {
+  con <- DBI::dbConnect(duckdb())
+  DBI::dbExecute(con, "INSTALL spatial from core_nightly; LOAD spatial;")
 
-# write vector of reindeer points to database
+  # write vector of reindeer points to database
 
-# load data in R
-data("reindeer")
-# register link to data in duckdb
-duckdb::duckdb_register(con, "reindeer", reindeer)
-# create spatial object in duckdb
-DBI::dbExecute(con, "create or replace table reindeer_spat as (select row_number() over () as id, * exclude(x, y), ST_POINT(x,y) as geom from reindeer)")
-duckdb::duckdb_unregister(con, "reindeer") # and forget the original dataframe
-# check
-dplyr::tbl(con, "reindeer_spat")
-# add index id and spatial index
-DBI::dbExecute(con, "CREATE UNIQUE INDEX reindeer_gid ON reindeer_spat (id);")
-DBI::dbExecute(con, "CREATE INDEX reindeer_geometry ON reindeer_spat USING rtree (geom);")
+  # load data in R
+  data("reindeer")
+  # register link to data in duckdb
+  duckdb::duckdb_register(con, "reindeer", reindeer)
+  # create spatial object in duckdb
+  DBI::dbExecute(con, "create or replace table reindeer_spat as (select row_number() over () as id, * exclude(x, y), ST_POINT(x,y) as geom from reindeer)")
+  duckdb::duckdb_unregister(con, "reindeer") # and forget the original dataframe
+  # check
+  dplyr::tbl(con, "reindeer_spat")
+  # add index id and spatial index
+  DBI::dbExecute(con, "CREATE UNIQUE INDEX reindeer_gid ON reindeer_spat (id);")
+  DBI::dbExecute(con, "CREATE INDEX reindeer_geometry ON reindeer_spat USING rtree (geom);")
 
-# write vector of cabin points to database - from file
-DBI::dbExecute(con, "create or replace table cabins as select * from st_read('inst/vector/reindeer_cabins.gpkg')")
-# check
-dplyr::tbl(con, "cabins")
-# add spatial index
-DBI::dbExecute(con, "CREATE INDEX cabins_geom ON cabins USING rtree (geom);")
+  # write vector of cabin points to database - from file
+  DBI::dbExecute(con, "create or replace table cabins as select * from st_read('inst/vector/reindeer_cabins.gpkg')")
+  # check
+  dplyr::tbl(con, "cabins")
+  # add spatial index
+  DBI::dbExecute(con, "CREATE INDEX cabins_geom ON cabins USING rtree (geom);")
 
-# compute ZOI of cabins and extract for reindeer points
-cum_zoi_cabins <- calc_zoi_sql(con,
-                               input_points = "reindeer_spat",
-                               infrastructure_layer = "cabins",
-                               radius = 5000,
-                               type = "bartlett", zoi_metric = "cumulative",
-                               input_id = "id",
-                               input_geom = "geom", infra_geom = "geom",
-                               output_table = NULL,
-                               limit = 100,
-                               verbose = TRUE)
-cum_zoi_cabins
+  # compute ZOI of cabins and extract for reindeer points
+  cum_zoi_cabins <- calc_zoi_sql(con,
+                                 input_points = "reindeer_spat",
+                                 infrastructure_layer = "cabins",
+                                 radius = 5000,
+                                 type = "bartlett", zoi_metric = "cumulative",
+                                 input_id = "id",
+                                 input_geom = "geom", infra_geom = "geom",
+                                 output_table = NULL,
+                                 limit = 100,
+                                 verbose = TRUE)
+  cum_zoi_cabins
+}
 
 #-----------------
 # compare to the raster approach
