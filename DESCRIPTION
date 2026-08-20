@@ -40,7 +40,8 @@ Suggests:
     rmarkdown,
     foreach,
     amt,
-    maxnet
+    maxnet,
+    duckdb
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

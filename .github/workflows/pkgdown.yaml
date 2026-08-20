@@ -56,6 +56,7 @@ jobs:
         run: |
           install.packages('tictoc')
           install.packages('tmap')
+          install.packcages('duckdb')
         shell: Rscript {0}
 
       - name: Build site
