@@ -62,17 +62,15 @@ data("reindeer_rsf")
 dat <- reindeer_rsf
 
 # formula initial structure
-f <- use ~ private_cabins_cumulative_XXX + public_cabins_high_cumulative_XXX +
+f <- use ~ cabins_private_cumulative_XXX + cabins_public_cumulative_XXX +
   trails_cumulative_XXX +
   NORUTreclass +
-  # poly(norway_pca_klima_axis1, 2, raw = TRUE) +
-  # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
   norway_pca_klima_axis1 + norway_pca_klima_axis1_sq +
   norway_pca_klima_axis2 + norway_pca_klima_axis2_sq +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
 
 # add ZOI terms to the formula
-zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
                       cumulative = "",
                       type = c("exp_decay"),#, "nearest_exp_decay"),
@@ -108,7 +106,7 @@ bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
 # plot to check
 
 # ZOI public cabins cumulative
-dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 12, length.out = 100))
 
 # look into curve
 plot_response(bag_object,

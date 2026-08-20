@@ -171,8 +171,6 @@ predictions or a \code{bag} object containing an ensemble of models.
 #---
 # fit a bag to be tested
 
-######## MAYBE USE A CONSTRAINED MODEL
-
 # load packages
 library(glmnet)
 library(ggplot2)
@@ -183,17 +181,15 @@ data("reindeer_rsf")
 dat <- reindeer_rsf
 
 # formula initial structure
-f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+f <- use ~ cabins_private_XXX + cabins_public_XXX +
   trails_XXX +
   NORUTreclass +
-  # poly(norway_pca_klima_axis1, 2, raw = TRUE) +
-  # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
   norway_pca_klima_axis1 + norway_pca_klima_axis1_sq +
   norway_pca_klima_axis2 + norway_pca_klima_axis2_sq +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
 
 # add ZOI terms to the formula
-zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
                       type = c("cumulative_exp_decay"),
                       separator = "", predictor_table = TRUE)
@@ -240,7 +236,7 @@ bag_object <- bag_models(fittedl, dat, score_threshold = 0.7)
 # prediction for each model in the bag, using wmean = FALSE
 
 # private cabins
-dfvar <- data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+dfvar <- data.frame(cabins_private = 1e3*seq(0.2, 12, length.out = 100))
 pred <- predict(x = bag_object,
                 newdata = dfvar,
                 data = dat,
@@ -267,11 +263,12 @@ p <- plot_response(bag_object,
 p +
   # add median and CI for ZOI
   annotate("pointrange", x = tab1$zoi_radius[1], y = tab1$effect_zoi_radius[1],
-           xmin = tab1$zoi_radius[1], xmax = tab1$zoi_radius[2], size = 0.5) +
+           xmin = tab1$zoi_radius[2], xmax = tab1$zoi_radius[3], size = 0.5, col = "red") +
   # add median and CI for maximum effect size
   annotate("pointrange", x = 0, y = tab1$max_effect_size[1],
-           ymin = tab1$max_effect_size[1], ymax = tab1$max_effect_size[2], size = 0.5) +
-  xlim(0, 5000)
+           ymin = tab1$max_effect_size[2], ymax = tab1$max_effect_size[3], size = 0.5,
+           col = "red") +
+  xlim(0, 12000)
 
 #----
 # # compute ZOI for 30 features
@@ -290,7 +287,7 @@ pred <- predict(x = bag_object,
 
 # df with prediction
 x <- cbind(dfvar, pred)
-(tab30 <- zoi_from_curve(x, weights = bag_object$weights))
+(tab30 <- zoi_from_curve(x, weights = bag_object$weights, curve = "median"))
 
 # plot lines
 p <- plot_response(bag_object,
@@ -298,6 +295,7 @@ p <- plot_response(bag_object,
                    data = dat,
                    type = "linear",
                    zoi = TRUE,
+                   plot_mean = FALSE,
                    n_features = 30,
                    ci = FALSE,
                    indiv_pred = TRUE,
@@ -305,11 +303,11 @@ p <- plot_response(bag_object,
 p +
   # add median and CI for ZOI
   annotate("pointrange", x = tab30$zoi_radius[1], y = tab30$effect_zoi_radius[1],
-           xmin = tab30$zoi_radius[1], xmax = tab30$zoi_radius[2], size = 0.5) +
+           xmin = tab30$zoi_radius[2], xmax = tab30$zoi_radius[3], size = 0.5, col = "red") +
   # add median and CI for maximum effect size
   annotate("pointrange", x = 0, y = tab30$max_effect_size[1],
-           ymin = tab30$max_effect_size[1], ymax = tab30$max_effect_size[2], size = 0.5) +
-  xlim(0, 5000)
+           ymin = tab30$max_effect_size[2], ymax = tab30$max_effect_size[3], size = 0.5, col = "red") +
+  xlim(0, 12000)
 
 # additive effect on both max_effect_size and impact
 # cbind(30*impact_of_one_cabin, impact_of_30_cabins)
@@ -351,10 +349,10 @@ p +
   # add median and CI for maximum effect size
   annotate("pointrange", x = 0, y = tab_exp1$max_effect_size[1],
            ymin = tab_exp1$max_effect_size[2], ymax = tab_exp1$max_effect_size[3], size = 0.5) +
-  xlim(0, 20000)
+  xlim(0, 12000)
 
 #----
-# # compute ZOI for 30 features - expoenential response
+# # compute ZOI for 30 features - exponential response
 # At the exponential scale, the estimated ZOI radius does change
 
 # prediction for each model in the bag, using wmean = FALSE
@@ -388,13 +386,13 @@ p +
   # add median and CI for maximum effect size
   annotate("pointrange", x = 0, y = tab_exp30$max_effect_size[1],
            ymin = tab_exp30$max_effect_size[2], ymax = tab_exp30$max_effect_size[3], size = 0.5) +
-  xlim(0, 20000)
+  xlim(0, 12000)
 
 # max effect size is multiplicative (power), but not impact
 # cbind(30*impact_of_one_cabin, impact_of_30_cabins)
 tibble::tibble(zoi_measure = colnames(tab_exp1)[c(1,4)],
                one_feature = unlist(tab_exp1[2,c(1,4)]),
-               one_feature_x30 = unlist(tab_exp1[2,c(1,4)]*30),
+               one_feature_x30 = unlist(tab_exp1[2,c(1,4)]**30),
                thirty_features = unlist(tab_exp30[2,c(1,4)]))
 
 #----
@@ -413,7 +411,7 @@ pred <- predict(x = bag_object,
                 baseline = "zero",
                 type_feature = "line",
                 type_feature_recompute = TRUE,
-                zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
+                zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
                 resolution = 200)
 
 # df with prediction
@@ -432,7 +430,7 @@ p <- plot_response(bag_object,
                    baseline = "zero",
                    type_feature = "line",
                    type_feature_recompute = TRUE,
-                   zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000, 20000),
+                   # zoi_vals = c(100, 250, 500, 1000, 2500, 5000, 10000),
                    resolution = 200,
                    ci = FALSE,
                    indiv_pred = TRUE,
@@ -444,7 +442,7 @@ p +
   # add median and CI for maximum effect size
   annotate("pointrange", x = 0, y = tab_exp1_line$max_effect_size[1],
            ymin = tab_exp1_line$max_effect_size[2], ymax = tab_exp1_line$max_effect_size[3], size = 0.5) +
-  xlim(0, 20000)
+  xlim(0, 12000)
 
 #------
 # Important!
@@ -458,11 +456,11 @@ p +
 # zoi_from curve applied to a whole bag of models
 
 # first let's check all the fitted ZOI response curves
-vars <- c("private_cabins", "public_cabins", "trails")
+vars <- c("cabins_private", "cabins_public", "trails")
 type_feat <- c("point", "point", "line")
 rad <- unique(bag_object$parms$predictor_table$zoi_radius); rad <- rad[!is.na(rad)]
 plots <- lapply(seq_along(vars), function(i) {
-  df <- data.frame(col = 1e3*seq(0.002, 20.002, length.out = 1001))
+  df <- data.frame(col = 1e3*seq(0.002, 12.002, length.out = 1001))
   names(df) <- vars[i]
   plot_response(bag_object,
                 dfvar = df,
@@ -475,7 +473,7 @@ plots <- lapply(seq_along(vars), function(i) {
                 logx = FALSE,
                 type_feature = type_feat[i],
                 type_feature_recompute = TRUE,
-                zoi_vals = rad,
+                # zoi_vals = rad,
                 resolution = 200)#,
 })
 # plots
@@ -503,7 +501,6 @@ zois
 
 # plot
 i <- 1
-# for(i in seq_along(vars)) {
 var <- vars[i]
 pp <- plots[[i]] +
   annotate("pointrange",
@@ -522,7 +519,6 @@ pp <- plots[[i]] +
 print(pp + ggtitle(var))
 
 i <- 2
-# for(i in seq_along(vars)) {
 var <- vars[i]
 pp <- plots[[i]] +
   annotate("pointrange",
@@ -540,7 +536,6 @@ pp <- plots[[i]] +
 print(pp + ggtitle(var))
 
 i <- 3
-# for(i in seq_along(vars)) {
 var <- vars[i]
 pp <- plots[[i]] +
   annotate("pointrange",

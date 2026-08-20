@@ -95,8 +95,8 @@ resource selection functions using the cumulative ZOI approach in Niebuhr et al.
 `use` is a binary variable showing whether a given location was used (1) or not (0, a random location within the 
 population area). The used and available positions were annotated with information on land cover 
 (column `NORUTreclass`), bio-geo-climatic PCAs (columns `norway_pca_klima_axis` 1 to 4) and the zone of 
-influence of private cottages and public resorts (columns starting with `private_cabins` and 
-`public_cabins_high`, respectively). Zone of influence variables include both the ZOI of the nearest feature 
+influence of private cottages and public resorts (columns starting with `cabins_private` and 
+`cabins_public`, respectively). Zone of influence variables include both the ZOI of the nearest feature 
 and the cumulative ZOI, with radii from 100 m to 20 km. For illustration, we only kept ZOI variables 
 with exponential decay shape and cumulative type (not nearest).
 
@@ -111,7 +111,7 @@ the ZOI metrics with multiple radii in the formula.
 
 ```{r model_specification}
 # formula initial structure
-f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+f <- use ~ cabins_private_XXX + cabins_public_XXX +
   NORUTreclass +
   # poly(norway_pca_klima_axis1, 2, raw = TRUE) + 
   # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
@@ -120,7 +120,7 @@ f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
 
 # add ZOI terms to the formula
-zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX", 
                       type = c("cumulative_exp_decay"),
                       separator = "", predictor_table = TRUE)
@@ -368,6 +368,7 @@ importance_block <- variable_importance(bag_object,
                                         type = "drop",
                                         order = "asc",
                                         variable_block = variable_blocks)
+names(importance_block)[names(importance_block) == "NORUT"] <- "land_cover" 
 plot_importance(importance_block, normalize = T)
 ```
 
@@ -420,12 +421,12 @@ Finally, we can plot the coefficients in each model in different ways using the 
 # for all resamples
 # plot_coef(bag_object, terms = "private_cabins_cumulative")
 # for one the 3 first models
-plot_coef(bag_object, terms = "private_cabins_cumulative", models = 1:3)
+plot_coef(bag_object, terms = "cabins_private_cumulative", models = 1:3)
 # only for private cabins, by resample, as points
-plot_coef(bag_object, terms = "private_cabins_cumulative", 
+plot_coef(bag_object, terms = "cabins_private_cumulative", 
           plot_type = "points", models = 1:3)
 # only for private cabins, as histograms
-plot_coef(bag_object, terms = "private_cabins_cumulative", 
+plot_coef(bag_object, terms = "cabins_private_cumulative", 
           plot_type = "histogram")
 
 ```
@@ -445,11 +446,8 @@ it is advisable to order them according to the ZOI radius with the option
 plot_coef(bag_object, what = "average")
 
 # plot weighted average coefs - public cabins
-plot_coef(bag_object, what = "average", terms = "public_cabins", 
+plot_coef(bag_object, what = "average", terms = "cabins_public", 
           plot_type = "points", order_zoi_radius = TRUE)
-# zoom
-plot_coef(bag_object, what = "average", terms = "public_cabins", 
-          plot_type = "points", order_zoi_radius = TRUE) + ylim(-50, 50)
 ```
 
 ## Plot the effect of each predictor on the response variable
@@ -531,7 +529,7 @@ relative selection strength considering the impact of one single private cabin.
 
 ```{r plot_response3, eval=TRUE}
 # ZOI private cabins
-dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(cabins_private = 1e3*seq(0.2, 20, length.out = 100))
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
               type = "exp", zoi = TRUE, 
@@ -573,7 +571,7 @@ selection strength considering the impact of one single resort.
 
 ```{r plot_response7}
 # ZOI public resorts cumulative
-dfvar = data.frame(public_cabins = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(cabins_public = 1e3*seq(0.2, 20, length.out = 100))
 
 # 1 feature
 plot_response(bag_object, 
