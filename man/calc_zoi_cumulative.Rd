@@ -248,7 +248,7 @@ See \code{\link[=zoi_functions]{zoi_functions()}} for details.
 \item user-customized filter: if \code{type = "mfilter"}, \code{radius} is not
 numeric but should be a user-defined matrix of weights. Examples are ones
 created through \code{\link[=filter_create]{filter_create()}}, \code{\link[terra:focalMat]{terra::focalMat()}},
-\code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, or matrices created by hand.
+or matrices created by hand.
 }
 
 Weight matrices might differ from the expected decay function depending on
@@ -496,7 +496,7 @@ rgrass::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
 \seealso{
 See \code{\link[=zoi_functions]{zoi_functions()}} for some ZOI function shapes and
 \code{\link[=filter_create]{filter_create()}} for options to create weight matrices. \cr
-See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
+See also \code{\link[terra:focalMat]{terra::focalMat()}}, and
 \code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
 See
 \href{https://grass.osgeo.org/grass80/manuals/r.mfilter.html}{r.mfilter},

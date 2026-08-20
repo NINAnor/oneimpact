@@ -73,10 +73,8 @@ for a threshold decay ZOI;
 for linear decay ZOI;
 \item \code{"rectangle"} or \code{"box"} for a rectangular ZOI.
 There might be some correspondence between the weight matrix \code{type}
-in \code{filter_create} and other similar functions (e.g. \code{type = "rectangle"}
-and \code{type = "boxcar"} in \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}} or
-\code{type = "Gauss"} in \code{\link[terra:focalMat]{terra::focalMat()}} with parameter
-\code{type = "gauss"} n \url{smoothie::kernel2dmeitsjer}); however, the
+in \code{filter_create} and other similar functions (e.g.
+\code{type = "Gauss"} in \code{\link[terra:focalMat]{terra::focalMat()}}; however, the
 interpretation of the parameters used to
 define these matrices is different between functions.
 }}
@@ -188,10 +186,6 @@ the matrix can go beyond this radius. In this case, the size of the matrix
 the matrix radius (parameter \code{min_dist}, which can be set to be the \code{radius}).
 Keeping \eqn{n} at a reasonable size guarantees that the neighborhood
 analysis using such input weight matrices is computationally feasible.
-
-Possible future implementation: compare results with
-\code{\link[smoothie:kernel2dsmooth]{smoothie::kernel2dsmooth()}} and \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}},
-maybe wrap some options here.
 }
 \examples{
 library(terra)
@@ -272,7 +266,7 @@ plot(c(neigh_r_exp3000, neigh_r_step3000, neigh_r_bart3000, neigh_r_gauss3000),
 \seealso{
 See \code{\link[=zoi_functions]{zoi_functions()}} for some ZOI function shapes and
 \code{\link[=filter_save]{filter_save()}} for options to save the ZOI matrix as a text file. \cr
-See also \code{\link[smoothie:kernel2dmeitsjer]{smoothie::kernel2dmeitsjer()}}, \code{\link[terra:focalMat]{terra::focalMat()}}, and
+See also \code{\link[terra:focalMat]{terra::focalMat()}}, and
 \code{\link[raster:focalWeight]{raster::focalWeight()}} for other functions to create filters or weight matrices. \cr
 See
 \href{https://grass.osgeo.org/grass80/manuals/r.mfilter.html}{r.mfilter},

@@ -23,10 +23,6 @@
 #' Keeping \eqn{n} at a reasonable size guarantees that the neighborhood
 #' analysis using such input weight matrices is computationally feasible.
 #'
-#' Possible future implementation: compare results with
-#' [smoothie::kernel2dsmooth()] and [smoothie::kernel2dmeitsjer()],
-#' maybe wrap some options here.
-#'
 #' @param r `[numeric,SpatRaster,RasterLayer]` \cr Either a numeric value
 #' corresponding to the resolution (pixel size) that each pixel in the filter matrix
 #' should correspond to; or a raster object (`SpatRaster` from the [terra]
@@ -78,10 +74,8 @@
 #' for linear decay ZOI;
 #' - `"rectangle"` or `"box"` for a rectangular ZOI.
 #' There might be some correspondence between the weight matrix `type`
-#' in `filter_create` and other similar functions (e.g. `type = "rectangle"`
-#' and `type = "boxcar"` in [smoothie::kernel2dmeitsjer()] or
-#' `type = "Gauss"` in [terra::focalMat()] with parameter
-#' `type = "gauss"` n [smoothie::kernel2dmeitsjer]()); however, the
+#' in `filter_create` and other similar functions (e.g.
+#' `type = "Gauss"` in [terra::focalMat()]; however, the
 #' interpretation of the parameters used to
 #' define these matrices is different between functions.
 #'
@@ -151,7 +145,7 @@
 #'
 #' @seealso See [oneimpact::zoi_functions()] for some ZOI function shapes and
 #' [oneimpact::filter_save()] for options to save the ZOI matrix as a text file. \cr
-#' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
+#' See also [terra::focalMat()], and
 #' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
 #' See
 #' [r.mfilter](https://grass.osgeo.org/grass80/manuals/r.mfilter.html),

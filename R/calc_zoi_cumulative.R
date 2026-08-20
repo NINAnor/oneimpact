@@ -73,7 +73,7 @@
 #' - user-customized filter: if `type = "mfilter"`, `radius` is not
 #' numeric but should be a user-defined matrix of weights. Examples are ones
 #' created through [oneimpact::filter_create()], [terra::focalMat()],
-#' [smoothie::kernel2dmeitsjer()], or matrices created by hand.
+#' or matrices created by hand.
 #'
 #' Weight matrices might differ from the expected decay function depending on
 #' the intended resolution - the finer the resolution, the more detailed and
@@ -252,7 +252,7 @@
 #'
 #' @seealso See [oneimpact::zoi_functions()] for some ZOI function shapes and
 #' [oneimpact::filter_create()] for options to create weight matrices. \cr
-#' See also [smoothie::kernel2dmeitsjer()], [terra::focalMat()], and
+#' See also [terra::focalMat()], and
 #' [raster::focalWeight()] for other functions to create filters or weight matrices. \cr
 #' See
 #' [r.mfilter](https://grass.osgeo.org/grass80/manuals/r.mfilter.html),

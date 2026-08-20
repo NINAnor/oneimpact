@@ -40,8 +40,7 @@ Suggests:
     rmarkdown,
     foreach,
     amt,
-    maxnet,
-    smoothie
+    maxnet
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
