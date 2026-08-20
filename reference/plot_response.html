@@ -72,6 +72,7 @@ and optional individual-model predictions.</p>
 <span>  zoi_limit <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  line_value <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  ggplot <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  plot_mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  plot_median <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  n_features <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -214,6 +215,11 @@ approximation. Used when recomputing the ZOI variables for line and area feature
 <code>type_feature = "line"</code>. Used when recomputing the ZOI variables for line and area features.</p></dd>
 
 
+<dt id="arg-ggplot">ggplot<a class="anchor" aria-label="anchor" href="#arg-ggplot"></a></dt>
+<dd><p><code>[logical(1)=TRUE]</code> <br> If <code>TRUE</code>, return a ggplot object; otherwise
+return a prediction data frame.</p></dd>
+
+
 <dt id="arg-plot-mean">plot_mean<a class="anchor" aria-label="anchor" href="#arg-plot-mean"></a></dt>
 <dd><p><code>[logical(1)=TRUE]</code> <br> Plot weighted mean response line.</p></dd>
 
@@ -280,11 +286,6 @@ no normalization.</p></dd>
 <dt id="arg-alpha-indiv">alpha_indiv<a class="anchor" aria-label="anchor" href="#arg-alpha-indiv"></a></dt>
 <dd><p><code>[numeric(1)=0.3]</code> <br> Alpha transparency for individual model lines.</p></dd>
 
-
-<dt id="arg-ggplot">ggplot<a class="anchor" aria-label="anchor" href="#arg-ggplot"></a></dt>
-<dd><p><code>[logical(1)=TRUE]</code> <br> If <code>TRUE</code>, return a ggplot object; otherwise
-return a prediction data frame.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -316,17 +317,15 @@ optionally individual-model predictions when <code>indiv_pred = TRUE</code>.</p>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">reindeer_rsf</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># formula initial structure</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">private_cabins_XXX</span> <span class="op">+</span> <span class="va">public_cabins_high_XXX</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">cabins_private_XXX</span> <span class="op">+</span> <span class="va">cabins_public_XXX</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">trails_XXX</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">NORUTreclass</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis1, 2, raw = TRUE) +</span></span></span>
-<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis2, 2, raw = TRUE) +</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis1</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis1_sq</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis2</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis2_sq</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis3</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis4</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add ZOI terms to the formula</span></span></span>
-<span class="r-in"><span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span>, <span class="fl">20000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="add_zoi_formula.html">add_zoi_formula</a></span><span class="op">(</span><span class="va">f</span>, zoi_radius <span class="op">=</span> <span class="va">zois</span>, pattern <span class="op">=</span> <span class="st">"XXX"</span>,</span></span>
 <span class="r-in"><span>                     type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cumulative_exp_decay"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                     separator <span class="op">=</span> <span class="st">""</span>, predictor_table <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">formula</span></span></span>
@@ -345,7 +344,7 @@ optionally individual-model predictions when <code>indiv_pred = TRUE</code>.</p>
 <span class="r-in"><span>                             samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
 <span class="r-in"><span>                             standardize <span class="op">=</span> <span class="st">"internal"</span>, <span class="co"># glmnet does the standardization of covariates</span></span></span>
 <span class="r-in"><span>                             metric <span class="op">=</span> <span class="st">"AUC"</span>,</span></span>
-<span class="r-in"><span>                             method <span class="op">=</span> <span class="st">"AdaptiveLasso"</span>,</span></span>
+<span class="r-in"><span>                             method <span class="op">=</span> <span class="st">"Lasso"</span>,</span></span>
 <span class="r-in"><span>                             parallel <span class="op">=</span> <span class="st">"mclapply"</span>,</span></span>
 <span class="r-in"><span>                             mc.cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -384,7 +383,7 @@ optionally individual-model predictions when <code>indiv_pred = TRUE</code>.</p>
 <span class="r-in"><span><span class="co"># plot for private cabins</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># define newdata based only on the distances from the source (public cabins)</span></span></span>
-<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>private_cabins <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cabins_private <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot mean response in exponential scale, with individual lines, x in log scale</span></span></span>
 <span class="r-in"><span><span class="co"># in exponential scale, relative selection strength = 1 corresponse to no effect</span></span></span>
@@ -419,7 +418,7 @@ optionally individual-model predictions when <code>indiv_pred = TRUE</code>.</p>
 <span class="r-in"><span><span class="co"># plot for tourist trails</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># define newdata based only on the distances from the source (public cabins)</span></span></span>
-<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>trails <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>trails <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot mean response in exponential scale, with individual lines, x in log scale</span></span></span>
 <span class="r-in"><span><span class="co"># in exponential scale, relative selection strength = 1 corresponse to no effect</span></span></span>

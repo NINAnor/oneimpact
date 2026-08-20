@@ -229,17 +229,15 @@ It also supports ZOI-distance inputs that are internally transformed into ZOI pr
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">reindeer_rsf</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># formula initial structure</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">private_cabins_XXX</span> <span class="op">+</span> <span class="va">public_cabins_high_XXX</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">cabins_private_XXX</span> <span class="op">+</span> <span class="va">cabins_public_XXX</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">trails_XXX</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">NORUTreclass</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis1, 2, raw = TRUE) +</span></span></span>
-<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis2, 2, raw = TRUE) +</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis1</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis1_sq</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis2</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis2_sq</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis3</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis4</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add ZOI terms to the formula</span></span></span>
-<span class="r-in"><span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span>, <span class="fl">20000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="add_zoi_formula.html">add_zoi_formula</a></span><span class="op">(</span><span class="va">f</span>, zoi_radius <span class="op">=</span> <span class="va">zois</span>, pattern <span class="op">=</span> <span class="st">"XXX"</span>,</span></span>
 <span class="r-in"><span>                     type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cumulative_exp_decay"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                     separator <span class="op">=</span> <span class="st">""</span>, predictor_table <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">formula</span></span></span>
@@ -258,7 +256,7 @@ It also supports ZOI-distance inputs that are internally transformed into ZOI pr
 <span class="r-in"><span>                             samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
 <span class="r-in"><span>                             standardize <span class="op">=</span> <span class="st">"internal"</span>, <span class="co"># glmnet does the standardization of covariates</span></span></span>
 <span class="r-in"><span>                             metric <span class="op">=</span> <span class="st">"AUC"</span>,</span></span>
-<span class="r-in"><span>                             method <span class="op">=</span> <span class="st">"AdaptiveLasso"</span>,</span></span>
+<span class="r-in"><span>                             method <span class="op">=</span> <span class="st">"Lasso"</span>,</span></span>
 <span class="r-in"><span>                             parallel <span class="op">=</span> <span class="st">"mclapply"</span>,</span></span>
 <span class="r-in"><span>                             mc.cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -318,7 +316,7 @@ It also supports ZOI-distance inputs that are internally transformed into ZOI pr
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ZOI variable</span></span></span>
 <span class="r-in"><span><span class="co"># new data, looking only at private cabins</span></span></span>
-<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>private_cabins <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>cabins_private <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># prediction for 1 feature, linear scale</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span>x <span class="op">=</span> <span class="va">bag_object</span>,</span></span>

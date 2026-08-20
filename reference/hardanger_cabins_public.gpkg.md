@@ -1,8 +1,8 @@
 # Public cabins vector data for the Hardangervidda wild reindeer area in Norway
 
-Dataset containing the location of large, public DNT cabins in the
-surroundings of the Hardangervidda wild reindeer area. Retrieved from
-the public N50 dataset.
+Dataset containing the location of large, public DNT cabins and mountain
+hotels in the surroundings of the Hardangervidda wild reindeer area.
+Retrieved from the public N50 dataset.
 
 ## Format
 
@@ -26,15 +26,7 @@ presents the following columns:
 ``` r
 (f <- system.file("vector/hardanger_cabins_public.gpkg", package = "oneimpact"))
 #> [1] "/home/runner/work/_temp/Library/oneimpact/vector/hardanger_cabins_public.gpkg"
-v <- sf::st_read(f)
-#> Reading layer `hardanger_cabins_public' from data source 
-#>   `/home/runner/work/_temp/Library/oneimpact/vector/hardanger_cabins_public.gpkg' 
-#>   using driver `GPKG'
-#> Simple feature collection with 21 features and 4 fields
-#> Geometry type: POINT
-#> Dimension:     XY
-#> Bounding box:  xmin: 63357.86 ymin: 6675293 xmax: 132350.9 ymax: 6726508
-#> Projected CRS: ETRS89 / UTM zone 33N
-plot(v[1])
+v <- terra::vect(f)
+plot(v)
 
 ```

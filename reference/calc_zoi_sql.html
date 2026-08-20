@@ -192,62 +192,64 @@ execution, and returned result content may depend on database backend behavior.<
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># install.packages("duckdb")</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.duckdb.org/" class="external-link">duckdb</a></span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(duckdb):</span> there is no package called ‘duckdb’</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
 <span class="r-in"><span><span class="co"># set up connection and files</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># connection - in memory</span></span></span>
-<span class="r-in"><span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">dbConnect</a></span><span class="op">(</span><span class="fu">duckdb</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'drv' in selecting a method for function 'dbConnect': could not find function "duckdb"</span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"INSTALL spatial from core_nightly; LOAD spatial;"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found</span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"duckdb"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html" class="external-link">dbConnect</a></span><span class="op">(</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb.html" class="external-link">duckdb</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"INSTALL spatial from core_nightly; LOAD spatial;"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># write vector of reindeer points to database</span></span></span>
+<span class="r-in"><span>  <span class="co"># write vector of reindeer points to database</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># load data in R</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"reindeer"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># register link to data in duckdb</span></span></span>
-<span class="r-in"><span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu">duckdb_register</span><span class="op">(</span><span class="va">con</span>, <span class="st">"reindeer"</span>, <span class="va">reindeer</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘duckdb’</span>
-<span class="r-in"><span><span class="co"># create spatial object in duckdb</span></span></span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"create or replace table reindeer_spat as (select row_number() over () as id, * exclude(x, y), ST_POINT(x,y) as geom from reindeer)"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found</span>
-<span class="r-in"><span><span class="fu">duckdb</span><span class="fu">::</span><span class="fu">duckdb_unregister</span><span class="op">(</span><span class="va">con</span>, <span class="st">"reindeer"</span><span class="op">)</span> <span class="co"># and forget the original dataframe</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘duckdb’</span>
-<span class="r-in"><span><span class="co"># check</span></span></span>
-<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"reindeer_spat"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'con' not found</span>
-<span class="r-in"><span><span class="co"># add index id and spatial index</span></span></span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"CREATE UNIQUE INDEX reindeer_gid ON reindeer_spat (id);"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found</span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"CREATE INDEX reindeer_geometry ON reindeer_spat USING rtree (geom);"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found</span>
+<span class="r-in"><span>  <span class="co"># load data in R</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"reindeer"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># register link to data in duckdb</span></span></span>
+<span class="r-in"><span>  <span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb_register.html" class="external-link">duckdb_register</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"reindeer"</span>, <span class="va">reindeer</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># create spatial object in duckdb</span></span></span>
+<span class="r-in"><span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"create or replace table reindeer_spat as (select row_number() over () as id, * exclude(x, y), ST_POINT(x,y) as geom from reindeer)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">duckdb</span><span class="fu">::</span><span class="fu"><a href="https://r.duckdb.org/reference/duckdb_register.html" class="external-link">duckdb_unregister</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"reindeer"</span><span class="op">)</span> <span class="co"># and forget the original dataframe</span></span></span>
+<span class="r-in"><span>  <span class="co"># check</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"reindeer_spat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># add index id and spatial index</span></span></span>
+<span class="r-in"><span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"CREATE UNIQUE INDEX reindeer_gid ON reindeer_spat (id);"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"CREATE INDEX reindeer_geometry ON reindeer_spat USING rtree (geom);"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># write vector of cabin points to database - from file</span></span></span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"create or replace table cabins as select * from st_read('inst/vector/reindeer_cabins.gpkg')"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found</span>
-<span class="r-in"><span><span class="co"># check</span></span></span>
-<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"cabins"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'con' not found</span>
-<span class="r-in"><span><span class="co"># add spatial index</span></span></span>
-<span class="r-in"><span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"CREATE INDEX cabins_geom ON cabins USING rtree (geom);"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found</span>
+<span class="r-in"><span>  <span class="co"># write vector of cabin points to database - from file</span></span></span>
+<span class="r-in"><span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"create or replace table cabins as select * from st_read('inst/vector/reindeer_cabins.gpkg')"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># check</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"cabins"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># add spatial index</span></span></span>
+<span class="r-in"><span>  <span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"CREATE INDEX cabins_geom ON cabins USING rtree (geom);"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># compute ZOI of cabins and extract for reindeer points</span></span></span>
-<span class="r-in"><span><span class="va">cum_zoi_cabins</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_sql</span><span class="op">(</span><span class="va">con</span>,</span></span>
-<span class="r-in"><span>                               input_points <span class="op">=</span> <span class="st">"reindeer_spat"</span>,</span></span>
-<span class="r-in"><span>                               infrastructure_layer <span class="op">=</span> <span class="st">"cabins"</span>,</span></span>
-<span class="r-in"><span>                               radius <span class="op">=</span> <span class="fl">5000</span>,</span></span>
-<span class="r-in"><span>                               type <span class="op">=</span> <span class="st">"bartlett"</span>, zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span>,</span></span>
-<span class="r-in"><span>                               input_id <span class="op">=</span> <span class="st">"id"</span>,</span></span>
-<span class="r-in"><span>                               input_geom <span class="op">=</span> <span class="st">"geom"</span>, infra_geom <span class="op">=</span> <span class="st">"geom"</span>,</span></span>
-<span class="r-in"><span>                               output_table <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                               limit <span class="op">=</span> <span class="fl">100</span>,</span></span>
-<span class="r-in"><span>                               verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'conn' in selecting a method for function 'sqlInterpolate': object 'con' not found</span>
-<span class="r-in"><span><span class="va">cum_zoi_cabins</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'cum_zoi_cabins' not found</span>
+<span class="r-in"><span>  <span class="co"># compute ZOI of cabins and extract for reindeer points</span></span></span>
+<span class="r-in"><span>  <span class="va">cum_zoi_cabins</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_sql</span><span class="op">(</span><span class="va">con</span>,</span></span>
+<span class="r-in"><span>                                 input_points <span class="op">=</span> <span class="st">"reindeer_spat"</span>,</span></span>
+<span class="r-in"><span>                                 infrastructure_layer <span class="op">=</span> <span class="st">"cabins"</span>,</span></span>
+<span class="r-in"><span>                                 radius <span class="op">=</span> <span class="fl">5000</span>,</span></span>
+<span class="r-in"><span>                                 type <span class="op">=</span> <span class="st">"bartlett"</span>, zoi_metric <span class="op">=</span> <span class="st">"cumulative"</span>,</span></span>
+<span class="r-in"><span>                                 input_id <span class="op">=</span> <span class="st">"id"</span>,</span></span>
+<span class="r-in"><span>                                 input_geom <span class="op">=</span> <span class="st">"geom"</span>, infra_geom <span class="op">=</span> <span class="st">"geom"</span>,</span></span>
+<span class="r-in"><span>                                 output_table <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>                                 limit <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>                                 verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">cum_zoi_cabins</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> duckdb keeps downloaded extensions and secrets in a temporary directory:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> /tmp/RtmpBDnCNm/duckdb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> This is removed when the R session ends.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Extensions are re-downloaded each session.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Secrets are lost.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> See ?duckdb_storage for details and alternatives.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dbSendQuery(conn, statement, ...):</span> Invalid Error: HTTP Error: Failed to download extension "spatial" at URL "http://nightly-extensions.duckdb.org/v1.5.5/linux_amd64/spatial.duckdb_extension.gz" (HTTP 404)</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Extension "spatial" is an existing extension.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> For more info, visit https://duckdb.org/docs/stable/extensions/troubleshooting?version=v1.5.5&amp;platform=linux_amd64&amp;extension=spatial</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Context: rapi_prepare</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> Error type: INVALID</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#-----------------</span></span></span>
 <span class="r-in"><span><span class="co"># compare to the raster approach</span></span></span>

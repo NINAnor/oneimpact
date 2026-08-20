@@ -31,10 +31,10 @@ sf::st_read(f)
 #> Reading layer `hardanger_cabins_private' from data source 
 #>   `/home/runner/work/_temp/Library/oneimpact/vector/hardanger_cabins_private.gpkg' 
 #>   using driver `GPKG'
-#> Simple feature collection with 38263 features and 4 fields
+#> Simple feature collection with 22370 features and 4 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: 5190.3 ymin: 6611728 xmax: 199271.3 ymax: 6759603
+#> Bounding box:  xmin: 19345.42 ymin: 6624735 xmax: 185598.4 ymax: 6746741
 #> Projected CRS: ETRS89 / UTM zone 33N
 # or
 v <- terra::vect(f)

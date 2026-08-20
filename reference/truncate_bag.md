@@ -129,17 +129,15 @@ data("reindeer_rsf")
 dat <- reindeer_rsf
 
 # formula initial structure
-f <- use ~ private_cabins_cumulative_XXX + public_cabins_high_cumulative_XXX +
+f <- use ~ cabins_private_cumulative_XXX + cabins_public_cumulative_XXX +
   trails_cumulative_XXX +
   NORUTreclass +
-  # poly(norway_pca_klima_axis1, 2, raw = TRUE) +
-  # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
   norway_pca_klima_axis1 + norway_pca_klima_axis1_sq +
   norway_pca_klima_axis2 + norway_pca_klima_axis2_sq +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
 
 # add ZOI terms to the formula
-zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
                       cumulative = "",
                       type = c("exp_decay"),#, "nearest_exp_decay"),
@@ -179,26 +177,26 @@ bag_object_trunc <- truncate_bag(bag_object,
 
 # compare validation scores
 bag_object$validation_score - bag_object_trunc$validation_score
-#>       Resample01 Resample02  Resample03  Resample04  Resample05 Resample06
-#> [1,] 0.007829143 0.00769509 0.007095713 0.007645018 0.002315486 0.00809448
-#>      Resample07  Resample08 Resample09 Resample10 Resample11  Resample12
-#> [1,]          0 0.008433258 0.06171586 0.06536645 0.01087375 0.005039923
-#>      Resample13  Resample14  Resample15  Resample16 Resample17  Resample18
-#> [1,] 0.01162653 0.008363931 0.007077678 0.005159021 0.01709546 0.009585591
-#>      Resample19  Resample20
-#> [1,] 0.01237743 0.008092633
+#>      Resample01 Resample02 Resample03 Resample04 Resample05 Resample06
+#> [1,]          0 0.03857705 0.02021659 0.04386294  0.0204103  0.0200437
+#>      Resample07 Resample08 Resample09 Resample10 Resample11 Resample12
+#> [1,]  0.0476005 0.02011131 0.03735487 0.03715942 0.01687685 0.03596613
+#>      Resample13 Resample14 Resample15 Resample16 Resample17 Resample18
+#> [1,] 0.02021507 0.02793167 0.01975476  0.0219952 0.01926009 0.02348931
+#>      Resample19 Resample20
+#> [1,] 0.02420105 0.02011307
 
 bag_object$weighted_validation_score
 #>      weighted_validation_score
-#> [1,]                  0.922617
+#> [1,]                 0.9192627
 bag_object_trunc$weighted_validation_score
 #>      weighted_validation_score
-#> [1,]                 0.9102619
+#> [1,]                 0.8933066
 
 # plot curves to check implausibility
 
 # ZOI public cabins cumulative
-dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(trails_cumulative = 1e3*seq(0.2, 12, length.out = 100))
 
 # look into curve
 # plot_response(bag_object,
@@ -230,20 +228,20 @@ plot_response(bag_object_trunc,
 # check implausibility
 implausibility(bag_object_trunc, dat)
 #> $n_coefs
-#> [1] 24
+#> [1] 21
 #> 
 #> $n_resamples
 #> [1] 19
 #> 
 #> $coef_sign_index
-#> $coef_sign_index$private_cabins_cumulative_
-#> $coef_sign_index$private_cabins_cumulative_[[1]]
-#> [1] 5 7
+#> $coef_sign_index$cabins_private_cumulative_
+#> $coef_sign_index$cabins_private_cumulative_[[1]]
+#> integer(0)
 #> 
 #> 
-#> $coef_sign_index$public_cabins_high_cumulative_
-#> $coef_sign_index$public_cabins_high_cumulative_[[1]]
-#> [1] 7
+#> $coef_sign_index$cabins_public_cumulative_
+#> $coef_sign_index$cabins_public_cumulative_[[1]]
+#> [1] 6
 #> 
 #> 
 #> $coef_sign_index$trails_cumulative_
@@ -253,15 +251,14 @@ implausibility(bag_object_trunc, dat)
 #> 
 #> 
 #> $coef_sign_names
-#> $coef_sign_names$private_cabins_cumulative_
-#> $coef_sign_names$private_cabins_cumulative_[[1]]
-#> [1] "private_cabins_cumulative_exp_decay2500" 
-#> [2] "private_cabins_cumulative_exp_decay10000"
+#> $coef_sign_names$cabins_private_cumulative_
+#> $coef_sign_names$cabins_private_cumulative_[[1]]
+#> character(0)
 #> 
 #> 
-#> $coef_sign_names$public_cabins_high_cumulative_
-#> $coef_sign_names$public_cabins_high_cumulative_[[1]]
-#> [1] "public_cabins_high_cumulative_exp_decay10000"
+#> $coef_sign_names$cabins_public_cumulative_
+#> $coef_sign_names$cabins_public_cumulative_[[1]]
+#> [1] "cabins_public_cumulative_exp_decay5000"
 #> 
 #> 
 #> $coef_sign_names$trails_cumulative_
@@ -271,14 +268,14 @@ implausibility(bag_object_trunc, dat)
 #> 
 #> 
 #> $coef_sign_radii
-#> $coef_sign_radii$private_cabins_cumulative_
-#> $coef_sign_radii$private_cabins_cumulative_[[1]]
-#> [1]  2500 10000
+#> $coef_sign_radii$cabins_private_cumulative_
+#> $coef_sign_radii$cabins_private_cumulative_[[1]]
+#> numeric(0)
 #> 
 #> 
-#> $coef_sign_radii$public_cabins_high_cumulative_
-#> $coef_sign_radii$public_cabins_high_cumulative_[[1]]
-#> [1] 10000
+#> $coef_sign_radii$cabins_public_cumulative_
+#> $coef_sign_radii$cabins_public_cumulative_[[1]]
+#> [1] 5000
 #> 
 #> 
 #> $coef_sign_radii$trails_cumulative_
@@ -288,14 +285,14 @@ implausibility(bag_object_trunc, dat)
 #> 
 #> 
 #> $coef_sign_value
-#> $coef_sign_value$private_cabins_cumulative_
-#> $coef_sign_value$private_cabins_cumulative_[[1]]
-#> [1] 0.077101490 0.005901955
+#> $coef_sign_value$cabins_private_cumulative_
+#> $coef_sign_value$cabins_private_cumulative_[[1]]
+#> numeric(0)
 #> 
 #> 
-#> $coef_sign_value$public_cabins_high_cumulative_
-#> $coef_sign_value$public_cabins_high_cumulative_[[1]]
-#> [1] 3.081518
+#> $coef_sign_value$cabins_public_cumulative_
+#> $coef_sign_value$cabins_public_cumulative_[[1]]
+#> [1] 2.614733
 #> 
 #> 
 #> $coef_sign_value$trails_cumulative_
@@ -305,19 +302,19 @@ implausibility(bag_object_trunc, dat)
 #> 
 #> 
 #> $coef_sign
-#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
-#>                              2                              1 
-#>             trails_cumulative_ 
-#>                              0 
+#> cabins_private_cumulative_  cabins_public_cumulative_ 
+#>                          0                          1 
+#>         trails_cumulative_ 
+#>                          0 
 #> 
 #> $coef_sign_sum
-#> [1] 3
+#> [1] 1
 #> 
 #> $cross_index
-#> $cross_index$private_cabins_cumulative_
+#> $cross_index$cabins_private_cumulative_
 #> integer(0)
 #> 
-#> $cross_index$public_cabins_high_cumulative_
+#> $cross_index$cabins_public_cumulative_
 #> integer(0)
 #> 
 #> $cross_index$trails_cumulative_
@@ -325,10 +322,10 @@ implausibility(bag_object_trunc, dat)
 #> 
 #> 
 #> $where_crosses
-#> $where_crosses$private_cabins_cumulative_
+#> $where_crosses$cabins_private_cumulative_
 #> list()
 #> 
-#> $where_crosses$public_cabins_high_cumulative_
+#> $where_crosses$cabins_public_cumulative_
 #> list()
 #> 
 #> $where_crosses$trails_cumulative_
@@ -336,46 +333,46 @@ implausibility(bag_object_trunc, dat)
 #> 
 #> 
 #> $n_crosses
-#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
-#>                              0                              0 
-#>             trails_cumulative_ 
-#>                              0 
+#> cabins_private_cumulative_  cabins_public_cumulative_ 
+#>                          0                          0 
+#>         trails_cumulative_ 
+#>                          0 
 #> 
 #> $n_crosses_total
 #> [1] 0
 #> 
 #> $response_area_opposite
-#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
-#>                              0                              0 
-#>             trails_cumulative_ 
-#>                              0 
+#> cabins_private_cumulative_  cabins_public_cumulative_ 
+#>                          0                          0 
+#>         trails_cumulative_ 
+#>                          0 
 #> 
 #> $response_area_opposite_total
 #> [1] 0
 #> 
 #> $response_area_ratio
-#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
-#>                              0                              0 
-#>             trails_cumulative_ 
-#>                              0 
+#> cabins_private_cumulative_  cabins_public_cumulative_ 
+#>                          0                          0 
+#>         trails_cumulative_ 
+#>                          0 
 #> 
 #> $response_area_ratio_total
 #> [1] 0
 #> 
 #> $n_inflection
-#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
-#>                              0                              0 
-#>             trails_cumulative_ 
-#>                              0 
+#> cabins_private_cumulative_  cabins_public_cumulative_ 
+#>                          0                          0 
+#>         trails_cumulative_ 
+#>                          0 
 #> 
 #> $n_inflection_total
 #> [1] 0
 #> 
 #> $difference_inflection
-#>     private_cabins_cumulative_ public_cabins_high_cumulative_ 
-#>                              0                              0 
-#>             trails_cumulative_ 
-#>                              0 
+#> cabins_private_cumulative_  cabins_public_cumulative_ 
+#>                          0                          0 
+#>         trails_cumulative_ 
+#>                          0 
 #> 
 #> $difference_inflection_total
 #> [1] 0

@@ -24,21 +24,29 @@ A Geotiff file. Projected CRS: ETRS89 / UTM zone 33N.
 - NORUTreclass Land use and land cover classes from NORUT, reclassified
   as in Niebuhr et al. 2023.
 
-- private_cabins_cumulative_exp_decay_XXX Cumulative zone of influence
-  of private cabins at each location, with exponential decay shape, and
-  radii defined by XXX (from 100 to 20000m).
-
-- private_cabins_nearest_exp_decay_XXX Zone of influence of the nearest
+- cabins_private_nearest_exp_decayXXX Zone of influence of the nearest
   private cabin at each location, with exponential decay shape, and
-  radii defined by XXX (from 100 to 20000m).
+  radii defined by XXX (from 100 to 10000 m).
 
-- public_cabins_high_cumulative_exp_decay_XXX Cumulative zone of
-  influence of public resorts at each location, with exponential decay
-  shape, and radii defined by XXX (from 100 to 20000m).
+- cabins_private_cumulative_exp_decayXXX Cumulative zone of influence of
+  private cabins at each location, with exponential decay shape, and
+  radii defined by XXX (from 100 to 10000 m).
 
-- public_cabins_high_nearest_exp_decay_XXX Zone of influence of the
-  nearest public resort at each location, with exponential decay shape,
-  and radii defined by XXX (from 100 to 20000m).
+- cabins_public_nearest_exp_decayXXX Zone of influence of the nearest
+  public resort and mountain hotels at each location, with exponential
+  decay shape, and radii defined by XXX (from 100 to 10000 m).
+
+- cabins_public_cumulative_exp_decayXXX Cumulative zone of influence of
+  public resorts and mountain hotels at each location, with exponential
+  decay shape, and radii defined by XXX (from 100 to 10000 m).
+
+- trails_nearest_exp_decayXXX Zone of influence of the nearest tourist
+  trail at each location, with exponential decay shape, and radii
+  defined by XXX (from 100 to 10000 m).
+
+- trails_cumulative_exp_decayXXX Cumulative zone of influence of tourist
+  trails at each location, with exponential decay shape, and radii
+  defined by XXX (from 100 to 10000 m).
 
 ## Source
 
@@ -60,10 +68,9 @@ Data for RSF analysis, incorporating these predictors:
 ## Examples
 
 ``` r
-(f <- system.file("raster/rast_predictors_hardanger_500.tif", package = "oneimpact"))
-#> [1] ""
+(f <- system.file("raster/hardanger_rast_predictors_500m.tif", package = "oneimpact"))
+#> [1] "/home/runner/work/_temp/Library/oneimpact/raster/hardanger_rast_predictors_500m.tif"
 r <- terra::rast(f)
-#> Error: [rast] filename is empty. Provide a valid filename
 plot(r)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'r' not found
+
 ```

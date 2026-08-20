@@ -35,7 +35,7 @@ filter_save(
 - radius:
 
   `[numeric(1)]`  
-  Radius of the Zone of Influence (ZoI) of the matrix, in meters.
+  Radius of the Zone of Influence (ZOI) of the matrix, in meters.
 
 - type:
 

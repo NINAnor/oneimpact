@@ -134,7 +134,7 @@ terra::freq(cabins) ## No zeros, background is NA
 #>   layer value count
 #> 1     1     1  4640
 
-# compute both Zoi metrics with Gaussian decay, radius = 1000 m
+# compute both ZOI metrics with Gaussian decay, radius = 1000 m
 # since the background is NA, we use zeroAsNA = FALSE
 zoi_metrics <- calc_zoi(cabins,
                         radius = 1000,
@@ -176,7 +176,7 @@ terra::freq(cabins_count) ## Places with no infrastructure have value zero
 #> 8     1     7      6
 #> 9     1     8      2
 
-# compute both Zoi metrics with linear decay, varying radius from 1000 m to 3000 m
+# compute both ZOI metrics with linear decay, varying radius from 1000 m to 3000 m
 # since the background is zero, we use zeroAsNA = TRUE
 zoi_metrics2 <- calc_zoi(cabins_count,
                          radius = c(1000, 2000, 3000),

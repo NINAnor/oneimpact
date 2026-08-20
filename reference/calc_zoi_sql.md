@@ -157,62 +157,64 @@ library(sf)
 library(terra)
 # install.packages("duckdb")
 library(duckdb)
-#> Error in library(duckdb): there is no package called ‘duckdb’
 
 #---
 # set up connection and files
 
 # connection - in memory
-con <- DBI::dbConnect(duckdb())
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'drv' in selecting a method for function 'dbConnect': could not find function "duckdb"
-DBI::dbExecute(con, "INSTALL spatial from core_nightly; LOAD spatial;")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found
+if (requireNamespace("duckdb", quietly = TRUE)) {
+  con <- DBI::dbConnect(duckdb())
+  DBI::dbExecute(con, "INSTALL spatial from core_nightly; LOAD spatial;")
 
-# write vector of reindeer points to database
+  # write vector of reindeer points to database
 
-# load data in R
-data("reindeer")
-# register link to data in duckdb
-duckdb::duckdb_register(con, "reindeer", reindeer)
-#> Error in loadNamespace(x): there is no package called ‘duckdb’
-# create spatial object in duckdb
-DBI::dbExecute(con, "create or replace table reindeer_spat as (select row_number() over () as id, * exclude(x, y), ST_POINT(x,y) as geom from reindeer)")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found
-duckdb::duckdb_unregister(con, "reindeer") # and forget the original dataframe
-#> Error in loadNamespace(x): there is no package called ‘duckdb’
-# check
-dplyr::tbl(con, "reindeer_spat")
-#> Error: object 'con' not found
-# add index id and spatial index
-DBI::dbExecute(con, "CREATE UNIQUE INDEX reindeer_gid ON reindeer_spat (id);")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found
-DBI::dbExecute(con, "CREATE INDEX reindeer_geometry ON reindeer_spat USING rtree (geom);")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found
+  # load data in R
+  data("reindeer")
+  # register link to data in duckdb
+  duckdb::duckdb_register(con, "reindeer", reindeer)
+  # create spatial object in duckdb
+  DBI::dbExecute(con, "create or replace table reindeer_spat as (select row_number() over () as id, * exclude(x, y), ST_POINT(x,y) as geom from reindeer)")
+  duckdb::duckdb_unregister(con, "reindeer") # and forget the original dataframe
+  # check
+  dplyr::tbl(con, "reindeer_spat")
+  # add index id and spatial index
+  DBI::dbExecute(con, "CREATE UNIQUE INDEX reindeer_gid ON reindeer_spat (id);")
+  DBI::dbExecute(con, "CREATE INDEX reindeer_geometry ON reindeer_spat USING rtree (geom);")
 
-# write vector of cabin points to database - from file
-DBI::dbExecute(con, "create or replace table cabins as select * from st_read('inst/vector/reindeer_cabins.gpkg')")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found
-# check
-dplyr::tbl(con, "cabins")
-#> Error: object 'con' not found
-# add spatial index
-DBI::dbExecute(con, "CREATE INDEX cabins_geom ON cabins USING rtree (geom);")
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'conn' in selecting a method for function 'dbExecute': object 'con' not found
+  # write vector of cabin points to database - from file
+  DBI::dbExecute(con, "create or replace table cabins as select * from st_read('inst/vector/reindeer_cabins.gpkg')")
+  # check
+  dplyr::tbl(con, "cabins")
+  # add spatial index
+  DBI::dbExecute(con, "CREATE INDEX cabins_geom ON cabins USING rtree (geom);")
 
-# compute ZOI of cabins and extract for reindeer points
-cum_zoi_cabins <- calc_zoi_sql(con,
-                               input_points = "reindeer_spat",
-                               infrastructure_layer = "cabins",
-                               radius = 5000,
-                               type = "bartlett", zoi_metric = "cumulative",
-                               input_id = "id",
-                               input_geom = "geom", infra_geom = "geom",
-                               output_table = NULL,
-                               limit = 100,
-                               verbose = TRUE)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'conn' in selecting a method for function 'sqlInterpolate': object 'con' not found
-cum_zoi_cabins
-#> Error: object 'cum_zoi_cabins' not found
+  # compute ZOI of cabins and extract for reindeer points
+  cum_zoi_cabins <- calc_zoi_sql(con,
+                                 input_points = "reindeer_spat",
+                                 infrastructure_layer = "cabins",
+                                 radius = 5000,
+                                 type = "bartlett", zoi_metric = "cumulative",
+                                 input_id = "id",
+                                 input_geom = "geom", infra_geom = "geom",
+                                 output_table = NULL,
+                                 limit = 100,
+                                 verbose = TRUE)
+  cum_zoi_cabins
+}
+#> duckdb keeps downloaded extensions and secrets in a temporary directory:
+#> ℹ /tmp/RtmpBDnCNm/duckdb
+#> This is removed when the R session ends.
+#> • Extensions are re-downloaded each session.
+#> • Secrets are lost.
+#> ℹ Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).
+#> ℹ Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).
+#> ℹ See ?duckdb_storage for details and alternatives.
+#> Error in dbSendQuery(conn, statement, ...): Invalid Error: HTTP Error: Failed to download extension "spatial" at URL "http://nightly-extensions.duckdb.org/v1.5.5/linux_amd64/spatial.duckdb_extension.gz" (HTTP 404)
+#> Extension "spatial" is an existing extension.
+#> 
+#> For more info, visit https://duckdb.org/docs/stable/extensions/troubleshooting?version=v1.5.5&platform=linux_amd64&extension=spatial
+#> ℹ Context: rapi_prepare
+#> ℹ Error type: INVALID
 
 #-----------------
 # compare to the raster approach

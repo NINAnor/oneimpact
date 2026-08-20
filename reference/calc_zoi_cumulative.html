@@ -384,7 +384,7 @@ See <code><a href="zoi_functions.html">zoi_functions()</a></code> for details.</
 <li><p>user-customized filter: if <code>type = "mfilter"</code>, <code>radius</code> is not
 numeric but should be a user-defined matrix of weights. Examples are ones
 created through <code><a href="filter_create.html">filter_create()</a></code>, <code><a href="https://rspatial.github.io/terra/reference/focalMat.html" class="external-link">terra::focalMat()</a></code>,
-<code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code>, or matrices created by hand.</p></li>
+or matrices created by hand.</p></li>
 </ul><p>Weight matrices might differ from the expected decay function depending on
 the intended resolution - the finer the resolution, the more detailed and
 correspondent to the original functions the matrix will be.</p>
@@ -413,8 +413,10 @@ and computation efficiency.
 The only inconvenient of <code>r.mfilter</code> is that it
 creates an edge effect with no information in the outer cells of a raster
 (the number of cells correspond to <code>radius</code> or half the size of the weight
-matrix), so if it is used the users should add a buffer area</p></li>
-</ul><p>= radius around the input raster map, to avoid such edge effects.See <a href="https://github.com/OSGeo/grass/issues/2184" class="external-link">https://github.com/OSGeo/grass/issues/2184</a> for more details.</p><ul><li><p><code>r.neighbors</code> is considerably slower than the other algorithms (from 10 to
+matrix), so if it is used the users should add a buffer area
+at least as large as the <code>radius</code> around the input raster map, to avoid such edge effects.
+See <a href="https://github.com/OSGeo/grass/issues/2184" class="external-link">https://github.com/OSGeo/grass/issues/2184</a> for more details.</p></li>
+<li><p><code>r.neighbors</code> is considerably slower than the other algorithms (from 10 to
 100 times), but allows a flexible choice of the ZOI shape. Contrary to
 <code>r.resamp.filter</code> and <code>r.mfilter</code>, which can only perform a sum of pixel
 values weighted by the input filter or ZOI, <code>r.neighbors</code> might
@@ -427,7 +429,7 @@ such as mean, median, standard deviation etc.</p></li>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>See <code><a href="zoi_functions.html">zoi_functions()</a></code> for some ZOI function shapes and
 <code><a href="filter_create.html">filter_create()</a></code> for options to create weight matrices. <br>
-See also <code><a href="https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html" class="external-link">smoothie::kernel2dmeitsjer()</a></code>, <code><a href="https://rspatial.github.io/terra/reference/focalMat.html" class="external-link">terra::focalMat()</a></code>, and
+See also <code><a href="https://rspatial.github.io/terra/reference/focalMat.html" class="external-link">terra::focalMat()</a></code>, and
 <code><a href="https://rdrr.io/pkg/raster/man/focalWeight.html" class="external-link">raster::focalWeight()</a></code> for other functions to create filters or weight matrices. <br>
 See
 <a href="https://grass.osgeo.org/grass80/manuals/r.mfilter.html" class="external-link">r.mfilter</a>,
@@ -486,7 +488,7 @@ of the nearest feature only.</p></div>
 <span class="r-in"><span><span class="co"># compare</span></span></span>
 <span class="r-in"><span><span class="co"># note the difference in the color scales</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cumzoi_exp</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, <span class="va">density_exp</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZoI 1000m"</span>, <span class="st">"Density 1000m"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZOI 1000m"</span>, <span class="st">"Density 1000m"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="calc_zoi_cumulative-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#--------------------</span></span></span>
@@ -612,7 +614,7 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Byte&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e4680d362b.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276aaa5f62a.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cabins_bin</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lightyellow"</span>, <span class="st">"black"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>     main <span class="op">=</span> <span class="st">"Binarized map of cabins"</span><span class="op">)</span></span></span>
@@ -676,25 +678,25 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e438d4172b.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276a16a5c735.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e4537edc8e.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276a5c1657fb.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e47ae74ed6.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276a2ea6bea0.grd&gt; created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e4b96a743.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276a1ecbe4f3.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">title_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Exponential decay 1000m"</span>, <span class="st">"Bartlett decay 1000m"</span>,</span></span>
 <span class="r-in"><span>                <span class="st">"Gaussian decay 1000m"</span>, <span class="st">"Threshold decay 1000m"</span><span class="op">)</span></span></span>
@@ -702,7 +704,7 @@ of the nearest feature only.</p></div>
 <span class="r-plt img"><img src="calc_zoi_cumulative-9.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
-<span class="r-in"><span><span class="co"># calculate density vs cumulative ZoI</span></span></span>
+<span class="r-in"><span><span class="co"># calculate density vs cumulative ZOI</span></span></span>
 <span class="r-in"><span><span class="va">exp_name_d</span> <span class="op">&lt;-</span> <span class="fu">calc_zoi_cumulative</span><span class="op">(</span>x <span class="op">=</span> <span class="va">cabins_bin_g</span>,</span></span>
 <span class="r-in"><span>                                  radius <span class="op">=</span> <span class="fl">1000</span>, zoi_limit <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>                                  type <span class="op">=</span> <span class="st">"exp_decay"</span>, output_type <span class="op">=</span> <span class="st">"density"</span>,</span></span>
@@ -719,10 +721,10 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float32&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e44f61900c.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276a65f24fc9.grd&gt; created.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cabins_zoi_cumulative</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">cabins_density</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>            main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZoI"</span>, <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>            main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cumulative ZOI"</span>, <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="calc_zoi_cumulative-10.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#---</span></span></span>
@@ -740,13 +742,13 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Calculating density for 1000, shape box..."</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%</span>
 <span class="r-in"><span><span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://osgeo.github.io/rgrass/reference/read_RAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">rectangle_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Rectangle ZoI 1000m"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Rectangle ZOI 1000m"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e45369361f.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276a1b80fa73.grd&gt; created.</span>
 <span class="r-plt img"><img src="calc_zoi_cumulative-11.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># bartlett</span></span></span>
@@ -764,13 +766,13 @@ of the nearest feature only.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cabins_example_bin_zoi_cumulative_bartlett1000 = cabins_example_bin_zoi_cumulative_bartlett1000_temp/0.0095562598354124"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Removing raster &lt;cabins_example_bin_zoi_cumulative_bartlett1000_temp&gt;</span>
 <span class="r-in"><span><span class="fu">rgrass</span><span class="fu">::</span><span class="fu"><a href="https://osgeo.github.io/rgrass/reference/read_RAST.html" class="external-link">read_RAST</a></span><span class="op">(</span><span class="va">bartlett_resamp_filt</span>, return_format <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Bartlett ZoI 1000m"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span>main <span class="op">=</span> <span class="st">"Bartlett ZOI 1000m"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking GDAL data type and nodata value...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using GDAL data type &lt;Float64&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exporting raster data to RRASTER format...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpQ53ndW/file24e473c99769.grd&gt; created.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r.out.gdal complete. File &lt;/tmp/RtmpBDnCNm/file276ad9b3db9.grd&gt; created.</span>
 <span class="r-plt img"><img src="calc_zoi_cumulative-12.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># not run</span></span></span>

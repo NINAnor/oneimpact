@@ -102,15 +102,10 @@ filter_create(
 
   - `"rectangle"` or `"box"` for a rectangular ZOI. There might be some
     correspondence between the weight matrix `type` in `filter_create`
-    and other similar functions (e.g. `type = "rectangle"` and
-    `type = "boxcar"` in
-    [`smoothie::kernel2dmeitsjer()`](https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html)
-    or `type = "Gauss"` in
-    [`terra::focalMat()`](https://rspatial.github.io/terra/reference/focalMat.html)
-    with parameter `type = "gauss"` n
-    [smoothie::kernel2dmeitsjer](smoothie::kernel2dmeitsjer)); however,
-    the interpretation of the parameters used to define these matrices
-    is different between functions.
+    and other similar functions (e.g. `type = "Gauss"` in
+    [`terra::focalMat()`](https://rspatial.github.io/terra/reference/focalMat.html);
+    however, the interpretation of the parameters used to define these
+    matrices is different between functions.
 
 - zoi_limit:
 
@@ -262,12 +257,6 @@ matrix radius (parameter `min_dist`, which can be set to be the
 neighborhood analysis using such input weight matrices is
 computationally feasible.
 
-Possible future implementation: compare results with
-[`smoothie::kernel2dsmooth()`](https://rdrr.io/pkg/smoothie/man/kernel2dsmooth.html)
-and
-[`smoothie::kernel2dmeitsjer()`](https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html),
-maybe wrap some options here.
-
 ## See also
 
 See
@@ -276,7 +265,6 @@ for some ZOI function shapes and
 [`filter_save()`](https://ninanor.github.io/oneimpact/reference/filter_save.md)
 for options to save the ZOI matrix as a text file.  
 See also
-[`smoothie::kernel2dmeitsjer()`](https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html),
 [`terra::focalMat()`](https://rspatial.github.io/terra/reference/focalMat.html),
 and
 [`raster::focalWeight()`](https://rdrr.io/pkg/raster/man/focalWeight.html)

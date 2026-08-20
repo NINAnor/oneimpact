@@ -16,9 +16,6 @@ presents the following columns:
 - traffic_bin: Binary classification of the tourist traffic on the
   trail - high or low
 
-- pseudotui: Continuous variable representing relative number of
-  tourists per trail.
-
 - value: Value 1, to be used for rasterization purposes
 
 ## Source
@@ -30,15 +27,7 @@ presents the following columns:
 ``` r
 (f <- system.file("vector/hardanger_trails.gpkg", package = "oneimpact"))
 #> [1] "/home/runner/work/_temp/Library/oneimpact/vector/hardanger_trails.gpkg"
-v <- sf::st_read(f)
-#> Reading layer `hardanger_trails' from data source 
-#>   `/home/runner/work/_temp/Library/oneimpact/vector/hardanger_trails.gpkg' 
-#>   using driver `GPKG'
-#> Simple feature collection with 1444 features and 5 fields
-#> Geometry type: MULTILINESTRING
-#> Dimension:     XY
-#> Bounding box:  xmin: 5168.794 ymin: 6613269 xmax: 194195.6 ymax: 6760287
-#> Projected CRS: ETRS89 / UTM zone 33N
-plot(v[1])
+v <- terra::vect(f)
+plot(v)
 
 ```

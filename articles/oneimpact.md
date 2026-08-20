@@ -562,11 +562,10 @@ used as the `radius` argument, in case which the user must set
 `type = "mfilter"`. Other functions to define weight matrices can be set
 e.g. through
 [`terra::focalMat()`](https://rspatial.github.io/terra/reference/focalMat.html)
-(Hijmans, 2022) or
-[`smoothie::kernel2dmeitsjer()`](https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html)
-(Gilleland, 2013) functions. Notice, however, that these functions are
-parameterized differently, with no reference to the ZOI radius as the
-ones defined in `oneimpact`.
+(Hijmans, 2022) or `smoothie::kernel2dmeitsjer()` (Gilleland, 2013)
+functions. Notice, however, that these functions are parameterized
+differently, with no reference to the ZOI radius as the ones defined in
+`oneimpact`.
 
 For
 [`calc_zoi_cumulative()`](https://ninanor.github.io/oneimpact/reference/calc_zoi_cumulative.md),

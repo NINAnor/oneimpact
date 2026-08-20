@@ -124,94 +124,56 @@ dat <- reindeer_rsf
 colnames(dat)
 ```
 
-    ##  [1] "use"                                         
-    ##  [2] "norway_pca_klima_axis1"                      
-    ##  [3] "norway_pca_klima_axis2"                      
-    ##  [4] "norway_pca_klima_axis3"                      
-    ##  [5] "norway_pca_klima_axis4"                      
-    ##  [6] "norway_pca_klima_axis1_sq"                   
-    ##  [7] "norway_pca_klima_axis2_sq"                   
-    ##  [8] "NORUTreclass"                                
-    ##  [9] "private_cabins_cumulative_exp_decay100"      
-    ## [10] "private_cabins_cumulative_exp_decay250"      
-    ## [11] "private_cabins_cumulative_exp_decay500"      
-    ## [12] "private_cabins_cumulative_exp_decay1000"     
-    ## [13] "private_cabins_cumulative_exp_decay2500"     
-    ## [14] "private_cabins_cumulative_exp_decay5000"     
-    ## [15] "private_cabins_cumulative_exp_decay10000"    
-    ## [16] "private_cabins_cumulative_exp_decay20000"    
-    ## [17] "private_cabins_nearest_exp_decay100"         
-    ## [18] "private_cabins_nearest_exp_decay250"         
-    ## [19] "private_cabins_nearest_exp_decay500"         
-    ## [20] "private_cabins_nearest_exp_decay1000"        
-    ## [21] "private_cabins_nearest_exp_decay2500"        
-    ## [22] "private_cabins_nearest_exp_decay5000"        
-    ## [23] "private_cabins_nearest_exp_decay10000"       
-    ## [24] "private_cabins_nearest_exp_decay20000"       
-    ## [25] "public_cabins_high_cumulative_exp_decay100"  
-    ## [26] "public_cabins_high_cumulative_exp_decay250"  
-    ## [27] "public_cabins_high_cumulative_exp_decay500"  
-    ## [28] "public_cabins_high_cumulative_exp_decay1000" 
-    ## [29] "public_cabins_high_cumulative_exp_decay2500" 
-    ## [30] "public_cabins_high_cumulative_exp_decay5000" 
-    ## [31] "public_cabins_high_cumulative_exp_decay10000"
-    ## [32] "public_cabins_high_cumulative_exp_decay20000"
-    ## [33] "public_cabins_high_nearest_exp_decay100"     
-    ## [34] "public_cabins_high_nearest_exp_decay250"     
-    ## [35] "public_cabins_high_nearest_exp_decay500"     
-    ## [36] "public_cabins_high_nearest_exp_decay1000"    
-    ## [37] "public_cabins_high_nearest_exp_decay2500"    
-    ## [38] "public_cabins_high_nearest_exp_decay5000"    
-    ## [39] "public_cabins_high_nearest_exp_decay10000"   
-    ## [40] "public_cabins_high_nearest_exp_decay20000"   
-    ## [41] "roads_low_cumulative_exp_decay100"           
-    ## [42] "roads_low_cumulative_exp_decay250"           
-    ## [43] "roads_low_cumulative_exp_decay500"           
-    ## [44] "roads_low_cumulative_exp_decay1000"          
-    ## [45] "roads_low_cumulative_exp_decay2500"          
-    ## [46] "roads_low_cumulative_exp_decay5000"          
-    ## [47] "roads_low_cumulative_exp_decay10000"         
-    ## [48] "roads_low_cumulative_exp_decay20000"         
-    ## [49] "roads_low_nearest_exp_decay100"              
-    ## [50] "roads_low_nearest_exp_decay250"              
-    ## [51] "roads_low_nearest_exp_decay500"              
-    ## [52] "roads_low_nearest_exp_decay1000"             
-    ## [53] "roads_low_nearest_exp_decay2500"             
-    ## [54] "roads_low_nearest_exp_decay5000"             
-    ## [55] "roads_low_nearest_exp_decay10000"            
-    ## [56] "roads_low_nearest_exp_decay20000"            
-    ## [57] "roads_high_cumulative_exp_decay100"          
-    ## [58] "roads_high_cumulative_exp_decay250"          
-    ## [59] "roads_high_cumulative_exp_decay500"          
-    ## [60] "roads_high_cumulative_exp_decay1000"         
-    ## [61] "roads_high_cumulative_exp_decay2500"         
-    ## [62] "roads_high_cumulative_exp_decay5000"         
-    ## [63] "roads_high_cumulative_exp_decay10000"        
-    ## [64] "roads_high_cumulative_exp_decay20000"        
-    ## [65] "roads_high_nearest_exp_decay100"             
-    ## [66] "roads_high_nearest_exp_decay250"             
-    ## [67] "roads_high_nearest_exp_decay500"             
-    ## [68] "roads_high_nearest_exp_decay1000"            
-    ## [69] "roads_high_nearest_exp_decay2500"            
-    ## [70] "roads_high_nearest_exp_decay5000"            
-    ## [71] "roads_high_nearest_exp_decay10000"           
-    ## [72] "roads_high_nearest_exp_decay20000"           
-    ## [73] "trails_cumulative_exp_decay100"              
-    ## [74] "trails_cumulative_exp_decay250"              
-    ## [75] "trails_cumulative_exp_decay500"              
-    ## [76] "trails_cumulative_exp_decay1000"             
-    ## [77] "trails_cumulative_exp_decay2500"             
-    ## [78] "trails_cumulative_exp_decay5000"             
-    ## [79] "trails_cumulative_exp_decay10000"            
-    ## [80] "trails_cumulative_exp_decay20000"            
-    ## [81] "trails_nearest_exp_decay100"                 
-    ## [82] "trails_nearest_exp_decay250"                 
-    ## [83] "trails_nearest_exp_decay500"                 
-    ## [84] "trails_nearest_exp_decay1000"                
-    ## [85] "trails_nearest_exp_decay2500"                
-    ## [86] "trails_nearest_exp_decay5000"                
-    ## [87] "trails_nearest_exp_decay10000"               
-    ## [88] "trails_nearest_exp_decay20000"
+    ##  [1] "use"                                     
+    ##  [2] "norway_pca_klima_axis1"                  
+    ##  [3] "norway_pca_klima_axis2"                  
+    ##  [4] "norway_pca_klima_axis3"                  
+    ##  [5] "norway_pca_klima_axis4"                  
+    ##  [6] "norway_pca_klima_axis1_sq"               
+    ##  [7] "norway_pca_klima_axis2_sq"               
+    ##  [8] "NORUTreclass"                            
+    ##  [9] "cabins_private_nearest_exp_decay100"     
+    ## [10] "cabins_private_nearest_exp_decay250"     
+    ## [11] "cabins_private_nearest_exp_decay500"     
+    ## [12] "cabins_private_nearest_exp_decay1000"    
+    ## [13] "cabins_private_nearest_exp_decay2500"    
+    ## [14] "cabins_private_nearest_exp_decay5000"    
+    ## [15] "cabins_private_nearest_exp_decay10000"   
+    ## [16] "cabins_private_cumulative_exp_decay100"  
+    ## [17] "cabins_private_cumulative_exp_decay250"  
+    ## [18] "cabins_private_cumulative_exp_decay500"  
+    ## [19] "cabins_private_cumulative_exp_decay1000" 
+    ## [20] "cabins_private_cumulative_exp_decay2500" 
+    ## [21] "cabins_private_cumulative_exp_decay5000" 
+    ## [22] "cabins_private_cumulative_exp_decay10000"
+    ## [23] "cabins_public_nearest_exp_decay100"      
+    ## [24] "cabins_public_nearest_exp_decay250"      
+    ## [25] "cabins_public_nearest_exp_decay500"      
+    ## [26] "cabins_public_nearest_exp_decay1000"     
+    ## [27] "cabins_public_nearest_exp_decay2500"     
+    ## [28] "cabins_public_nearest_exp_decay5000"     
+    ## [29] "cabins_public_nearest_exp_decay10000"    
+    ## [30] "cabins_public_cumulative_exp_decay100"   
+    ## [31] "cabins_public_cumulative_exp_decay250"   
+    ## [32] "cabins_public_cumulative_exp_decay500"   
+    ## [33] "cabins_public_cumulative_exp_decay1000"  
+    ## [34] "cabins_public_cumulative_exp_decay2500"  
+    ## [35] "cabins_public_cumulative_exp_decay5000"  
+    ## [36] "cabins_public_cumulative_exp_decay10000" 
+    ## [37] "trails_nearest_exp_decay100"             
+    ## [38] "trails_nearest_exp_decay250"             
+    ## [39] "trails_nearest_exp_decay500"             
+    ## [40] "trails_nearest_exp_decay1000"            
+    ## [41] "trails_nearest_exp_decay2500"            
+    ## [42] "trails_nearest_exp_decay5000"            
+    ## [43] "trails_nearest_exp_decay10000"           
+    ## [44] "trails_cumulative_exp_decay100"          
+    ## [45] "trails_cumulative_exp_decay250"          
+    ## [46] "trails_cumulative_exp_decay500"          
+    ## [47] "trails_cumulative_exp_decay1000"         
+    ## [48] "trails_cumulative_exp_decay2500"         
+    ## [49] "trails_cumulative_exp_decay5000"         
+    ## [50] "trails_cumulative_exp_decay10000"
 
 The data set “reindeer_rsf” in the `oneimpact` package contains the wild
 reindeer data used to fit the resource selection functions using the
@@ -221,10 +183,10 @@ or not (0, a random location within the population area). The used and
 available positions were annotated with information on land cover
 (column `NORUTreclass`), bio-geo-climatic PCAs (columns
 `norway_pca_klima_axis` 1 to 4) and the zone of influence of private
-cottages and public resorts (columns starting with `private_cabins` and
-`public_cabins_high`, respectively). Zone of influence variables include
-both the ZOI of the nearest feature and the cumulative ZOI, with radii
-from 100 m to 20 km. For illustration, we only kept ZOI variables with
+cottages and public resorts (columns starting with `cabins_private` and
+`cabins_public`, respectively). Zone of influence variables include both
+the ZOI of the nearest feature and the cumulative ZOI, with radii from
+100 m to 20 km. For illustration, we only kept ZOI variables with
 exponential decay shape and cumulative type (not nearest).
 
 The predictor variables are not standardized, but it is essential to
@@ -243,7 +205,7 @@ formula.
 ``` r
 
 # formula initial structure
-f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+f <- use ~ cabins_private_XXX + cabins_public_XXX +
   NORUTreclass +
   # poly(norway_pca_klima_axis1, 2, raw = TRUE) + 
   # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
@@ -252,7 +214,7 @@ f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
 
 # add ZOI terms to the formula
-zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000)
 ff <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX", 
                       type = c("cumulative_exp_decay"),
                       separator = "", predictor_table = TRUE)
@@ -274,18 +236,17 @@ model and select the variables.
 f
 ```
 
-    ## use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 + 
-    ##     private_cabins_cumulative_exp_decay500 + private_cabins_cumulative_exp_decay1000 + 
-    ##     private_cabins_cumulative_exp_decay2500 + private_cabins_cumulative_exp_decay5000 + 
-    ##     private_cabins_cumulative_exp_decay10000 + private_cabins_cumulative_exp_decay20000 + 
-    ##     public_cabins_high_cumulative_exp_decay100 + public_cabins_high_cumulative_exp_decay250 + 
-    ##     public_cabins_high_cumulative_exp_decay500 + public_cabins_high_cumulative_exp_decay1000 + 
-    ##     public_cabins_high_cumulative_exp_decay2500 + public_cabins_high_cumulative_exp_decay5000 + 
-    ##     public_cabins_high_cumulative_exp_decay10000 + public_cabins_high_cumulative_exp_decay20000 + 
+    ## use ~ cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 + 
+    ##     cabins_private_cumulative_exp_decay500 + cabins_private_cumulative_exp_decay1000 + 
+    ##     cabins_private_cumulative_exp_decay2500 + cabins_private_cumulative_exp_decay5000 + 
+    ##     cabins_private_cumulative_exp_decay10000 + cabins_public_cumulative_exp_decay100 + 
+    ##     cabins_public_cumulative_exp_decay250 + cabins_public_cumulative_exp_decay500 + 
+    ##     cabins_public_cumulative_exp_decay1000 + cabins_public_cumulative_exp_decay2500 + 
+    ##     cabins_public_cumulative_exp_decay5000 + cabins_public_cumulative_exp_decay10000 + 
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x560bc7064980>
+    ## <environment: 0x55c3fe0fdf58>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -304,28 +265,28 @@ Here we take a glance on the structure of this table:
 head(predictor_table_zoi, 10)
 ```
 
-    ##    is_zoi cumulative     shape zoi_radius            variable
-    ## 1       1 cumulative exp_decay        100     private_cabins_
-    ## 2       1 cumulative exp_decay        250     private_cabins_
-    ## 3       1 cumulative exp_decay        500     private_cabins_
-    ## 4       1 cumulative exp_decay       1000     private_cabins_
-    ## 5       1 cumulative exp_decay       2500     private_cabins_
-    ## 6       1 cumulative exp_decay       5000     private_cabins_
-    ## 7       1 cumulative exp_decay      10000     private_cabins_
-    ## 8       1 cumulative exp_decay      20000     private_cabins_
-    ## 9       1 cumulative exp_decay        100 public_cabins_high_
-    ## 10      1 cumulative exp_decay        250 public_cabins_high_
-    ##                                      term_zoi
-    ## 1      private_cabins_cumulative_exp_decay100
-    ## 2      private_cabins_cumulative_exp_decay250
-    ## 3      private_cabins_cumulative_exp_decay500
-    ## 4     private_cabins_cumulative_exp_decay1000
-    ## 5     private_cabins_cumulative_exp_decay2500
-    ## 6     private_cabins_cumulative_exp_decay5000
-    ## 7    private_cabins_cumulative_exp_decay10000
-    ## 8    private_cabins_cumulative_exp_decay20000
-    ## 9  public_cabins_high_cumulative_exp_decay100
-    ## 10 public_cabins_high_cumulative_exp_decay250
+    ##    is_zoi cumulative     shape zoi_radius        variable
+    ## 1       1 cumulative exp_decay        100 cabins_private_
+    ## 2       1 cumulative exp_decay        250 cabins_private_
+    ## 3       1 cumulative exp_decay        500 cabins_private_
+    ## 4       1 cumulative exp_decay       1000 cabins_private_
+    ## 5       1 cumulative exp_decay       2500 cabins_private_
+    ## 6       1 cumulative exp_decay       5000 cabins_private_
+    ## 7       1 cumulative exp_decay      10000 cabins_private_
+    ## 8       1 cumulative exp_decay        100  cabins_public_
+    ## 9       1 cumulative exp_decay        250  cabins_public_
+    ## 10      1 cumulative exp_decay        500  cabins_public_
+    ##                                    term_zoi
+    ## 1    cabins_private_cumulative_exp_decay100
+    ## 2    cabins_private_cumulative_exp_decay250
+    ## 3    cabins_private_cumulative_exp_decay500
+    ## 4   cabins_private_cumulative_exp_decay1000
+    ## 5   cabins_private_cumulative_exp_decay2500
+    ## 6   cabins_private_cumulative_exp_decay5000
+    ## 7  cabins_private_cumulative_exp_decay10000
+    ## 8     cabins_public_cumulative_exp_decay100
+    ## 9     cabins_public_cumulative_exp_decay250
+    ## 10    cabins_public_cumulative_exp_decay500
 
 ### Setting samples
 
@@ -400,15 +361,15 @@ mod <- fit_net_logit(f,
 ```
 
     ## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =
-    ## "AUC", : 100 missing observations were removed from the train set. 14767
+    ## "AUC", : 214 missing observations were removed from the train set. 14653
     ## observations were kept.
 
     ## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =
-    ## "AUC", : 69 missing observations were removed from the test set. 14798
+    ## "AUC", : 211 missing observations were removed from the test set. 14656
     ## observations were kept.
 
     ## Warning in fit_net_logit(f, data = dat, samples = samples, i = 1, metric =
-    ## "AUC", : 108 missing observations were removed from the validate set. 14759
+    ## "AUC", : 192 missing observations were removed from the validate set. 14675
     ## observations were kept.
 
 We will just examine the structure of the output object now. It
@@ -469,29 +430,29 @@ str(mod, max.level = 1)
     ##  $ glmnet_fit          :List of 13
     ##   ..- attr(*, "class")= chr [1:2] "lognet" "glmnet"
     ##  $ metrics_evaluated   :List of 1
-    ##  $ var_names           : chr [1:36] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...
-    ##  $ numeric_covs        : Named logi [1:23] TRUE TRUE TRUE TRUE TRUE TRUE ...
-    ##   ..- attr(*, "names")= chr [1:23] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...
-    ##  $ covariate_mean_sd   :'data.frame':    22 obs. of  2 variables:
+    ##  $ var_names           : chr [1:34] "cabins_private_cumulative_exp_decay100" "cabins_private_cumulative_exp_decay250" "cabins_private_cumulative_exp_decay500" "cabins_private_cumulative_exp_decay1000" ...
+    ##  $ numeric_covs        : Named logi [1:21] TRUE TRUE TRUE TRUE TRUE TRUE ...
+    ##   ..- attr(*, "names")= chr [1:21] "cabins_private_cumulative_exp_decay100" "cabins_private_cumulative_exp_decay250" "cabins_private_cumulative_exp_decay500" "cabins_private_cumulative_exp_decay1000" ...
+    ##  $ covariate_mean_sd   :'data.frame':    20 obs. of  2 variables:
     ##  $ metric              : chr "AUC"
     ##  $ alpha               : num 1
-    ##  $ lambda              : num 0.00123
-    ##  $ coef                : num [1:36, 1] 0 0 0 0 0 ...
+    ##  $ lambda              : num 3.63e-05
+    ##  $ coef                : num [1:34, 1] 2.366 0 -0.956 0 0 ...
     ##   ..- attr(*, "dimnames")=List of 2
-    ##  $ train_score         : num 0.915
-    ##  $ test_score          : num 0.926
-    ##  $ validation_score    : num 0.913
-    ##  $ validation_score_avg: num 0.913
-    ##  $ lambdas             : Named num 0.00123
+    ##  $ train_score         : num 0.909
+    ##  $ test_score          : num 0.917
+    ##  $ validation_score    : num 0.905
+    ##  $ validation_score_avg: num 0.905
+    ##  $ lambdas             : Named num 3.63e-05
     ##   ..- attr(*, "names")= chr "AUC"
-    ##  $ coefs_all           : num [1:36, 1] 0 0 0 0 0 ...
+    ##  $ coefs_all           : num [1:34, 1] 2.366 0 -0.956 0 0 ...
     ##   ..- attr(*, "dimnames")=List of 2
     ##  $ coefs_std_all       :List of 1
-    ##  $ train_score_all     : Named num 0.915
+    ##  $ train_score_all     : Named num 0.909
     ##   ..- attr(*, "names")= chr "AUC"
-    ##  $ test_score_all      : Named num 0.926
+    ##  $ test_score_all      : Named num 0.917
     ##   ..- attr(*, "names")= chr "AUC"
-    ##  $ validation_score_all: Named num 0.913
+    ##  $ validation_score_all: Named num 0.905
     ##   ..- attr(*, "names")= chr "AUC"
 
 Here, the model was calibrated and evaluated using the Area Under the
@@ -554,10 +515,10 @@ str(bag_object, max.level = 1)
 
     ## List of 32
     ##  $ n                                : int 50
-    ##  $ formula                          :Class 'formula'  language use ~ private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x560bc7064980> 
-    ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + private_cabins_cumulative_exp_decay100 + private_cabins_cumulative_exp_decay250 +      private_cabins_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x560bc735a5b8> 
+    ##  $ formula                          :Class 'formula'  language use ~ cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_cumul| __truncated__ ...
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c3fe0fdf58> 
+    ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_| __truncated__ ...
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x55c3fe456370> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"
@@ -571,34 +532,34 @@ str(bag_object, max.level = 1)
     ##  $ n_no_errors                      : int 50
     ##  $ parms                            :List of 13
     ##  $ alpha                            : num 1
-    ##  $ var_names                        : chr [1:36] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...
-    ##  $ lambda                           : num [1, 1:50] 1.23e-03 8.70e-06 1.98e-04 8.52e-06 8.76e-06 ...
+    ##  $ var_names                        : chr [1:34] "cabins_private_cumulative_exp_decay100" "cabins_private_cumulative_exp_decay250" "cabins_private_cumulative_exp_decay500" "cabins_private_cumulative_exp_decay1000" ...
+    ##  $ lambda                           : num [1, 1:50] 3.63e-05 8.79e-06 2.21e-04 2.43e-05 2.11e-04 ...
     ##   ..- attr(*, "dimnames")=List of 2
     ##  $ weight_ref                       : chr "validation_score"
     ##  $ weight_threshold                 : num 0.7
-    ##  $ weights                          : Named num [1:50] 0.0197 0.02 0.02 0.0201 0.02 ...
+    ##  $ weights                          : Named num [1:50] 0.0198 0.02 0.02 0.0201 0.02 ...
     ##   ..- attr(*, "names")= chr [1:50] "Resample01" "Resample02" "Resample03" "Resample04" ...
     ##  $ n_above_threshold                : int 50
-    ##  $ coef                             : num [1:36, 1:50] 0 0 0 0 0 ...
+    ##  $ coef                             : num [1:34, 1:50] 2.366 0 -0.956 0 0 ...
     ##   ..- attr(*, "dimnames")=List of 2
-    ##  $ wcoef                            : num [1:36, 1:50] 0 0 0 0 0 ...
+    ##  $ wcoef                            : num [1:34, 1:50] 0.0468 0 -0.0189 0 0 ...
     ##   ..- attr(*, "dimnames")=List of 2
     ##  $ wcoef_std                        : num(0) 
-    ##  $ fit_score                        : num [1, 1:50] 0.915 0.921 0.921 0.918 0.923 ...
+    ##  $ fit_score                        : num [1, 1:50] 0.909 0.91 0.91 0.907 0.912 ...
     ##   ..- attr(*, "dimnames")=List of 2
-    ##  $ calibration_score                : num [1, 1:50] 0.926 0.919 0.915 0.917 0.914 ...
+    ##  $ calibration_score                : num [1, 1:50] 0.917 0.912 0.907 0.907 0.907 ...
     ##   ..- attr(*, "dimnames")=List of 2
-    ##  $ validation_score                 : num [1, 1:50] 0.913 0.92 0.919 0.921 0.92 ...
+    ##  $ validation_score                 : num [1, 1:50] 0.905 0.91 0.911 0.912 0.909 ...
     ##   ..- attr(*, "dimnames")=List of 2
     ##  $ validation_score_summary         :'data.frame':   50 obs. of  1 variable:
-    ##  $ weighted_validation_score        : num [1, 1] 0.919
+    ##  $ weighted_validation_score        : num [1, 1] 0.91
     ##   ..- attr(*, "dimnames")=List of 2
-    ##  $ weighted_validation_score_summary: num [1, 1] 0.919
+    ##  $ weighted_validation_score_summary: num [1, 1] 0.91
     ##   ..- attr(*, "dimnames")=List of 2
-    ##  $ covariate_mean_sd                :'data.frame':   22 obs. of  2 variables:
-    ##  $ data_summary                     :'data.frame':   11 obs. of  24 variables:
-    ##  $ numeric_covs                     : Named logi [1:23] TRUE TRUE TRUE TRUE TRUE TRUE ...
-    ##   ..- attr(*, "names")= chr [1:23] "private_cabins_cumulative_exp_decay100" "private_cabins_cumulative_exp_decay250" "private_cabins_cumulative_exp_decay500" "private_cabins_cumulative_exp_decay1000" ...
+    ##  $ covariate_mean_sd                :'data.frame':   20 obs. of  2 variables:
+    ##  $ data_summary                     :'data.frame':   11 obs. of  22 variables:
+    ##  $ numeric_covs                     : Named logi [1:21] TRUE TRUE TRUE TRUE TRUE TRUE ...
+    ##   ..- attr(*, "names")= chr [1:21] "cabins_private_cumulative_exp_decay100" "cabins_private_cumulative_exp_decay250" "cabins_private_cumulative_exp_decay500" "cabins_private_cumulative_exp_decay1000" ...
     ##  - attr(*, "class")= chr [1:2] "bag" "list"
 
 Here, we have two sets of functions important for defining the bag of
@@ -628,8 +589,8 @@ how well the model performs under new conditions.
 bag_object$validation_score[1:10]
 ```
 
-    ##  [1] 0.9131054 0.9203894 0.9194246 0.9212400 0.9200966 0.9183340 0.9151591
-    ##  [8] 0.9181758 0.9194765 0.9190469
+    ##  [1] 0.9052306 0.9103527 0.9113945 0.9119698 0.9094843 0.9070702 0.9083264
+    ##  [8] 0.9056278 0.9099305 0.9094397
 
 In this example, all the models of the bag have a quite good (and
 comparable) performance, with an average weighted validation AUC of \`r
@@ -689,7 +650,7 @@ importance <- variable_importance(bag_object,
 ```
 
     ## Warning in variable_importance(bag_object, data = dat, type = "drop", order =
-    ## "asc"): 477 missing observations were removed from the validate set. 73860
+    ## "asc"): 1041 missing observations were removed from the validate set. 73296
     ## observations were kept.
 
 ``` r
@@ -715,18 +676,18 @@ variable_blocks <- bag_object$var_names |>
 variable_blocks
 ```
 
-    ##  [1] "private_cabins"         "private_cabins"         "private_cabins"        
-    ##  [4] "private_cabins"         "private_cabins"         "private_cabins"        
-    ##  [7] "private_cabins"         "private_cabins"         "public_cabins_high"    
-    ## [10] "public_cabins_high"     "public_cabins_high"     "public_cabins_high"    
-    ## [13] "public_cabins_high"     "public_cabins_high"     "public_cabins_high"    
-    ## [16] "public_cabins_high"     "NORUT"                  "NORUT"                 
+    ##  [1] "cabins_private"         "cabins_private"         "cabins_private"        
+    ##  [4] "cabins_private"         "cabins_private"         "cabins_private"        
+    ##  [7] "cabins_private"         "cabins_public"          "cabins_public"         
+    ## [10] "cabins_public"          "cabins_public"          "cabins_public"         
+    ## [13] "cabins_public"          "cabins_public"          "NORUT"                 
+    ## [16] "NORUT"                  "NORUT"                  "NORUT"                 
     ## [19] "NORUT"                  "NORUT"                  "NORUT"                 
     ## [22] "NORUT"                  "NORUT"                  "NORUT"                 
     ## [25] "NORUT"                  "NORUT"                  "NORUT"                 
-    ## [28] "NORUT"                  "NORUT"                  "NORUT"                 
-    ## [31] "norway_pca_klima_axis1" "norway_pca_klima_axis1" "norway_pca_klima_axis2"
-    ## [34] "norway_pca_klima_axis2" "norway_pca_klima_axis3" "norway_pca_klima_axis4"
+    ## [28] "NORUT"                  "norway_pca_klima_axis1" "norway_pca_klima_axis1"
+    ## [31] "norway_pca_klima_axis2" "norway_pca_klima_axis2" "norway_pca_klima_axis3"
+    ## [34] "norway_pca_klima_axis4"
 
 ``` r
 
@@ -738,11 +699,12 @@ importance_block <- variable_importance(bag_object,
 ```
 
     ## Warning in variable_importance(bag_object, data = dat, type = "drop", order =
-    ## "asc", : 477 missing observations were removed from the validate set. 73860
+    ## "asc", : 1041 missing observations were removed from the validate set. 73296
     ## observations were kept.
 
 ``` r
 
+names(importance_block)[names(importance_block) == "NORUT"] <- "land_cover" 
 plot_importance(importance_block, normalize = T)
 ```
 
@@ -763,39 +725,28 @@ bag_object$coef[,1:5] |>
   head(10)
 ```
 
-    ##                                              Resample01   Resample02
-    ## private_cabins_cumulative_exp_decay100      0.000000000 -0.217722480
-    ## private_cabins_cumulative_exp_decay250      0.000000000  2.789575426
-    ## private_cabins_cumulative_exp_decay500      0.000000000 -0.813622269
-    ## private_cabins_cumulative_exp_decay1000     0.000000000 -2.018471424
-    ## private_cabins_cumulative_exp_decay2500     0.000000000  0.756565090
-    ## private_cabins_cumulative_exp_decay5000     0.000000000 -0.273827316
-    ## private_cabins_cumulative_exp_decay10000   -0.013470941  0.018423904
-    ## private_cabins_cumulative_exp_decay20000   -0.002503842 -0.005660242
-    ## public_cabins_high_cumulative_exp_decay100  0.000000000  0.000000000
-    ## public_cabins_high_cumulative_exp_decay250  0.000000000  0.000000000
-    ##                                              Resample03   Resample04
-    ## private_cabins_cumulative_exp_decay100      0.000000000  1.605574863
-    ## private_cabins_cumulative_exp_decay250      0.000000000  0.000000000
-    ## private_cabins_cumulative_exp_decay500      0.000000000 -0.956230606
-    ## private_cabins_cumulative_exp_decay1000     0.000000000 -0.630561170
-    ## private_cabins_cumulative_exp_decay2500     0.000000000  0.465549234
-    ## private_cabins_cumulative_exp_decay5000    -0.056312543 -0.174332629
-    ## private_cabins_cumulative_exp_decay10000   -0.013723062  0.010910344
-    ## private_cabins_cumulative_exp_decay20000   -0.002703108 -0.005957071
-    ## public_cabins_high_cumulative_exp_decay100  0.000000000  0.000000000
-    ## public_cabins_high_cumulative_exp_decay250  0.000000000  0.000000000
-    ##                                              Resample05
-    ## private_cabins_cumulative_exp_decay100      5.155970443
-    ## private_cabins_cumulative_exp_decay250     -4.466015986
-    ## private_cabins_cumulative_exp_decay500      0.000000000
-    ## private_cabins_cumulative_exp_decay1000    -1.064460163
-    ## private_cabins_cumulative_exp_decay2500     0.602427134
-    ## private_cabins_cumulative_exp_decay5000    -0.214032542
-    ## private_cabins_cumulative_exp_decay10000    0.016697510
-    ## private_cabins_cumulative_exp_decay20000   -0.006600537
-    ## public_cabins_high_cumulative_exp_decay100  0.000000000
-    ## public_cabins_high_cumulative_exp_decay250  0.000000000
+    ##                                             Resample01    Resample02
+    ## cabins_private_cumulative_exp_decay100      2.36647754    0.00000000
+    ## cabins_private_cumulative_exp_decay250      0.00000000    0.59475153
+    ## cabins_private_cumulative_exp_decay500     -0.95563741    0.00000000
+    ## cabins_private_cumulative_exp_decay1000     0.00000000   -1.42782724
+    ## cabins_private_cumulative_exp_decay2500     0.00000000    0.37596617
+    ## cabins_private_cumulative_exp_decay5000    -0.05653545   -0.14930761
+    ## cabins_private_cumulative_exp_decay10000   -0.02212573   -0.01441239
+    ## cabins_public_cumulative_exp_decay100    -111.12468172    0.00000000
+    ## cabins_public_cumulative_exp_decay250     -23.10175667    0.00000000
+    ## cabins_public_cumulative_exp_decay500       0.00000000 -528.99735581
+    ##                                           Resample03    Resample04   Resample05
+    ## cabins_private_cumulative_exp_decay100    0.96982195  0.000000e+00  0.000000000
+    ## cabins_private_cumulative_exp_decay250    0.00000000 -4.762178e-01  0.000000000
+    ## cabins_private_cumulative_exp_decay500    0.00000000 -4.825376e-01  0.000000000
+    ## cabins_private_cumulative_exp_decay1000   0.00000000  0.000000e+00  0.000000000
+    ## cabins_private_cumulative_exp_decay2500   0.00000000  2.484473e-02  0.000000000
+    ## cabins_private_cumulative_exp_decay5000  -0.02560948 -1.780751e-04 -0.001312833
+    ## cabins_private_cumulative_exp_decay10000 -0.02780009 -2.642050e-02 -0.027235683
+    ## cabins_public_cumulative_exp_decay100     0.00000000  0.000000e+00  0.000000000
+    ## cabins_public_cumulative_exp_decay250     0.00000000  0.000000e+00  0.000000000
+    ## cabins_public_cumulative_exp_decay500     0.00000000 -1.327108e+02  0.000000000
 
 What is really going to be used for prediction, however, are the
 weighted coefficients. To understand that, it is important to understand
@@ -811,8 +762,8 @@ relative similar weight:
 bag_object$validation_score[1:10]
 ```
 
-    ##  [1] 0.9131054 0.9203894 0.9194246 0.9212400 0.9200966 0.9183340 0.9151591
-    ##  [8] 0.9181758 0.9194765 0.9190469
+    ##  [1] 0.9052306 0.9103527 0.9113945 0.9119698 0.9094843 0.9070702 0.9083264
+    ##  [8] 0.9056278 0.9099305 0.9094397
 
 ``` r
 
@@ -820,9 +771,9 @@ bag_object$weights[1:10]
 ```
 
     ## Resample01 Resample02 Resample03 Resample04 Resample05 Resample06 Resample07 
-    ## 0.01973010 0.02004613 0.02000413 0.02008320 0.02003338 0.01995670 0.01981895 
+    ## 0.01977675 0.02000119 0.02004699 0.02007231 0.01996305 0.01985721 0.01991225 
     ## Resample08 Resample09 Resample10 
-    ## 0.01994983 0.02000639 0.01998770
+    ## 0.01979411 0.01998264 0.01996109
 
 Now we can get the weighted coefficients for each model, and averaged
 over models.
@@ -833,43 +784,41 @@ over models.
 bag_object$wcoef[,1:2]
 ```
 
-    ##                                                 Resample01    Resample02
-    ## private_cabins_cumulative_exp_decay100        0.000000e+00 -0.0043644941
-    ## private_cabins_cumulative_exp_decay250        0.000000e+00  0.0559202039
-    ## private_cabins_cumulative_exp_decay500        0.000000e+00 -0.0163099814
-    ## private_cabins_cumulative_exp_decay1000       0.000000e+00 -0.0404625495
-    ## private_cabins_cumulative_exp_decay2500       0.000000e+00  0.0151662055
-    ## private_cabins_cumulative_exp_decay5000       0.000000e+00 -0.0054891792
-    ## private_cabins_cumulative_exp_decay10000     -2.657830e-04  0.0003693280
-    ## private_cabins_cumulative_exp_decay20000     -4.940106e-05 -0.0001134660
-    ## public_cabins_high_cumulative_exp_decay100    0.000000e+00  0.0000000000
-    ## public_cabins_high_cumulative_exp_decay250    0.000000e+00  0.0000000000
-    ## public_cabins_high_cumulative_exp_decay500    0.000000e+00 -9.3952783723
-    ## public_cabins_high_cumulative_exp_decay1000   0.000000e+00  2.3601156273
-    ## public_cabins_high_cumulative_exp_decay2500   0.000000e+00 -0.4818601011
-    ## public_cabins_high_cumulative_exp_decay5000   3.523046e-02  0.1126046723
-    ## public_cabins_high_cumulative_exp_decay10000  0.000000e+00  0.0842044565
-    ## public_cabins_high_cumulative_exp_decay20000 -5.205598e-02 -0.0922131303
-    ## NORUTreclass11forest                         -1.241574e-02 -0.0285041463
-    ## NORUTreclassbog                              -2.014264e-03  0.0029726925
-    ## NORUTreclass12                               -7.613544e-03 -0.0103235825
-    ## NORUTreclass13                                5.008703e-03  0.0046508807
-    ## NORUTreclass14                                2.422116e-03  0.0033569617
-    ## NORUTreclass15                                5.028864e-03 -0.0029298083
-    ## NORUTreclass16                                4.902450e-03  0.0036349092
-    ## NORUTreclass17                                1.788630e-03  0.0006578782
-    ## NORUTreclass18                                5.900950e-04  0.0021061214
-    ## NORUTreclass19                                0.000000e+00 -0.0024586418
-    ## NORUTreclass20                               -4.195502e-03 -0.0092122833
-    ## NORUTreclassglacier                          -1.696987e-02 -0.0256767528
-    ## NORUTreclasswater                            -3.444401e-02 -0.0506260406
-    ## NORUTreclassother                             0.000000e+00  0.0000000000
-    ## norway_pca_klima_axis1                        1.878606e-02  0.0253275529
-    ## norway_pca_klima_axis1_sq                    -1.185219e-02 -0.0126788069
-    ## norway_pca_klima_axis2                       -2.347891e-02 -0.0415971462
-    ## norway_pca_klima_axis2_sq                     0.000000e+00 -0.0041635599
-    ## norway_pca_klima_axis3                        0.000000e+00 -0.6751071263
-    ## norway_pca_klima_axis4                        0.000000e+00  0.8133562429
+    ##                                             Resample01    Resample02
+    ## cabins_private_cumulative_exp_decay100    0.0468012346  0.000000e+00
+    ## cabins_private_cumulative_exp_decay250    0.0000000000  1.189574e-02
+    ## cabins_private_cumulative_exp_decay500   -0.0188994021  0.000000e+00
+    ## cabins_private_cumulative_exp_decay1000   0.0000000000 -2.855824e-02
+    ## cabins_private_cumulative_exp_decay2500   0.0000000000  7.519771e-03
+    ## cabins_private_cumulative_exp_decay5000  -0.0011180875 -2.986330e-03
+    ## cabins_private_cumulative_exp_decay10000 -0.0004375750 -2.882650e-04
+    ## cabins_public_cumulative_exp_decay100    -2.1976850465  0.000000e+00
+    ## cabins_public_cumulative_exp_decay250    -0.4568776657  0.000000e+00
+    ## cabins_public_cumulative_exp_decay500     0.0000000000 -1.058058e+01
+    ## cabins_public_cumulative_exp_decay1000    0.7538415818  4.118437e+00
+    ## cabins_public_cumulative_exp_decay2500   -0.7383756365 -1.615654e+00
+    ## cabins_public_cumulative_exp_decay5000    0.6196418781  9.563645e-01
+    ## cabins_public_cumulative_exp_decay10000  -0.2481997447 -3.137103e-01
+    ## NORUTreclass11forest                     -0.0374299991 -1.729899e-02
+    ## NORUTreclassbog                           0.0064876862  1.121092e-02
+    ## NORUTreclass12                           -0.0027351812 -4.662688e-03
+    ## NORUTreclass13                            0.0073215162  6.485815e-03
+    ## NORUTreclass14                            0.0006306719  3.775726e-03
+    ## NORUTreclass15                            0.0197227626 -1.418642e-03
+    ## NORUTreclass16                            0.0034864801  5.985610e-03
+    ## NORUTreclass17                            0.0027341987  2.490238e-03
+    ## NORUTreclass18                           -0.0012532942  1.442042e-02
+    ## NORUTreclass19                            0.0000000000 -1.109137e-04
+    ## NORUTreclass20                           -0.0069861321 -2.902902e-03
+    ## NORUTreclassglacier                      -0.0778459133 -1.215745e-01
+    ## NORUTreclasswater                        -0.0186197320 -1.666913e-02
+    ## NORUTreclassother                         0.0000000000  0.000000e+00
+    ## norway_pca_klima_axis1                    0.0187780903  2.079867e-02
+    ## norway_pca_klima_axis1_sq                -0.0173839376 -1.882111e-02
+    ## norway_pca_klima_axis2                   -0.0727359082 -6.035152e-02
+    ## norway_pca_klima_axis2_sq                -0.0110504005 -8.208403e-03
+    ## norway_pca_klima_axis3                    2.5178388386 -6.915733e-01
+    ## norway_pca_klima_axis4                   -1.2418828684  9.417656e-01
 
 ``` r
 
@@ -877,43 +826,41 @@ bag_object$wcoef[,1:2]
 bag_object$coef %*% bag_object$weights # weighted average
 ```
 
-    ##                                                       [,1]
-    ## private_cabins_cumulative_exp_decay100        -0.456828583
-    ## private_cabins_cumulative_exp_decay250         0.452900863
-    ## private_cabins_cumulative_exp_decay500        -0.468653811
-    ## private_cabins_cumulative_exp_decay1000       -0.903680154
-    ## private_cabins_cumulative_exp_decay2500        0.473126528
-    ## private_cabins_cumulative_exp_decay5000       -0.179315177
-    ## private_cabins_cumulative_exp_decay10000       0.004527591
-    ## private_cabins_cumulative_exp_decay20000      -0.004597786
-    ## public_cabins_high_cumulative_exp_decay100   -96.025425007
-    ## public_cabins_high_cumulative_exp_decay250    -4.356691525
-    ## public_cabins_high_cumulative_exp_decay500   -54.322366936
-    ## public_cabins_high_cumulative_exp_decay1000   -5.649409456
-    ## public_cabins_high_cumulative_exp_decay2500   -5.272557691
-    ## public_cabins_high_cumulative_exp_decay5000   -1.875809624
-    ## public_cabins_high_cumulative_exp_decay10000   5.675197007
-    ## public_cabins_high_cumulative_exp_decay20000  -4.713887867
-    ## NORUTreclass11forest                          -0.741419115
-    ## NORUTreclassbog                                0.129552535
-    ## NORUTreclass12                                -0.407923738
-    ## NORUTreclass13                                 0.202352535
-    ## NORUTreclass14                                 0.304247970
-    ## NORUTreclass15                                 0.359671384
-    ## NORUTreclass16                                 0.210433837
-    ## NORUTreclass17                                 0.096818180
-    ## NORUTreclass18                                 0.182645472
-    ## NORUTreclass19                                -0.109029402
-    ## NORUTreclass20                                -0.248141537
-    ## NORUTreclassglacier                           -1.347011698
-    ## NORUTreclasswater                             -2.287984502
-    ## NORUTreclassother                              0.000000000
-    ## norway_pca_klima_axis1                         1.331876146
-    ## norway_pca_klima_axis1_sq                     -0.597549704
-    ## norway_pca_klima_axis2                        -3.462926625
-    ## norway_pca_klima_axis2_sq                     -0.543032968
-    ## norway_pca_klima_axis3                        57.828769971
-    ## norway_pca_klima_axis4                       -27.387982850
+    ##                                                   [,1]
+    ## cabins_private_cumulative_exp_decay100      0.97225837
+    ## cabins_private_cumulative_exp_decay250      0.43929361
+    ## cabins_private_cumulative_exp_decay500     -0.80153017
+    ## cabins_private_cumulative_exp_decay1000    -0.29713310
+    ## cabins_private_cumulative_exp_decay2500     0.14123246
+    ## cabins_private_cumulative_exp_decay5000    -0.05877445
+    ## cabins_private_cumulative_exp_decay10000   -0.02229483
+    ## cabins_public_cumulative_exp_decay100      -5.40693579
+    ## cabins_public_cumulative_exp_decay250     -23.52794847
+    ## cabins_public_cumulative_exp_decay500    -169.53079512
+    ## cabins_public_cumulative_exp_decay1000     82.42435689
+    ## cabins_public_cumulative_exp_decay2500    -59.72107975
+    ## cabins_public_cumulative_exp_decay5000     39.17999326
+    ## cabins_public_cumulative_exp_decay10000   -14.23317218
+    ## NORUTreclass11forest                       -0.75157995
+    ## NORUTreclassbog                             0.58654458
+    ## NORUTreclass12                             -0.34988534
+    ## NORUTreclass13                              0.34163075
+    ## NORUTreclass14                              0.16729209
+    ## NORUTreclass15                              0.29875672
+    ## NORUTreclass16                              0.14772297
+    ## NORUTreclass17                              0.04803259
+    ## NORUTreclass18                              0.31017367
+    ## NORUTreclass19                             -0.11729765
+    ## NORUTreclass20                             -0.32557013
+    ## NORUTreclassglacier                        -4.74484206
+    ## NORUTreclasswater                          -1.16548612
+    ## NORUTreclassother                           0.00000000
+    ## norway_pca_klima_axis1                      1.05438657
+    ## norway_pca_klima_axis1_sq                  -0.90675029
+    ## norway_pca_klima_axis2                     -3.41984906
+    ## norway_pca_klima_axis2_sq                  -0.49553042
+    ## norway_pca_klima_axis3                     22.15507263
+    ## norway_pca_klima_axis4                     -0.35451775
 
 Finally, we can plot the coefficients in each model in different ways
 using the
@@ -933,7 +880,7 @@ function.
 # for all resamples
 # plot_coef(bag_object, terms = "private_cabins_cumulative")
 # for one the 3 first models
-plot_coef(bag_object, terms = "private_cabins_cumulative", models = 1:3)
+plot_coef(bag_object, terms = "cabins_private_cumulative", models = 1:3)
 ```
 
 ![](fitting_ZOI_logit_files/figure-html/coef5-1.png)
@@ -941,7 +888,7 @@ plot_coef(bag_object, terms = "private_cabins_cumulative", models = 1:3)
 ``` r
 
 # only for private cabins, by resample, as points
-plot_coef(bag_object, terms = "private_cabins_cumulative", 
+plot_coef(bag_object, terms = "cabins_private_cumulative", 
           plot_type = "points", models = 1:3)
 ```
 
@@ -950,7 +897,7 @@ plot_coef(bag_object, terms = "private_cabins_cumulative",
 ``` r
 
 # only for private cabins, as histograms
-plot_coef(bag_object, terms = "private_cabins_cumulative", 
+plot_coef(bag_object, terms = "cabins_private_cumulative", 
           plot_type = "histogram")
 ```
 
@@ -979,23 +926,11 @@ plot_coef(bag_object, what = "average")
 ``` r
 
 # plot weighted average coefs - public cabins
-plot_coef(bag_object, what = "average", terms = "public_cabins", 
+plot_coef(bag_object, what = "average", terms = "cabins_public", 
           plot_type = "points", order_zoi_radius = TRUE)
 ```
 
 ![](fitting_ZOI_logit_files/figure-html/coef6-2.png)
-
-``` r
-
-# zoom
-plot_coef(bag_object, what = "average", terms = "public_cabins", 
-          plot_type = "points", order_zoi_radius = TRUE) + ylim(-50, 50)
-```
-
-    ## Warning: Removed 2 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
-
-![](fitting_ZOI_logit_files/figure-html/coef6-3.png)
 
 ### Plot the effect of each predictor on the response variable
 
@@ -1092,7 +1027,7 @@ considering the impact of one single private cabin.
 ``` r
 
 # ZOI private cabins
-dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(cabins_private = 1e3*seq(0.2, 20, length.out = 100))
 plot_response(bag_object, 
               dfvar = dfvar, data = dat, 
               type = "exp", zoi = TRUE, 
@@ -1137,6 +1072,9 @@ plot_response(bag_object,
               logx = TRUE, ylim = ggplot2::ylim(0, 2))
 ```
 
+    ## Warning: Removed 3 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
 ![](fitting_ZOI_logit_files/figure-html/plot_response4-2.png)
 
 #### Public resorts
@@ -1148,7 +1086,7 @@ resort.
 ``` r
 
 # ZOI public resorts cumulative
-dfvar = data.frame(public_cabins = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(cabins_public = 1e3*seq(0.2, 20, length.out = 100))
 
 # 1 feature
 plot_response(bag_object, 
@@ -1159,7 +1097,7 @@ plot_response(bag_object,
               logx = TRUE, ylim = ggplot2::ylim(0, 2))
 ```
 
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
+    ## Warning: Removed 5 rows containing missing values or values outside the scale range
     ## (`geom_line()`).
 
 ![](fitting_ZOI_logit_files/figure-html/plot_response7-1.png)
@@ -1182,7 +1120,7 @@ plot_response(bag_object,
               logx = TRUE, ylim = ggplot2::ylim(0, 1))
 ```
 
-    ## Warning: Removed 3 rows containing missing values or values outside the scale range
+    ## Warning: Removed 6 rows containing missing values or values outside the scale range
     ## (`geom_line()`).
 
 ![](fitting_ZOI_logit_files/figure-html/plot_response8-1.png)
@@ -1455,18 +1393,17 @@ partial effect of each of the covariates.
 predictor_table_zoi$variable
 ```
 
-    ##  [1] "private_cabins_"           "private_cabins_"          
-    ##  [3] "private_cabins_"           "private_cabins_"          
-    ##  [5] "private_cabins_"           "private_cabins_"          
-    ##  [7] "private_cabins_"           "private_cabins_"          
-    ##  [9] "public_cabins_high_"       "public_cabins_high_"      
-    ## [11] "public_cabins_high_"       "public_cabins_high_"      
-    ## [13] "public_cabins_high_"       "public_cabins_high_"      
-    ## [15] "public_cabins_high_"       "public_cabins_high_"      
-    ## [17] "NORUTreclass"              "norway_pca_klima_axis1"   
-    ## [19] "norway_pca_klima_axis1_sq" "norway_pca_klima_axis2"   
-    ## [21] "norway_pca_klima_axis2_sq" "norway_pca_klima_axis3"   
-    ## [23] "norway_pca_klima_axis4"
+    ##  [1] "cabins_private_"           "cabins_private_"          
+    ##  [3] "cabins_private_"           "cabins_private_"          
+    ##  [5] "cabins_private_"           "cabins_private_"          
+    ##  [7] "cabins_private_"           "cabins_public_"           
+    ##  [9] "cabins_public_"            "cabins_public_"           
+    ## [11] "cabins_public_"            "cabins_public_"           
+    ## [13] "cabins_public_"            "cabins_public_"           
+    ## [15] "NORUTreclass"              "norway_pca_klima_axis1"   
+    ## [17] "norway_pca_klima_axis1_sq" "norway_pca_klima_axis2"   
+    ## [19] "norway_pca_klima_axis2_sq" "norway_pca_klima_axis3"   
+    ## [21] "norway_pca_klima_axis4"
 
 ``` r
 
@@ -1485,8 +1422,8 @@ str(pred_vars, max.level = 2)
 
     ## List of 6
     ##  $ vars               :List of 7
-    ##   ..$ : chr "private_cabins_"
-    ##   ..$ : chr "public_cabins_high_"
+    ##   ..$ : chr "cabins_private_"
+    ##   ..$ : chr "cabins_public_"
     ##   ..$ : chr "NORUTreclass"
     ##   ..$ : chr "norway_pca_klima_axis1"
     ##   ..$ : chr "norway_pca_klima_axis2"
@@ -1500,7 +1437,7 @@ str(pred_vars, max.level = 2)
     ##   ..$ :'data.frame': 38204 obs. of  4 variables:
     ##   ..$ :'data.frame': 38204 obs. of  4 variables:
     ##   ..$ :'data.frame': 38204 obs. of  4 variables:
-    ##  $ weights            : Named num [1:50] 0.0197 0.02 0.02 0.0201 0.02 ...
+    ##  $ weights            : Named num [1:50] 0.0198 0.02 0.02 0.0201 0.02 ...
     ##   ..- attr(*, "names")= chr [1:50] "Resample01" "Resample02" "Resample03" "Resample04" ...
     ##  $ r_weighted_avg_pred:List of 7
     ##   ..$ :S4 class 'SpatRaster' [package "terra"]

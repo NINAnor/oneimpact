@@ -113,7 +113,7 @@ add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), pattern = "XXX")
 #> case_ ~ strata(step_id_) + sl_ * startpt_roads1000 + sl_ * startpt_roads2000 + 
 #>     sl_ * startpt_roads3000 + sl_ * startpt_cabins1000 + sl_ * 
 #>     startpt_cabins2000 + sl_ * startpt_cabins3000
-#> <environment: 0x5568315ca390>
+#> <environment: 0x5651173ebde8>
 #> 
 #> $predictor_table
 #> [1] FALSE
@@ -127,7 +127,7 @@ add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = "_exp_decay", patter
 #>     sl_ * startpt_roads_exp_decay_2000 + sl_ * startpt_roads_exp_decay_3000 + 
 #>     sl_ * startpt_cabins_exp_decay_1000 + sl_ * startpt_cabins_exp_decay_2000 + 
 #>     sl_ * startpt_cabins_exp_decay_3000
-#> <environment: 0x556831422800>
+#> <environment: 0x56511726d430>
 #> 
 #> $predictor_table
 #> [1] FALSE
@@ -141,7 +141,7 @@ add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("_exp_decay", "_th
 #>     sl_ * startpt_cabins_exp_decay_2000 + sl_ * startpt_cabins_exp_decay_3000 + 
 #>     sl_ * startpt_cabins_threshold_1000 + sl_ * startpt_cabins_threshold_2000 + 
 #>     sl_ * startpt_cabins_threshold_3000
-#> <environment: 0x5568313678a0>
+#> <environment: 0x5651171c0940>
 #> 
 #> $predictor_table
 #> [1] FALSE
@@ -159,7 +159,7 @@ add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("exp_decay", "thre
 #>     sl_ * startpt_cabins_exp_decay_2000 + sl_ * startpt_cabins_exp_decay_3000 + 
 #>     sl_ * startpt_cabins_threshold_1000 + sl_ * startpt_cabins_threshold_2000 + 
 #>     sl_ * startpt_cabins_threshold_3000
-#> <environment: 0x556831261198>
+#> <environment: 0x565117067ce8>
 #> 
 #> $predictor_table
 #>    is_zoi cumulative     shape zoi_radius              variable
@@ -204,7 +204,7 @@ add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("exp_decay", "thre
 #>     sl_ * startpt_cabins_nearest_exp_decay_2000 + sl_ * startpt_cabins_nearest_exp_decay_3000 + 
 #>     sl_ * startpt_cabins_nearest_threshold_1000 + sl_ * startpt_cabins_nearest_threshold_2000 + 
 #>     sl_ * startpt_cabins_nearest_threshold_3000
-#> <environment: 0x556830feddc0>
+#> <environment: 0x565116e39608>
 #> 
 #> $predictor_table
 #>    is_zoi cumulative     shape zoi_radius                        variable
@@ -247,7 +247,7 @@ add_zoi_formula(f, zoi_radius = c(1000, 2000, 3000), type = c("nearest_exp_decay
 #>     sl_ * startpt_cabins_nearest_exp_decay_2000 + sl_ * startpt_cabins_nearest_exp_decay_3000 + 
 #>     sl_ * startpt_cabins_cumulative_exp_decay_1000 + sl_ * startpt_cabins_cumulative_exp_decay_2000 + 
 #>     sl_ * startpt_cabins_cumulative_exp_decay_3000
-#> <environment: 0x556830dc7720>
+#> <environment: 0x565116bf5428>
 #> 
 #> $predictor_table
 #>    is_zoi cumulative     shape zoi_radius              variable

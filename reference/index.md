@@ -195,6 +195,9 @@ Datasets for testing the ZOI approach
 - [`hardanger_cabins_public.gpkg`](https://ninanor.github.io/oneimpact/reference/hardanger_cabins_public.gpkg.md)
   : Public cabins vector data for the Hardangervidda wild reindeer area
   in Norway
+- [`hardanger_polygon.gpkg`](https://ninanor.github.io/oneimpact/reference/hardanger_polygon.gpkg.md)
+  : Polygon delimiting the study area around the Hardangervidda wild
+  reindeer area
 - [`hardanger_trails.gpkg`](https://ninanor.github.io/oneimpact/reference/hardanger_trails.gpkg.md)
   : Tourist trails vector data for the Hardangervidda wild reindeer area
   in Norway

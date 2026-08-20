@@ -73,14 +73,18 @@ representing bio-geo-climatic variation in Norway, from Bakkestuen et al. 2008.
 PCAs 1 to 4 represent, respectively, continentality, altitude, terrain ruggedness, and solar radiation.
 More information in Niebuhr et al. 2023. PCAs 1 and 2 also present quadratic layers.</p></li>
 <li><p>NORUTreclass Land use and land cover classes from NORUT, reclassified as in Niebuhr et al. 2023.</p></li>
-<li><p>private_cabins_cumulative_exp_decay_XXX Cumulative zone of influence of private cabins at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></li>
-<li><p>private_cabins_nearest_exp_decay_XXX Zone of influence of the nearest private cabin at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></li>
-<li><p>public_cabins_high_cumulative_exp_decay_XXX Cumulative zone of influence of public resorts at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></li>
-<li><p>public_cabins_high_nearest_exp_decay_XXX Zone of influence of the nearest public resort at each location,
-with exponential decay shape, and radii defined by XXX (from 100 to 20000m).</p></li>
+<li><p>cabins_private_nearest_exp_decayXXX Zone of influence of the nearest private cabin at each location,
+with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).</p></li>
+<li><p>cabins_private_cumulative_exp_decayXXX Cumulative zone of influence of private cabins at each location,
+with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).</p></li>
+<li><p>cabins_public_nearest_exp_decayXXX Zone of influence of the nearest public resort and mountain hotels
+at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).</p></li>
+<li><p>cabins_public_cumulative_exp_decayXXX Cumulative zone of influence of public resorts and mountain hotels
+at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).</p></li>
+<li><p>trails_nearest_exp_decayXXX Zone of influence of the nearest tourist trail at each location,
+with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).</p></li>
+<li><p>trails_cumulative_exp_decayXXX Cumulative zone of influence of tourist trails
+at each location, with exponential decay shape, and radii defined by XXX (from 100 to 10000 m).</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
@@ -99,12 +103,11 @@ https://doi.org/10.1111/j.1365-2699.2008.01941.x</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/rast_predictors_hardanger_500.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ""</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"raster/hardanger_rast_predictors_500m.tif"</span>, package <span class="op">=</span> <span class="st">"oneimpact"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/home/runner/work/_temp/Library/oneimpact/raster/hardanger_rast_predictors_500m.tif"</span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [rast] filename is empty. Provide a valid filename</span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'r' not found</span>
+<span class="r-plt img"><img src="hardanger_rast_predictors_500m.tif-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

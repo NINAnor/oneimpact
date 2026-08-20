@@ -171,17 +171,15 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">reindeer_rsf</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># formula initial structure</span></span></span>
-<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">private_cabins_cumulative_XXX</span> <span class="op">+</span> <span class="va">public_cabins_high_cumulative_XXX</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="va">use</span> <span class="op">~</span> <span class="va">cabins_private_cumulative_XXX</span> <span class="op">+</span> <span class="va">cabins_public_cumulative_XXX</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">trails_cumulative_XXX</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">NORUTreclass</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis1, 2, raw = TRUE) +</span></span></span>
-<span class="r-in"><span>  <span class="co"># poly(norway_pca_klima_axis2, 2, raw = TRUE) +</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis1</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis1_sq</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis2</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis2_sq</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="va">norway_pca_klima_axis3</span> <span class="op">+</span> <span class="va">norway_pca_klima_axis4</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add ZOI terms to the formula</span></span></span>
-<span class="r-in"><span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span>, <span class="fl">20000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">zois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">2500</span>, <span class="fl">5000</span>, <span class="fl">10000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ff</span> <span class="op">&lt;-</span> <span class="fu"><a href="add_zoi_formula.html">add_zoi_formula</a></span><span class="op">(</span><span class="va">f</span>, zoi_radius <span class="op">=</span> <span class="va">zois</span>, pattern <span class="op">=</span> <span class="st">"XXX"</span>,</span></span>
 <span class="r-in"><span>                      cumulative <span class="op">=</span> <span class="st">""</span>,</span></span>
 <span class="r-in"><span>                      type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exp_decay"</span><span class="op">)</span>,<span class="co">#, "nearest_exp_decay"),</span></span></span>
@@ -221,26 +219,26 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compare validation scores</span></span></span>
 <span class="r-in"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">validation_score</span> <span class="op">-</span> <span class="va">bag_object_trunc</span><span class="op">$</span><span class="va">validation_score</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Resample01 Resample02  Resample03  Resample04  Resample05 Resample06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.007829143 0.00769509 0.007095713 0.007645018 0.002315486 0.00809448</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample07  Resample08 Resample09 Resample10 Resample11  Resample12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]          0 0.008433258 0.06171586 0.06536645 0.01087375 0.005039923</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample13  Resample14  Resample15  Resample16 Resample17  Resample18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.01162653 0.008363931 0.007077678 0.005159021 0.01709546 0.009585591</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample19  Resample20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.01237743 0.008092633</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample01 Resample02 Resample03 Resample04 Resample05 Resample06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]          0 0.03857705 0.02021659 0.04386294  0.0204103  0.0200437</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample07 Resample08 Resample09 Resample10 Resample11 Resample12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  0.0476005 0.02011131 0.03735487 0.03715942 0.01687685 0.03596613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample13 Resample14 Resample15 Resample16 Resample17 Resample18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.02021507 0.02793167 0.01975476  0.0219952 0.01926009 0.02348931</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Resample19 Resample20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.02420105 0.02011307</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">bag_object</span><span class="op">$</span><span class="va">weighted_validation_score</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      weighted_validation_score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                  0.922617</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                 0.9192627</span>
 <span class="r-in"><span><span class="va">bag_object_trunc</span><span class="op">$</span><span class="va">weighted_validation_score</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      weighted_validation_score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                 0.9102619</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                 0.8933066</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot curves to check implausibility</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ZOI public cabins cumulative</span></span></span>
-<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>trails_cumulative <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">20</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dfvar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>trails_cumulative <span class="op">=</span> <span class="fl">1e3</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">12</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># look into curve</span></span></span>
 <span class="r-in"><span><span class="co"># plot_response(bag_object,</span></span></span>
@@ -272,20 +270,20 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-in"><span><span class="co"># check implausibility</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="implausibility.html">implausibility</a></span><span class="op">(</span><span class="va">bag_object_trunc</span>, <span class="va">dat</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_coefs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_resamples</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 19</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$private_cabins_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$cabins_private_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$cabins_private_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$public_cabins_high_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$cabins_public_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$cabins_public_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_index$trails_cumulative_</span>
@@ -295,15 +293,14 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$private_cabins_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "private_cabins_cumulative_exp_decay2500" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "private_cabins_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$cabins_private_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$cabins_private_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$public_cabins_high_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "public_cabins_high_cumulative_exp_decay10000"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$cabins_public_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$cabins_public_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "cabins_public_cumulative_exp_decay5000"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_names$trails_cumulative_</span>
@@ -313,14 +310,14 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$private_cabins_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2500 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$cabins_private_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$cabins_private_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$public_cabins_high_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$cabins_public_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$cabins_public_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_radii$trails_cumulative_</span>
@@ -330,14 +327,14 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$private_cabins_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.077101490 0.005901955</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$cabins_private_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$cabins_private_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> numeric(0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$public_cabins_high_cumulative_[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.081518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$cabins_public_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$cabins_public_cumulative_[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.614733</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_value$trails_cumulative_</span>
@@ -347,19 +344,19 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              2                              1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cabins_private_cumulative_  cabins_public_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0                          1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $coef_sign_sum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$cabins_private_cumulative_</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$cabins_public_cumulative_</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> integer(0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cross_index$trails_cumulative_</span>
@@ -367,10 +364,10 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$private_cabins_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$cabins_private_cumulative_</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$public_cabins_high_cumulative_</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$cabins_public_cumulative_</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $where_crosses$trails_cumulative_</span>
@@ -378,46 +375,46 @@ radius in which a certain implausibility is identified.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cabins_private_cumulative_  cabins_public_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0                          0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_crosses_total</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cabins_private_cumulative_  cabins_public_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0                          0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_opposite_total</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cabins_private_cumulative_  cabins_public_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0                          0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $response_area_ratio_total</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cabins_private_cumulative_  cabins_public_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0                          0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_inflection_total</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     private_cabins_cumulative_ public_cabins_high_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0                              0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             trails_cumulative_ </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                              0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> cabins_private_cumulative_  cabins_public_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0                          0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         trails_cumulative_ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $difference_inflection_total</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>

@@ -333,7 +333,6 @@ with different functions/filters. The options currently implemented are:
   created through
   [`filter_create()`](https://ninanor.github.io/oneimpact/reference/filter_create.md),
   [`terra::focalMat()`](https://rspatial.github.io/terra/reference/focalMat.html),
-  [`smoothie::kernel2dmeitsjer()`](https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html),
   or matrices created by hand.
 
 Weight matrices might differ from the expected decay function depending
@@ -364,10 +363,9 @@ different capabilities and flexibility.
   `r.mfilter` is that it creates an edge effect with no information in
   the outer cells of a raster (the number of cells correspond to
   `radius` or half the size of the weight matrix), so if it is used the
-  users should add a buffer area
-
-= radius around the input raster map, to avoid such edge effects.See
-<https://github.com/OSGeo/grass/issues/2184> for more details.
+  users should add a buffer area at least as large as the `radius`
+  around the input raster map, to avoid such edge effects. See
+  <https://github.com/OSGeo/grass/issues/2184> for more details.
 
 - `r.neighbors` is considerably slower than the other algorithms (from
   10 to 100 times), but allows a flexible choice of the ZOI shape.
@@ -384,7 +382,6 @@ for some ZOI function shapes and
 [`filter_create()`](https://ninanor.github.io/oneimpact/reference/filter_create.md)
 for options to create weight matrices.  
 See also
-[`smoothie::kernel2dmeitsjer()`](https://rdrr.io/pkg/smoothie/man/kernel2dmeitsjer.html),
 [`terra::focalMat()`](https://rspatial.github.io/terra/reference/focalMat.html),
 and
 [`raster::focalWeight()`](https://rdrr.io/pkg/raster/man/focalWeight.html)
@@ -448,7 +445,7 @@ density_exp <- calc_zoi_cumulative(cabins, type = "exp_decay", radius = 1000,
 # compare
 # note the difference in the color scales
 plot(c(cumzoi_exp[[3]], density_exp),
-     main = c("Cumulative ZoI 1000m", "Density 1000m"))
+     main = c("Cumulative ZOI 1000m", "Density 1000m"))
 
 
 #--------------------
@@ -574,7 +571,7 @@ cabins_bin <- rgrass::read_RAST("cabins_example_bin", return_format = "terra", N
 #> Using GDAL data type <Byte>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e4680d362b.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276aaa5f62a.grd> created.
 
 plot(cabins_bin, col = c("lightyellow", "black"),
      main = "Binarized map of cabins")
@@ -638,25 +635,25 @@ cabins_zoi_cumulative <- rgrass::read_RAST(all_names, return_format = "terra")
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e438d4172b.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276a16a5c735.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e4537edc8e.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276a5c1657fb.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e47ae74ed6.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276a2ea6bea0.grd> created.
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e4b96a743.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276a1ecbe4f3.grd> created.
 
 title_plot <- c("Exponential decay 1000m", "Bartlett decay 1000m",
                 "Gaussian decay 1000m", "Threshold decay 1000m")
@@ -664,7 +661,7 @@ terra::plot(cabins_zoi_cumulative, main = title_plot)
 
 
 #---
-# calculate density vs cumulative ZoI
+# calculate density vs cumulative ZOI
 exp_name_d <- calc_zoi_cumulative(x = cabins_bin_g,
                                   radius = 1000, zoi_limit = 0.01,
                                   type = "exp_decay", output_type = "density",
@@ -681,10 +678,10 @@ cabins_density <- rgrass::read_RAST(exp_name_d, return_format = "terra")
 #> Using GDAL data type <Float32>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e44f61900c.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276a65f24fc9.grd> created.
 
 terra::plot(c(cabins_zoi_cumulative[[1]], cabins_density),
-            main = c("Cumulative ZoI", "Density"))
+            main = c("Cumulative ZOI", "Density"))
 
 
 #---
@@ -702,13 +699,13 @@ rectangle_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
 #> [1] "Calculating density for 1000, shape box..."
 #>    0%   3%   6%   9%  12%  15%  18%  21%  24%  27%  30%  33%  36%  39%  42%  45%  48%  51%  54%  57%  60%  63%  66%  69%  72%  75%  78%  81%  84%  87%  90%  93%  96%  99% 100%
 rgrass::read_RAST(rectangle_resamp_filt, return_format = "terra") |>
-  plot(main = "Rectangle ZoI 1000m")
+  plot(main = "Rectangle ZOI 1000m")
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e45369361f.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276a1b80fa73.grd> created.
 
 
 # bartlett
@@ -726,13 +723,13 @@ bartlett_resamp_filt <- calc_zoi_cumulative(x = cabins_bin_g,
 #> [1] "cabins_example_bin_zoi_cumulative_bartlett1000 = cabins_example_bin_zoi_cumulative_bartlett1000_temp/0.0095562598354124"
 #> Removing raster <cabins_example_bin_zoi_cumulative_bartlett1000_temp>
 rgrass::read_RAST(bartlett_resamp_filt, return_format = "terra") |>
-  plot(main = "Bartlett ZoI 1000m")
+  plot(main = "Bartlett ZOI 1000m")
 #> Checking GDAL data type and nodata value...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
 #> Using GDAL data type <Float64>
 #> Exporting raster data to RRASTER format...
 #>    2%   5%   8%  11%  14%  17%  20%  23%  26%  29%  32%  35%  38%  41%  44%  47%  50%  53%  56%  59%  62%  65%  68%  71%  74%  77%  80%  83%  86%  89%  92%  95%  98% 100%
-#> r.out.gdal complete. File </tmp/RtmpQ53ndW/file24e473c99769.grd> created.
+#> r.out.gdal complete. File </tmp/RtmpBDnCNm/file276ad9b3db9.grd> created.
 
 
 # not run

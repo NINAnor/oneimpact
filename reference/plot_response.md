@@ -25,6 +25,7 @@ plot_response(
   zoi_limit = 0.05,
   resolution = 100,
   line_value = 1,
+  ggplot = T,
   plot_mean = TRUE,
   plot_median = TRUE,
   n_features = 1,
@@ -180,6 +181,12 @@ plot_response(
   Value assigned to line raster cells when `type_feature = "line"`. Used
   when recomputing the ZOI variables for line and area features.
 
+- ggplot:
+
+  `[logical(1)=TRUE]`  
+  If `TRUE`, return a ggplot object; otherwise return a prediction data
+  frame.
+
 - plot_mean:
 
   `[logical(1)=TRUE]`  
@@ -262,12 +269,6 @@ plot_response(
   `[numeric(1)=0.3]`  
   Alpha transparency for individual model lines.
 
-- ggplot:
-
-  `[logical(1)=TRUE]`  
-  If `TRUE`, return a ggplot object; otherwise return a prediction data
-  frame.
-
 ## Value
 
 If `ggplot = TRUE`, a ggplot object with response curves. If
@@ -299,17 +300,15 @@ data("reindeer_rsf")
 dat <- reindeer_rsf
 
 # formula initial structure
-f <- use ~ private_cabins_XXX + public_cabins_high_XXX +
+f <- use ~ cabins_private_XXX + cabins_public_XXX +
   trails_XXX +
   NORUTreclass +
-  # poly(norway_pca_klima_axis1, 2, raw = TRUE) +
-  # poly(norway_pca_klima_axis2, 2, raw = TRUE) +
   norway_pca_klima_axis1 + norway_pca_klima_axis1_sq +
   norway_pca_klima_axis2 + norway_pca_klima_axis2_sq +
   norway_pca_klima_axis3 + norway_pca_klima_axis4
 
 # add ZOI terms to the formula
-zois <- c(100, 250, 500, 1000, 2500, 5000, 10000, 20000)
+zois <- c(100, 250, 500, 1000, 2500, 5000, 10000)
 f <- add_zoi_formula(f, zoi_radius = zois, pattern = "XXX",
                      type = c("cumulative_exp_decay"),
                      separator = "", predictor_table = TRUE)$formula
@@ -328,7 +327,7 @@ fittedl <- bag_fit_net_logit(f,
                              samples = samples,
                              standardize = "internal", # glmnet does the standardization of covariates
                              metric = "AUC",
-                             method = "AdaptiveLasso",
+                             method = "Lasso",
                              parallel = "mclapply",
                              mc.cores = 2)
 
@@ -367,7 +366,7 @@ plot_response(bag_object,
 # plot for private cabins
 
 # define newdata based only on the distances from the source (public cabins)
-dfvar = data.frame(private_cabins = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(cabins_private = 1e3*seq(0.2, 12, length.out = 100))
 
 # plot mean response in exponential scale, with individual lines, x in log scale
 # in exponential scale, relative selection strength = 1 corresponse to no effect
@@ -402,7 +401,7 @@ plot_response(bag_object,
 # plot for tourist trails
 
 # define newdata based only on the distances from the source (public cabins)
-dfvar = data.frame(trails = 1e3*seq(0.2, 20, length.out = 100))
+dfvar = data.frame(trails = 1e3*seq(0.2, 12, length.out = 100))
 
 # plot mean response in exponential scale, with individual lines, x in log scale
 # in exponential scale, relative selection strength = 1 corresponse to no effect
