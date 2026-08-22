@@ -214,7 +214,7 @@ f
     ##     NORUTreclass + norway_pca_klima_axis1 + norway_pca_klima_axis1_sq + 
     ##     norway_pca_klima_axis2 + norway_pca_klima_axis2_sq + norway_pca_klima_axis3 + 
     ##     norway_pca_klima_axis4
-    ## <environment: 0x55f9139ebc18>
+    ## <environment: 0x562e94e98418>
 
 The
 [`add_zoi_formula()`](https://ninanor.github.io/oneimpact/reference/add_zoi_formula.md)
@@ -472,9 +472,9 @@ str(bag_object, max.level = 1)
     ## List of 32
     ##  $ n                                : int 50
     ##  $ formula                          :Class 'formula'  language use ~ cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_cumul| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55f9139ebc18> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x562e94e98418> 
     ##  $ formula_no_strata                :Class 'formula'  language use ~ -1 + cabins_private_cumulative_exp_decay100 + cabins_private_cumulative_exp_decay250 +      cabins_private_| __truncated__ ...
-    ##   .. ..- attr(*, ".Environment")=<environment: 0x55f9144b3750> 
+    ##   .. ..- attr(*, ".Environment")=<environment: 0x562e95960030> 
     ##  $ method                           : chr "Lasso"
     ##  $ metric                           : chr "AUC"
     ##  $ metrics_evaluated                : Named chr "AUC"

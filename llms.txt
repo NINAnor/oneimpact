@@ -65,6 +65,8 @@ This package implements frameworks from two peer-reviewed studies:
 
 ``` r
 
+# library(devtools)
+# devtools::install_github("NINAnor/oneimpact", ref = "HEAD")
 library(oneimpact)
 
 # 1. Compute ZOI layers (nearest and cumulative)

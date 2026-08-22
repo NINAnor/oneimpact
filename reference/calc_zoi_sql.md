@@ -202,7 +202,7 @@ if (requireNamespace("duckdb", quietly = TRUE)) {
   cum_zoi_cabins
 }
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpNiBqTz/duckdb
+#> ℹ /tmp/RtmpC96Rih/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
