@@ -191,10 +191,10 @@ fit_net_clogit <- function(f, data,
   # get standardization parms
   data_covs_num <- data_covs[, numeric_covs]
   # standardize
-  data_covs_num_std <- lapply(1:ncol(data_covs_num), function(i) scale(data_covs_num[,i]))
+  data_covs_num_std <- lapply(1:ncol(data_covs_num), function(xx) scale(data_covs_num[,xx]))
   # register mean and sd
-  covs_mean_sd <- data.frame(do.call("rbind", lapply(1:length(data_covs_num_std), function(i)
-    sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[i]], m)))))
+  covs_mean_sd <- data.frame(do.call("rbind", lapply(1:length(data_covs_num_std), function(xx)
+    sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[xx]], m)))))
   rownames(covs_mean_sd) <- colnames(data_covs_num)
   colnames(covs_mean_sd) <- c("mean", "sd")
 
@@ -210,15 +210,41 @@ fit_net_clogit <- function(f, data,
     # check if we remove missing variables with NA
     if(replace_missing_NA) {
 
-      # backup original formula
+      # backup original formula and data
       f_original <- f
+      data_orig <- data
+      all_vars_orig <- all_vars
+      all_covars_orig <- all_covars
+      vars_removed <- rownames(covs_mean_sd)[ind]
       # remove from formula
       vv <- 1
+
       for(vv in seq_along(ind)) {
         f <- update(f, paste0("~ . - ", rownames(covs_mean_sd)[ind[vv]]))
+
+        # redefine variables for data
+        all_vars <- all_vars[-which(all_vars %in% rownames(covs_mean_sd)[ind[vv]])]
       }
+
+      # redefine variables for data after removing these problematic variables
+      all_covars <- grep(wcols$strata, all_vars[-1], invert = TRUE, value = TRUE)
+      # get predictors again
+      data_covs <- data[, all_covars]
+      # select numeric predictors to be standardized - again
+      numeric_covs <- (sapply(data_covs, is.numeric) == TRUE)
+      # get standardization parms
+      data_covs_num <- data_covs[, numeric_covs]
+      # standardize
+      data_covs_num_std <- lapply(1:ncol(data_covs_num), function(xx) scale(data_covs_num[,xx]))
+      # register mean and sd
+      covs_mean_sd <- data.frame(do.call("rbind", lapply(1:length(data_covs_num_std), function(xx)
+        sapply(c("scaled:center", "scaled:scale"), function(m) attr(data_covs_num_std[[xx]], m)))))
+      rownames(covs_mean_sd) <- colnames(data_covs_num)
+      colnames(covs_mean_sd) <- c("mean", "sd")
+
+      # warning
       warning(paste0("The formula was updated excluding these variable(s): ",
-                     paste0(rownames(covs_mean_sd)[ind], collapse = ","), ". ",
+                     paste0(vars_removed, collapse = ","), ". ",
                      "The model will be fitted with this updated formula."))
       # parms$f <- f
       # update covariates
@@ -283,10 +309,10 @@ fit_net_clogit <- function(f, data,
   }
 
   # set standardize parameter to be used in glmnet call
-  if(standardize != "internal") {
-    std <- FALSE
-  } else {
+  if(standardize == "internal") {
     std <- TRUE
+  } else {
+    std <- FALSE
   }
 
   # set method - alpha
@@ -673,6 +699,36 @@ fit_net_clogit <- function(f, data,
 
     }
 
+    #in case there are missing variables, add missing coefs
+    if(any_missing_vars) {
+      if(replace_missing_NA) {
+
+        # get variables form the original formula
+        f3 <- as.formula(paste0(wcols$response, " ~ -1 + ",
+                                extract_response_strata(f_original, covars = TRUE)$covars)) # should we remove the intercept?
+        # create original model matrix
+        mm <- colnames(model.matrix(f3, data_orig[, all_vars_orig]))
+
+        # re-write coefs with NAs
+        coef_fill <- matrix(nrow = length(mm), ncol = 1)
+        rownames(coef_fill) <- mm
+        # fill in the estimated coefficients
+        coef_fill[match(rownames(coef), mm)] <- coef
+        coef <- coef_fill # replace
+
+        # standardized coefficients
+        if(!is.null(coef_std)) {
+          # re-write coefs_std with NAs
+          coef_std_fill <- matrix(nrow = length(mm), ncol = 1)
+          rownames(coef_std_fill) <- mm
+          # fill in the
+          coef_std_fill[match(rownames(coef_std), mm)] <- coef_std
+          coef_std <- coef_std_fill
+        }
+
+      }
+    }
+
     # register coefficients (standardized and unstandardized)
     metrics_evaluated[[mt]]$coef <- coef
     metrics_evaluated[[mt]]$coef_std <- coef_std
@@ -767,13 +823,16 @@ fit_net_clogit <- function(f, data,
   # initiate results object
   results <- list()
 
-  # register parameters and all resuts
+  # register parameters and all results
   results$parms <- parms
   results$glmnet_fit <- fit
 
   # all metrics evaluated
   results$metrics_evaluated <- metrics_evaluated
-  results$var_names <- var_names # variable names
+  results$all_vars_orig <- if(any_missing_vars & replace_missing_NA) all_covars_orig else var_names
+  results$vars_removed <- if(any_missing_vars & replace_missing_NA) vars_removed else NULL
+  results$all_vars_kept <- var_names # variable names - kept - might be different from variables in the original formula
+  results$var_names <- all_covars_orig # variable names - original
   results$penalty_factor_modified <- penalty_factor_modified
   # Add info about the covariates - type
   results$numeric_covs <- numeric_covs
@@ -794,34 +853,34 @@ fit_net_clogit <- function(f, data,
   results$coef_std <- metrics_evaluated[[metric]]$coef_std
 
   #in case there are missing variables, add missing coefs
-  if(any_missing_vars) {
-    if(replace_missing_NA) {
-
-      # get variables form the original formula
-      f3 <- as.formula(paste0(wcols$response, " ~ -1 + ",
-                              extract_response_strata(f_original, covars = TRUE)$covars)) # should we remove the intercept?
-      # create original model matrix
-      mm <- colnames(model.matrix(f3, train_data))
-
-      # re-write coefs with NAs
-      coef <- matrix(nrow = length(mm), ncol = 1)
-      rownames(coef) <- mm
-      # fill in the estimated coefficients
-      coef[match(rownames(results$coef), mm)] <- results$coef
-      results$coef <- coef # replace
-
-      # standardized coefficients
-      if(!is.null(coef_std)) {
-        # re-write coefs_std with NAs
-        coef_std <- matrix(nrow = length(mm), ncol = 1)
-        rownames(coef_std) <- mm
-        # fill in the
-        coef_std[match(rownames(results$coef_std), mm)] <- results$coef_std
-        results$coef_std <- coef_std
-      }
-
-    }
-  }
+  # if(any_missing_vars) {
+  #   if(replace_missing_NA) {
+  #
+  #     # get variables form the original formula
+  #     f3 <- as.formula(paste0(wcols$response, " ~ -1 + ",
+  #                             extract_response_strata(f_original, covars = TRUE)$covars)) # should we remove the intercept?
+  #     # create original model matrix
+  #     mm <- colnames(model.matrix(f3, data_orig[, all_vars_orig]))
+  #
+  #     # re-write coefs with NAs
+  #     coef <- matrix(nrow = length(mm), ncol = 1)
+  #     rownames(coef) <- mm
+  #     # fill in the estimated coefficients
+  #     coef[match(rownames(results$coef), mm)] <- results$coef
+  #     results$coef <- coef # replace
+  #
+  #     # standardized coefficients
+  #     if(!is.null(coef_std)) {
+  #       # re-write coefs_std with NAs
+  #       coef_std <- matrix(nrow = length(mm), ncol = 1)
+  #       rownames(coef_std) <- mm
+  #       # fill in the
+  #       coef_std[match(rownames(results$coef_std), mm)] <- results$coef_std
+  #       results$coef_std <- coef_std
+  #     }
+  #
+  #   }
+  # }
 
   results$train_score <- metrics_evaluated[[metric]]$train_score
   results$test_score <- metrics_evaluated[[metric]]$test_score
@@ -834,7 +893,7 @@ fit_net_clogit <- function(f, data,
   results$lambdas <- sapply(metrics_evaluated, function(x) x$lambda_opt)
   results$coefs_all <- sapply(metrics_evaluated, function(x) x$coef)
   results$coefs_std_all <- sapply(metrics_evaluated, function(x) x$coef_std)
-  rownames(results$coefs_all) <- var_names
+  rownames(results$coefs_all) <- results$var_names
   if(standardize == "external") rownames(results$coefs_std_all) <- var_names
   results$train_score_all <- sapply(metrics_evaluated, function(x) x$train_score)
   results$test_score_all <- sapply(metrics_evaluated, function(x) x$test_score)
