@@ -215,6 +215,7 @@ fit_net_clogit <- function(f, data,
       data_orig <- data
       all_vars_orig <- all_vars
       all_covars_orig <- all_covars
+      predictor_table_orig <- predictor_table
       vars_removed <- rownames(covs_mean_sd)[ind]
       # remove from formula
       vv <- 1
@@ -224,6 +225,7 @@ fit_net_clogit <- function(f, data,
 
         # redefine variables for data
         all_vars <- all_vars[-which(all_vars %in% rownames(covs_mean_sd)[ind[vv]])]
+        predictor_table <- predictor_table[!(predictor_table$term_zoi == rownames(covs_mean_sd)[ind[vv]]),]
       }
 
       # redefine variables for data after removing these problematic variables
